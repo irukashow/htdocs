@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+org.eclipse.php.debug.core.pathMapper=<pathMappers><item2><server>Default PHP Web Server</server><mapper></mapper></item2><item1><server>90\u756A\u30DD\u30FC\u30C8\u4F7F\u7528</server><mapper></mapper></item1></pathMappers>
+org.eclipse.php.debug.core.xdebug_idekey=ECLIPSE_DBGP_192.168.11.27
+org.eclipse.php.debug.core.xdebug_port=9001
+org.eclipse.php.debug.coredefaultPHP=PHP 5.3.1 (CLI)
+org.eclipse.php.debug.coreinstalledPHPDebuggers=org.eclipse.php.debug.core.xdebugDebugger
+org.eclipse.php.debug.coreinstalledPHPDefaults=org.eclipse.php.debug.core.xdebugDebugger\=PHP 5.3.1 (CLI)
+org.eclipse.php.debug.coreinstalledPHPInis=C\:\\pleiades\\xampp\\php\\php.ini
+org.eclipse.php.debug.coreinstalledPHPLoadIniDefaults=false
+org.eclipse.php.debug.coreinstalledPHPLocations=C\:\\pleiades\\xampp\\php\\php.exe
+org.eclipse.php.debug.coreinstalledPHPNames=PHP 5.3.1 (CLI)
+org.eclipse.php.debug.corephp_debugger_id=org.eclipse.php.debug.core.xdebugDebugger
+org.eclipse.php.debug.corephp_versions=null

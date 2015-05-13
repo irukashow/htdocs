@@ -1,0 +1,26 @@
+<h1>Index Page</h1>
+<p>MySampleData Index View.</p>
+<table cellpadding="0" cellspacing="0">
+  <tr>
+      <th><?php echo $this->Paginator->sort('id');?></th>
+      <th><?php echo $this->Paginator->sort('name');?></th>
+      <th><?php echo $this->Paginator->sort('mail');?></th>
+      <th><?php echo $this->Paginator->sort('tel');?></th>
+  </tr>
+  <?php foreach ($datas as $data): ?>
+  <tr>
+    <td><?php echo $data['MySampleData']['id']; ?>&nbsp;</td>
+    <td><?php echo $data['MySampleData']['name']; ?>&nbsp;</td>
+    <td><?php echo $data['MySampleData']['mail']; ?>&nbsp;</td>
+    <td><?php echo $data['MySampleData']['tel']; ?>&nbsp;</td>
+  </tr>
+  <?php endforeach; ?>
+<div>
+  <?php
+    echo $this->Paginator->first('<< ');
+    echo $this->Paginator->prev('< ');
+    echo $this->Paginator->next(' >');
+    echo $this->Paginator->last(' >>');
+  ?>
+</div>
+</table>

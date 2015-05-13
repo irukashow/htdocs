@@ -1,0 +1,14 @@
+<?php
+App::uses('AppController', 'Controller');
+
+class MysampledataController extends AppController {
+public function index() {
+    // レイアウト関係
+    $this -> layout = "Sample";
+    $this -> set("header_for_layout", "Sample Application");
+    $this -> set("footer_for_layout",
+         "copyright by SYODA-Tuyano. 2011.");
+    // 以下がデータベース関係
+    $this->set('datas', $this->paginate());
+  }
+}
