@@ -1,3 +1,15 @@
+<?php
+    if($auth->loggedIn())
+    {
+        //echo $this->Html->link('ログアウト', '/users/logout/');
+    }else{
+        //echo $this->Html->link('ログイン', '/users/login/');
+        // ログイン画面へ遷移
+        header('Location: login');
+        exit();
+    }
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -20,8 +32,18 @@
 <body>
   <div id="container">
     <div id="header">
-        <a href="http://www.softlife.co.jp/">&nbsp;</a>
-      <?php echo $header_for_layout; ?>
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <a href="/softlife2/users/" class="logo">&nbsp;</a>
+                    <?php echo $header_for_layout; ?>
+                </td>
+                <td style="text-align: right;">
+                    <ul style="list-style-type : none;">
+                        <li><?php echo $this->Html->link($user_name.' ▼','index',array('style' => 'text-decoration: none;')); ?> </li>
+                    </ul>
+                </td>
+        </table>
     </div>
     <div id="content">
       <?php echo $this->Session->flash(); ?>

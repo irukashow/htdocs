@@ -7,13 +7,25 @@ class User extends AppModel {
     public $name = 'User';
  
     public $validate = array(
-            'username' => array(
+            'username' =>  array(
                     'rule' => 'notEmpty',
-                    'message' => 'ユーザーを選択してください。'
+                    'message' => '名前を選択してください。'
             ),
             'password' =>  array(
                     'rule' => 'notEmpty',
                     'message' => 'パスワードを入力してください。'
+            ),
+            'name_sei' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => '氏名（姓）を入力してください。'
+            ),
+            'name_mei' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => '氏名（名）を入力してください。'
+            ),
+            'role' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => 'ユーザーの種類を選択してください。'
             )
     ); 
     

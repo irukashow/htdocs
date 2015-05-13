@@ -18,7 +18,6 @@
     <td style="width:5em;">&nbsp;</td>
     </tr>
 
-    <?php echo $this->Session->flash('auth'); ?>
     <?php echo $this->Form->create('User'); ?>
     
     <tr>
@@ -36,8 +35,7 @@
                 echo $this->Form->input('username',
                     array('label' => '名前',
                         'type' => 'select',
-                        'options' => $list,
-                        'selected' => '')   
+                        'options' => $list)   
                     );
             ?>
         </td>
