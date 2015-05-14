@@ -7,7 +7,7 @@ class UsersController extends AppController {
 			'Auth'=>array(
 					'allowedActions'=>array('index','login','add')
 					));
-	
+        
 	/**
 	 * index
 	 */
@@ -45,7 +45,8 @@ class UsersController extends AppController {
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
         
-        
+        $data = $this->User->find('all');
+        $this->set('data', $data);
     }
 	/**
 	 * ユーザ登録。
@@ -72,6 +73,32 @@ class UsersController extends AppController {
             }
         }
     }
+
+	/**
+	 * パスワードの変更
+	 */
+	public function passwd(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("header_for_layout","派遣管理システム");
+            $this->set("footer_for_layout",
+                "copyright by SOFTLIFE. 2015.");
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('user_name', $name);
+            
+            $this->User->username = $this->Auth->user('username');
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                    // データを登録する
+                    $this->User->save($this->request->data);
+                    $this->Session->setFlash(__('パスワードは変更されました。'));
+
+                    // indexに移動する
+                    $this->redirect(array('action' => 'index'));
+            } else {
+                $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
+            }
+        }
     
     /**
      * ログイン処理を行う。

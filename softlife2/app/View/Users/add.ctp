@@ -1,7 +1,7 @@
 <div style="width:35%;">
 <?php echo $this->Form->create('User'); ?>
     <fieldset style="border:none;margin-bottom: 20px;">
-        <legend style="font-size: 140%;color: red;"><?php echo __('ユーザー登録をしてください。'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー登録をしてください。'); ?></legend>
         <?php 
                 echo $this->Form->input('name_sei',array('label' => '姓'));
                 echo $this->Form->input('name_mei',array('label' => '名'));
@@ -13,6 +13,6 @@
     </fieldset>
 <?php echo $this->Form->submit('登録', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('キャンセル', 'index', array('class'=>'button-rink','target'=>'_blank'))); ?>
+<?php print($this->Html->link('キャンセル', 'index', array('class'=>'button-rink'))); ?>
 <?php echo $this->Form->end(); ?>
 </div>

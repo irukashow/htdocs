@@ -5,8 +5,8 @@
     }else{
         //echo $this->Html->link('ログイン', '/users/login/');
         // ログイン画面へ遷移
-        header('Location: login');
-        exit();
+        //header('Location: login');
+        //exit();
     }
 ?>
 
@@ -28,6 +28,15 @@
     //echo $this->Html->css( 'jquery.ui.theme');
     echo $scripts_for_layout;
   ?>
+    <script>
+        $(function(){
+            $('#menu li').hover(function(){
+                $("ul:not(:animated)", this).slideDown();
+            }, function(){
+                $("ul.child",this).slideUp();
+            });
+        });        
+    </script>   
 </head>
 <body>
   <div id="container">
@@ -39,8 +48,8 @@
                     <?php echo $header_for_layout; ?>
                 </td>
                 <td style="text-align: right;">
-                    <ul style="list-style-type : none;">
-                        <li><?php echo $this->Html->link($user_name.' ▼','index',array('style' => 'text-decoration: none;')); ?> </li>
+                    <ul  id="menu" style="list-style-type : none;">
+                        <li><?php echo $this->Html->link($user_name.'さん ▼','index',array('style' => 'text-decoration: none;')); ?> </li>
                     </ul>
                 </td>
         </table>

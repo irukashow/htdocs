@@ -5,6 +5,8 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 class User extends AppModel {
     public $name = 'User';
+    /** 主キー(省略時は「id」になるので省略も可) */
+    public $primaryKey = 'username';
  
     public $validate = array(
             'username' =>  array(

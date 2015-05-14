@@ -1,0 +1,78 @@
+<html>
+<head>
+<script type="text/javascript">
+$(function(){
+    $('#menu li').hover(function(){
+        $("ul:not(:animated)", this).slideDown();
+    }, function(){
+        $("ul.child",this).slideUp();
+    });
+});
+</script>
+<style type="text/css">
+<!--
+ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+}
+ul#menu li{
+    float: left;
+    position: relative;
+    margin: 0;
+    padding: 5px;
+    width: 200px;
+    background-color: #555555;
+    display: block;
+}
+ul.child{
+        display: none;
+        position: absolute;
+        margin-left: -5px;
+        padding: 0;
+}
+ul.child li a{
+    padding: 5px 10px;
+    margin-left: -5px;
+    margin-right: -5px;
+    margin-bottom: -5px;
+    display: block;
+    color: #fff;
+}
+li a:hover{
+    background: #ff0000;
+}
+
+-->
+</style>
+
+</head>
+<body>
+
+<ul id="menu">
+        <li>トップ</li>
+        <li>ニュース
+        <ul class="child">
+            <li><a href="#">プレスリリース</a></li>
+            <li><a href="#">お知らせ</a></li>
+        </ul>
+    </li>
+    <li>採用情報
+        <ul class="child">
+            <li><a href="#">新卒採用</a></li>
+            <li><a href="#">中途採用</a></li>
+        </ul>
+    </li>
+    <li class="menu">会社案内
+        <ul class="child">
+              <li><a href="#">会社概要</a></li>
+              <li><a href="#">沿革</a></li>
+              <li><a href="#">アクセスマップ</a></li>
+        </ul>
+    </li>
+</ul>
+
+
+</body>
+</html>

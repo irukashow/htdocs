@@ -20,7 +20,7 @@
 <body>
   <div id="container">
     <div id="header">
-        <a href="http://www.softlife.co.jp/">&nbsp;</a>
+        <a href="http://www.softlife.co.jp/" class="logo">&nbsp;</a>
       <?php echo $header_for_layout; ?>
     </div>
     <div id="content">
