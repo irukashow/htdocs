@@ -23,21 +23,18 @@
     <tr>
         <td>&nbsp;</td>
         <td>
-            <?php
-                $list=array(
-                "" => '(あなたのお名前)',
-                "1" => '菊谷　直哉',
-                "2" => '阿部　直人',
-                "3" => '横井　政広',
-                "394" => '大阪　人材派遣グループ',
-                "0" => 'システム管理者');
-                
-                echo $this->Form->input('username',
-                    array('label' => '名前',
-                        'type' => 'select',
-                        'options' => $list)   
-                    );
-            ?>
+            <!-- 名前コンボの値セット START -->
+            <div class="input select required">
+                <label for="UserUsername">名前</label>
+                <select name="data[User][username]" id="UserUsername" required="required">
+                    <option value="">(あなたのお名前)</option>      
+            <?php foreach ($datas as $data): ?>
+                    <option value="<?= $data['User']['username'] ?>"><?=$data['User']['name_sei'] ?> <?=$data['User']['name_mei'] ?></option> 
+            <?php endforeach; ?>
+                </select>
+            </div>
+            <!-- 名前コンボの値セット END -->
+
         </td>
         <td>&nbsp;</td> 
     </tr>

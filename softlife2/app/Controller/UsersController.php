@@ -52,6 +52,14 @@ class UsersController extends AppController {
 	 * ユーザ登録。
 	 */
     public function add() {
+        /* 管理権限がある場合 */
+        if ($this->isAuthorized($this->Auth->user())) {
+            
+        }else{
+            $this->Session->setFlash('管理者しか権限がありません。');
+            $this->redirect($this->referer());
+        }
+        
         // レイアウト関係
         $this->layout = "main";
         $this->set("header_for_layout","派遣管理システム");
@@ -115,9 +123,13 @@ class UsersController extends AppController {
         $this->set("header_for_layout","派遣管理システム");
         $this->set("footer_for_layout",
             "copyright by SOFTLIFE. 2015.");
+        
+        // 初期値設定
+        $this->set('datas', $this->User->find( 'all'));
             
+        // ログイン認証
     	if ($this->request->is('post')) { 
-            $username = $this->request->data['User']['username'];
+            //$username = $this->request->data['User']['username'];
 
             // Authコンポーネントのログイン処理を呼び出す。
             if($this->Auth->login()){
@@ -125,6 +137,13 @@ class UsersController extends AppController {
 		//$this->Session->setFlash('認証に成功しました。');
                 //$this->redirect(array('action' => 'index'));
             //$this->Session->setFlash('$username='.$username);
+                // ログイン履歴
+                $this->loadModel("LoginLog");  // ログイン履歴テーブル
+                $this->LoginLog->create();
+                $log = array('username' => $this->Auth->user('username'),
+                    'status' => $this->LoginLog->status = 'login');
+                $this->LoginLog->save($log);
+    
                 $this->redirect($this->Auth->redirect());
             }else{
                 // ログイン処理失敗
@@ -138,7 +157,13 @@ class UsersController extends AppController {
      * ログアウト処理を行う。
      */
     public function logout(){
-    	
+        // ログアウト履歴
+        $this->loadModel("LoginLog");  // ログイン履歴テーブル
+        $this->LoginLog->create();
+        $log = array('username' => $this->Auth->user('username'),
+            'status' => $this->LoginLog->status = 'logout');
+        $this->LoginLog->save($log);
+                
     	$this->redirect($this->Auth->logout());
         //$this->redirect($this->Auth->redirect());
     	//eturn $this->flash('ログアウトしました。', '/users/index');

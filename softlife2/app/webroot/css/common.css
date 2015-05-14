@@ -85,12 +85,12 @@ p {
         top: 0;  
         left: 0; 
         width: 100%;  
-        height: 20px;  
+        height: 30px;  
         background-color: #003d4c;  
         color: #fff; 
 }
 a.logo {
-	line-height:20px;
+	//line-height:20px;
 	background: #003d4c url('/softlife/img/logo.gif') no-repeat left;
 	color: #fff;
 	padding: 0px 30px;
@@ -118,10 +118,10 @@ a.logo {
 	clear: both;
 	color: #333;
 	//padding: 10px 20px 40px 20px;
-        padding-top: 30px;
+        padding-top: 10px;
         padding-bottom: 30px;
-        //padding-left: 10px;
-        //padding-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
 	overflow: auto;
 }
 #footer {
@@ -836,4 +836,51 @@ a.button-rink {
 }
 .button-rink:hover{
       background:#555;color:#fff;
+}
+
+/* リンクボタン */
+.button-rink2, .button-rink2:visited{
+       font-size:13px;
+       width:100px;
+      background:#45bcd2;
+      display:inline-block;
+      padding:10px 10px 10px 10px;
+      color:#ffffff;
+      text-decoration:none;
+      -moz-border-radius:4px;
+      -webkit-border-radius:4px;
+      border-radius:4px;
+      border:none;
+      position:relative;
+      cursor:pointer;
+      margin:5px 5px 10px 0;
+         vertical-align: middle;
+}
+a.button-rink2 {
+     color:#ffffff;
+}
+.button-rink2 a:link{
+     color:#ffffff;
+}
+.button-rink2:hover{
+      background:#555;color:#fff;
+}
+
+// メインメニュー
+#main-menu ul{
+margin: 0; 
+padding: 0; 
+list-style: none;
+}
+
+#main-menu ul{
+margin: 0; 
+padding: 0; 
+list-style: none;
+}
+#main-menu li{ 
+display: inline; 
+padding: 0; 
+margin: 0; 
+float: left;
 }

@@ -7,6 +7,7 @@
         // ログイン画面へ遷移
         //header('Location: login');
         //exit();
+        echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
     }
 ?>
 
@@ -26,26 +27,24 @@
     //echo $this->Html->css( 'Style_SP');
     echo $this->Html->css( 'jquery-ui-1.10.3.custom');
     //echo $this->Html->css( 'jquery.ui.theme');
+    //echo $this->Html->css('bootstrap.min');
+    //echo $this->Html->css('bootstrap-theme.min');
+    //echo $this->Html->script('bootstrap');
+    //echo $this->Html->script('npm');
     echo $scripts_for_layout;
-  ?>
-    <script>
-        $(function(){
-            $('#menu li').hover(function(){
-                $("ul:not(:animated)", this).slideDown();
-            }, function(){
-                $("ul.child",this).slideUp();
-            });
-        });        
-    </script>   
+  ?>  
 </head>
 <body>
+<!-- ヘッダ部分 -->
   <div id="container">
     <div id="header">
         <table style="width: 100%;">
             <tr>
                 <td>
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
-                    <?php echo $header_for_layout; ?>
+                    <font size="3">
+                        <?php echo $header_for_layout; ?>
+                    </font>
                 </td>
                 <td style="text-align: right;">
                     <ul  id="menu" style="list-style-type : none;">
@@ -56,6 +55,20 @@
     </div>
     <div id="content">
       <?php echo $this->Session->flash(); ?>
+        <!-- メニュー部分 START -->
+        <div style="margin-left: 0px;width:100%;">
+            <ul id="main-menu">
+                <li><a href="#" class="button-rink2">ホーム</a></li>
+                <li><a href="#" class="button-rink2">メール</a></li>
+                <li><a href="#" class="button-rink2">スタッフ管理</a></li>
+                <li><a href="#" class="button-rink2">案件管理</a></li>
+                <li><a href="#" class="button-rink2">&nbsp;</a></li>
+                <li><a href="#" class="button-rink2">&nbsp;</a></li>
+            </ul>
+        </div>
+        <div style="clear: both;height:0px;">&nbsp;</div>
+        <!-- メニュー部分 END -->
+    <HR>    
       <?php echo $content_for_layout; ?>
     </div>
     <div id="footer">

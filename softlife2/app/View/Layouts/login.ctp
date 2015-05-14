@@ -20,8 +20,15 @@
 <body>
   <div id="container">
     <div id="header">
-        <a href="http://www.softlife.co.jp/" class="logo">&nbsp;</a>
-      <?php echo $header_for_layout; ?>
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <a href="/softlife2/users/" class="logo">&nbsp;</a>
+                    <?php echo $header_for_layout; ?>
+                </td>
+                <td style="text-align: right;">
+                </td>
+        </table>
     </div>
     <div id="content">
       <?php echo $this->Session->flash(); ?>
