@@ -56,7 +56,7 @@
     <div id="content">
       <?php echo $this->Session->flash(); ?>
         <!-- メニュー部分 START -->
-        <div style="margin-left: 0px;width:100%;">
+        <div style="margin-left: -10px;width:100%;">
             <ul id="main-menu">
                 <li><a href="#" class="button-rink2">ホーム</a></li>
                 <li><a href="#" class="button-rink2">メール</a></li>
