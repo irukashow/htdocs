@@ -8,11 +8,11 @@
   </title>
   <?php
     echo $this->Html->meta('icon');
-    echo $this->Html->css('common');
-    echo $this->Html->css( 'page');
+    echo $this->Html->css('main');
+    //echo $this->Html->css( 'page');
     echo $this->Html->css( 'Style');
     //echo $this->Html->css( 'Style_SP');
-    echo $this->Html->css( 'jquery-ui-1.10.3.custom');
+    //echo $this->Html->css( 'jquery-ui-1.10.3.custom');
     //echo $this->Html->css( 'jquery.ui.theme');
     echo $scripts_for_layout;
   ?>

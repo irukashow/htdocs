@@ -14,10 +14,22 @@ class UsersController extends AppController {
 	public function index(){
             // レイアウト関係
             $this->layout = "main";
+            $this->set("title_for_layout","ホーム - 派遣管理システム");
             $this->set("header_for_layout","派遣管理システム");
             $this->set("footer_for_layout",
                 "copyright by SOFTLIFE. 2015.");
-            
+            // タブの状態
+            $this->set('active1', 'active');
+            $this->set('active2', '');
+            $this->set('active3', '');
+            $this->set('active4', '');
+            $this->set('active5', '');
+            $this->set('active6', '');
+            $this->set('active7', '');
+            $this->set('active8', '');
+            $this->set('active9', '');
+            $this->set('active10', '');
+            // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
             $this->set('name', $name);
@@ -39,6 +51,7 @@ class UsersController extends AppController {
     public function view() {
         // レイアウト関係
         $this->layout = "main";
+        $this->set("title_for_layout","ホーム - 派遣管理システム");
         $this->set("header_for_layout","派遣管理システム");
         $this->set("footer_for_layout",
             "copyright by SOFTLIFE. 2015.");
@@ -60,13 +73,27 @@ class UsersController extends AppController {
             $this->redirect($this->referer());
         }
         
-        // レイアウト関係
-        $this->layout = "main";
-        $this->set("header_for_layout","派遣管理システム");
-        $this->set("footer_for_layout",
-            "copyright by SOFTLIFE. 2015.");
-        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-        $this->set('user_name', $name);
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
+            $this->set("header_for_layout","派遣管理システム");
+            $this->set("footer_for_layout",
+                "copyright by SOFTLIFE. 2015.");
+            // タブの状態
+            $this->set('active1', 'active');
+            $this->set('active2', '');
+            $this->set('active3', '');
+            $this->set('active4', '');
+            $this->set('active5', '');
+            $this->set('active6', '');
+            $this->set('active7', '');
+            $this->set('active8', '');
+            $this->set('active9', '');
+            $this->set('active10', '');
+            // ユーザー名前
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('user_name', $name);
+            $this->set('name', $name);
         
     	// POSTの場合
         if ($this->request->is('post')) {
@@ -88,11 +115,25 @@ class UsersController extends AppController {
 	public function passwd(){
             // レイアウト関係
             $this->layout = "main";
+            $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
             $this->set("header_for_layout","派遣管理システム");
             $this->set("footer_for_layout",
                 "copyright by SOFTLIFE. 2015.");
+            // タブの状態
+            $this->set('active1', 'active');
+            $this->set('active2', '');
+            $this->set('active3', '');
+            $this->set('active4', '');
+            $this->set('active5', '');
+            $this->set('active6', '');
+            $this->set('active7', '');
+            $this->set('active8', '');
+            $this->set('active9', '');
+            $this->set('active10', '');
+            // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
+            $this->set('name', $name);
             
             $this->User->username = $this->Auth->user('username');
             // POSTの場合
@@ -120,6 +161,7 @@ class UsersController extends AppController {
        
         // レイアウト関係
         $this->layout = "login";
+        $this->set("title_for_layout","ログイン - 派遣管理システム");
         $this->set("header_for_layout","派遣管理システム");
         $this->set("footer_for_layout",
             "copyright by SOFTLIFE. 2015.");

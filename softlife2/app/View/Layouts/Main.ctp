@@ -21,16 +21,18 @@
   </title>
   <?php
     echo $this->Html->meta('icon');
-    echo $this->Html->css('common');
-    echo $this->Html->css( 'page');
-    echo $this->Html->css( 'Style');
+    echo $this->Html->css('main');
+    //echo $this->Html->css( 'page');
+    //echo $this->Html->css( 'Style');
     //echo $this->Html->css( 'Style_SP');
-    echo $this->Html->css( 'jquery-ui-1.10.3.custom');
+    //echo $this->Html->css( 'jquery-ui-1.10.3.custom');
     //echo $this->Html->css( 'jquery.ui.theme');
     //echo $this->Html->css('bootstrap.min');
     //echo $this->Html->css('bootstrap-theme.min');
+    echo $this->Html->css('menu-styles');
     //echo $this->Html->script('bootstrap');
     //echo $this->Html->script('npm');
+    
     echo $scripts_for_layout;
   ?>  
 </head>
@@ -38,7 +40,7 @@
 <!-- ヘッダ部分 -->
   <div id="container">
     <div id="header">
-        <table style="width: 100%;">
+        <table style="width: 100%;height: 40px;">
             <tr>
                 <td>
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
@@ -56,6 +58,7 @@
     <div id="content">
       <?php echo $this->Session->flash(); ?>
         <!-- メニュー部分 START -->
+        <!--
         <div style="margin-left: -10px;width:100%;">
             <ul id="main-menu">
                 <li><a href="#" class="button-rink2">ホーム</a></li>
@@ -66,9 +69,34 @@
                 <li><a href="#" class="button-rink2">&nbsp;</a></li>
             </ul>
         </div>
-        <div style="clear: both;height:0px;">&nbsp;</div>
+
+
+<div class="nav">
+    <ul class="nl clearFix">
+        <li class="active"><a href="#">ホーム</a></li>
+        <li><a href="#">メール</a></li>
+        <li><a href="#">スタッフ管理</a></li>
+        <li><a href="#">案件管理</a></li>
+    </ul>
+</div>
+        -->
+<div id='cssmenu'>
+    <ul>
+        <li class='<?= $active1 ?>'><a href='/softlife2/users/'>ホーム<br><div>Home</div></a></li>
+       <li class='<?= $active2 ?>'><a href='/softlife2/mail/'>メール<br><div>e-Mail</div></a></li>
+       <li class='<?= $active3 ?>'><a href='/softlife2/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
+       <li class='<?= $active4 ?>'><a href='/softlife2/case_management/'>案件管理<br><div>Case Management</div></a></li>
+       <li class='<?= $active5 ?>'><a href='#'>その他<br><div>etc</div></a></li>
+       <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+       <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+       <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+       <li class='<?= $active9 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+       <li class='<?= $active10 ?>'><a href='/softlife2/users/logout'>ログアウト<br><div>Logout</div></a></li>
+    </ul>
+    </div>
+        <div style="clear: both;height:10px;">&nbsp;</div>
         <!-- メニュー部分 END -->
-    <HR>    
+  
       <?php echo $content_for_layout; ?>
     </div>
     <div id="footer">
