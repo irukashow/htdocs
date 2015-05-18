@@ -34,7 +34,28 @@
     //echo $this->Html->script('npm');
     
     echo $scripts_for_layout;
-  ?>  
+  ?>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">google.load("jquery", "1.7");</script>
+<script type="text/javascript">
+$(function() {
+	$("#menu li").hover(function() {
+		$(this).children('ul').show();
+	}, function() {
+		$(this).children('ul').hide();
+	});
+});
+
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-18943219-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
 </head>
 <body>
 <!-- ヘッダ部分 -->
@@ -48,13 +69,27 @@
                         <?php echo $header_for_layout; ?>
                     </font>
                 </td>
-                <td style="text-align: right;">
-                    <ul  id="menu" style="list-style-type : none;">
-                        <li><?php echo $this->Html->link($user_name.'さん ▼','index',array('style' => 'text-decoration: none;')); ?> </li>
+                <td style="float: right;">
+                    <ul  id="menu">
+                        <li>ヘルプ
+                            <ul>
+                                <li><a href="#">サブメニュー</a></li>
+                                <li><a href="#">サブメニュー</a></li>
+                                <li><a href="#">サブメニュー</a></li>
+                            </ul>
+                        </li>
+                        <li style="width:150px;"><?php echo $this->Html->link($user_name.'さん','index',array('style' => 'text-decoration: none;')); ?>
+                            <ul>
+                                <li><a href="#">サブメニュー</a></li>
+                                <li><a href="#">-----------</a></li>
+                                <li><a href="#">ログアウト</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </td>
         </table>
     </div>
+      <div style="clear:none;"></div>
     <div id="content">
       <?php echo $this->Session->flash(); ?>
         <!-- メニュー部分 START -->

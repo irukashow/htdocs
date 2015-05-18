@@ -5,6 +5,7 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 class User extends AppModel {
     public $name = 'User';
+    public $useTable = 'users';
     /** 主キー(省略時は「id」になるので省略も可) */
     public $primaryKey = 'username';
  
@@ -25,6 +26,16 @@ class User extends AppModel {
                     'rule' => 'notEmpty',
                     'message' => '氏名（名）を入力してください。'
             ),
+            'area' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => '地域を選択してください。'
+            ),
+        /*
+            'authority' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => '閲覧権限を選択してください。'
+            ),
+         */
             'role' =>  array(
                     'rule' => 'notEmpty',
                     'message' => 'ユーザーの種類を選択してください。'

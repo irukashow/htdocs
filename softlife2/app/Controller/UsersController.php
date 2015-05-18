@@ -74,7 +74,7 @@ class UsersController extends AppController {
         }
         
             // レイアウト関係
-            $this->layout = "main";
+            $this->layout = "sub";
             $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
             $this->set("header_for_layout","派遣管理システム");
             $this->set("footer_for_layout",
@@ -93,18 +93,22 @@ class UsersController extends AppController {
             // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
-            $this->set('name', $name);
         
     	// POSTの場合
         if ($this->request->is('post')) {
+            if ($this->User->validates() == false) {
+                return null;
+            }
             if (isset($this->request->data['submit'])) {
                 // モデルの状態をリセットする
                 $this->User->create();
                 // データを登録する
                 $this->User->save($this->request->data);
+                // 登録完了
+                $this->Session->setFlash('ユーザー登録を完了しました。');
 
                 // indexに移動する
-                $this->redirect(array('action' => 'index'));
+                //$this->redirect(array('action' => 'index'));
             }
         }
     }

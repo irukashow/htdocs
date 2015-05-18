@@ -1,16 +1,45 @@
 <?php
     echo $this->Html->css( 'table.css');
+    
+    // 年齢換算
+    function getAge($str) {
+        return floor ((date('Ymd') - $str)/10000);
+    }
+    // 性別変換
+    function getGender($value) {
+        $ret = null;
+        if ($value == 1) {
+            $ret = '女性';
+        } elseif ($value == 2) {
+            $ret = '男性';
+        } else {
+            $ret = '未分類';
+        }
+        return $ret;
+    }
+    // 年末調整
+    function getNenmatsu($value) {
+        $ret = null;
+        if ($value == 0) {
+            $ret = '&nbsp;';
+        } elseif ($value == 1) {
+            $ret = '希望';
+        }
+        return $ret;
+    }
 ?>
 <!-- 見出し -->
 <div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="" target="_blank">新規作成</a>
-    <a href="" target="_blank">登録リスト</a>
+    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/add','スタッフ登録','width=1200,height=700');">新規作成</a>
+    <a href="javascript:void(0);" target="_blank">登録リスト</a>
     <a href="" target="_blank">登録解除リスト</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="" target="">検索条件クリア</a>
 </div>
 
-<?php echo $this->Form->create('StuffMaster', array('type' => 'post', 'action' => 'find')); ?>
+<?php echo $this->Form->create('StuffMaster', array('type' => 'post', 'action' => '.')); ?>
     
     <!-- 駅検索 -->
         <FIELDSET class='search'>
@@ -52,12 +81,33 @@
             </div>
             <p style="clear: both; height: 0px;"></p>
         </FIELDSET>
-    
+
+<!-- ページネーション -->
+<div class="pageNav03" style="margin-bottom: 30px;">
+<?php
+	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
+	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
+	echo $this->Paginator->numbers(array('separator' => ''));
+	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
+        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+?>
+    <div style="float:right;">
+        表示件数：
+        <SELECT id="optDisplay">
+            <OPTION value="5">5</OPTION>
+            <OPTION value="10">10</OPTION>
+            <OPTION value="15">15</OPTION>
+            <OPTION value="20">20</OPTION>
+            <OPTION value="25">25</OPTION>
+        </SELECT>
+    </div>
+ </div>
+
 <!--- スタッフマスタ本体 START --->
 <table id="stuff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr>
       <th><?php echo $this->Paginator->sort('id',"No.");?></th>
-      <th><?php echo $this->Paginator->sort('imgdat','写真');?></th>
+      <th><?php echo $this->Paginator->sort('imgdat','写真／登録番号');?></th>
       <th><?php echo $this->Paginator->sort('name_sei','氏名');?></th>
       <th><?php echo $this->Paginator->sort('age','年齢／性別');?></th>
     <th><?php echo $this->Paginator->sort('tantou','担当者');?></th>
@@ -70,12 +120,27 @@
     <th><?php echo $this->Paginator->sort('traffic1','沿線・最寄駅');?></th>
     <th><?php echo $this->Paginator->sort('nenmatsu_chousei','年末調整 希望有無');?></th>
   </tr>
-  <?php foreach ($datas as $data): ?>
   <tr>
-    <td><?php echo $data['StuffMaster']['id']; ?></td>
-    <td align="center"><img src="/softlife/img/noimage.jpg" width="50"></td>
+      <td>&nbsp;</td>
+      <td><input name="txtId" type="text" style="width:90%;"></td>
+      <td><input name="txtRegDate" type="text" style="width:90%;"></td>
+      <td><input name="txtName" type="text" style="width:90%;"></td>
+      <td><input name="txtTantou" type="text" style="width:90%;"></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td><input name="txtArea" type="text" style="width:90%;"></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+  </tr>
+  <?php foreach ($datas as $key => $data): ?>
+  <tr>
+    <td align="right">&nbsp;</td>
+    <td align="center"><img src="/softlife/img/noimage.jpg" width="50"><br><?php echo $data['StuffMaster']['id']; ?></td>
     <td><?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?></td>
-    <td><?php echo $data['StuffMaster']['age']."<br>".$data['StuffMaster']['sex'];?></td>
+    <td><?php echo getAge(str_replace('-','',$data['StuffMaster']['birthday']))."<br>".getGender($data['StuffMaster']['gender']);?></td>
     <td><?php echo $data['StuffMaster']['tantou']; ?></td>
     <td><?php echo $data['StuffMaster']['ojt_date']; ?></td>
     <td><?php echo $data['StuffMaster']['service_count']; ?></td>
@@ -84,11 +149,12 @@
     <td><?php echo $data['StuffMaster']['3m_spot']; ?></td>
     <td><?php echo $data['StuffMaster']['address1']; ?></td>
     <td><?php echo $data['StuffMaster']['traffic1'].'<br>'.$data['StuffMaster']['traffic2']; ?></td>
-    <td><?php echo $data['StuffMaster']['nenmatsu_chousei']; ?></td>
+    <td><?php echo getNenmatsu($data['StuffMaster']['nenmatsu_chousei']); ?></td>
   </tr>
   <?php endforeach; ?>
 </table>
 
+<!-- ページネーション -->
 <div class="pageNav03" style="margin-bottom: 30px;">
 <?php
 	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));

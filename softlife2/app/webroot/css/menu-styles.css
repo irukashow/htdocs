@@ -14,6 +14,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   text-align: center;
+  z-index: 0;
 }
 #cssmenu ul li a div{
     font-size: 8px;
@@ -56,7 +57,7 @@
   margin-left: -4px;
 }
 #cssmenu > ul > li > a {
-  z-index: 2;
+  z-index: 0;
   padding: 18px 25px 5px 25px;
   font-size: 15px;
   font-weight: 400;
@@ -100,3 +101,94 @@
 #cssmenu > ul > li > a:hover:after {
   background: #45bcd2;
 }
+
+// マイメニュー（ドロップダウン）
+/*
+#header-wrapper {
+  height: 60px;
+}
+#header {
+  height: 60px;
+}
+
+#site-title {
+  padding: 10px 0 0 0;
+}
+h5 {
+  margin-top: 20px;
+}
+#main {
+  clear: left;
+  margin: 20px auto;
+  padding: 5px 20px;
+  width: 900px;
+}
+h3 {
+  font-size: 20px;
+}
+*/
+#sample {
+margin: 50px auto 400px auto;
+width: 700px;
+padding: 20px;
+border: solid 1px #ccc;
+height: 300px;
+  z-index: 3;
+}
+#menu li {
+position: relative;
+float: left;
+margin: 0;
+padding: 5px;
+width: 100px;
+height: 20px;
+border: solid 1px none;
+text-align: center;
+background: none;
+color: #fff;
+list-style: none;
+//font-weight: bold;
+
+}
+#menu li:hover {
+  color: black;
+  background: whitesmoke;
+}
+#menu li a:hover {
+  color: black;
+  background: whitesmoke;
+}
+#menu li ul {
+  display: none;
+  position: absolute;
+  top: 30px;
+  left: -12px;
+  padding: 5px;
+  width: 100px;
+  background: #eee;
+  border: solid 1px #ccc;
+}
+#menu li ul li {
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  color:black;
+  background: #eee;
+  border: none;
+  text-align: left;
+  z-index: 3;
+}
+#menu li ul li a {
+  display: inline-block;
+  width: 100px;
+  height: 20px;
+  color:black;
+  text-decoration: none;
+    z-index: 3;
+}
+#menu li ul li a:hover {
+  background: #999;
+  color: black;
+  text-decoration: none;
+}
+

@@ -3,12 +3,15 @@
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー登録をしてください。'); ?></legend>
         <?php 
-                echo $this->Form->input('name_sei',array('label' => '姓'));
-                echo $this->Form->input('name_mei',array('label' => '名'));
+                echo $this->Form->input('name_sei',array('label' => '氏名（姓）', 'style'=>'width:30%;'));
+                echo $this->Form->input('name_mei',array('label' => '氏名（名）', 'style'=>'width:30%;'));
 	        echo $this->Form->input('password',array('label' => 'パスワード'));
-                //echo '<div style="clear:both;height:0px;"></div>';
+                $list1 = array(''=>'', '1'=>'大阪', '2'=>'東京', '3'=>'名古屋', '99'=>'すべて');
+                $list2 = array('11'=>'大阪-住宅営業', '12'=>'大阪-人材派遣', '21'=>'東京-住宅営業', '22'=>'東京-人材派遣', '31'=>'名古屋-住宅営業', '32'=>'名古屋-人材派遣');
+                echo $this->Form->input('area',array('label' => '所属', 'type' => 'select', 'options' => $list1));
+                echo $this->Form->input('authority',array('label' => '閲覧権限', 'type' => 'select', 'multiple'=> 'checkbox','options' => $list2));
 	        echo $this->Form->input('role', array('label' => 'ユーザーの種類',
-	            'options' => array('' => '（選択）', 'user' => '一般ユーザー', 'admin' => 'システム管理者')
+	            'options' => array('user' => '一般ユーザー', 'admin' => 'システム管理者')
 	        ));
     	?>
     </fieldset>
