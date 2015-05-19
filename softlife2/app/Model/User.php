@@ -30,12 +30,9 @@ class User extends AppModel {
                     'rule' => 'notEmpty',
                     'message' => '地域を選択してください。'
             ),
-        /*
-            'authority' =>  array(
-                    'rule' => 'notEmpty',
-                    'message' => '閲覧権限を選択してください。'
+            'auth11' =>  array(
             ),
-         */
+
             'role' =>  array(
                     'rule' => 'notEmpty',
                     'message' => 'ユーザーの種類を選択してください。'

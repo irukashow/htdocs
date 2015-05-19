@@ -40,9 +40,71 @@ class UsersController extends AppController {
 	/**
 	 * ユーザ登録情報の更新
 	 */
-	public function edit(){
-		// 処理の記述は省略
-		$this->render('edit');
+	public function edit($id=null){
+            /* 管理権限がある場合 */
+            if ($this->isAuthorized($this->Auth->user())) {
+
+            }else{
+                $this->Session->setFlash('管理者しか権限がありません。');
+                $this->redirect($this->referer());
+            }
+
+                // レイアウト関係
+                $this->layout = "sub";
+                $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
+                $this->set("header_for_layout","派遣管理システム");
+                $this->set("footer_for_layout",
+                    "copyright by SOFTLIFE. 2015.");
+                // タブの状態
+                $this->set('active1', 'active');
+                $this->set('active2', '');
+                $this->set('active3', '');
+                $this->set('active4', '');
+                $this->set('active5', '');
+                $this->set('active6', '');
+                $this->set('active7', '');
+                $this->set('active8', '');
+                $this->set('active9', '');
+                $this->set('active10', '');
+                // ユーザー名前
+                $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+                $this->set('user_name', $name);
+
+                // 初期値設定
+                $this->set('datas', $this->User->find( 'all'));
+                //$username = $this->request->data('username');
+                //
+                //指定プライマリーキーのデータをセット
+                $this->set('username', $id);
+                $this->User->username = $id;
+                $this->request->data = $this->User->read(null, $id);
+
+                /*
+                // POSTの場合
+                if ($this->request->is('post')) {
+                    $username = $this->request->data['username'];
+                    $status = array('conditions' => array('User.username' => $username));
+                    $data = $this->User->find('first', $status);
+                    
+                    if ($this->User->validates() == false) {
+                        return null;
+                    }
+                    if (isset($this->request->data['submit'])) {
+                        // データを登録する
+                        $this->User->save($this->request->data);
+                        // 登録完了
+                        $this->Session->setFlash('ユーザー登録を完了しました。');
+
+                        // indexに移動する
+                        //$this->redirect(array('action' => 'index'));
+                    }
+
+                } else {
+                    $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
+                    $data = null;
+                }
+                $this->set('data',$data);
+            */
 	}
 
 	/**
@@ -92,7 +154,7 @@ class UsersController extends AppController {
             $this->set('active10', '');
             // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-            $this->set('user_name', $name);
+            $this->set('user_name', $name); 
         
     	// POSTの場合
         if ($this->request->is('post')) {
@@ -187,7 +249,7 @@ class UsersController extends AppController {
                 $this->loadModel("LoginLog");  // ログイン履歴テーブル
                 $this->LoginLog->create();
                 $log = array('username' => $this->Auth->user('username'),
-                    'status' => $this->LoginLog->status = 'login');
+                    'status' => $this->LoginLog->status = 'login','ip_address' => $this->request->clientIp());
                 $this->LoginLog->save($log);
     
                 $this->redirect($this->Auth->redirect());
@@ -207,7 +269,7 @@ class UsersController extends AppController {
         $this->loadModel("LoginLog");  // ログイン履歴テーブル
         $this->LoginLog->create();
         $log = array('username' => $this->Auth->user('username'),
-            'status' => $this->LoginLog->status = 'logout');
+            'status' => $this->LoginLog->status = 'logout','ip_address' => $this->request->clientIp());
         $this->LoginLog->save($log);
                 
     	$this->redirect($this->Auth->logout());

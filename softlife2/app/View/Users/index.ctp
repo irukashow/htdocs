@@ -9,17 +9,9 @@
 <div style='float:left;width: 30%;'>
     <b>ようこそ！！</b>
     <br>
-    <?php echo $this->Html->link('ユーザー情報更新', '/users/edit/'); ?>
-    <br>
-    <?php echo $this->Html->link('ユーザー一覧', '/account/'); ?>
-    <br>
-    <?php echo $this->Html->link('新規ユーザ登録', '/users/add/'); ?>
-    <br>
     <?php echo $this->Html->link('パスワード変更', '/users/passwd/'); ?>
     <br>
-    <?php echo $this->Html->link('ログイン履歴', '/loginlog/'); ?>
-    <br>
-    <?php print($this->Html->link('ログアウト', 'logout')); ?>
+    <?php echo $this->Html->link('ログアウト', 'logout', array('title'=>'確認'), 'ログアウトしてもよろしいですか？'); ?>
 </div>
 <div style="float: left;width:65%;">
     <b>お知らせ</b><br>
