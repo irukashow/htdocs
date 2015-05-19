@@ -3,10 +3,7 @@
 class UsersController extends AppController {
 
 	// Authコンポーネントの利用設定。
-	public $components = array(
-			'Auth'=>array(
-					'allowedActions'=>array('index','login','add')
-					));
+	public $components = array('Auth'=>array('allowedActions'=>array('index','login','add')));
         
 	/**
 	 * index
@@ -249,7 +246,7 @@ class UsersController extends AppController {
                 $this->loadModel("LoginLog");  // ログイン履歴テーブル
                 $this->LoginLog->create();
                 $log = array('username' => $this->Auth->user('username'),
-                    'status' => $this->LoginLog->status = 'login','ip_address' => $this->request->clientIp());
+                    'status' => $this->LoginLog->status = 'login','ip_address' =>$this->request->clientIp(false));
                 $this->LoginLog->save($log);
     
                 $this->redirect($this->Auth->redirect());
@@ -269,7 +266,7 @@ class UsersController extends AppController {
         $this->loadModel("LoginLog");  // ログイン履歴テーブル
         $this->LoginLog->create();
         $log = array('username' => $this->Auth->user('username'),
-            'status' => $this->LoginLog->status = 'logout','ip_address' => $this->request->clientIp());
+            'status' => $this->LoginLog->status = 'logout','ip_address' => $this->request->clientIp(false));
         $this->LoginLog->save($log);
                 
     	$this->redirect($this->Auth->logout());

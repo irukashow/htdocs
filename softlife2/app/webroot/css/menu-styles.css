@@ -148,7 +148,7 @@ background: none;
 color: #fff;
 list-style: none;
 //font-weight: bold;
-
+z-index: 3;
 }
 #menu li:hover {
   color: black;

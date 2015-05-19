@@ -863,7 +863,7 @@ a.button-rink {
 /* リンクボタン */
 .button-rink2, .button-rink2:visited{
        font-size:13px;
-       width:100px;
+       //width:100px;
       background:#45bcd2;
       display:inline-block;
       padding:10px 10px 10px 10px;

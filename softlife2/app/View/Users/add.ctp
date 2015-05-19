@@ -24,7 +24,9 @@
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('キャンセル', 'index', array('class'=>'button-rink'))); ?>
+<?php print($this->Html->link('キャンセル', '/admin/index', array('class'=>'button-rink'))); ?>
+    &nbsp;&nbsp;
+<?php print($this->Html->link('クリア', './add', array('class'=>'button-rink2'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

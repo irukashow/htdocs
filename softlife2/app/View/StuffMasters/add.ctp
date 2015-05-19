@@ -1,18 +1,11 @@
-<?php
-echo $this->Html->script('jquery-1.9.1');
-echo $this->Html->script('ajaxzip2/ajaxzip2');
-?>
+<script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 
 <div style="width:80%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （その１）'); ?></legend>
 <?php echo $this->Form->create('StuffMaster'); ?>
 
-        <table style="width:100%;">
-            <tr>
-                <th>項目名</th>
-                <th>入力内容</th>
-            </tr>
+        <table style="width:100%;margin-top: 10px;">
             <tr>
                 <td>登録担当者</td>
                 <td>
@@ -66,39 +59,42 @@ echo $this->Html->script('ajaxzip2/ajaxzip2');
                         <tr>
                             <td>郵便番号</td>
                             <td>
-                                <?php echo $this->Form->input('zipcode',
-                                        array('label'=>false,'div'=>false,'maxlength'=>'7','style'=>'width:40%;',
-                                            'onKeyUp'=>"AjaxZip2.zip2addr(this,'data[StuffMaster][address1]','data[StuffMaster][address2]',null,'strt');")); ?>
+                                <?php echo $this->Form->input('zipcode1',
+                                        array('label'=>false,'div'=>false,'maxlength'=>'3','style'=>'width:12%;')); ?>-
+                                <?php echo $this->Form->input('zipcode2',
+                                        array('label'=>false,'div'=>false,'maxlength'=>'4','style'=>'width:16%;',
+                                            'onKeyUp'=>"AjaxZip3.zip2addr('data[StuffMaster][zipcode1]',this,'data[StuffMaster][address1]','data[StuffMaster][address2]','data[StuffMaster][address3]','data[StuffMaster][address4]');")); ?>
+                                        &nbsp;&nbsp;<font size="2">※住所を町村名まで自動で入力します。</font>
                             </td>
                         </tr>
                         <tr>
                             <td>都道府県</td>
                             <td>
-                                <?php echo $this->Form->input('address1',array('type'=>'select','label'=>false,'div'=>false, 'options'=>$pref_arr)); ?>
+                                <?php echo $this->Form->input('address1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'（都道府県）', 'options'=>$pref_arr)); ?>
                             </td>
                         </tr>
                         <tr>
                             <td>市区郡（町村）</td>
                             <td>
-                                <?php echo $this->Form->input('address2',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:80%;')); ?>
+                                <?php echo $this->Form->input('address2',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:60%;')); ?>
                             </td>
                         </tr>
                         <tr>
                             <td>町村名</td>
                             <td>
-                                <?php echo $this->Form->input('address3',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:80%;')); ?>
+                                <?php echo $this->Form->input('address3',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:60%;')); ?>
                             </td>
                         </tr>
                         <tr>
                             <td>番地</td>
                             <td>
-                                <?php echo $this->Form->input('address4',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:80%;')); ?>
+                                <?php echo $this->Form->input('address4',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:60%;')); ?>
                             </td>
                         </tr>
                         <tr>
                             <td>その他（建物名）</td>
                             <td>
-                                <?php echo $this->Form->input('address5',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:100%;')); ?>
+                                <?php echo $this->Form->input('address5',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:80%;')); ?>
                             </td>
                         </tr>
                     </table>

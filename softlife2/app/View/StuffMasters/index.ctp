@@ -1,5 +1,6 @@
 <?php
     echo $this->Html->css( 'table.css');
+    echo $this->Html->script('station');
     
     // 年齢換算
     function getAge($str) {
@@ -28,6 +29,7 @@
         return $ret;
     }
 ?>
+
 <!-- 見出し -->
 <div id='headline'>
     ★ スタッフマスタ
@@ -44,19 +46,80 @@
     <!-- 駅検索 -->
         <FIELDSET class='search'>
             <LEGEND style='font-weight: bold;'>駅検索</LEGEND>         
-            <DIV style="float: left;width:700px;">
+            <DIV style="float: left;width:720px;">
                 <SPAN>路線①</SPAN>
-                <SELECT id="PARM51" style="width: 100px;"></SELECT>&nbsp;&nbsp;
-                <SELECT id="PARM53" style="width: 150px;"></SELECT>&nbsp;&nbsp;
-                <SELECT id="PARM55_from" style="width: 150px;"></SELECT>駅&nbsp;&nbsp;～&nbsp;&nbsp;
-                <SELECT id="PARM55_to" style="width: 150px;"></SELECT>駅<BR>
+<select name="pref" onChange="setMenuItem(0,this[this.selectedIndex].value)" style="width: 100px;">
+    <option value="0" selected>都道府県を選択してください
+    <option value="1">北海道
+    <option value="2">青森県
+    <option value="3">岩手県
+    <option value="4">宮城県
+    <option value="5">秋田県
+    <option value="6">山形県
+    <option value="7">福島県
+    <option value="8">茨城県
+    <option value="9">栃木県
+    <option value="10">群馬県
+    <option value="11">埼玉県
+    <option value="12">千葉県
+    <option value="13">東京都
+    <option value="14">神奈川県
+    <option value="15">新潟県
+    <option value="16">富山県
+    <option value="17">石川県
+    <option value="18">福井県
+    <option value="19">山梨県
+    <option value="20">長野県
+    <option value="21">岐阜県
+    <option value="22">静岡県
+    <option value="23">愛知県
+    <option value="24">三重県
+    <option value="25">滋賀県
+    <option value="26">京都府
+    <option value="27">大阪府
+    <option value="28">兵庫県
+    <option value="29">奈良県
+    <option value="30">和歌山県
+    <option value="31">鳥取県
+    <option value="32">島根県
+    <option value="33">岡山県
+    <option value="34">広島県
+    <option value="35">山口県
+    <option value="36">徳島県
+    <option value="37">香川県
+    <option value="38">愛媛県
+    <option value="39">高知県
+    <option value="40">福岡県
+    <option value="41">佐賀県
+    <option value="42">長崎県
+    <option value="43">熊本県
+    <option value="44">大分県
+    <option value="45">宮崎県
+    <option value="46">鹿児島県
+    <option value="47">沖縄県
+</select>
+&nbsp;
+<select name="s0" onChange="setMenuItem(1,this[this.selectedIndex].value)" style="width: 150px;">
+    <option selected>路線を選択してください</option>
+</select>
+&nbsp;
+<select name="s1" style="width: 150px;">
+    <option selected>駅を選択してください</option>
+</select> 
+駅&nbsp;～&nbsp;
+<select name="s2" style="width: 150px;">
+    <option selected>駅を選択してください</option>
+</select> 
+駅<BR>
                 <SPAN>路線②</SPAN>
-                <SELECT id="PARM61" style="width: 100px;"></SELECT>&nbsp;&nbsp;
+                <?php echo $this->Form->input('para21',array('type'=>'select','label'=>false,'div'=>false,'style'=>'width: 100px;', 'empty'=>'（都道府県）', 'options'=>$pref_arr)); ?>
+                &nbsp;&nbsp;
                 <SELECT id="PARM63" style="width: 150px;"></SELECT>&nbsp;&nbsp;
                 <SELECT id="PARM65_from" style="width: 150px;"></SELECT>駅&nbsp;&nbsp;～&nbsp;&nbsp;
                 <SELECT id="PARM65_to" style="width: 150px;"></SELECT>駅<BR>
                 <SPAN>路線③</SPAN>
-                <SELECT id="PARM71" style="width: 100px;"></SELECT>&nbsp;&nbsp;
+                <?php echo $this->Form->input('para31',array('type'=>'select','label'=>false,'div'=>false,'style'=>'width: 100px;', 'empty'=>'（都道府県）', 'options'=>$pref_arr)); ?>
+                &nbsp;&nbsp;
                 <SELECT id="PARM73" style="width: 150px;"></SELECT>&nbsp;&nbsp;
                 <SELECT id="PARM75_from" style="width: 150px;"></SELECT>駅&nbsp;&nbsp;～&nbsp;&nbsp;
                 <SELECT id="PARM75_to" style="width: 150px;"></SELECT>駅<BR>
@@ -121,19 +184,19 @@
     <th><?php echo $this->Paginator->sort('nenmatsu_chousei','年末調整 希望有無');?></th>
   </tr>
   <tr>
-      <td>&nbsp;</td>
-      <td><input name="txtId" type="text" style="width:90%;"></td>
-      <td><input name="txtRegDate" type="text" style="width:90%;"></td>
-      <td><input name="txtName" type="text" style="width:90%;"></td>
-      <td><input name="txtTantou" type="text" style="width:90%;"></td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td><input name="txtArea" type="text" style="width:90%;"></td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;"><input name="txtId" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;"><input name="txtRegDate" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;"><input name="txtName" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;"><input name="txtTantou" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;"><input name="txtArea" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;">&nbsp;</td>
   </tr>
   <?php foreach ($datas as $key => $data): ?>
   <tr>
