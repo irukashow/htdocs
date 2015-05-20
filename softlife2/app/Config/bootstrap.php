@@ -22,6 +22,9 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+// 
+App::uses( 'CakeEmail', 'Network/Email');
+
 // Setup a 'default' cache configuration for use in the application.
 Cache::config('default', array('engine' => 'File'));
 

@@ -19,6 +19,7 @@
  */
 
 App::uses('AppController', 'Controller');
+App::uses('CakeEmail', 'Network/Email');    //
 
 /**
  * Static content controller
@@ -36,7 +37,21 @@ class PagesController extends AppController {
  * @var array
  */
 	public $uses = array();
+        public $name = 'Pages';     //
 
+    public function contact() {
+        $this->loadModel('Contact');
+        if ($this->request->is('post')) {
+            $email = new CakeEmail();
+            $email->config('contact'); //$contactの設定を読み込みます。
+            $email->viewVars($this->request->data['Contact']); //送信内容をテンプレートファイルに渡します
+            if($email->send()){
+                    //メール送信が成功した場合ここで処理
+            }
+        }
+        $this->render();
+    }
+    
 /**
  * Displays a view
  *

@@ -2,7 +2,7 @@
 
 <div style="width:80%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 20px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （その１）'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （登録情報）'); ?></legend>
 <?php echo $this->Form->create('StuffMaster'); ?>
 
         <table style="width:100%;margin-top: 10px;">

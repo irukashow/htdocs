@@ -74,29 +74,80 @@ class StuffMastersController extends AppController {
         
       }
   
-  public function reg1() {
-        // レイアウト関係
-        $this->layout = "sub";
-        $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
-        $this->set("header_for_layout","派遣管理システム");
-        $this->set("footer_for_layout",
-            "copyright by SOFTLIFE. 2015.");
-        // 都道府県のセット
-        mb_language("uni");
-        mb_internal_encoding("utf-8"); //内部文字コードを変更
-        mb_http_input("auto");
-        mb_http_output("utf-8");
-        $conditions = array('item' => 10);
-        $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
-        $this->set('pref_arr', $pref_arr); 
-        
-    // post時の処理
-    if ($this->request->is('post') || $this->request->is('put')) {
-        $this->redirect(array('action' => 'reg2'));
-    } else {
+    // 登録ページ（その１）
+    public function reg1() {
+          // レイアウト関係
+          $this->layout = "sub";
+          $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
+          $this->set("header_for_layout","派遣管理システム");
+          $this->set("footer_for_layout",
+              "copyright by SOFTLIFE. 2015.");
+          // 都道府県のセット
+          mb_language("uni");
+          mb_internal_encoding("utf-8"); //内部文字コードを変更
+          mb_http_input("auto");
+          mb_http_output("utf-8");
+          $conditions = array('item' => 10);
+          $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+          $this->set('pref_arr', $pref_arr); 
 
+      // post時の処理
+      if ($this->request->is('post') || $this->request->is('put')) {
+          $this->redirect(array('action' => 'reg2'));
+      } else {
+
+      }
     }
-  }
+    
+    // 登録ページ（その２）
+    public function reg2() {
+          // レイアウト関係
+          $this->layout = "sub";
+          $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
+          $this->set("header_for_layout","派遣管理システム");
+          $this->set("footer_for_layout",
+              "copyright by SOFTLIFE. 2015.");
+          // 都道府県のセット
+          mb_language("uni");
+          mb_internal_encoding("utf-8"); //内部文字コードを変更
+          mb_http_input("auto");
+          mb_http_output("utf-8");
+          $conditions = array('item' => 10);
+          $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+          $this->set('pref_arr', $pref_arr); 
+
+      // post時の処理
+      if ($this->request->is('post') || $this->request->is('put')) {
+          $this->redirect(array('action' => 'reg3'));
+      } else {
+
+      }
+    }
+    
+    // 登録ページ（その３）
+    public function reg3() {
+          // レイアウト関係
+          $this->layout = "sub";
+          $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
+          $this->set("header_for_layout","派遣管理システム");
+          $this->set("footer_for_layout",
+              "copyright by SOFTLIFE. 2015.");
+          // 都道府県のセット
+          mb_language("uni");
+          mb_internal_encoding("utf-8"); //内部文字コードを変更
+          mb_http_input("auto");
+          mb_http_output("utf-8");
+          $conditions = array('item' => 10);
+          $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+          $this->set('pref_arr', $pref_arr); 
+
+      // post時の処理
+      if ($this->request->is('post') || $this->request->is('put')) {
+          $this->redirect(array('action' => 'reg3'));
+      } else {
+
+      }
+    }
   
   public function edit($id) {
     // レイアウト関係
