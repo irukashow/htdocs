@@ -74,7 +74,7 @@ class StuffMastersController extends AppController {
         
       }
   
-  public function add() {
+  public function reg1() {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
@@ -86,11 +86,16 @@ class StuffMastersController extends AppController {
         mb_internal_encoding("utf-8"); //内部文字コードを変更
         mb_http_input("auto");
         mb_http_output("utf-8");
-        
         $conditions = array('item' => 10);
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
         
+    // post時の処理
+    if ($this->request->is('post') || $this->request->is('put')) {
+        $this->redirect(array('action' => 'reg2'));
+    } else {
+
+    }
   }
   
   public function edit($id) {

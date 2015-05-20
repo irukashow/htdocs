@@ -177,7 +177,7 @@ class UsersController extends AppController {
 	 */
 	public function passwd(){
             // レイアウト関係
-            $this->layout = "main";
+            $this->layout = "sub";
             $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
             $this->set("header_for_layout","派遣管理システム");
             $this->set("footer_for_layout",

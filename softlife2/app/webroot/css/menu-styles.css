@@ -148,7 +148,6 @@ background: none;
 color: #fff;
 list-style: none;
 //font-weight: bold;
-z-index: 3;
 }
 #menu li:hover {
   color: black;
@@ -164,27 +163,25 @@ z-index: 3;
   top: 30px;
   left: -12px;
   padding: 5px;
-  width: 100px;
+  width: 150px;
   background: #eee;
   border: solid 1px #ccc;
 }
 #menu li ul li {
   margin: 0;
   padding: 0;
-  width: 100px;
+  width: 150px;
   color:black;
   background: #eee;
   border: none;
   text-align: left;
-  z-index: 3;
 }
 #menu li ul li a {
   display: inline-block;
-  width: 100px;
+  width: 150px;
   height: 20px;
   color:black;
   text-decoration: none;
-    z-index: 3;
 }
 #menu li ul li a:hover {
   background: #999;

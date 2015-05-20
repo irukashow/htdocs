@@ -34,95 +34,67 @@
 <div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/add','スタッフ登録','width=1200,height=700');">新規作成</a>
+    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=780');">新規作成</a>
     <a href="javascript:void(0);" target="_blank">登録リスト</a>
     <a href="" target="_blank">登録解除リスト</a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="" target="">検索条件クリア</a>
 </div>
 
-<?php echo $this->Form->create('StuffMaster', array('type' => 'post', 'action' => '.')); ?>
+<?php echo $this->Form->create('StuffMaster', array('type' => 'post', 'name' => 'form', 'action' => '.')); ?>
     
     <!-- 駅検索 -->
         <FIELDSET class='search'>
             <LEGEND style='font-weight: bold;'>駅検索</LEGEND>         
-            <DIV style="float: left;width:720px;">
+            <DIV style="float: left;width:770px;">
                 <SPAN>路線①</SPAN>
-<select name="pref" onChange="setMenuItem(0,this[this.selectedIndex].value)" style="width: 100px;">
-    <option value="0" selected>都道府県を選択してください
-    <option value="1">北海道
-    <option value="2">青森県
-    <option value="3">岩手県
-    <option value="4">宮城県
-    <option value="5">秋田県
-    <option value="6">山形県
-    <option value="7">福島県
-    <option value="8">茨城県
-    <option value="9">栃木県
-    <option value="10">群馬県
-    <option value="11">埼玉県
-    <option value="12">千葉県
-    <option value="13">東京都
-    <option value="14">神奈川県
-    <option value="15">新潟県
-    <option value="16">富山県
-    <option value="17">石川県
-    <option value="18">福井県
-    <option value="19">山梨県
-    <option value="20">長野県
-    <option value="21">岐阜県
-    <option value="22">静岡県
-    <option value="23">愛知県
-    <option value="24">三重県
-    <option value="25">滋賀県
-    <option value="26">京都府
-    <option value="27">大阪府
-    <option value="28">兵庫県
-    <option value="29">奈良県
-    <option value="30">和歌山県
-    <option value="31">鳥取県
-    <option value="32">島根県
-    <option value="33">岡山県
-    <option value="34">広島県
-    <option value="35">山口県
-    <option value="36">徳島県
-    <option value="37">香川県
-    <option value="38">愛媛県
-    <option value="39">高知県
-    <option value="40">福岡県
-    <option value="41">佐賀県
-    <option value="42">長崎県
-    <option value="43">熊本県
-    <option value="44">大分県
-    <option value="45">宮崎県
-    <option value="46">鹿児島県
-    <option value="47">沖縄県
-</select>
-&nbsp;
-<select name="s0" onChange="setMenuItem(1,this[this.selectedIndex].value)" style="width: 150px;">
+<?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+    'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
+&nbsp;→
+<select name="s0_1" onChange="setMenuItem1(1,this[this.selectedIndex].value)" style="width: 200px;">
     <option selected>路線を選択してください</option>
 </select>
-&nbsp;
-<select name="s1" style="width: 150px;">
+→
+<select name="s1_1" style="width: 150px;">
     <option selected>駅を選択してください</option>
 </select> 
 駅&nbsp;～&nbsp;
-<select name="s2" style="width: 150px;">
+<select name="s2_1" style="width: 150px;">
     <option selected>駅を選択してください</option>
 </select> 
 駅<BR>
                 <SPAN>路線②</SPAN>
-                <?php echo $this->Form->input('para21',array('type'=>'select','label'=>false,'div'=>false,'style'=>'width: 100px;', 'empty'=>'（都道府県）', 'options'=>$pref_arr)); ?>
-                &nbsp;&nbsp;
-                <SELECT id="PARM63" style="width: 150px;"></SELECT>&nbsp;&nbsp;
-                <SELECT id="PARM65_from" style="width: 150px;"></SELECT>駅&nbsp;&nbsp;～&nbsp;&nbsp;
-                <SELECT id="PARM65_to" style="width: 150px;"></SELECT>駅<BR>
+<?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+    'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
+&nbsp;→
+<select name="s0_2" onChange="setMenuItem2(1,this[this.selectedIndex].value)" style="width: 200px;">
+    <option selected>路線を選択してください</option>
+</select>
+→
+<select name="s1_2" style="width: 150px;">
+    <option selected>駅を選択してください</option>
+</select> 
+駅&nbsp;～&nbsp;
+<select name="s2_2" style="width: 150px;">
+    <option selected>駅を選択してください</option>
+</select> 
+駅<BR>
                 <SPAN>路線③</SPAN>
-                <?php echo $this->Form->input('para31',array('type'=>'select','label'=>false,'div'=>false,'style'=>'width: 100px;', 'empty'=>'（都道府県）', 'options'=>$pref_arr)); ?>
-                &nbsp;&nbsp;
-                <SELECT id="PARM73" style="width: 150px;"></SELECT>&nbsp;&nbsp;
-                <SELECT id="PARM75_from" style="width: 150px;"></SELECT>駅&nbsp;&nbsp;～&nbsp;&nbsp;
-                <SELECT id="PARM75_to" style="width: 150px;"></SELECT>駅<BR>
+<?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+    'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
+&nbsp;→
+<select name="s0_3" onChange="setMenuItem3(1,this[this.selectedIndex].value)" style="width: 200px;">
+    <option selected>路線を選択してください</option>
+</select>
+→
+<select name="s1_3" style="width: 150px;">
+    <option selected>駅を選択してください</option>
+</select> 
+駅&nbsp;～&nbsp;
+<select name="s2_3" style="width: 150px;">
+    <option selected>駅を選択してください</option>
+</select> 
+駅<BR>
             </DIV>
             <div style='float: left;'>
                 <?php echo $this->Form->submit('検索', array('div'=>false, 'class' => '', 'name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>

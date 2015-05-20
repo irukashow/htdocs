@@ -70,9 +70,9 @@ $(function() {
                         </li>
                         <li style="width:150px;"><?php echo $user_name.'さん'; ?>
                             <ul>
-                                <li><a href="#">サブメニュー</a></li>
-                                <li><a href="#">-----------</a></li>
-                                <li><a href="#">ログアウト</a></li>
+                                <li><a href="/softlife2/users/passwd">パスワード変更</a></li>
+                                <li><a href="#"><HR style="border-width: 1px 0 0 0; border-color: #cccccc;" /></a></li>
+                                <li><a href="/softlife2/users/logout" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</a></li>
                             </ul>
                         </li>
                     </ul>
