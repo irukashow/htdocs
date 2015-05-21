@@ -67,3 +67,21 @@ function uploadFiles(files) {
   });
 }
 
+/*
+ *  拡張子チェック
+ */
+function fileCheck(element, after){
+	var fileTypes = new Array();
+	fileTypes = element.value.split(".");
+	var fileType = fileTypes[fileTypes.length - 1].toLowerCase();
+	if(fileType != ""){
+            if (fileType != after) {
+                alert(after + "ファイルを選択して下さい。");
+                element.value = '';
+            }
+	}
+	else{
+		alert("ファイルを選択して下さい。");
+	}
+	return false;
+}

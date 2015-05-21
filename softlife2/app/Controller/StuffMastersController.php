@@ -115,13 +115,43 @@ class StuffMastersController extends AppController {
           $conditions = array('item' => 10);
           $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
           $this->set('pref_arr', $pref_arr); 
+          $stuff_no = '34567';
+          $this->set('stuff_no', $stuff_no); 
 
-      // post時の処理
-      if ($this->request->is('post') || $this->request->is('put')) {
-          $this->redirect(array('action' => 'reg3'));
-      } else {
+        // ファイルアップロード処理
+        $ds = DIRECTORY_SEPARATOR;  //1
+        $storeFolder = 'files/stuff_reg'.$ds.$stuff_no.$ds;   //2
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if(!empty($_FILES['upfile']['name'][0] && !empty($_FILES['upfile']['name'][1]))){
+                // ディレクトリがなければ作る
+                if ($this->chkDirectory($storeFolder, true) == false) {
+                    $this->Session->setFlash('ファイルのアップロードに失敗しました。');
+                    $this->redirect($this->referer());
+                    exit();
+                }
+                $count = count($_FILES['upfile']['name']);
+                for ($i=0; $i<$count; $i++) {
+                    $tempFile = $_FILES['upfile']['tmp_name'][$i];//3
+                    //$info = new SplFileInfo($_FILES['upfile']['name'][$i]);
+                    //$after = $info->getExtension();
+                    $targetPath = $storeFolder.$ds;  //4
+                    $targetFile =  $targetPath. mb_convert_encoding($_FILES['upfile']['name'][$i], 'sjis-win', 'UTF-8');  //5
+                    //$targetFile =  $targetPath.$stuff_no.'.'.$after;  //5
+                    move_uploaded_file($tempFile,$targetFile); //6
+                }
+            } else {
+                $this->Session->setFlash('「証明写真」か「履歴書」のファイルが選択されていません。');
+                $this->redirect($this->referer());
+                exit();
+            }
 
-      }
+            $this->redirect(array('action' => 'reg3'));
+            $this->Session->setFlash($_FILES['upfile']['name']);
+        }
+        
+
     }
     
     // 登録ページ（その３）
@@ -233,5 +263,64 @@ public function find4(){
         ("select * from stuff_masters where name_sei like '%{$str}%';");
       $this->set('data',$data);
     }
+  }
+  
+  /*
+   * アップロード処理
+   */
+   public function uptest($msg = null){
+        $this->set('msg', '');
+       
+   }
+   
+  public function upload(){
+        $this->autoRender = false;
+        
+        $ds          = DIRECTORY_SEPARATOR;  //1
+        $storeFolder = 'files';   //2
+        if(!empty($_FILES)){
+                $tempFile = $_FILES['upfile']['tmp_name'];//3
+                $info = new SplFileInfo($_FILES['upfile']['name']);
+                $after = $info->getExtension();
+                
+                $targetPath = $storeFolder . $ds;  //4
+                //$targetFile =  $targetPath. $_FILES['upfile']['name'];  //5
+                $targetFile =  $targetPath. '34567.'.$after;  //5
+                move_uploaded_file($tempFile,$targetFile); //6
+                
+                $this->redirect($this->referer());
+        }
+        /*
+        if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
+            if (move_uploaded_file($_FILES["upfile"]["tmp_name"], "files/" . $_FILES["upfile"]["name"])) {
+              chmod("files/" . $_FILES["upfile"]["name"], 0644);
+              //$this->Session->setFlash( $_FILES["upfile"]["name"] . "をアップロードしました。");
+              $this->redirect($this->referer());
+            } else {
+              $this->Session->setFlash( $_FILES["upfile"]["name"] . "ファイルをアップロードできません。");
+              $this->redirect($this->referer());
+            }
+            } else {
+              $this->Session->setFlash( $_FILES["upfile"]["name"] . "ファイルが選択されていません。");
+              $this->redirect($this->referer());
+        } 
+         * 
+         */   
+  }
+  
+  /*** ディレクトリの存在をチェック ***/
+  static public function chkDirectory($dirpath,$create_flg = true){
+    $return = false;
+    if(file_exists($dirpath)){
+      $return = true;
+    }
+    if(!$return){
+      if($create_flg){
+        mkdir($dirpath, 0777);
+        chmod($dirpath, 0777);
+      }
+      $return = true;
+    }
+    return $return;
   }
 }

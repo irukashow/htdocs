@@ -1,3 +1,12 @@
+// 登録ページなど
+.regist {
+    border: 1px solid black;
+    border-spacing: 3px;
+    text-align: center;
+    width:100px;
+    margin-top: 10px;
+}
+
 div.pageNav03 {
 //overflow: hidden;
 //margin: 0 0 10px;
@@ -57,4 +66,6 @@ table#stuff_master tr th a{
     color: white;
     text-decoration: none;
 }
+
+
 

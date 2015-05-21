@@ -12,7 +12,7 @@ App::uses('AppController', 'Controller');
  * CakePHP MailController
  * @author M-YOKOI
  */
-class MailController extends AppController {
+class MessageController extends AppController {
 
     public function index() {
             // レイアウト関係

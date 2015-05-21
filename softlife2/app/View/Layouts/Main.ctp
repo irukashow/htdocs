@@ -7,7 +7,7 @@
         // ログイン画面へ遷移
         //header('Location: login');
         //exit();
-        echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
+        //echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
     }
 ?>
 
@@ -85,7 +85,7 @@ $(function() {
 <div id='cssmenu'>
     <ul>
         <li class='<?= $active1 ?>'><a href='/softlife2/users/'>ホーム<br><div>Home</div></a></li>
-       <li class='<?= $active2 ?>'><a href='/softlife2/mail/'>メール<br><div>e-Mail</div></a></li>
+       <li class='<?= $active2 ?>'><a href='/softlife2/message/'>メッセージ<br><div>Message</div></a></li>
        <li class='<?= $active3 ?>'><a href='/softlife2/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
        <li class='<?= $active4 ?>'><a href='/softlife2/case_management/'>案件管理<br><div>Case Management</div></a></li>
        <li class='<?= $active5 ?>'><a href='#'>その他<br><div>etc</div></a></li>
@@ -93,7 +93,7 @@ $(function() {
        <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
        <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
        <li class='<?= $active9 ?>'><a href='/softlife2/admin/'>管理者ページ<br><div>Administrator</div></a></li>
-       <li class='<?= $active10 ?>'><a href='/softlife2/users/logout' onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト<br><div>Logout</div></a></li>
+       <li class='<?= $active10 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
     </ul>
     </div>
         <div style="clear: both;height:10px;">&nbsp;</div>
