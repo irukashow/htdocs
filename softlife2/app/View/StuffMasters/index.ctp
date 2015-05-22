@@ -34,7 +34,7 @@
 <div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=780');">新規作成</a>
+    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800');">新規作成</a>
     <a href="javascript:void(0);" target=""><font style='color: blue;'>仮登録リスト</font></a>
     <b>登録リスト</b>
     <a href="" target="_blank">登録解除リスト</a>

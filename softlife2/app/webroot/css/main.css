@@ -134,7 +134,7 @@ a.logo {
         padding-bottom: 30px;
         padding-left: 10px;
         padding-right: 10px;
-	overflow: auto;
+	//overflow: auto;
 }
 #footer {
 	clear: both;
@@ -340,8 +340,8 @@ fieldset fieldset div {
 form div {
 	//clear: both;
 	//margin-bottom: 1em;
-	padding: .5em;
-	vertical-align: text-top;
+	//padding: .5em;
+	//vertical-align: text-top;
 }
 form .input {
 	color: #444;
@@ -360,7 +360,7 @@ form div.submit {
 	margin-top: 10px;
 }
 label {
-	display: block;
+	//display: block;
 	//font-size: 110%;
 	margin-bottom:3px;
 }
@@ -368,8 +368,8 @@ input, textarea {
 	//clear: both;
 	//font-size: 140%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-	padding: 3px;
-	width:98%;
+	//padding: 3px;
+	//width:98%;
 }
 select {
 	//clear: both;
@@ -408,6 +408,7 @@ input[type=checkbox] {
 div.checkbox label {
 	display: inline;
 }
+/*
 input[type=radio] {
 	float:left;
 	width:auto;
@@ -419,6 +420,7 @@ input[type=radio] {
 	margin: 0 0 6px 20px;
 	line-height: 26px;
 }
+*/
 
 input[type=submit] {
 	display: inline;
@@ -909,3 +911,4 @@ float: left;
 height:50px;
 }
 
+// ラジオボタン横並び

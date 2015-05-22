@@ -124,6 +124,7 @@ class StuffMastersController extends AppController {
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
+            /**
             if(!empty($_FILES['upfile']['name'][0] && !empty($_FILES['upfile']['name'][1]))){
                 // ディレクトリがなければ作る
                 if ($this->chkDirectory($storeFolder, true) == false) {
@@ -146,9 +147,9 @@ class StuffMastersController extends AppController {
                 $this->redirect($this->referer());
                 exit();
             }
+            **/
 
             $this->redirect(array('action' => 'reg3'));
-            $this->Session->setFlash($_FILES['upfile']['name']);
         }
         
 

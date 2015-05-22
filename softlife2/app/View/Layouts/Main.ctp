@@ -68,11 +68,21 @@ $(function() {
                                 <li><a href="#">サブメニュー</a></li>
                             </ul>
                         </li>
-                        <li style="width:150px;"><?php echo $user_name.'さん'; ?>
-                            <ul>
-                                <li><a href="/softlife2/users/passwd">パスワード変更</a></li>
-                                <li><a href="/softlife2/users/logout" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</a></li>
-                            </ul>
+                        <li style="width:150px;">
+                            <?php
+                                if($auth->loggedIn()){
+                                    echo $user_name.'さん';
+                            ?>
+                                <ul>
+                                    <li><a href="/softlife2/users/passwd">パスワード変更</a></li>
+                                    <li><a href="/softlife2/users/logout" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</a></li>
+                                </ul>
+                            <?php
+                                } else {
+                                    echo '<a href="login">ログイン</a>';
+                                }
+                             ?>
+
                         </li>
                     </ul>
                 </td>
