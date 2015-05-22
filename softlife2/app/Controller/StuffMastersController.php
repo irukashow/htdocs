@@ -23,14 +23,12 @@ class StuffMastersController extends AppController {
     //データを降順に並べる
     'order' => array('id' => 'asc'),
     )); 
-    
+    public $title_for_layout = "スタッフマスタ - 派遣管理システム";
+
     public function index() {
         // レイアウト関係
         $this->layout = "main";
-        $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
-        $this->set("header_for_layout","派遣管理システム");
-        $this->set("footer_for_layout",
-            "copyright by SOFTLIFE. 2015.");
+        $this->set("title_for_layout", $this->title_for_layout);
         // タブの状態
         $this->set('active1', '');
         $this->set('active2', '');
@@ -78,10 +76,7 @@ class StuffMastersController extends AppController {
     public function reg1() {
           // レイアウト関係
           $this->layout = "sub";
-          $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
-          $this->set("header_for_layout","派遣管理システム");
-          $this->set("footer_for_layout",
-              "copyright by SOFTLIFE. 2015.");
+          $this->set("title_for_layout", $this->title_for_layout);
           // 都道府県のセット
           mb_language("uni");
           mb_internal_encoding("utf-8"); //内部文字コードを変更
@@ -103,10 +98,7 @@ class StuffMastersController extends AppController {
     public function reg2() {
           // レイアウト関係
           $this->layout = "sub";
-          $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
-          $this->set("header_for_layout","派遣管理システム");
-          $this->set("footer_for_layout",
-              "copyright by SOFTLIFE. 2015.");
+          $this->set("title_for_layout",$this->title_for_layout);
           // 都道府県のセット
           mb_language("uni");
           mb_internal_encoding("utf-8"); //内部文字コードを変更
@@ -159,10 +151,7 @@ class StuffMastersController extends AppController {
     public function reg3() {
           // レイアウト関係
           $this->layout = "sub";
-          $this->set("title_for_layout","スタッフマスタ - 派遣管理システム");
-          $this->set("header_for_layout","派遣管理システム");
-          $this->set("footer_for_layout",
-              "copyright by SOFTLIFE. 2015.");
+          $this->set("title_for_layout",$this->title_for_layout);
           // 都道府県のセット
           mb_language("uni");
           mb_internal_encoding("utf-8"); //内部文字コードを変更
@@ -182,10 +171,8 @@ class StuffMastersController extends AppController {
   
   public function edit($id) {
     // レイアウト関係
-    $this->layout = "Sample";
-    $this->set("header_for_layout", "Sample Application");
-    $this->set("footer_for_layout", 
-        "copyright by SYODA-Tuyano. 2011.");
+    $this->layout = "sub";
+    $this->set("title_for_layout",$this->title_for_layout);
     // post時の処理
     $this->StuffMaster->id = $id;
     if ($this->request->is('post') || $this->request->is('put')) {

@@ -24,7 +24,7 @@
             <tr>
                 <td>
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
-                    <?php echo $header_for_layout; ?>
+                    <?php echo HEADER; ?>
                 </td>
                 <td style="text-align: right;">
                 </td>
@@ -35,7 +35,7 @@
       <?php echo $content_for_layout; ?>
     </div>
     <div id="footer">
-      <?php echo $footer_for_layout; ?>
+      <?php echo FOOTER; ?>
     </div>
   </div>
  </body>

@@ -9,6 +9,7 @@
         //exit();
         //echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
     }
+    
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -56,12 +57,12 @@ $(function() {
                 <td>
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
                     <font size="3">
-                        <?php echo $header_for_layout; ?>
+                        <?php echo HEADER; ?>
                     </font>
                 </td>
                 <td style="float: right;">
                     <ul  id="menu">
-                        <li>ヘルプ
+                        <li>リンク <font style='font-size:50%;vertical-align: 2px;'>▼</font>
                             <ul>
                                 <li><a href="#">サブメニュー</a></li>
                                 <li><a href="#">サブメニュー</a></li>
@@ -71,11 +72,12 @@ $(function() {
                         <li style="width:150px;">
                             <?php
                                 if($auth->loggedIn()){
-                                    echo $user_name.'さん';
+                                    echo $user_name.'さん <font style="font-size:50%;vertical-align: 2px;">▼</font>';
                             ?>
                                 <ul>
                                     <li><a href="/softlife2/users/passwd">パスワード変更</a></li>
-                                    <li><a href="/softlife2/users/logout" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</a></li>
+                                    <li><a href="#">バージョン情報</a></li>
+                                    <li><a href="/softlife2/users/logout">ログアウト</a></li>
                                 </ul>
                             <?php
                                 } else {
@@ -112,7 +114,7 @@ $(function() {
       <?php echo $content_for_layout; ?>
     </div>
     <div id="footer">
-      <?php echo $footer_for_layout; ?>
+      <?php echo FOOTER; ?>
     </div>
   </div>
  </body>

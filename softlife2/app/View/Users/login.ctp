@@ -25,7 +25,7 @@
         <td>
             <!-- 名前コンボの値セット START -->
             <div class="input select required">
-                <label for="UserUsername">名前</label>
+                <label for="UserUsername">名前</label><br>
                 <select name="data[User][username]" id="UserUsername" required="required" style="font-size: 120%;">
                     <option value="">(あなたのお名前)</option>      
             <?php foreach ($datas as $data): ?>

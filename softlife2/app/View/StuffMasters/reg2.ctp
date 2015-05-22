@@ -317,7 +317,7 @@ $(function() {
 
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('登録完了', array('name' => 'submit','div' => false)); ?>
+<?php echo $this->Form->submit('次へ進む', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
 <?php print($this->Html->link('戻　る', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.history.back(-1);return false;'))); ?>
     </div>

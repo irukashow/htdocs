@@ -1,3 +1,66 @@
+/** マイメニュー（ドロップダウン） **/
+#sample {
+margin: 50px auto 400px auto;
+width: 700px;
+padding: 20px;
+border: solid 1px #ccc;
+height: 300px;
+  z-index: 3;
+}
+#menu li {
+position: relative;
+float: left;
+margin: 0;
+padding: 5px;
+width: 100px;
+height: 31px;
+border: solid 1px none;
+text-align: left;
+background: none;
+color: #fff;
+list-style: none;
+//font-weight: bold;
+}
+#menu li:hover {
+  color: #ffffcc;
+  background: none;
+  cursor: pointer;
+}
+#menu li ul {
+  display: none;
+  position: absolute;
+  top: 36px;
+  left: -12px;
+  padding: 10px 10px 0px 10px;
+  width: 150px;
+  background: #eee;
+  border: solid 1px #ccc;
+}
+#menu li ul li {
+  //margin: 0;
+  //margin-top:-5px;
+  //margin-bottom: -5px;
+  padding: 0;
+  width: 150px;
+  color:black;
+  background: #eee;
+  border: none;
+  text-align: left;
+}
+#menu li ul li a {
+  display: inline-block;
+  width: 150px;
+  height: 20px;
+  color:black;
+  text-decoration: none;
+}
+#menu li ul li a:hover {
+  background: #999;
+  color: black;
+  text-decoration: none;
+}
+
+/** 機能メニュー（タブ形式） **/
 #cssmenu,
 #cssmenu ul,
 #cssmenu ul li,
@@ -99,94 +162,5 @@
 #cssmenu > ul > li:hover > a:after,
 #cssmenu > ul > li > a:hover:after {
   background: #45bcd2;
-}
-
-// マイメニュー（ドロップダウン）
-/*
-#header-wrapper {
-  height: 60px;
-}
-#header {
-  height: 60px;
-}
-
-#site-title {
-  padding: 10px 0 0 0;
-}
-h5 {
-  margin-top: 20px;
-}
-#main {
-  clear: left;
-  margin: 20px auto;
-  padding: 5px 20px;
-  width: 900px;
-}
-h3 {
-  font-size: 20px;
-}
-*/
-#sample {
-margin: 50px auto 400px auto;
-width: 700px;
-padding: 20px;
-border: solid 1px #ccc;
-height: 300px;
-  z-index: 3;
-}
-#menu li {
-position: relative;
-float: left;
-margin: 0;
-padding: 5px;
-width: 100px;
-height: 31px;
-border: solid 1px none;
-text-align: center;
-background: none;
-color: #fff;
-list-style: none;
-//font-weight: bold;
-}
-#menu li:hover {
-  color: black;
-  background: whitesmoke;
-}
-#menu li a:hover {
-  color: black;
-  background: whitesmoke;
-}
-#menu li ul {
-  display: none;
-  position: absolute;
-  top: 36px;
-  left: -12px;
-  padding: 10px 10px 0px 10px;
-  width: 150px;
-  background: #eee;
-  border: solid 1px #ccc;
-}
-#menu li ul li {
-  //margin: 0;
-  //margin-top:-5px;
-  //margin-bottom: -5px;
-  padding: 0;
-  width: 150px;
-  color:black;
-  background: #eee;
-  border: none;
-  text-align: left;
-}
-#menu li ul li a {
-  display: inline-block;
-  width: 150px;
-  height: 20px;
-  color:black;
-  text-decoration: none;
-}
-#menu li ul li a:hover {
-  background: #999;
-  color: black;
-  text-decoration: none;
 }
 

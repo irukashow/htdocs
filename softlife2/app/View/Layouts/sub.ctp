@@ -55,7 +55,7 @@ $(function() {
                 <td>
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
                     <font size="3">
-                        <?php echo $header_for_layout; ?>
+                        <?php echo HEADER; ?>
                     </font>
                 </td>
                 <td style="float: right;">
@@ -70,7 +70,7 @@ $(function() {
       <?php echo $content_for_layout; ?>
     </div>
     <div id="footer">
-      <?php echo $footer_for_layout; ?>
+      <?php echo FOOTER; ?>
     </div>
   </div>
  </body>

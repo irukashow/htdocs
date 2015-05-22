@@ -4,6 +4,8 @@ class UsersController extends AppController {
 
 	// Authコンポーネントの利用設定。
 	public $components = array('Auth'=>array('allowedActions'=>array('index','login','add')));
+        // タイトル
+        public $title_for_layout = "ホーム - 派遣管理システム";
         
 	/**
 	 * index
@@ -11,10 +13,7 @@ class UsersController extends AppController {
 	public function index(){
             // レイアウト関係
             $this->layout = "main";
-            $this->set("title_for_layout","ホーム - 派遣管理システム");
-            $this->set("header_for_layout","派遣管理システム");
-            $this->set("footer_for_layout",
-                "copyright by SOFTLIFE. 2015.");
+            $this->set("title_for_layout",$this->title_for_layout);
             // タブの状態
             $this->set('active1', 'active');
             $this->set('active2', '');
@@ -49,9 +48,6 @@ class UsersController extends AppController {
                 // レイアウト関係
                 $this->layout = "sub";
                 $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
-                $this->set("header_for_layout","派遣管理システム");
-                $this->set("footer_for_layout",
-                    "copyright by SOFTLIFE. 2015.");
                 // タブの状態
                 $this->set('active1', 'active');
                 $this->set('active2', '');
@@ -111,9 +107,6 @@ class UsersController extends AppController {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout","ホーム - 派遣管理システム");
-        $this->set("header_for_layout","派遣管理システム");
-        $this->set("footer_for_layout",
-            "copyright by SOFTLIFE. 2015.");
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
         
@@ -135,9 +128,6 @@ class UsersController extends AppController {
             // レイアウト関係
             $this->layout = "sub";
             $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
-            $this->set("header_for_layout","派遣管理システム");
-            $this->set("footer_for_layout",
-                "copyright by SOFTLIFE. 2015.");
             // タブの状態
             $this->set('active1', 'active');
             $this->set('active2', '');
@@ -179,9 +169,6 @@ class UsersController extends AppController {
             // レイアウト関係
             $this->layout = "sub";
             $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
-            $this->set("header_for_layout","派遣管理システム");
-            $this->set("footer_for_layout",
-                "copyright by SOFTLIFE. 2015.");
             // タブの状態
             $this->set('active1', 'active');
             $this->set('active2', '');
@@ -225,9 +212,6 @@ class UsersController extends AppController {
         // レイアウト関係
         $this->layout = "login";
         $this->set("title_for_layout","ログイン - 派遣管理システム");
-        $this->set("header_for_layout","派遣管理システム");
-        $this->set("footer_for_layout",
-            "copyright by SOFTLIFE. 2015.");
         
         // 初期値設定
         $this->set('datas', $this->User->find( 'all'));

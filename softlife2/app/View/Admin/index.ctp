@@ -17,6 +17,8 @@
     <br><br>
     <?php echo $this->Html->link('ユーザー情報更新', '/users/edit/'); ?>
     <br><br>
+    <?php echo $this->Html->link('バージョン更新情報', '/version_remarks/'); ?>
+    <br><br>
     <?php echo $this->Html->link('スタッフマスタ履歴', '/stuffmaster_log/'); ?>
     <br><br>
     <?php echo $this->Html->link('ログイン履歴', '/login_log/'); ?>
