@@ -11,12 +11,16 @@
 
 <!-- メインペイン -->
 <div id='message-main'>
+    <table border="0" style="width:100%;">
+        <tr>
+            <td style="width:30%;">
     <!-- メッセージボックス -->
     <div id='message-folder'>
         フォルダなど
     </div>
-
-    <!-- メッセージボックス -->
+            </td>
+            <td style="width:70%;">
+    <!-- メッセージ一覧 -->
     <div id='message-list'>
         <font style='font-weight: bold;font-size: 110%;'>[受信箱]</font>
         <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void">
@@ -44,4 +48,7 @@
             </tr>
         </table>
     </div>
+                </td>
+        </tr>
+    </table>
 </div>

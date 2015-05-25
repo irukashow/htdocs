@@ -52,15 +52,16 @@ $(function() {
 <!-- ヘッダ部分 -->
   <div id="container">
     <div id="header">
-        <table style="width: 100%;height: 40px;">
+        <table style="width: 100%;height: 40px;" border="0">
             <tr>
-                <td>
+                <td style="width:300px;">
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>
                     </font>
                 </td>
-                <td style="float: right;">
+                <td>&nbsp;</td>
+                <td style="width:400px;float: right;">
                     <ul  id="menu">
                         <li>リンク <font style='font-size:50%;vertical-align: 2px;'>▼</font>
                             <ul>

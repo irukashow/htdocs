@@ -11,7 +11,7 @@
  <tr>    
      <td>   
 <table cellspacing="10" cellpadding="20" border="0" align="center" style="background-color: #ccffcc;">
-    <tr><td nowrap>&nbsp;</td></tr>
+    <tr><td colspan="3">&nbsp;</td></tr>
     <tr>
         <td style="width:5em;">&nbsp;</td>
     <td style="text-align: center;width:15em;"><b>株式会社ソフトライフ</b></td>
@@ -19,20 +19,15 @@
     </tr>
 
     <?php echo $this->Form->create('User'); ?>
-    
     <tr>
         <td>&nbsp;</td>
         <td>
+            名前<br>
             <!-- 名前コンボの値セット START -->
-            <div class="input select required">
-                <label for="UserUsername">名前</label><br>
-                <select name="data[User][username]" id="UserUsername" required="required" style="font-size: 120%;">
-                    <option value="">(あなたのお名前)</option>      
-            <?php foreach ($datas as $data): ?>
-                    <option value="<?= $data['User']['username'] ?>"><?=$data['User']['name_sei'] ?> <?=$data['User']['name_mei'] ?></option> 
-            <?php endforeach; ?>
-                </select>
-            </div>
+            <?php
+                echo $this->Form->input( 'username', array('label' => false,'type' => 'select','style'=>'width: 100%;font-size:120%;', 
+                    'options' => $datas, 'empty' => '(あなたのお名前)'));
+            ?>
             <!-- 名前コンボの値セット END -->
 
         </td>
@@ -41,7 +36,10 @@
 
     <tr>
         <td>&nbsp;</td>
-        <td><?=$this->Form->input('password', array('label' => 'パスワード','type' => 'password'))?></td>
+        <td>
+            パスワード<br>
+            <?=$this->Form->input('password', array('label' => false,'type' => 'password','style'=>'width: 95%;',))?>
+        </td>
         <td>&nbsp;</td>
     </tr>
     

@@ -34,7 +34,7 @@
 <div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800');" id='button-create'>新規作成</a>
+    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規作成</a>
     &nbsp;
     <a href="javascript:void(0);" target=""><font style='color: blue;'>仮登録リスト</font></a>
     &nbsp;
@@ -178,7 +178,11 @@
   <tr>
     <td align="right">&nbsp;</td>
     <td align="center"><img src="/softlife/img/noimage.jpg" width="50"><br><?php echo $data['StuffMaster']['id']; ?></td>
-    <td><?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?></td>
+    <td>
+        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/1','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            <?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?>
+        </a>
+    </td>
     <td><?php echo getAge(str_replace('-','',$data['StuffMaster']['birthday']))."<br>".getGender($data['StuffMaster']['gender']);?></td>
     <td><?php echo $data['StuffMaster']['tantou']; ?></td>
     <td><?php echo $data['StuffMaster']['ojt_date']; ?></td>

@@ -18,18 +18,18 @@ border-radius: 8px;        /* CSS3草案 */
 -moz-border-radius: 8px;   /* Firefox用 */ 
 }
 #message-folder {
-float:left;
+//float:left;
 background-color: #e9ffff;
-width:30%;
+width:90%;
 height: 750px; 
 border: 1px solid #45bcd2;
 margin:10px 5px 10px 10px;
 padding:10px;
 }
 #message-list {
-float:right;
+//float:left;
 background-color: none;
-width: 65%;
+width: 95%;
 height: 750px; 
 //border: 1px solid #45bcd2;
 margin:0px 10px 10px 0px;

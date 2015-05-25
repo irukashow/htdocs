@@ -376,7 +376,7 @@ select {
 	//clear: both;
 	//font-size: 120%;
 	vertical-align: text-bottom;
-        padding: 3px;
+        padding: 1px;
 }
 select[multiple=multiple] {
 	width: 100%;

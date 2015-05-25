@@ -44,5 +44,27 @@ class AdminController extends AppController {
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);        
     }
+    
+    // バージョン情報入力ページ
+    public function version() {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout","バージョン情報入力 - 派遣管理システム");
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', 'active');
+        $this->set('active10', '');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);        
+        
+    }
 
 }

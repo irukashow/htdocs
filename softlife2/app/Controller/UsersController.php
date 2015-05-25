@@ -3,7 +3,7 @@
 class UsersController extends AppController {
 
 	// Authコンポーネントの利用設定。
-	public $components = array('Auth'=>array('allowedActions'=>array('index','login','add')));
+	public $components = array('Auth'=>array('allowedActions'=>array('login')));
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         
@@ -64,7 +64,8 @@ class UsersController extends AppController {
                 $this->set('user_name', $name);
 
                 // 初期値設定
-                $this->set('datas', $this->User->find( 'all'));
+                $this->モデル名->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
+                $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
                 //$username = $this->request->data('username');
                 //
                 //指定プライマリーキーのデータをセット
@@ -214,10 +215,11 @@ class UsersController extends AppController {
         $this->set("title_for_layout","ログイン - 派遣管理システム");
         
         // 初期値設定
-        $this->set('datas', $this->User->find( 'all'));
+        $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
+        $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
             
         // ログイン認証
-    	if ($this->request->is('post')) { 
+    	if ($this->request->is('post') || $this->request->is('put')) { 
             //$username = $this->request->data['User']['username'];
 
             // Authコンポーネントのログイン処理を呼び出す。
