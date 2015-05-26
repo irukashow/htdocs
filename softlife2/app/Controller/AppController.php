@@ -31,6 +31,7 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+    public $uses = array('User');
     public $components = array(
 		'Session',
 		'Auth' => array(
@@ -41,6 +42,12 @@ class AppController extends Controller {
     public function beforeFilter() {
         // 認証コンポーネントをViewで利用可能にしておく
         $this->set('auth',$this->Auth);
+        
+        // 種別のセット
+        $username = $this->Auth->user('username');
+        $conditions = array('username' => $username);
+        $result = $this->User->find('first', array('conditions' => $conditions));
+        $this->set('result', $result);
     }
     
     public function isAuthorized($user) {

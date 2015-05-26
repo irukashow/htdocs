@@ -14,23 +14,28 @@ App::uses('AppModel', 'Model');
  */
 class Admin extends AppModel {
     public $useTable = 'version_remarks';
+    public $primaryKey = 'id';
 
         public $validate = array(
             'version_no' =>  array(
                     'rule' => 'notEmpty',
-                    'message' => '名前を選択してください。'
+                    'message' => 'バージョン番号を選択してください。'
             ),
             'status' =>  array(
                     'rule' => 'notEmpty',
-                    'message' => 'パスワードを入力してください。'
+                    'message' => 'ステータスを入力してください。'
             ),
             'title' =>  array(
                     'rule' => 'notEmpty',
-                    'message' => '氏名（姓）を入力してください。'
+                    'message' => '更新タイトルを入力してください。'
+            ),
+            'release_date' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => 'リリース日付を入力してください。'
             ),
             'remarks' =>  array(
                     'rule' => 'notEmpty',
-                    'message' => '氏名（名）を入力してください。'
+                    'message' => '備考を入力してください。'
             )
        );
         

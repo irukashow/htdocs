@@ -108,7 +108,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>最寄駅①</td>
                 <td colspan="6">
-                    <?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+                    <?php echo $this->Form->input('',array('name'=>'pref1','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
                     <select name="s0_1" onChange="setMenuItem1(1,this[this.selectedIndex].value)" style="width: 200px;">
@@ -127,7 +127,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>最寄駅②</td>
                 <td colspan="6">
-                    <?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+                    <?php echo $this->Form->input('',array('name'=>'pref2','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
                     <select name="s0_2" onChange="setMenuItem2(1,this[this.selectedIndex].value)" style="width: 200px;">
@@ -146,7 +146,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>最寄駅③</td>
                 <td colspan="6">
-                    <?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+                    <?php echo $this->Form->input('',array('name'=>'pref3','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
                     <select name="s0_3" onChange="setMenuItem3(1,this[this.selectedIndex].value)" style="width: 200px;">
@@ -181,7 +181,9 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>希望職種</td>
-                <td colspan="3">&nbsp;</td>
+                <td colspan="3">
+			<?php echo $this->Form->input('shokushu_kibou',array('type'=>'text','div'=>false,'label'=>false,'class'=>'date','style'=>'width:50%;text-align: left;')); ?>
+		</td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>希望勤務回数</td>
@@ -205,7 +207,7 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>勤務可能日</td>
-                <td colspan="3">&nbsp;</td>
+                <td colspan="3"><?php echo $this->Form->input('workable_day',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;')); ?></td>
             </tr>
         </table>
          
@@ -245,7 +247,7 @@ $(function() {
                 ?>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;'>社会保険未加入の理由</td>
-                <td colspan="5"><?php echo $this->Form->input('bank_kouza_num',array('type'=>'text','div'=>false,'maxlength'=>'50','label'=>false,'style'=>'width:500px;')); ?></td>
+                <td colspan="5"><?php echo $this->Form->input('shaho_mikanyuu',array('type'=>'text','div'=>false,'maxlength'=>'50','label'=>false,'style'=>'width:500px;')); ?></td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>年末調整希望</td>

@@ -9,10 +9,10 @@
 App::uses('AppModel', 'Model');
 
 /**
- * CakePHP Pref
+ * CakePHP Menu
  * @author M-YOKOI
  */
-class Pref extends AppModel {
-    public $useTable = 'preves';
+class Menu extends AppModel {
+    public $useTable = 'version_remarks';
     
 }

@@ -1,3 +1,29 @@
+<?php
+    echo $this->Html->script( 'tools');
+    //echo $this->Html->script('dropzone');
+    echo $this->Html->script('jquery-1.9.1');
+    echo $this->Html->script('station');
+
+?>
+
+<!-- for Datepicker -->
+<link type="text/css" rel="stylesheet"
+  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+<script type="text/javascript"
+  src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"
+  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+<!--1国際化対応のライブラリをインポート-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/i18n/jquery-ui-i18n.min.js"></script>
+<script type="text/javascript">
+$(function() {
+  // 2日本語を有効化
+  $.datepicker.setDefaults($.datepicker.regional['ja']);
+  // 3日付選択ボックスを生成
+  $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
+});
+</script>
+
 <!-- 見出し -->
 <div id='headline'>
     ★ バージョン情報入力ページ
@@ -10,7 +36,7 @@
 <div style="width:60%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 20px;">
 
-<?php echo $this->Form->create('VersionRemarks'); ?>
+<?php echo $this->Form->create('Admin'); ?>
 
         <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
             <tr>
@@ -20,7 +46,7 @@
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>バージョン</td>
                 <td>
-                    <?php echo $this->Form->input('verson_no',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
+                    <?php echo $this->Form->input('version_no',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
                 </td>
             </tr>
             <tr>
@@ -37,7 +63,13 @@
                 <td>
                     <?php echo $this->Form->input('title',array('label'=>false,'div'=>false,'style'=>'width:70%;')); ?>
                 </td>
-            </tr> 
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>リリース日付</td>
+                <td>
+                    <?php echo $this->Form->input('release_date',array('type'=>'text','div'=>false,'label'=>false, 'class'=>'date', 'style'=>'width:20%;text-align: left;')); ?>
+                </td>
+            </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>バージョン更新内容<br />（詳細）</td>
                 <td>

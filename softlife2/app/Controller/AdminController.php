@@ -63,7 +63,25 @@ class AdminController extends AppController {
         $this->set('active10', '');
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-        $this->set('user_name', $name);        
+        $this->set('user_name', $name); 
+        
+    	// POSTの場合
+        if ($this->request->is('post')) {
+            if ($this->Admin->validates() == false) {
+                exit();
+            }
+            if (isset($this->request->data['submit'])) {
+                // モデルの状態をリセットする
+                $this->Admin->create();
+                // データを登録する
+                $this->Admin->save($this->request->data);
+                // 登録完了
+                $this->Session->setFlash('ユーザー登録を完了しました。');
+
+                // indexに移動する
+                //$this->redirect(array('action' => 'index'));
+            }
+        }
         
     }
 

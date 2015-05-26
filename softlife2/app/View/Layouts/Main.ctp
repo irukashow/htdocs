@@ -10,6 +10,26 @@
         //echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
     }
     
+    // 種別コンボセット
+    if ($result['User']['auth11'] == 1) {
+        $class = array('11'=>'大阪-人材派遣');
+    }
+    if ($result['User']['auth12'] == 1) {
+        $class = $class + array('12'=>'大阪-住宅営業');
+    }
+    if ($result['User']['auth21'] == 1) {
+        $class = $class + array('21'=>'東京-人材派遣');
+    }
+    if ($result['User']['auth22'] == 1) {
+        $class = $class + array('22'=>'東京-住宅営業');
+    }
+    if ($result['User']['auth31'] == 1) {
+        $class = $class + array('31'=>'名古屋-人材派遣');
+    }
+    if ($result['User']['auth32'] == 1) {
+        $class = $class + array('32'=>'名古屋-住宅営業');
+    }
+    
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -52,7 +72,7 @@ $(function() {
 <!-- ヘッダ部分 -->
   <div id="container">
     <div id="header">
-        <table style="width: 100%;height: 40px;" border="0">
+        <table style="width: 100%;" border="0">
             <tr>
                 <td style="width:300px;">
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
@@ -61,7 +81,7 @@ $(function() {
                     </font>
                 </td>
                 <td>&nbsp;</td>
-                <td style="width:400px;float: right;">
+                <td style="width:350px;float: right;padding-top: 5px;">
                     <ul  id="menu">
                         <li>リンク <font style='font-size:50%;vertical-align: 2px;'>▼</font>
                             <ul>
@@ -77,7 +97,7 @@ $(function() {
                             ?>
                                 <ul>
                                     <li><a href="/softlife2/users/passwd">パスワード変更</a></li>
-                                    <li><a href="#">バージョン情報</a></li>
+                                    <li><a href="/softlife2/menu/version">バージョン情報</a></li>
                                     <li><a href="/softlife2/users/logout">ログアウト</a></li>
                                 </ul>
                             <?php
@@ -95,20 +115,32 @@ $(function() {
     <div id="content">
       
         <!-- メニュー部分 START -->
-<div id='cssmenu'>
-    <ul>
-        <li class='<?= $active1 ?>'><a href='/softlife2/users/'>ホーム<br><div>Home</div></a></li>
-       <li class='<?= $active2 ?>'><a href='/softlife2/message/'>メッセージ<br><div>Message</div></a></li>
-       <li class='<?= $active3 ?>'><a href='/softlife2/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
-       <li class='<?= $active4 ?>'><a href='/softlife2/case_management/'>案件管理<br><div>Case Management</div></a></li>
-       <li class='<?= $active5 ?>'><a href='#'>その他<br><div>etc</div></a></li>
-       <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-       <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-       <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-       <li class='<?= $active9 ?>'><a href='/softlife2/admin/'>管理者ページ<br><div>Administrator</div></a></li>
-       <li class='<?= $active10 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-    </ul>
-    </div>
+        <table border="0" style="width:100%;">
+            <tr>
+                <td>
+                    <div id='cssmenu'>
+                        <ul>
+                            <li class='<?= $active1 ?>'><a href='/softlife2/users/'>ホーム<br><div>Home</div></a></li>
+                           <li class='<?= $active2 ?>'><a href='/softlife2/message/'>メッセージ<br><div>Message</div></a></li>
+                           <li class='<?= $active3 ?>'><a href='/softlife2/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
+                           <li class='<?= $active4 ?>'><a href='/softlife2/case_management/'>案件管理<br><div>Case Management</div></a></li>
+                           <li class='<?= $active5 ?>'><a href='#'>その他<br><div>etc</div></a></li>
+                           <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+                           <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+                           <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+                           <li class='<?= $active9 ?>'><a href='/softlife2/admin/'>管理者ページ<br><div>Administrator</div></a></li>
+                           <li class='<?= $active10 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td style="text-align: center;width:170px;vertical-align: bottom;">
+                    <?php echo $this->Form->input('class',array('name'=>'class','type'=>'select','label'=>false,'div'=>false, 
+                        'style' => 'width: 170px;padding: 10px 5px 10px 5px;font-size:100%;', 
+                        'onChange'=>'', 'options'=>$class)); ?>
+                </td>
+            </tr>
+        </table>
+
         <div style="clear: both;height:10px;">&nbsp;</div>
         <!-- メニュー部分 END -->
         <?php echo $this->Session->flash(); ?>

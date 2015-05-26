@@ -20,13 +20,15 @@
 <body>
   <div id="container">
     <div id="header">
-        <table style="width: 100%;">
+        <table style="width: 100%;" border="0">
             <tr>
-                <td>
+                <td style="padding-top: 11px;">
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
-                    <?php echo HEADER; ?>
+                    <font size="3">
+                        <?php echo HEADER; ?>
+                    </font>
                 </td>
-                <td style="text-align: right;">
+                <td style="">
                 </td>
         </table>
     </div>

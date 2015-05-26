@@ -52,7 +52,7 @@ $(function() {
     <div id="header">
         <table style="width: 100%;height: 40px;">
             <tr>
-                <td>
+                <td style="padding-top: 11px;">
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>

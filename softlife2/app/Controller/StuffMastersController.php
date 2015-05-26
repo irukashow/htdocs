@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  */
 class StuffMastersController extends AppController {
     public $uses = array('StuffMaster', 'Item');
-    //Paginationの設定
+    // Paginationの設定（スタッフマスタ）
     public $paginate = array(
     //モデルの指定
     'StuffMaster' => array(
@@ -23,6 +23,16 @@ class StuffMastersController extends AppController {
     //データを降順に並べる
     'order' => array('id' => 'asc'),
     )); 
+    // Paginationの設定（スタッフ詳細） 
+    public $paginate2 = array (
+    //モデルの指定
+    'StuffMaster' => array(
+    //1ページ表示できるデータ数の設定
+    'limit' =>1,
+    //データを降順に並べる
+    'order' => array('id' => 'asc'),
+    )); 
+    
     public $title_for_layout = "スタッフマスタ - 派遣管理システム";
 
     public function index() {
@@ -170,7 +180,7 @@ class StuffMastersController extends AppController {
     }
     
     // プロフィールページ
-    public function profile() {
+    public function profile($id = null) {
           // レイアウト関係
           $this->layout = "sub";
           $this->set("title_for_layout",$this->title_for_layout);
@@ -182,13 +192,20 @@ class StuffMastersController extends AppController {
           $conditions = array('item' => 10);
           $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
           $this->set('pref_arr', $pref_arr); 
+          $this->set('id', $id); 
 
-      // post時の処理
-      if ($this->request->is('post') || $this->request->is('put')) {
-          $this->redirect(array('action' => 'reg1'));
-      } else {
+        // ページネーション
+        if (isset($id)){
+            $conditions = array('id' => $id);
+            $this->set('datas', $this->paginate('StuffMaster',$conditions));
+        }
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->redirect(array('action' => 'reg1'));
+        } else {
 
-      }
+        }
     }
   
   public function edit($id) {

@@ -16,7 +16,7 @@
             <td style="width:30%;">
     <!-- メッセージボックス -->
     <div id='message-folder'>
-        フォルダなど
+        <font style="font-size: 120%;color:red;">制作予定</font><br>
     </div>
             </td>
             <td style="width:70%;">
@@ -35,7 +35,7 @@
                     <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
                 </td>
                 <td class='message-content'><a href='#' style='text-decoration: none;'>案件Aについての問い合わせ</a></td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>福島 亜希子</a></td>
+                <td class='message-content'><a href='#' style='text-decoration: none;'>○○ △△子</a></td>
                 <td class='message-content'>2015-07-15 10:27</td>
             </tr>
             <tr>
@@ -43,7 +43,15 @@
                     <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
                 </td>
                 <td class='message-content'><a href='#' style='text-decoration: none;'>案件Aについての問い合わせ</a></td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>福島 亜希子</a></td>
+                <td class='message-content'><a href='#' style='text-decoration: none;'>○○ △△子</a></td>
+                <td class='message-content'>2015-07-15 10:27</td>
+            </tr>
+            <tr>
+                <td style="padding-top: 8px;">
+                    <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
+                </td>
+                <td class='message-content'><a href='#' style='text-decoration: none;'>案件Aについての問い合わせ</a></td>
+                <td class='message-content'><a href='#' style='text-decoration: none;'>○○ △△子</a></td>
                 <td class='message-content'>2015-07-15 10:27</td>
             </tr>
         </table>

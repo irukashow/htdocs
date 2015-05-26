@@ -23,7 +23,7 @@
                 <td style='background-color: #e8ffff;width:20%;'>雇用形態</td>
                 <td colspan="2">
                     <?php  
-                        $select2=array(''=>'','1'=>'派遣','2'=>'業務委託','3'=>'紹介');
+                        $select2=array(''=>'','1'=>'派遣','2'=>'業務委託');
                         echo $this->Form->input( 'employment_status', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false,'style' => 'float:none;', 'options' => $select2));
                     ?>
                 </td>

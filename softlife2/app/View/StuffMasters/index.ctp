@@ -34,7 +34,7 @@
 <div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規作成</a>
+    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
     <a href="javascript:void(0);" target=""><font style='color: blue;'>仮登録リスト</font></a>
     &nbsp;
@@ -147,7 +147,7 @@
   <tr>
       <th><?php echo $this->Paginator->sort('id',"No.");?></th>
       <th><?php echo $this->Paginator->sort('imgdat','写真／登録番号');?></th>
-      <th><?php echo $this->Paginator->sort('name_sei','氏名');?></th>
+      <th><?php echo $this->Paginator->sort('name_sei','氏名／登録年月日');?></th>
       <th><?php echo $this->Paginator->sort('age','年齢／性別');?></th>
     <th><?php echo $this->Paginator->sort('tantou','担当者');?></th>
     <th><?php echo $this->Paginator->sort('ojt_date','OJT実施／実施年月日');?></th>
@@ -179,9 +179,10 @@
     <td align="right">&nbsp;</td>
     <td align="center"><img src="/softlife/img/noimage.jpg" width="50"><br><?php echo $data['StuffMaster']['id']; ?></td>
     <td>
-        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/1','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-            <?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?>
+        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/<?php echo $data['StuffMaster']['id']; ?>','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            <?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?><br>
         </a>
+	<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>
     </td>
     <td><?php echo getAge(str_replace('-','',$data['StuffMaster']['birthday']))."<br>".getGender($data['StuffMaster']['gender']);?></td>
     <td><?php echo $data['StuffMaster']['tantou']; ?></td>

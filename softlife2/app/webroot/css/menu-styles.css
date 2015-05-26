@@ -1,4 +1,5 @@
 /** マイメニュー（ドロップダウン） **/
+/**
 #sample {
 margin: 50px auto 400px auto;
 width: 700px;
@@ -7,6 +8,7 @@ border: solid 1px #ccc;
 height: 300px;
   z-index: 3;
 }
+**/
 #menu li {
 position: relative;
 float: left;
@@ -14,7 +16,7 @@ margin: 0;
 padding: 5px;
 width: 100px;
 height: 31px;
-border: solid 1px none;
+border: 1px solid none;
 text-align: left;
 background: none;
 color: #fff;
@@ -29,12 +31,12 @@ list-style: none;
 #menu li ul {
   display: none;
   position: absolute;
-  top: 36px;
+  top: 38px;
   left: -12px;
-  padding: 10px 10px 0px 10px;
+  padding: 5px 10px 0px 10px;
   width: 150px;
   background: #eee;
-  border: solid 1px #ccc;
+  border: 1px solid #ccc;
 }
 #menu li ul li {
   //margin: 0;

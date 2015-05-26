@@ -55,12 +55,13 @@ div.pageNav03 {
 
 div.pageNav03 span {
 float: left;
+padding: 5px 10px;
 //margin: 0 1px 1px 0;
 }
 
 div.pageNav03 span a {
 float: left;
-padding: 5px 10px;
+//padding: 5px 10px;
 background: #fff;
 }
 
