@@ -196,7 +196,7 @@ class UsersController extends AppController {
                     // indexに移動する
                     $this->redirect(array('action' => 'index'));
             } else {
-                $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
+                //$this->request->data = $this->User->read(null, $this->Auth->user('username'));    
             }
         }
     

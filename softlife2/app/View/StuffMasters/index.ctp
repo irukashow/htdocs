@@ -145,7 +145,7 @@
 <!--- スタッフマスタ本体 START --->
 <table id="stuff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr>
-      <th><?php echo $this->Paginator->sort('id',"No.");?></th>
+      <th><?php echo $this->Paginator->sort('',"");?></th>
       <th><?php echo $this->Paginator->sort('imgdat','写真／登録番号');?></th>
       <th><?php echo $this->Paginator->sort('name_sei','氏名／登録年月日');?></th>
       <th><?php echo $this->Paginator->sort('age','年齢／性別');?></th>
@@ -192,7 +192,13 @@
     <td><?php echo $data['StuffMaster']['koushin_date'].'<br>'.$data['StuffMaster']['koushin_person']; ?></td>
     <td><?php echo $data['StuffMaster']['3m_spot']; ?></td>
     <td><?php echo $data['StuffMaster']['address1']; ?></td>
-    <td><?php echo $data['StuffMaster']['traffic1'].'<br>'.$data['StuffMaster']['traffic2']; ?></td>
+    <td>
+        <?php echo $data['StuffMaster']['s0_1'].'&nbsp;'.$data['StuffMaster']['s1_1'].'駅'; ?>
+        <br>
+        <?php echo $data['StuffMaster']['s0_2'].'&nbsp;'.$data['StuffMaster']['s1_2'].'駅'; ?>
+        <br>
+        <?php echo $data['StuffMaster']['s0_3'].'&nbsp;'.$data['StuffMaster']['s1_3'].'駅'; ?>
+    </td>
     <td><?php echo getNenmatsu($data['StuffMaster']['nenmatsu_chousei']); ?></td>
   </tr>
   <?php endforeach; ?>

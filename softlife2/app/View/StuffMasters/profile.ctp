@@ -25,20 +25,20 @@
     function getStatus($value) {
         $ret = null;
         if ($value == 1) {
-            $ret = '派遣';
+            $ret = '正社員';
         } elseif ($value == 2) {
-            $ret = '業務委託';
+            $ret = '派遣';
         } else {
-            $ret = '未分類';
+            $ret = 'アルバイト';
         }
         return $ret;
     }
     // 年末調整
     function getNenmatsu($value) {
         $ret = null;
-        if ($value == 0) {
+        if ($value == 1) {
             $ret = '&nbsp;';
-        } elseif ($value == 1) {
+        } elseif ($value == 2) {
             $ret = '希望';
         }
         return $ret;
@@ -72,7 +72,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <font style="font-size: 100%;">登録年月日：<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>&nbsp;&nbsp;登録番号：<?=$id ?></font>
             </div>
-            <?php echo $this->Form->create('StuffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
+            <?php echo $this->Form->create('StuffMaster'); ?>
                     <!-- プロフィール -->
                     <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
                         <tr>
@@ -176,7 +176,9 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>市区町村</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['address2'] ?></td>
+                            <td style='width:70%;'>
+                                    <?=$data['StuffMaster']['address2'] ?><?=$data['StuffMaster']['address3'] ?><?=$data['StuffMaster']['address4'] ?>&nbsp;&nbsp;<?=$data['StuffMaster']['address5'] ?>
+                            </td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>生年月日</td>
@@ -270,7 +272,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>備考</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['remarks'] ?></td>
+                            <td style='width:70%;'><?= str_replace("\n","<br />",$data['StuffMaster']['remarks']); ?></td>
                         </tr>
                     </table>  
 
@@ -390,7 +392,7 @@
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>備考</td>
-                    <td style='width:70%;'><?=$data['StuffMaster']['hyouka_remarks']; ?></td>
+                    <td style='width:70%;'><?= str_replace("\n","<br />",$data['StuffMaster']['hyouka_remarks']); ?></td>
                 </tr>
             </table>  
                     

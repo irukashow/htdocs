@@ -7,7 +7,7 @@
         // ログイン画面へ遷移
         //header('Location: login');
         //exit();
-        //echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
+        //echo '<script type="text/javascript">location.href = "softlife2/users/login/"</script>';
     }
     
     // 種別コンボセット
@@ -75,7 +75,7 @@ $(function() {
         <table style="width: 100%;" border="0">
             <tr>
                 <td style="width:300px;">
-                    <a href="/softlife2/users/" class="logo">&nbsp;</a>
+                    <a href="<?=ROOTDIR ?>/users/" class="logo">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>
                     </font>
@@ -93,12 +93,12 @@ $(function() {
                         <li style="width:150px;">
                             <?php
                                 if($auth->loggedIn()){
-                                    echo $user_name.'さん <font style="font-size:50%;vertical-align: 2px;">▼</font>';
+                                    echo '<font style="font-size:100%;">'.$user_name.'さん </font><font style="font-size:50%;vertical-align: 2px;">▼</font>';
                             ?>
                                 <ul>
-                                    <li><a href="/softlife2/users/passwd">パスワード変更</a></li>
-                                    <li><a href="/softlife2/menu/version">バージョン情報</a></li>
-                                    <li><a href="/softlife2/users/logout">ログアウト</a></li>
+                                    <li><a href="<?=ROOTDIR ?>/users/passwd">パスワード変更</a></li>
+                                    <li><a href="<?=ROOTDIR ?>/menu/version">バージョン情報</a></li>
+                                    <li><a href="<?=ROOTDIR ?>/users/logout">ログアウト</a></li>
                                 </ul>
                             <?php
                                 } else {
@@ -120,22 +120,22 @@ $(function() {
                 <td>
                     <div id='cssmenu'>
                         <ul>
-                            <li class='<?= $active1 ?>'><a href='/softlife2/users/'>ホーム<br><div>Home</div></a></li>
-                           <li class='<?= $active2 ?>'><a href='/softlife2/message/'>メッセージ<br><div>Message</div></a></li>
-                           <li class='<?= $active3 ?>'><a href='/softlife2/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
-                           <li class='<?= $active4 ?>'><a href='/softlife2/case_management/'>案件管理<br><div>Case Management</div></a></li>
+                            <li class='<?= $active1 ?>'><a href='<?=ROOTDIR ?>/users/'>ホーム<br><div>Home</div></a></li>
+                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/'>メッセージ<br><div>Message</div></a></li>
+                           <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
+                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/'>案件管理<br><div>Case Management</div></a></li>
                            <li class='<?= $active5 ?>'><a href='#'>その他<br><div>etc</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-                           <li class='<?= $active9 ?>'><a href='/softlife2/admin/'>管理者ページ<br><div>Administrator</div></a></li>
+                           <li class='<?= $active9 ?>'><a href='<?=ROOTDIR ?>/admin/'>管理者ページ<br><div>Administrator</div></a></li>
                            <li class='<?= $active10 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                         </ul>
                     </div>
                 </td>
-                <td style="text-align: center;width:170px;vertical-align: bottom;">
+                <td style="text-align: center;width:170px;vertical-align: middle;">
                     <?php echo $this->Form->input('class',array('name'=>'class','type'=>'select','label'=>false,'div'=>false, 
-                        'style' => 'width: 170px;padding: 10px 5px 10px 5px;font-size:100%;', 
+                        'style' => '', 
                         'onChange'=>'', 'options'=>$class)); ?>
                 </td>
             </tr>

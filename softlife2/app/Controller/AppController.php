@@ -31,7 +31,7 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $uses = array('User');
+    public $uses = array('User', 'Item');
     public $components = array(
 		'Session',
 		'Auth' => array(
@@ -58,4 +58,11 @@ class AppController extends Controller {
         // デフォルトは拒否
         return false;
     }
+    
+    // 項目テーブルからの値変換関数
+    public function getValue($item, $id) {
+        $conditions = array('item' => $item, 'id' => $id);
+        $value = $this->Item->find('first', array('conditions' => $conditions));
+        return $value;
+    } 
 }

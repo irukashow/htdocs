@@ -4,7 +4,11 @@
     echo $this->Html->script('jquery-1.9.1');
     echo $this->Html->script('station');
 ?>
-
+<?php
+    // 初期値セット
+    $created = date('Y/m/d', strtotime($datas['StuffMaster']['created']));
+    $modified = date('Y/m/d', strtotime($datas['StuffMaster']['modified']));
+?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
   href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
@@ -27,6 +31,7 @@ $(function() {
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （基本情報）'); ?></legend>
 <?php echo $this->Form->create('StuffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
+<?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>   
         
         <!-- スタッフ情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 1px;'>
@@ -35,8 +40,8 @@ $(function() {
             </tr>
             <tr>
                 <td colspan="2">
-                    No.<?='0001' ?>&nbsp;&nbsp;登録番号：<?='0001' ?>&nbsp;&nbsp;
-                    作成日：<?='2015-06-01' ?>&nbsp;&nbsp;更新日：<?='2015-06-01' ?>&nbsp;&nbsp;所属：<?='大阪-人材派遣' ?>
+                    No.<?='0001' ?>&nbsp;&nbsp;登録番号：<?=$stuff_id ?>&nbsp;&nbsp;
+                    作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?='大阪-人材派遣' ?>
                 </td>
             </tr>
         </table>
@@ -108,7 +113,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>最寄駅①</td>
                 <td colspan="6">
-                    <?php echo $this->Form->input('',array('name'=>'pref1','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+                    <?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
                     <select name="s0_1" onChange="setMenuItem1(1,this[this.selectedIndex].value)" style="width: 200px;">
@@ -127,7 +132,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>最寄駅②</td>
                 <td colspan="6">
-                    <?php echo $this->Form->input('',array('name'=>'pref2','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+                    <?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
                     <select name="s0_2" onChange="setMenuItem2(1,this[this.selectedIndex].value)" style="width: 200px;">
@@ -146,7 +151,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>最寄駅③</td>
                 <td colspan="6">
-                    <?php echo $this->Form->input('',array('name'=>'pref3','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+                    <?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
                     <select name="s0_3" onChange="setMenuItem3(1,this[this.selectedIndex].value)" style="width: 200px;">
@@ -182,7 +187,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>希望職種</td>
                 <td colspan="3">
-			<?php echo $this->Form->input('shokushu_kibou',array('type'=>'text','div'=>false,'label'=>false,'class'=>'date','style'=>'width:50%;text-align: left;')); ?>
+			<?php echo $this->Form->input('shokushu_kibou',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70%;text-align: left;')); ?>
 		</td>
             </tr>
             <tr>
@@ -207,7 +212,7 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>勤務可能日</td>
-                <td colspan="3"><?php echo $this->Form->input('workable_day',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;')); ?></td>
+                <td colspan="3"><?php echo $this->Form->input('workable_day',array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:25%;text-align: left;')); ?></td>
             </tr>
         </table>
          
@@ -312,7 +317,7 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:15%;'>備考</td>
-                <td colspan="5"><?php echo $this->Form->input('remarks',array('type'=>'textarea','div'=>false,'maxlength'=>'200','label'=>false,'style'=>'width:90%;height:50px;')); ?></td> 
+                <td colspan="5"><?php echo $this->Form->input('remarks',array('type'=>'textarea','div'=>false,'maxlength'=>'500','label'=>false,'style'=>'width:90%;height:100px;')); ?></td> 
             </tr>
         </table>
 
@@ -321,7 +326,8 @@ $(function() {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('次へ進む', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('戻　る', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.history.back(-1);return false;'))); ?>
+<?php $back_url = '/stuff_masters/reg1/'.$stuff_id; ?>
+<?php print($this->Html->link('戻　る', $back_url, array('class'=>'button-rink'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

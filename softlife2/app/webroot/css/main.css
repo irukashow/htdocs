@@ -486,7 +486,8 @@ form .error-message {
 }
 form .error,
 form .error-message {
-	color: #9E2424;
+	//color: #9E2424;
+        color: red;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	-ms-box-shadow: none;

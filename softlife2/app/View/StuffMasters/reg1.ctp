@@ -4,6 +4,7 @@
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （登録情報）'); ?></legend>
 <?php echo $this->Form->create('StuffMaster'); ?>
+<?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>
 
         <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
             <tr>
@@ -23,7 +24,7 @@
                 <td style='background-color: #e8ffff;width:20%;'>雇用形態</td>
                 <td colspan="2">
                     <?php  
-                        $select2=array(''=>'','1'=>'派遣','2'=>'業務委託');
+                        $select2=array(''=>'','1'=>'正社員','2'=>'派遣','3'=>'アルバイト');
                         echo $this->Form->input( 'employment_status', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false,'style' => 'float:none;', 'options' => $select2));
                     ?>
                 </td>

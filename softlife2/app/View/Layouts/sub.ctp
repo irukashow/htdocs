@@ -30,7 +30,6 @@
     //echo $this->Html->css('bootstrap.min');
     //echo $this->Html->css('bootstrap-theme.min');
     echo $this->Html->css('menu-styles');
-    echo $this->Html->css('table');
     
     echo $scripts_for_layout;
   ?>
