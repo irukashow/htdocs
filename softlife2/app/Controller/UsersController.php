@@ -29,6 +29,7 @@ class UsersController extends AppController {
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
             $this->set('name', $name);
+            //$this->set('sessions', $this->Session);
             
             //$this->render('index');
 	}

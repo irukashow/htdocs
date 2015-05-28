@@ -69,10 +69,14 @@ class StuffMastersController extends AppController {
         } elseif (isset($this->data['txtTantou'])){
             $tantou = $this->data['txtTantou'];
             $conditions = array('tantou LIKE ' => $tantou);
-            $this->set('datas', $this->paginate('StuffMaster',$conditions));            
+            $this->set('datas', $this->paginate('StuffMaster',$conditions));      
         } else {
             $this->set('datas', $this->paginate());
+            //$this->redirect(array('action' => '.'));
         }
+        
+        // 表示件数変更
+        
 
         // 以下がデータベース関係
         //$this->set('datas', $this->paginate());
@@ -173,6 +177,7 @@ class StuffMastersController extends AppController {
         } else {
           // 登録していた値をセット
           $this->request->data = $this->StuffMaster->read(null, $stuff_id);
+          $this->set('data', $this->request->data);
         }
         
 

@@ -41,7 +41,8 @@
     <?php echo $title_for_layout; ?>
   </title>
   <?php
-    echo $this->Html->meta('icon');
+   // echo $this->Html->meta('icon');
+    echo $this->Html->meta('favicon.ico','/favicon.ico',array('type' => 'icon'));
     echo $this->Html->css('main');
     //echo $this->Html->css( 'page');
     //echo $this->Html->css( 'Style');
@@ -134,7 +135,7 @@ $(function() {
                     </div>
                 </td>
                 <td style="text-align: center;width:170px;vertical-align: middle;">
-                    <?php echo $this->Form->input('class',array('name'=>'class','type'=>'select','label'=>false,'div'=>false, 
+                    <?php echo $this->Form->input('class', array('name'=>'class','type'=>'select','label'=>false,'div'=>false, 
                         'style' => '', 
                         'onChange'=>'', 'options'=>$class)); ?>
                 </td>

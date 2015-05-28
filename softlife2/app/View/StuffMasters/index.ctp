@@ -1,6 +1,6 @@
 <?php
     echo $this->Html->css( 'stuffmaster');
-    echo $this->Html->script('station');
+    echo $this->Html->script('station2');
     
     // 年齢換算
     function getAge($str) {
@@ -28,6 +28,42 @@
         }
         return $ret;
     }
+    
+    // 路線・駅の表示
+    function getStation($code) {
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
+            //$xml = "http://www.ekidata.jp/api/s/3300610.xml";//ファイルを指定
+            $xmlData = simplexml_load_file($xml);//xmlを読み込む
+            $xml_ary = json_decode(json_encode($xmlData), true);
+
+            $line_name = $xml_ary['station']['line_name'];
+            $station_name = $xml_ary['station']['station_name'];
+            $ret = $line_name.' '.$station_name.'駅';
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+        
+        
+    }
+    
+    // 都道府県の表示
+    function getPref($code) {
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
+            $xmlData = simplexml_load_file($xml);//xmlを読み込む
+            $xml_ary = json_decode(json_encode($xmlData), true);
+
+            $ret = $xml_ary['pref']['name'];
+        } else {
+            $ret = '';
+        }
+
+        return $ret;
+        
+    }
 ?>
 
 <!-- 見出し -->
@@ -52,53 +88,40 @@
             <LEGEND style='font-weight: bold;'>駅検索</LEGEND>         
             <DIV style="float: left;width:770px;">
                 <SPAN>路線①</SPAN>
-<?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+<?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
     'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
-<select name="s0_1" onChange="setMenuItem1(1,this[this.selectedIndex].value)" style="width: 200px;">
-    <option selected>路線を選択してください</option>
-</select>
-→
-<select name="s1_1" style="width: 150px;">
-    <option selected>駅を選択してください</option>
-</select> 
-駅&nbsp;～&nbsp;
-<select name="s2_1" style="width: 150px;">
-    <option selected>駅を選択してください</option>
-</select> 
-駅<BR>
+<?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)')); ?>
+&nbsp;→
+<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+&nbsp;駅&nbsp;～&nbsp;
+<?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+&nbsp;駅<BR>
+
                 <SPAN>路線②</SPAN>
-<?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+<?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
     'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
-<select name="s0_2" onChange="setMenuItem2(1,this[this.selectedIndex].value)" style="width: 200px;">
-    <option selected>路線を選択してください</option>
-</select>
-→
-<select name="s1_2" style="width: 150px;">
-    <option selected>駅を選択してください</option>
-</select> 
-駅&nbsp;～&nbsp;
-<select name="s2_2" style="width: 150px;">
-    <option selected>駅を選択してください</option>
-</select> 
-駅<BR>
+<?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)')); ?>
+&nbsp;→
+<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+&nbsp;駅&nbsp;～&nbsp;
+<?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+&nbsp;駅<BR>
+
                 <SPAN>路線③</SPAN>
-<?php echo $this->Form->input('',array('name'=>'pref','type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+<?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
     'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
-<select name="s0_3" onChange="setMenuItem3(1,this[this.selectedIndex].value)" style="width: 200px;">
-    <option selected>路線を選択してください</option>
-</select>
-→
-<select name="s1_3" style="width: 150px;">
-    <option selected>駅を選択してください</option>
-</select> 
-駅&nbsp;～&nbsp;
-<select name="s2_3" style="width: 150px;">
-    <option selected>駅を選択してください</option>
-</select> 
-駅<BR>
+<?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)')); ?>
+&nbsp;→
+<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+&nbsp;駅&nbsp;～&nbsp;
+<?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+&nbsp;駅<BR>
             </DIV>
             <div style='float: left;'>
                 <?php echo $this->Form->submit('検索', array('div'=>false, 'class' => '', 'name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
@@ -132,13 +155,11 @@
 ?>
     <div style="float:right;">
         表示件数：
-        <SELECT id="optDisplay">
-            <OPTION value="5">5</OPTION>
-            <OPTION value="10">10</OPTION>
-            <OPTION value="15">15</OPTION>
-            <OPTION value="20">20</OPTION>
-            <OPTION value="25">25</OPTION>
-        </SELECT>
+        <?php
+            $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
+            echo $this->Form->input('', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'value' => '10', 'options' => $list, 
+                'onchange' => ''));
+        ?>
     </div>
  </div>
 
@@ -146,18 +167,18 @@
 <table id="stuff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr>
       <th><?php echo $this->Paginator->sort('',"");?></th>
-      <th><?php echo $this->Paginator->sort('imgdat','写真／登録番号');?></th>
-      <th><?php echo $this->Paginator->sort('name_sei','氏名／登録年月日');?></th>
-      <th><?php echo $this->Paginator->sort('age','年齢／性別');?></th>
+      <th><?php echo $this->Paginator->sort('id','写真<br>登録番号', array('escape' => false));?></th>
+      <th><?php echo $this->Paginator->sort('name_sei','氏名<br>登録年月日', array('escape' => false));?></th>
+      <th><?php echo $this->Paginator->sort('age','年齢<br>性別', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('tantou','担当者');?></th>
-    <th><?php echo $this->Paginator->sort('ojt_date','OJT実施／実施年月日');?></th>
+    <th><?php echo $this->Paginator->sort('ojt_date','OJT実施<br>実施年月日', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('service_count','勤務回数');?></th>
     <th><?php echo $this->Paginator->sort('shoukai_shokushu','紹介可能職種');?></th>
-    <th><?php echo $this->Paginator->sort('koushin_date','就業状況 更新日／更新者');?></th>
+    <th><?php echo $this->Paginator->sort('koushin_date','就業状況 更新日<br>更新者', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('3m_spot','最近3ヶ月の勤務現場');?></th>
     <th><?php echo $this->Paginator->sort('address1','都道府県');?></th>
-    <th><?php echo $this->Paginator->sort('traffic1','沿線・最寄駅');?></th>
-    <th><?php echo $this->Paginator->sort('nenmatsu_chousei','年末調整 希望有無');?></th>
+    <th><?php echo $this->Paginator->sort('s1_1','沿線<br>最寄駅', array('escape' => false));?></th>
+    <th><?php echo $this->Paginator->sort('nenmatsu_chousei','年末調整<br>希望有無', array('escape' => false));?></th>
   </tr>
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
@@ -191,13 +212,13 @@
     <td><?php echo $data['StuffMaster']['shoukai_shokushu']; ?></td>
     <td><?php echo $data['StuffMaster']['koushin_date'].'<br>'.$data['StuffMaster']['koushin_person']; ?></td>
     <td><?php echo $data['StuffMaster']['3m_spot']; ?></td>
-    <td><?php echo $data['StuffMaster']['address1']; ?></td>
+    <td><?php echo getPref($data['StuffMaster']['address1']).'&nbsp;'.$data['StuffMaster']['address2']; ?></td>
     <td>
-        <?php echo $data['StuffMaster']['s0_1'].'&nbsp;'.$data['StuffMaster']['s1_1'].'駅'; ?>
+        <?php echo getStation($data['StuffMaster']['s1_1']); ?>
         <br>
-        <?php echo $data['StuffMaster']['s0_2'].'&nbsp;'.$data['StuffMaster']['s1_2'].'駅'; ?>
+        <?php echo getStation($data['StuffMaster']['s1_2']); ?>
         <br>
-        <?php echo $data['StuffMaster']['s0_3'].'&nbsp;'.$data['StuffMaster']['s1_3'].'駅'; ?>
+        <?php echo getStation($data['StuffMaster']['s1_3']); ?>
     </td>
     <td><?php echo getNenmatsu($data['StuffMaster']['nenmatsu_chousei']); ?></td>
   </tr>

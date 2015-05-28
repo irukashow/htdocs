@@ -61,6 +61,44 @@
         }
         return $ret;
     }
+    
+    // 路線・駅の表示
+    function getStation($code) {
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
+            //$xml = "http://www.ekidata.jp/api/s/3300610.xml";//ファイルを指定
+            $xmlData = simplexml_load_file($xml);//xmlを読み込む
+            $xml_ary = json_decode(json_encode($xmlData), true);
+
+            $line_name = $xml_ary['station']['line_name'];
+            $station_name = $xml_ary['station']['station_name'];
+            $ret = $line_name.' '.$station_name.'駅';
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+        
+        
+    }
+    
+    // 都道府県の表示
+    function getPref($code) {
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
+            $xmlData = simplexml_load_file($xml);//xmlを読み込む
+            $xml_ary = json_decode(json_encode($xmlData), true);
+
+            $ret = $xml_ary['pref']['name'];
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+        
+    }
+
+
 ?>
 
 <?php foreach ($datas as $data): ?>
@@ -74,7 +112,7 @@
             </div>
             <?php echo $this->Form->create('StuffMaster'); ?>
                     <!-- プロフィール -->
-                    <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 2px;border-spacing: 1px;">
                         <tr>
                             <td style='width:50%;'>
                                 <?=$data['StuffMaster']['name_sei2'] ?>&nbsp;<?=$data['StuffMaster']['name_mei2'] ?><br>
@@ -98,8 +136,7 @@
                         </tr>
                         <tr>
                             <td style=''>
-                                <font style='font-size:120%;'>紹介可能職種</font><br>
-                                <?=$data['StuffMaster']['employment_status'] ?>
+                                <font style='font-size:130%;'><?='紹介可能職種' ?></font><br>
                             </td>
                         </tr>
                     </table>
@@ -108,11 +145,11 @@
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>勤務開始希望日</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['employment_status'] ?></td>
+                            <td style='width:70%;'><?=$data['StuffMaster']['job_startdate_kibou'] ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>研修希望日</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['employment_status'] ?></td>
+                            <td style='width:70%;'><?=$data['StuffMaster']['training_date_kibou'] ?></td>
                         </tr>
                     </table>
                     
@@ -152,15 +189,15 @@
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>最寄駅①</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['s0_1'].' '.$data['StuffMaster']['s1_1'] ?> 駅</td>
+                            <td style='width:70%;'><?=getStation($data['StuffMaster']['s1_1']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>最寄駅②</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['s0_2'].' '.$data['StuffMaster']['s1_2'] ?> 駅</td>
+                            <td style='width:70%;'><?=getStation($data['StuffMaster']['s1_2']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>最寄駅③</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['s0_3'].' '.$data['StuffMaster']['s1_3'] ?> 駅</td>
+                            <td style='width:70%;'><?=getStation($data['StuffMaster']['s1_3']) ?></td>
                         </tr>
                     </table>                    
                     
@@ -172,7 +209,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>都道府県</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['address1'] ?></td>
+                            <td style='width:70%;'><?=getPref($data['StuffMaster']['address1']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>市区町村</td>
@@ -203,7 +240,7 @@
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>勤務可能日</td>
                             <td style='width:70%;'>
-				週<?=$data['StuffMaster']['per_week'] ?>回　月<?=$data['StuffMaster']['per_month'] ?>回
+				週 <?=$data['StuffMaster']['per_week'] ?> 回　月 <?=$data['StuffMaster']['per_month'] ?> 回
 			　　</td>
                         </tr>
                         <tr>
@@ -228,7 +265,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>身長</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['height'] ?></td>
+                            <td style='width:70%;'><?=$data['StuffMaster']['height'] ?> cm</td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>制服サイズ</td>
@@ -314,7 +351,7 @@
                     <td style='background-color: #e8ffff;width:70%;'>案件名</td>
                 </tr>
                 <tr>
-                    <td style='width:30%;'>2015-05/25</td>
+                    <td style='width:30%;'>2015-05-25</td>
                     <td style='width:70%;'></td>
                 </tr>
             </table>
@@ -327,7 +364,7 @@
                     <td style='background-color: #e8ffff;width:70%;'>タイトル</td>
                 </tr>
                 <tr>
-                    <td style='width:30%;'>2015-05/25</td>
+                    <td style='width:30%;'>2015-05-25</td>
                     <td style='width:70%;'></td>
                 </tr>
             </table>

@@ -2,7 +2,7 @@
     echo $this->Html->script( 'tools');
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
-    echo $this->Html->script('station');
+    echo $this->Html->script('station2');
 ?>
 <?php
     // 初期値セット
@@ -25,6 +25,18 @@ $(function() {
   // 3日付選択ボックスを生成
   $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
 });
+</script>
+<!-- 路線検索の保存データセット -->
+<script type="text/javascript">
+window.onload = function() {
+    // 路線１
+    setMenuItem1(0,document.form.elements['data[StuffMaster][pref1]'].value);
+    //setMenuItem1(1,document.form.elements['data[StuffMaster][s0_1]'].value);
+    //document.form.elements['data[StuffMaster][s1_1]'].value = '<?=$data['StuffMaster']['s1_1']; ?>';
+
+    setMenuItem2(0,document.form.elements['data[StuffMaster][pref2]'].value);
+    setMenuItem3(0,document.form.elements['data[StuffMaster][pref3]'].value);
+}
 </script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
@@ -115,18 +127,13 @@ $(function() {
                 <td colspan="6">
                     <?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                    &nbsp;→
-                    <select name="s0_1" onChange="setMenuItem1(1,this[this.selectedIndex].value)" style="width: 200px;">
-                        <option selected>路線を選択してください</option>
-                    </select>
-                    →
-                    <select name="s1_1" style="width: 150px;">
-                        <option selected>駅を選択してください</option>
-                    </select> 
+                    &nbsp;→              
+<?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)')); ?>
+                    →               
+<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
                     駅
-                    <select name="s2_1" style="width: 150px;display: none;">
-                        <option selected>駅を選択してください</option>
-                    </select> 
+<?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;display:none;')); ?>
                 </td>
             </tr>
             <tr>
@@ -135,16 +142,12 @@ $(function() {
                     <?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
-                    <select name="s0_2" onChange="setMenuItem2(1,this[this.selectedIndex].value)" style="width: 200px;">
-                        <option selected>路線を選択してください</option>
-                    </select>
+<?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)')); ?>
                     →
-                    <select name="s1_2" style="width: 150px;">
-                        <option selected>駅を選択してください</option>
-                    </select> 
+<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
                     駅
-                    <select name="s2_2" style="width: 150px;display: none;">
-                        <option selected>駅を選択してください</option>
+<?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;display:none;')); ?>
                     </select> 
                 </td>
             </tr>
@@ -154,16 +157,12 @@ $(function() {
                     <?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
-                    <select name="s0_3" onChange="setMenuItem3(1,this[this.selectedIndex].value)" style="width: 200px;">
-                        <option selected>路線を選択してください</option>
-                    </select>
+<?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)')); ?>
                     →
-                    <select name="s1_3" style="width: 150px;">
-                        <option selected>駅を選択してください</option>
-                    </select> 
+<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
                     駅
-                    <select name="s2_3" style="width: 150px;display: none;">
-                        <option selected>駅を選択してください</option>
+<?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;display:none;')); ?>
                     </select> 
                 </td>
             </tr>
