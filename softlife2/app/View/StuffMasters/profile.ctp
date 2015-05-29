@@ -8,17 +8,27 @@
     function getAge($str) {
         return floor ((date('Ymd') - $str)/10000);
     }
-    
     // 性別変換
     function getGender($value) {
         $ret = null;
         if ($value == 1) {
-            $ret = '女性';
+            $ret = '<img src="'.ROOTDIR.'/img/woman.png" style="width:20px;">';
         } elseif ($value == 2) {
-            $ret = '男性';
+            $ret = '<img src="'.ROOTDIR.'/img/man.png" style="width:20px;">';
         } else {
             $ret = '未分類';
         }
+        return $ret;
+    }
+    // 有無
+    function getTF($value) {
+        $ret = null;
+        if ($value == 1) {
+            $ret = '無';
+        }else if ($value == 2) {
+            $ret = '有';
+        }
+        
         return $ret;
     }
     // 雇用形態
@@ -33,6 +43,20 @@
         }
         return $ret;
     }
+    // 通勤時間
+    function getComuterTime($value) {
+        $ret = null;
+        if ($value == 30) {
+            $ret = '30分以内';
+        } elseif ($value == 60) {
+            $ret = '1時間以内';
+        } elseif ($value == 90) {
+            $ret = '1時間30分以内';
+        } elseif ($value == 100) {
+            $ret = '1時間30分以上可';   
+        }
+        return $ret;
+    }
     // 年末調整
     function getNenmatsu($value) {
         $ret = null;
@@ -42,6 +66,16 @@
             $ret = '希望';
         }
         return $ret;
+    }
+    // 口座種別
+    function getKouza($value) {
+        $ret = null;
+        if ($value == 1) {
+            $ret = '普通';
+        } elseif ($value == 2) {
+            $ret = '当座';
+        }
+        return $ret;  
     }
     // 評価
     function getHyouka($value) {
@@ -75,11 +109,8 @@
             $ret = $line_name.' '.$station_name.'駅';
         } else {
             $ret = '';
-        }
-        
-        return $ret;
-        
-        
+        }   
+        return $ret; 
     }
     
     // 都道府県の表示
@@ -93,12 +124,8 @@
         } else {
             $ret = '';
         }
-        
-        return $ret;
-        
+        return $ret; 
     }
-
-
 ?>
 
 <?php foreach ($datas as $data): ?>
@@ -117,8 +144,8 @@
                             <td style='width:50%;'>
                                 <?=$data['StuffMaster']['name_sei2'] ?>&nbsp;<?=$data['StuffMaster']['name_mei2'] ?><br>
                                 <font style='font-size:150%;'>
-                                    <?=$data['StuffMaster']['name_sei'] ?>&nbsp;<?=$data['StuffMaster']['name_mei'] ?>&nbsp;&nbsp;
-                                    <?=  getAge(str_replace('-','',$data['StuffMaster']['birthday'])) ?>歳&nbsp;<?=getGender($data['StuffMaster']['gender']) ?>
+                                    <?=$data['StuffMaster']['name_sei'] ?>&nbsp;<?=$data['StuffMaster']['name_mei'] ?>&nbsp;
+                                    <?=  getAge(str_replace('-','',$data['StuffMaster']['birthday'])) ?>歳&nbsp;&nbsp;<?=getGender($data['StuffMaster']['gender']) ?>
                                 </font>
                             </td>
                             <td style='width:50%;text-align: center;' rowspan="5">
@@ -235,25 +262,25 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>マンションギャラリー<br>経験</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['keiken_mansion'] ?></td>
+                            <td style='width:70%;'><?=getTF($data['StuffMaster']['keiken_mansion']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>勤務可能日</td>
-                            <td style='width:70%;'>
-				週 <?=$data['StuffMaster']['per_week'] ?> 回　月 <?=$data['StuffMaster']['per_month'] ?> 回
-			　　</td>
+                            <td style='width:70%;'><?=$data['StuffMaster']['workable_day'] ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望勤務回数</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['kibou_area'] ?></td>
+                            <td style='width:70%;'>
+                                週 <?=$data['StuffMaster']['per_week'] ?> 回　月 <?=$data['StuffMaster']['per_month'] ?> 回
+                            </td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望エリア</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['employment_status'] ?></td>
+                            <td style='width:70%;'><?=$data['StuffMaster']['kibou_area'] ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>通勤可能時間</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['commuter_time'] ?></td>
+                            <td style='width:70%;'><?=getComuterTime($data['StuffMaster']['commuter_time']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>当社以外の職業</td>
@@ -261,7 +288,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>配偶者</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['haiguusha'] ?></td>
+                            <td style='width:70%;'><?=getTF($data['StuffMaster']['haiguusha']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>身長</td>
@@ -273,11 +300,11 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>喫煙について</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['smoking'] ?></td>
+                            <td style='width:70%;'><?=getTF($data['StuffMaster']['smoking']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>眼鏡使用について</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['glasses'] ?></td>
+                            <td style='width:70%;'><?=getTF($data['StuffMaster']['glasses']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>給与振込先銀行</td>
@@ -289,7 +316,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>口座番号</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['bank_type'] ?>　<?=$data['StuffMaster']['bank_kouza_num'] ?></td>
+                            <td style='width:70%;'><?=getKouza($data['StuffMaster']['bank_type']) ?> <?=$data['StuffMaster']['bank_kouza_num'] ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>口座名義</td>
@@ -297,7 +324,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>社会保険希望</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['shaho_kibou'] ?></td>
+                            <td style='width:70%;'><?=getTF($data['StuffMaster']['shaho_kibou']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>社会保険未加入の理由</td>

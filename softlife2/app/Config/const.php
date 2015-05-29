@@ -2,7 +2,7 @@
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
 define("HEADER","派遣管理システム SLUP");
-define("FOOTER","SLUP Version 0.0.3 20150527 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
+define("FOOTER","SLUP Version 0.0.4 20150529 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
 define("ROOTDIR","/softlife2");
  
 //配列

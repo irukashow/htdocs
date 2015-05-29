@@ -2,12 +2,62 @@
     echo $this->Html->script( 'tools');
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
-    echo $this->Html->script('station2');
+    echo $this->Html->script('station3');
 ?>
 <?php
     // 初期値セット
     $created = date('Y/m/d', strtotime($datas['StuffMaster']['created']));
     $modified = date('Y/m/d', strtotime($datas['StuffMaster']['modified']));
+    
+    // 路線のコンボセット
+    function getLine($code) {
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
+            $xmlData = simplexml_load_file($xml);//xmlを読み込む
+            $xml_ary = json_decode(json_encode($xmlData), true);
+            $line_ary = $xml_ary['line'];
+
+            foreach ($line_ary as $value) {
+                $ret[$value['line_cd']] = $value['line_name'];
+            }
+
+            //$ret = $xml_ary['pref']['name'];
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+    }
+    
+    $line1 = getLine($data['StuffMaster']['pref1']);
+    $line2 = getLine($data['StuffMaster']['pref2']);
+    $line3 = getLine($data['StuffMaster']['pref3']);
+    
+    // 駅のコンボセット
+    function getStation($code) {
+    //$code = $data['StuffMaster']['s0_1'];
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/l/".$code.".xml";//ファイルを指定
+            $xmlData = simplexml_load_file($xml);//xmlを読み込む
+            $xml_ary = json_decode(json_encode($xmlData), true);
+            $station_ary = $xml_ary['station'];
+
+            foreach ($station_ary as $value) {
+                $ret[$value['station_cd']] = $value['station_name'];
+            }
+
+            //$ret = $xml_ary['pref']['name'];
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+    }
+    
+    $station1 = getStation($data['StuffMaster']['s0_1']);
+    $station2 = getStation($data['StuffMaster']['s0_2']);
+    $station3 = getStation($data['StuffMaster']['s0_3']);
+    
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -26,24 +76,13 @@ $(function() {
   $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
 });
 </script>
-<!-- 路線検索の保存データセット -->
-<script type="text/javascript">
-window.onload = function() {
-    // 路線１
-    setMenuItem1(0,document.form.elements['data[StuffMaster][pref1]'].value);
-    //setMenuItem1(1,document.form.elements['data[StuffMaster][s0_1]'].value);
-    //document.form.elements['data[StuffMaster][s1_1]'].value = '<?=$data['StuffMaster']['s1_1']; ?>';
-
-    setMenuItem2(0,document.form.elements['data[StuffMaster][pref2]'].value);
-    setMenuItem3(0,document.form.elements['data[StuffMaster][pref3]'].value);
-}
-</script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （基本情報）'); ?></legend>
 <?php echo $this->Form->create('StuffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>   
+<?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
         
         <!-- スタッフ情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 1px;'>
@@ -129,9 +168,9 @@ window.onload = function() {
                         'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→              
 <?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)')); ?>
+    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)', 'options' => $line1)); ?>
                     →               
-<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options' => $station1)); ?>
                     駅
 <?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;display:none;')); ?>
                 </td>
@@ -143,9 +182,9 @@ window.onload = function() {
                         'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
 <?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)')); ?>
+    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)', 'options' => $line2)); ?>
                     →
-<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options' => $station2)); ?>
                     駅
 <?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;display:none;')); ?>
                     </select> 
@@ -158,9 +197,9 @@ window.onload = function() {
                         'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
 <?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)')); ?>
+    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)', 'options' => $line3)); ?>
                     →
-<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options' => $station3)); ?>
                     駅
 <?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;display:none;')); ?>
                     </select> 

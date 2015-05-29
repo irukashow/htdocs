@@ -28,7 +28,7 @@ class StuffMaster extends AppModel {
         'email1' => array(
             'rule' => array('email', false),
             'required' => false,
-            'allowEmpty' => true,
+            'allowEmpty' => false,
             'message' => 'メールアドレスの形式で必ず入力して下さい'
         ),
         'email2' => array(
@@ -63,4 +63,5 @@ class StuffMaster extends AppModel {
             'message' => '口座番号は半角数字で入力して下さい。'
         )
     ); 
+
 }

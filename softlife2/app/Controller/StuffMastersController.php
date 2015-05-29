@@ -13,15 +13,23 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class StuffMastersController extends AppController {
-    public $uses = array('StuffMaster', 'Item');
+    public $uses = array('StuffMaster', 'User', 'Item');
     // Paginationの設定（スタッフマスタ）
     public $paginate = array(
     //モデルの指定
     'StuffMaster' => array(
     //1ページ表示できるデータ数の設定
     'limit' =>10,
+    'fields' => array('StuffMaster.*', 'User.name_sei AS koushin_name_sei', 'User.name_mei AS koushin_name_mei'),
     //データを降順に並べる
     'order' => array('id' => 'asc'),
+    'joins' => array (
+            array (
+                'type' => 'LEFT',
+                'table' => 'users',
+                'alias' => 'User',
+                'conditions' => 'StuffMaster.username = User.username' 
+            ))
     )); 
     // Paginationの設定（スタッフ詳細） 
     public $paginate2 = array (
@@ -59,14 +67,16 @@ class StuffMastersController extends AppController {
         $this->set('pref_arr', $pref_arr); 
 
         // 登録番号で検索
-        if (isset($this->data['txtId'])){
+        if (isset($this->data['txtId']) && !empty($this->data['txtId'])){
             $id = $this->data['txtId'];
             $conditions = array('id' => $id);
             $this->set('datas', $this->paginate('StuffMaster',$conditions));
+            $this->Session->setFlash($this->data['txtId']);
+            
             // 表示ページ単位
             //$this->paginate = array('StuffMaster' => array('limit' => $this->data['optDisplay']));
         // 担当者で検索
-        } elseif (isset($this->data['txtTantou'])){
+        } elseif (isset($this->data['txtTantou']) && !empty($this->data['txtTantou'])){
             $tantou = $this->data['txtTantou'];
             $conditions = array('tantou LIKE ' => $tantou);
             $this->set('datas', $this->paginate('StuffMaster',$conditions));      
@@ -83,6 +93,20 @@ class StuffMastersController extends AppController {
         //$datas = $this->StuffMaster->find('all');
         //$this->set('datas',$datas);
         
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            // 属性の変更
+            if (isset($this->request->data['class'])) {
+                $class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $class);
+                $this->Session->write('selected_class', $class);
+                //$this->Session->setFlash($class);
+            }
+        } else {
+            $this->set('selected_class', $this->Session->read('selected_class'));
+        }
+        $this->set('selected_class', $this->Session->read('selected_class'));
         
       }
   
@@ -101,6 +125,8 @@ class StuffMastersController extends AppController {
           $this->set('pref_arr', $pref_arr); 
           $this->set('stuff_id', $stuff_id); 
           $this->StuffMaster->id = $stuff_id;
+          $this->set('username', $this->Auth->user('username')); 
+          //$this->StuffMaster->id = $stuff_id;
           // 項目のセット
           
 
@@ -150,8 +176,9 @@ class StuffMastersController extends AppController {
         // 初期値設定
         $this->set('datas', $this->StuffMaster->find('first', 
                 array('fields' => array('created', 'modified'), 'conditions' => array('id' => $stuff_id) )));
+        $this->set('username', $this->Auth->user('username')); 
 
-        // ファイルアップロード処理
+        // ファイルアップロード処理の初期セット
         $ds = DIRECTORY_SEPARATOR;  //1
         $storeFolder = 'files/stuff_reg'.$ds.$stuff_id.$ds;   //2
         
@@ -200,6 +227,7 @@ class StuffMastersController extends AppController {
         // 初期値設定
         $this->set('datas', $this->StuffMaster->find('first', 
                 array('fields' => array('created', 'modified'), 'conditions' => array('id' => $stuff_id) )));
+        $this->set('username', $this->Auth->user('username')); 
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {

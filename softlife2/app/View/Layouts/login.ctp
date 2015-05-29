@@ -22,7 +22,7 @@
     <div id="header">
         <table style="width: 100%;" border="0">
             <tr>
-                <td style="padding-top: 11px;">
+                <td style="padding-top: 12px;">
                     <a href="/softlife2/users/" class="logo">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>

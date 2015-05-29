@@ -44,6 +44,7 @@ $(function() {
         
 <?php echo $this->Form->create('StuffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>  
+<?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
         
         <!-- スタッフ情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 1px;'>

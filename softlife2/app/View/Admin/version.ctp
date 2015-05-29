@@ -24,19 +24,10 @@ $(function() {
 });
 </script>
 
-<!-- 見出し -->
-<div id='headline'>
-    ★ バージョン情報入力ページ
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="" target="_blank"></a>
-    <a href="" target="_blank"></a>
-    <a href="" target="_blank"></a>
-</div>
-
-<div style="width:60%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 20px;">
-
+<div style="width:50%;margin-top: 20px;margin-left: auto; margin-right: auto;">
 <?php echo $this->Form->create('Admin'); ?>
+    <fieldset style="border:none;margin-bottom: 20px;">
+        <legend style="font-size: 150%;color: red;"><?php echo __('バージョン情報入力ページ'); ?></legend>
 
         <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
             <tr>

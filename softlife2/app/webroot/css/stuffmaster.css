@@ -57,6 +57,9 @@ div.pageNav03 span {
 float: left;
 padding: 5px 10px;
 //margin: 0 1px 1px 0;
+border:1px solid black;
+border-radius: 5px;
+//background-color: #eef2f0;
 }
 
 div.pageNav03 span a {
@@ -67,6 +70,7 @@ background: #fff;
 
 span.current{
 float: left;
+font-weight: bold;
 padding: 5px 10px;
 background: #fff;
 }
