@@ -37,6 +37,33 @@ and open the template in the editor.
   text-decoration: none;
 }
 
+#button-release {
+  background: #fc6d6d;
+  background-image: -webkit-linear-gradient(top, #fc6d6d, #ff0000);
+  background-image: -moz-linear-gradient(top, #fc6d6d, #ff0000);
+  background-image: -ms-linear-gradient(top, #fc6d6d, #ff0000);
+  background-image: -o-linear-gradient(top, #fc6d6d, #ff0000);
+  background-image: linear-gradient(to bottom, #fc6d6d, #ff0000);
+  -webkit-border-radius: 10;
+  -moz-border-radius: 10;
+  border-radius: 10px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 10px 10px 10px 10px;
+  text-decoration: none;
+}
+
+#button-release:hover {
+  background: #fc9c9c;
+  background-image: -webkit-linear-gradient(top, #fc9c9c, #f57070);
+  background-image: -moz-linear-gradient(top, #fc9c9c, #f57070);
+  background-image: -ms-linear-gradient(top, #fc9c9c, #f57070);
+  background-image: -o-linear-gradient(top, #fc9c9c, #f57070);
+  background-image: linear-gradient(to bottom, #fc9c9c, #f57070);
+  text-decoration: none;
+}
+
 /** 登録ページなど **/
 .regist {
     border: 1px solid black;

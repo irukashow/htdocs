@@ -8,13 +8,25 @@
     // 初期値セット
     $created = date('Y/m/d', strtotime($datas['StuffMaster']['created']));
     $modified = date('Y/m/d', strtotime($datas['StuffMaster']['modified']));
+    $selected1 = explode(',',$data['StuffMaster']['shokushu_shoukai']);
+    $selected2 = explode(',',$data['StuffMaster']['shokushu_kibou']);
+    $selected3 = explode(',',$data['StuffMaster']['shokushu_keiken']);
     
     // 路線のコンボセット
     function getLine($code) {
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
-            $xmlData = simplexml_load_file($xml);//xmlを読み込む
-            $xml_ary = json_decode(json_encode($xmlData), true);
+            // simplexml_load_fileは使えない処理
+            $xml_data = "";
+            $cp = curl_init();
+            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $cp, CURLOPT_HEADER, false );
+            curl_setopt($cp, CURLOPT_URL, $xml);
+            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
+            $xml_data = curl_exec($cp);
+            curl_close($cp);
+            $original_xml = simplexml_load_string($xml_data);
+            $xml_ary = json_decode(json_encode($original_xml), true);
             $line_ary = $xml_ary['line'];
 
             foreach ($line_ary as $value) {
@@ -38,8 +50,17 @@
     //$code = $data['StuffMaster']['s0_1'];
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/l/".$code.".xml";//ファイルを指定
-            $xmlData = simplexml_load_file($xml);//xmlを読み込む
-            $xml_ary = json_decode(json_encode($xmlData), true);
+            // simplexml_load_fileは使えない処理
+            $xml_data = "";
+            $cp = curl_init();
+            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $cp, CURLOPT_HEADER, false );
+            curl_setopt($cp, CURLOPT_URL, $xml);
+            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
+            $xml_data = curl_exec($cp);
+            curl_close($cp);
+            $original_xml = simplexml_load_string($xml_data);
+            $xml_ary = json_decode(json_encode($original_xml), true);
             $station_ary = $xml_ary['station'];
 
             foreach ($station_ary as $value) {
@@ -222,10 +243,20 @@ $(function() {
                     <?php echo $this->Form->input('training_date_kibou',array('type'=>'text','div'=>false,'label'=>false,'class'=>'date','style'=>'width:50%;text-align: left;')); ?>
                 </td>
             </tr>
+<?php 
+    $list_shokushu = array('1'=>'受付 ', '2'=>'フロア受付 ', '3'=>'シッター ', '4'=>'ナレーター ', '5'=>'ＤＨ ', '6'=>'看板持ち ', '7'=>'事務 ', '8'=>'誘導案内 ', '9'=>'内覧会スタッフ '); 
+    //$selected = array('1', '3', '7');
+?>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>紹介可能職種</td>
+                <td colspan="3">
+                    <?php echo $this->Form->input('shokushu_shoukai', array('type'=>'select','multiple' => 'checkbox','div'=>'checkbox','label'=>false, 'style'=>'width:70%;text-align: left;','selected'=>$selected1, 'options'=>$list_shokushu)); ?>
+		</td>
+            </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>希望職種</td>
                 <td colspan="3">
-			<?php echo $this->Form->input('shokushu_kibou',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70%;text-align: left;')); ?>
+                    <?php echo $this->Form->input('shokushu_kibou', array('type'=>'select','multiple' => 'checkbox','div'=>'checkbox','label'=>false, 'style'=>'width:70%;text-align: left;','selected'=>$selected2, 'options'=>$list_shokushu)); ?>
 		</td>
             </tr>
             <tr>
@@ -318,8 +349,12 @@ $(function() {
                 <th colspan="6" style='background:#99ccff;text-align: center;'>その他</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:15%;'>経験職種</td>
-                <td><?php echo $this->Form->input('keiken_shokushu',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:170px;')); ?></td>
+                <td style='background-color: #e8ffff;width:20%;'>経験職種</td>
+                <td colspan="5">
+                    <?php echo $this->Form->input('shokushu_keiken', array('type'=>'select','multiple' => 'checkbox','div'=>'checkbox','label'=>false, 'style'=>'width:70%;text-align: left;','selected'=>$selected3, 'options'=>$list_shokushu)); ?>
+		</td>
+            </tr>
+            <tr>
                 <td style='background-color: #e8ffff;width:20%;'>マンションギャラリー経験</td>
                 <td>
                 <?php
@@ -329,7 +364,7 @@ $(function() {
                 ?>
                 </td>
                 <td style='background-color: #e8ffff;width:15%;'>当社以外の職業</td>
-                <td><?php echo $this->Form->input('extra_job',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:170px;')); ?></td>
+                <td colspan="3"><?php echo $this->Form->input('extra_job',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:95%;')); ?></td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:15%;'>喫煙について</td>

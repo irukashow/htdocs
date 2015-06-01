@@ -43,7 +43,7 @@ class StuffMastersController extends AppController {
     
     public $title_for_layout = "スタッフマスタ - 派遣管理システム";
 
-    public function index() {
+    public function index($flag = null) {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -67,21 +67,37 @@ class StuffMastersController extends AppController {
         $this->set('pref_arr', $pref_arr); 
 
         // 登録番号で検索
-        if (isset($this->data['txtId']) && !empty($this->data['txtId'])){
-            $id = $this->data['txtId'];
-            $conditions = array('id' => $id);
+        if (isset($this->data['StuffMaster']['search_id']) && !empty($this->data['StuffMaster']['search_id'])){
+            $search_id = $this->data['StuffMaster']['search_id'];
+            $conditions = array('id' => $search_id);
             $this->set('datas', $this->paginate('StuffMaster',$conditions));
-            $this->Session->setFlash($this->data['txtId']);
-            
-            // 表示ページ単位
-            //$this->paginate = array('StuffMaster' => array('limit' => $this->data['optDisplay']));
+        // 氏名で検索
+        } elseif (isset($this->data['StuffMaster']['search_name']) && !empty($this->data['StuffMaster']['search_name'])){
+            $search_name = $this->data['StuffMaster']['search_name'];
+            $conditions = array( 'OR' => array('concat("StuffMaster.name_sei", " ", "StuffMaster.name_mei") LIKE ' => '%'.$search_name.'%'));
+            $this->set('datas', $this->paginate('StuffMaster',$conditions)); 
+            // ログ出力
+            $this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
+        // 年齢で検索
+        } elseif (isset($this->data['StuffMaster']['search_age']) && !empty($this->data['StuffMaster']['search_age'])){
+            $search_age = $this->data['StuffMaster']['search_age'];
+            $conditions = array('StuffMaster.birthday' => '%'.$search_age.'%');
+            $this->set('datas', $this->paginate('StuffMaster',$conditions)); 
+            // ログ出力
+            $this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
         // 担当者で検索
         } elseif (isset($this->data['txtTantou']) && !empty($this->data['txtTantou'])){
             $tantou = $this->data['txtTantou'];
             $conditions = array('tantou LIKE ' => $tantou);
             $this->set('datas', $this->paginate('StuffMaster',$conditions));      
         } else {
-            $this->set('datas', $this->paginate());
+            if ($flag == '1') {
+                $conditions = array('kaijo_flag' => 1);
+            } else {
+                $conditions = array('kaijo_flag' => 0);
+            }
+            $this->set('flag', $flag);
+            $this->set('datas', $this->paginate('StuffMaster',$conditions));
             //$this->redirect(array('action' => '.'));
         }
         
@@ -103,13 +119,58 @@ class StuffMastersController extends AppController {
                 $this->Session->write('selected_class', $class);
                 //$this->Session->setFlash($class);
             }
+            // 検索処理
+            if(isset($this->request->data['search1'])) {
+                $this->Session->setFlash($this->request->data['StuffMaster']['search_age_lower'].'-'.$this->request->data['StuffMaster']['search_age_upper']);
+            } elseif (isset($this->request->data['search2'])) {
+                $this->Session->setFlash($this->request->data['StuffMaster']['search_age_lower'].'-'.$this->request->data['StuffMaster']['search_age_upper']);
+            }
         } else {
             $this->set('selected_class', $this->Session->read('selected_class'));
         }
         $this->set('selected_class', $this->Session->read('selected_class'));
         
       }
-  
+
+    
+    // プロフィールページ
+    public function profile($stuff_id = null) {
+          // レイアウト関係
+          $this->layout = "sub";
+          $this->set("title_for_layout",$this->title_for_layout);
+          // 都道府県のセット
+          mb_language("uni");
+          mb_internal_encoding("utf-8"); //内部文字コードを変更
+          mb_http_input("auto");
+          mb_http_output("utf-8");
+          $conditions = array('item' => 10);
+          $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+          $this->set('pref_arr', $pref_arr); 
+          $this->set('id', $stuff_id); 
+
+        // ページネーション
+        if (isset($stuff_id)){
+            $conditions = array('id' => $stuff_id);
+            $this->set('datas', $this->paginate('StuffMaster',$conditions));
+        } else {
+            $this->Session->setFlash('ページ表示時にエラーが発生しました。');
+        }
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (isset($this->request->data['submit'])) {
+                $this->redirect(array('action' => 'reg1', $stuff_id));
+            } elseif (isset($this->request->data['release'])) {
+                $this->StuffMaster->save($this->request->data);
+                //$this->redirect();
+                $this->Session->setFlash('登録解除しました。');
+            }
+            
+        } else {
+
+        }
+    }
+    
     // 登録ページ（その１）
     public function reg1($stuff_id = null) {
           // レイアウト関係
@@ -187,6 +248,16 @@ class StuffMastersController extends AppController {
             if ($this->StuffMaster->validates() == false) {
                 exit();
             }
+
+            // 職種のセット
+            $val1 = $this->setShokushu($this->request->data['StuffMaster']['shokushu_shoukai']);
+            $val2 = $this->setShokushu($this->request->data['StuffMaster']['shokushu_kibou']);
+            $val3 = $this->setShokushu($this->request->data['StuffMaster']['shokushu_keiken']);
+            
+            $this->request->data['StuffMaster']['shokushu_shoukai'] = $val1;
+            $this->request->data['StuffMaster']['shokushu_kibou'] = $val2;
+            $this->request->data['StuffMaster']['shokushu_keiken'] = $val3;
+            
             if (isset($this->request->data['submit'])) {
                 // モデルの状態をリセットする
                 //$this->StuffMaster->create();
@@ -202,9 +273,10 @@ class StuffMastersController extends AppController {
             }
 
         } else {
-          // 登録していた値をセット
-          $this->request->data = $this->StuffMaster->read(null, $stuff_id);
-          $this->set('data', $this->request->data);
+            // 登録していた値をセット
+            $this->request->data = $this->StuffMaster->read(null, $stuff_id);
+            $this->set('data', $this->request->data);
+            //$this->set('selected', array(1,3,7));
         }
         
 
@@ -251,37 +323,6 @@ class StuffMastersController extends AppController {
         } else {
           // 登録していた値をセット
           $this->request->data = $this->StuffMaster->read(null, $stuff_id);
-        }
-    }
-    
-    // プロフィールページ
-    public function profile($stuff_id = null) {
-          // レイアウト関係
-          $this->layout = "sub";
-          $this->set("title_for_layout",$this->title_for_layout);
-          // 都道府県のセット
-          mb_language("uni");
-          mb_internal_encoding("utf-8"); //内部文字コードを変更
-          mb_http_input("auto");
-          mb_http_output("utf-8");
-          $conditions = array('item' => 10);
-          $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
-          $this->set('pref_arr', $pref_arr); 
-          $this->set('id', $stuff_id); 
-
-        // ページネーション
-        if (isset($stuff_id)){
-            $conditions = array('id' => $stuff_id);
-            $this->set('datas', $this->paginate('StuffMaster',$conditions));
-        } else {
-            $this->Session->setFlash('ページ表示時にエラーが発生しました。');
-        }
-        
-        // post時の処理
-        if ($this->request->is('post') || $this->request->is('put')) {
-            $this->redirect(array('action' => 'reg1', $stuff_id));
-        } else {
-
         }
     }
   
@@ -427,4 +468,27 @@ public function find4(){
     }
     return $return;
   }
+  
+  /*** 年齢から生年月日の最小値を得る ***/
+  static public function getMinBirth($age){
+    $ret = '1900-01-01';
+    // セットされていれば年月日に変換
+    if(isset($age)){
+      $ret = true;
+    }
+      return $ret;
+    }
+    
+    /*** 職種をカンマ区切りに ***/
+    static public function setShokushu($val){
+        $ret = '';
+        if (isset($val)) {
+            foreach ($val as $value) {
+                $ret = $ret.', '.$value;  
+            }
+        }
+        return $ret;
+    }
+  
+  
 }

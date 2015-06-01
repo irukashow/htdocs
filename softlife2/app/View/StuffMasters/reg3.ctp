@@ -66,6 +66,8 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>OJT/実施日</td>
                 <td style='width:80%;'>
+                    <?php echo $this->Form->input('ojt',array('type'=>'select','div'=>false,'label'=>false,'options'=>array('0'=>'未済','1'=>'済'),'style'=>'width:10%;text-align: left;')); ?>
+                    &nbsp;&nbsp;
                     <?php echo $this->Form->input('ojt_date',array('type'=>'text','div'=>false,'label'=>false,'class'=>'date','style'=>'width:20%;text-align: left;')); ?>
                 </td>
             </tr>

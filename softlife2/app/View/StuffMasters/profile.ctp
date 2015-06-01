@@ -3,6 +3,7 @@
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
     echo $this->Html->script('station');
+    echo $this->Html->css('stuffmaster');
     
     // 年齢換算
     function getAge($str) {
@@ -31,15 +32,25 @@
         
         return $ret;
     }
+    // OJT済未済
+    function getOjt($value) {
+        $ret = '&nbsp;';
+        if ($value == 0) {
+            $ret = '未済';
+        } elseif ($value == 1) {
+            $ret = '済';
+        }
+        return $ret;
+    }
     // 雇用形態
     function getStatus($value) {
         $ret = null;
         if ($value == 1) {
             $ret = '正社員';
         } elseif ($value == 2) {
-            $ret = '派遣';
-        } else {
-            $ret = 'アルバイト';
+            $ret = '契約社員';
+        } elseif ($value == 3) {
+            $ret = '人材派遣スタッフ';
         }
         return $ret;
     }
@@ -64,6 +75,44 @@
             $ret = '&nbsp;';
         } elseif ($value == 2) {
             $ret = '希望';
+        }
+        return $ret;
+    }
+    // 職種
+    function getShokushu($value) {
+        $ret = "";
+        if ($value == 1) {
+            $ret = '受付';
+        } elseif ($value == 2) {
+            $ret = 'フロア受付';
+        } elseif ($value == 3) {
+            $ret = 'シッター';
+        } elseif ($value == 4) {
+            $ret = 'ナレーター';  
+        } elseif ($value == 5) {
+            $ret = 'ＤＨ';
+        } elseif ($value == 6) {
+            $ret = '看板持ち';
+        } elseif ($value == 7) {
+            $ret = '事務';
+        } elseif ($value == 8) {
+            $ret = '誘導案内';
+        } elseif ($value == 9) {
+            $ret = '内覧会スタッフ';
+        } else {
+            $ret = '';
+        }
+        return $ret;
+    }
+    function getShokushu2($array) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if ($key <= 1) {
+                $ret = getShokushu($value);
+            } else {
+                $ret = $ret.', '.getShokushu($value);
+            }  
         }
         return $ret;
     }
@@ -101,8 +150,17 @@
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
             //$xml = "http://www.ekidata.jp/api/s/3300610.xml";//ファイルを指定
-            $xmlData = simplexml_load_file($xml);//xmlを読み込む
-            $xml_ary = json_decode(json_encode($xmlData), true);
+            // simplexml_load_fileは使えない処理
+            $xml_data = "";
+            $cp = curl_init();
+            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $cp, CURLOPT_HEADER, false );
+            curl_setopt($cp, CURLOPT_URL, $xml);
+            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
+            $xml_data = curl_exec($cp);
+            curl_close($cp);
+            $original_xml = simplexml_load_string($xml_data);
+            $xml_ary = json_decode(json_encode($original_xml), true);
 
             $line_name = $xml_ary['station']['line_name'];
             $station_name = $xml_ary['station']['station_name'];
@@ -117,8 +175,17 @@
     function getPref($code) {
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
-            $xmlData = simplexml_load_file($xml);//xmlを読み込む
-            $xml_ary = json_decode(json_encode($xmlData), true);
+            // simplexml_load_fileは使えない処理
+            $xml_data = "";
+            $cp = curl_init();
+            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $cp, CURLOPT_HEADER, false );
+            curl_setopt($cp, CURLOPT_URL, $xml);
+            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
+            $xml_data = curl_exec($cp);
+            curl_close($cp);
+            $original_xml = simplexml_load_string($xml_data);
+            $xml_ary = json_decode(json_encode($original_xml), true);
 
             $ret = $xml_ary['pref']['name'];
         } else {
@@ -163,7 +230,7 @@
                         </tr>
                         <tr>
                             <td style=''>
-                                <font style='font-size:130%;'><?='紹介可能職種' ?></font><br>
+                                <font style='font-size:130%;'><?=getShokushu2($data['StuffMaster']['shokushu_shoukai']) ?></font><br>
                             </td>
                         </tr>
                     </table>
@@ -254,11 +321,11 @@
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望職種</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['shokushu_kibou'] ?></td>
+                            <td style='width:70%;'><?=getShokushu2($data['StuffMaster']['shokushu_kibou']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>経験職種</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['keiken_shokushu'] ?></td>
+                            <td style='width:70%;'><?=getShokushu2($data['StuffMaster']['shokushu_keiken']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>マンションギャラリー<br>経験</td>
@@ -347,13 +414,17 @@
             <div style="color: black;background-color: #ffff99;border:1px solid orange;padding:0px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
                 <?php echo $this->Form->submit('編集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
+                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'div' => false)); ?>
+                &nbsp;&nbsp;
+                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('◀前へ', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('次へ▶', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
+                <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
+                <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?>
                 <?php echo $this->Form->end(); ?>
             </div>
             
@@ -400,7 +471,7 @@
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>OJT/実施日</td>
-                    <td style='width:70%;'><?= $data['StuffMaster']['ojt_date']; ?></td>
+                    <td style='width:70%;'><?= getOjt($data['StuffMaster']['ojt']); ?> / <?= $data['StuffMaster']['ojt_date']; ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>表情</td>
@@ -463,4 +534,7 @@
         </td>
     </tr>
 </table>
+
 <?php endforeach; ?>
+
+

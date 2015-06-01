@@ -9,16 +9,12 @@
 <script type="text/javascript">
         
 function calculateAge() {
-    Y = document.getElementById('StuffMasterBirthdayYear').options[document.getElementById('StuffMasterBirthdayYear').selectedIndex].value;
-    M = document.getElementById('StuffMasterBirthdayMonth').options[document.getElementById('StuffMasterBirthdayMonth').selectedIndex].value;
-    D = document.getElementById('StuffMasterBirthdayDay').options[document.getElementById('StuffMasterBirthdayDay').selectedIndex].value;
+    birth = document.getElementById('StuffMasterBirthdayYear').options.value;
     //parseInt(document.getElementById('StuffMasterBirthdayMonth').options.value + affixZero(document.getElementById('StuffMasterBirthdayDay').options.value));
-    _birth = parseInt("" + Y+M+D);// 文字列型に明示変換後にparseInt
-    
+    //var _birth = parseInt("" + birth);// 文字列型に明示変換後にparseInt
+    alert(birth);
     var today = new Date();
     var _today = parseInt("" + today.getFullYear() + affixZero(today.getMonth() + 1) + affixZero(today.getDate()));// 文字列型に明示変換後にparseInt
-    //alert(parseInt((_today - _birth) / 10000));
-    document.getElementById('age').value = parseInt((_today - _birth) / 10000);
     return parseInt((_today - _birth) / 10000);
 }
 /**
@@ -57,7 +53,7 @@ function affixZero(int) {
                 <td style='background-color: #e8ffff;width:20%;'>雇用形態</td>
                 <td colspan="2">
                     <?php  
-                        $select2=array(''=>'','1'=>'正社員','2'=>'契約社員','3'=>'人材派遣スタッフ');
+                        $select2=array(''=>'','1'=>'正社員','2'=>'派遣','3'=>'アルバイト');
                         echo $this->Form->input( 'employment_status', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false,'style' => 'float:none;', 'options' => $select2));
                     ?>
                 </td>
@@ -89,7 +85,6 @@ function affixZero(int) {
                 <td style='background-color: #e8ffff;width:20%;'>生年月日</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('birthday',array('label'=>false,'div'=>false,'dateFormat' => 'YMD', 'maxYear' => date('Y'), 'minYear' => date('Y')-100, 'monthNames' => false, 'onchange'=>'calculateAge();')); ?>
-                    &nbsp;&nbsp;&nbsp;<input id="age" style="width: 30px;text-align: right;border:none;">&nbsp;歳
                 </td>
             </tr>
             <tr>
