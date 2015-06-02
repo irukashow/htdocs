@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class StuffMaster extends AppModel {
-    public $useTable = 'stuff_masters';
+    //public $useTable = 'stuff_masters';
     
     public $validate = array(
         // 登録１
@@ -63,5 +63,7 @@ class StuffMaster extends AppModel {
             'message' => '口座番号は半角数字で入力して下さい。'
         )
     ); 
+    
+
 
 }

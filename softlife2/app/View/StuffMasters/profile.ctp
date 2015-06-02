@@ -3,7 +3,10 @@
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
     echo $this->Html->script('station');
+    echo $this->Html->script('lightbox');
+    echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
     echo $this->Html->css('stuffmaster');
+    echo $this->Html->css('lightbox');
     
     // 年齢換算
     function getAge($str) {
@@ -13,9 +16,9 @@
     function getGender($value) {
         $ret = null;
         if ($value == 1) {
-            $ret = '<img src="'.ROOTDIR.'/img/woman.png" style="width:20px;">';
+            $ret = '<img src="'.ROOTDIR.'/img/woman.png" style="width:30px;">';
         } elseif ($value == 2) {
-            $ret = '<img src="'.ROOTDIR.'/img/man.png" style="width:20px;">';
+            $ret = '<img src="'.ROOTDIR.'/img/man.png" style="width:30px;">';
         } else {
             $ret = '未分類';
         }
@@ -72,7 +75,7 @@
     function getNenmatsu($value) {
         $ret = null;
         if ($value == 1) {
-            $ret = '&nbsp;';
+            $ret = 'なし';
         } elseif ($value == 2) {
             $ret = '希望';
         }
@@ -112,6 +115,102 @@
                 $ret = getShokushu($value);
             } else {
                 $ret = $ret.', '.getShokushu($value);
+            }  
+        }
+        return $ret;
+    }
+     function getShokushu3($array) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if ($key <= 1) {
+                $ret = getShokushu($value);
+            } else {
+                $ret = $ret.'<br>'.getShokushu($value);
+            }  
+        }
+        return $ret;
+    }
+    // その他の職業
+    function getShokugyou($value) {
+        $ret = "";
+        if ($value == 1) {
+            $ret = '会社員';
+        } elseif ($value == 2) {
+            $ret = '主婦';
+        } elseif ($value == 3) {
+            $ret = '学生';
+        } elseif ($value == 4) {
+            $ret = '派遣';  
+        } elseif ($value == 5) {
+            $ret = 'アルバイト';
+        } elseif ($value == 6) {
+            $ret = 'その他';
+        } else {
+            $ret = '';
+        }
+        return $ret;
+    }
+    function getShokugyou2($array) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if ($key <= 1) {
+                $ret = getShokugyou($value);
+            } else {
+                $ret = $ret.', '.getShokugyou($value);
+            }  
+        }
+        return $ret;
+    }
+    // その他の職業（その他）
+    function getShokugyou3($val) {
+        $ret = "";
+        if (is_null($val) || empty($val)) {
+            $ret = "";
+        } else {
+            $ret = '('.$val.')';
+        }
+        return $ret;
+    }
+    // 勤務可能曜日
+    function getWorkable($value) {
+        $ret = "";
+        if ($value == 1) {
+            $ret = '特になし';
+        } elseif ($value == 2) {
+            $ret = '平日のみ';
+        } elseif ($value == 3) {
+            $ret = '土日のみ';
+        } elseif ($value == 4) {
+            $ret = '土日祝のみ';  
+        } elseif ($value == 5) {
+            $ret = '月';
+        } elseif ($value == 6) {
+            $ret = '火';
+        } elseif ($value == 7) {
+            $ret = '水';
+        } elseif ($value == 8) {
+            $ret = '木';
+        } elseif ($value == 9) {
+            $ret = '金';  
+        } elseif ($value == 10) {
+            $ret = '土';
+        } elseif ($value == 11) {
+            $ret = '日';
+        } else {
+            $ret = '';
+        }
+        return $ret;
+    }
+    function getWorkable2($array) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if ($key <= 1) {
+                $ret = getWorkable($value);
+            } else {
+                $ret = $ret.', '.getWorkable($value);
             }  
         }
         return $ret;
@@ -210,27 +309,40 @@
                         <tr>
                             <td style='width:50%;'>
                                 <?=$data['StuffMaster']['name_sei2'] ?>&nbsp;<?=$data['StuffMaster']['name_mei2'] ?><br>
-                                <font style='font-size:150%;'>
-                                    <?=$data['StuffMaster']['name_sei'] ?>&nbsp;<?=$data['StuffMaster']['name_mei'] ?>&nbsp;
-                                    <?=  getAge(str_replace('-','',$data['StuffMaster']['birthday'])) ?>歳&nbsp;&nbsp;<?=getGender($data['StuffMaster']['gender']) ?>
-                                </font>
+                                <div style="float:left;">
+                                    <font style='font-size:150%;'>
+                                        <?=$data['StuffMaster']['name_sei'] ?>&nbsp;<?=$data['StuffMaster']['name_mei'] ?>&nbsp;
+                                        <?=  getAge(str_replace('-','',$data['StuffMaster']['birthday'])) ?>歳&nbsp;&nbsp;
+                                    </font>    
+                                </div>
+                                <div style="vertical-align: 0px;float: left;"><?=getGender($data['StuffMaster']['gender']) ?></div>
+                                <div style="clear:both;"></div>
                             </td>
                             <td style='width:50%;text-align: center;' rowspan="5">
-                                <img src='files/33333/33333.jpg' style='border:1px black solid;'>
+                    <?php
+                        $after = $data['StuffMaster']['pic_extension'];
+                        if (is_null($after)) {
+                    ?>
+                                <img src='<?=ROOTDIR ?>/img/noimage.jpg ?>' style='border:1px black solid; width:150px;'>
+                    <?php } else { ?>
+                                <a href="<?=ROOTDIR ?>/files/stuff_reg/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>" rel="lightbox">
+                                    <img src='<?=ROOTDIR ?>/files/stuff_reg/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
+                                </a>
+                    <?php } ?>
                             </td>
                         </tr>
                         <tr>
                             <td style=''>雇用形態：&nbsp;<?= getStatus($data['StuffMaster']['employment_status']) ?></td>
                         </tr>
                         <tr>
-                            <td style=''>勤務回数：&nbsp;<?= $data['StuffMaster']['service_count']; ?>回</td>
+                            <td style=''>勤務回数：&nbsp;<?='＜不明＞' ?>回</td>
                         </tr>
                         <tr>
-                            <td style='background-color:#ffcc66;'>就業状況：&nbsp;<?=$data['StuffMaster']['employment_status'] ?></td>
+                            <td style='background-color:#ffcc66;'>就業状況：&nbsp;<?='＜不明＞' ?></td>
                         </tr>
                         <tr>
                             <td style=''>
-                                <font style='font-size:130%;'><?=getShokushu2($data['StuffMaster']['shokushu_shoukai']) ?></font><br>
+                                <font style='font-size:130%;'><?=getShokushu3($data['StuffMaster']['shokushu_shoukai']) ?></font><br>
                             </td>
                         </tr>
                     </table>
@@ -332,8 +444,8 @@
                             <td style='width:70%;'><?=getTF($data['StuffMaster']['keiken_mansion']) ?></td>
                         </tr>
                         <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>勤務可能日</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['workable_day'] ?></td>
+                            <td style='background-color: #e8ffff;width:30%;'>勤務可能曜日</td>
+                            <td style='width:70%;'><?=getWorkable2($data['StuffMaster']['workable_day']) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望勤務回数</td>
@@ -351,7 +463,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>当社以外の職業</td>
-                            <td style='width:70%;'><?=$data['StuffMaster']['extra_job'] ?></td>
+                            <td style='width:70%;'><?=getShokugyou2($data['StuffMaster']['extra_job']) ?><?=getShokugyou3($data['StuffMaster']['extra_job_etc']); ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>配偶者</td>

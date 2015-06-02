@@ -11,6 +11,8 @@
     $selected1 = explode(',',$data['StuffMaster']['shokushu_shoukai']);
     $selected2 = explode(',',$data['StuffMaster']['shokushu_kibou']);
     $selected3 = explode(',',$data['StuffMaster']['shokushu_keiken']);
+    $selected4 = explode(',',$data['StuffMaster']['extra_job']);
+    $selected5 = explode(',',$data['StuffMaster']['workable_day']);
     
     // 路線のコンボセット
     function getLine($code) {
@@ -112,8 +114,8 @@ $(function() {
             </tr>
             <tr>
                 <td colspan="2">
-                    No.<?='0001' ?>&nbsp;&nbsp;登録番号：<?=$stuff_id ?>&nbsp;&nbsp;
-                    作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?='大阪-人材派遣' ?>
+                    登録番号：<?=$stuff_id ?>&nbsp;&nbsp;
+                    作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
                 </td>
             </tr>
         </table>
@@ -139,6 +141,16 @@ $(function() {
                         -moz-border-radius: 10px;   /* Firefox用 */
                         vertical-align: middle;
                        ">
+                    <!-- 証明写真ファイルのリンク -->
+                    <?php
+                        $after = $data['StuffMaster']['pic_extension'];
+                        if (is_null($after)) {
+                            echo '';
+                        } else {
+                            echo '<br>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$stuff_id.'/'.$stuff_id.'.'.$after.'","証明写真","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している証明写真】</a>';
+                        }
+                    ?>
                 </td>
                 <td style='background-color: #e8ffff;width:100px;'>履歴書<br><font style='color: red;'>PDFファイル</font></td>
                 <td colspan="1">
@@ -156,7 +168,16 @@ $(function() {
                         -moz-border-radius: 10px;   /* Firefox用 */
                         vertical-align: middle;
                        ">
-                    
+                    <!-- 保存ファイルのリンク -->
+                    <?php
+                        $after2 = $data['StuffMaster']['pic_extension2'];
+                        if (is_null($after2)) {
+                            echo '';
+                        } else {
+                            echo '<br>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$stuff_id.'/'.$stuff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                        }
+                    ?>
                 </td>
             </tr>
             <tr>
@@ -246,6 +267,8 @@ $(function() {
 <?php 
     $list_shokushu = array('1'=>'受付 ', '2'=>'フロア受付 ', '3'=>'シッター ', '4'=>'ナレーター ', '5'=>'ＤＨ ', '6'=>'看板持ち ', '7'=>'事務 ', '8'=>'誘導案内 ', '9'=>'内覧会スタッフ '); 
     //$selected = array('1', '3', '7');
+    $list_shokugyou = array('1'=>'会社員 ', '2'=>'主婦 ', '3'=>'学生 ', '4'=>'派遣 ', '5'=>'アルバイト ', '6'=>'その他 ');
+    $list_workable = array('1'=>'特になし ', '2'=>'平日のみ ', '3'=>'土日のみ ', '4'=>'土日祝のみ ', '5'=>'月 ', '6'=>'火 ', '7'=>'水 ', '8'=>'木 ', '9'=>'金 ', '10'=>'土 ', '11'=>'日 ');
 ?>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>紹介可能職種</td>
@@ -280,8 +303,10 @@ $(function() {
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>勤務可能日</td>
-                <td colspan="3"><?php echo $this->Form->input('workable_day',array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:25%;text-align: left;')); ?></td>
+                <td style='background-color: #e8ffff;width:20%;'>勤務可能曜日</td>
+                <td colspan="3">
+                    <?php echo $this->Form->input('workable_day', array('type'=>'select','multiple' => 'checkbox','div'=>'checkbox','label'=>false, 'style'=>'width:70%;text-align: left;','selected'=>$selected5, 'options'=>$list_workable)); ?>
+                </td>
             </tr>
         </table>
          
@@ -363,11 +388,7 @@ $(function() {
                         'options' => $list7));
                 ?>
                 </td>
-                <td style='background-color: #e8ffff;width:15%;'>当社以外の職業</td>
-                <td colspan="3"><?php echo $this->Form->input('extra_job',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:95%;')); ?></td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:15%;'>喫煙について</td>
+                <td style='background-color: #e8ffff;width:20%;'>喫煙について</td>
                 <td>
                 <?php
                     $list8=array('1'=>'禁煙','2'=>'喫煙');
@@ -376,12 +397,20 @@ $(function() {
                 ?>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;'>眼鏡使用について</td>
-                <td colspan="3">
+                <td>
                 <?php
                     $list9=array('1'=>'無','2'=>'有');
                     echo $this->Form->input( 'glasses', array('legend' => false, 'type' => 'radio','div'=>'radio',
                         'options' => $list9));
                 ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:15%;'>当社以外の職業</td>
+                <td colspan="5">
+                    <?php echo $this->Form->input('extra_job', array('type'=>'select','multiple' => 'checkbox','div'=>'checkbox','label'=>false, 'style'=>'width:70%;text-align: left;','selected'=>$selected4, 'options'=>$list_shokugyou)); ?>
+                    &nbsp;
+                    <?php echo $this->Form->input('extra_job_etc',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:40%;')); ?>
                 </td>
             </tr>
             <tr>

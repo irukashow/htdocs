@@ -69,16 +69,18 @@
     // 年末調整
     function getNenmatsu($value) {
         $ret = null;
-        if ($value == 0) {
+        if ($value == 1) {
             $ret = '&nbsp;';
-        } elseif ($value == 1) {
+        } elseif ($value == 2) {
             $ret = '希望';
+        } else {
+            $ret = '不明';
         }
         return $ret;
     }
     
     // 路線・駅の表示
-    function getStation($code) {
+    function getStation($code, $flag) {
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
             //$xml = "http://www.ekidata.jp/api/s/3300610.xml";//ファイルを指定
@@ -96,6 +98,9 @@
             $line_name = $xml_ary['station']['line_name'];
             $station_name = $xml_ary['station']['station_name'];
             $ret = $line_name.' '.$station_name.'駅';
+            if ($flag == 1) {
+                $ret = $ret.'<br>';
+            }
         } else {
             $ret = '';
         }
@@ -131,6 +136,34 @@
     }
 ?>
 
+<style>
+  #loading{
+position:absolute;
+left:50%;
+top:60%;
+margin-left:-30px;
+  }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+<script type="text/javascript">
+  <!--
+//コンテンツの非表示
+$(function(){
+    $('#stuff_master').css('display', 'none');
+});
+//ページの読み込み完了後に実行
+window.onload = function(){
+    $(function() {
+        //ページの読み込みが完了したのでアニメーションはフェードアウトさせる
+        $("#loading").fadeOut();
+        //ページの表示準備が整ったのでコンテンツをフェードインさせる
+        $("#stuff_master").fadeIn();
+    });
+}
+  //-->
+</script>
+
+<div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し -->
 <div id='headline'>
     ★ スタッフマスタ
@@ -209,7 +242,7 @@
                 &nbsp;～&nbsp;
                 <?php echo $this->Form->input('search_age_upper', array('type'=>'text', 'label' => false,'div' => false, 'placeholder'=>'上限年齢', 'style' => 'width:90px;')); ?>歳 
             </DIV>
-            <div>
+            <div style="margin-top: -5px;">
                 <?php echo $this->Form->submit('検索', array('div'=>false, 'class' => '', 'name' => 'search2', 'style' => 'font-size:100%; padding:5px 15px 5px 15px;')); ?>
             </div>
         </FIELDSET>
@@ -230,8 +263,8 @@
         表示件数：
         <?php
             $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
-            echo $this->Form->input('', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'value' => '10', 'options' => $list, 
-                'onchange' => ''));
+            echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, 'selected' => $limit,
+                'onchange' => 'form.submit();'));
         ?>
     </div>
  </div>
@@ -271,7 +304,21 @@
   <?php foreach ($datas as $data): ?>
   <tr>
     <td align="right">&nbsp;</td>
-    <td align="center"><img src="/softlife/img/noimage.jpg" width="50"><br><?php echo $data['StuffMaster']['id']; ?></td>
+    <?php $stuff_id = $data['StuffMaster']['id']; ?>
+    <td align="center">
+        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/<?php echo $data['StuffMaster']['id']; ?>','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+                <?php
+                    $after = $data['StuffMaster']['pic_extension'];
+                    if (is_null($after)) {
+                ?>
+            <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
+                <?php } else { ?>
+            <img src="<?=ROOTDIR ?>/files/stuff_reg/<?=$stuff_id ?>/<?=$stuff_id ?>.<?=$after ?>" width="80px">
+                <?php } ?>
+            <br>
+            <font style="font-weight: bold;color: #006699;"><?php echo $stuff_id; ?></font>
+        </a>
+    </td>
     <td align="center" style="font-size: 110%;">
         <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/<?php echo $data['StuffMaster']['id']; ?>','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?><br>
@@ -279,19 +326,17 @@
 	<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>
     </td>
     <td align="center"><?php echo getAge(str_replace('-','',$data['StuffMaster']['birthday']))."<br>".getGender($data['StuffMaster']['gender']);?></td>
-    <td align="left"><?php echo $data['StuffMaster']['tantou']; ?></td>
+    <td align="center"><?php echo '＜不明＞'; ?></td>
     <td align="center"><?php echo getOjt($data['StuffMaster']['ojt']).'<br>'.$data['StuffMaster']['ojt_date']; ?></td>
-    <td align="right"><?php echo $data['StuffMaster']['service_count']; ?></td>
+    <td align="center"><?php echo '＜不明＞'; ?></td>
     <td align="left"><?php echo getShokushu2($data['StuffMaster']['shokushu_shoukai']); ?></td>
     <td align="left"><?php echo date('Y-m-d', strtotime($data['StuffMaster']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
-    <td align="left"><?php echo $data['StuffMaster']['3m_spot']; ?></td>
+    <td align="center"><?php echo '＜不明＞'; ?></td>
     <td align="left"><?php echo getPref($data['StuffMaster']['address1']).'&nbsp;'.$data['StuffMaster']['address2']; ?></td>
     <td align="left">
-        <?php echo getStation($data['StuffMaster']['s1_1']); ?>
-        <br>
-        <?php echo getStation($data['StuffMaster']['s1_2']); ?>
-        <br>
-        <?php echo getStation($data['StuffMaster']['s1_3']); ?>
+        <?php echo getStation($data['StuffMaster']['s1_1'], 1); ?>
+        <?php echo getStation($data['StuffMaster']['s1_2'], 1); ?>
+        <?php echo getStation($data['StuffMaster']['s1_3'], 0); ?>
     </td>
     <td align="center"><?php echo getNenmatsu($data['StuffMaster']['nenmatsu_chousei']); ?></td>
   </tr>

@@ -7,6 +7,9 @@
     }
 ?>
 <script type="text/javascript">
+onload = function() {
+    calculateAge();
+}
         
 function calculateAge() {
     Y = document.getElementById('StuffMasterBirthdayYear').options[document.getElementById('StuffMasterBirthdayYear').selectedIndex].value;
