@@ -45,87 +45,6 @@ class UsersController extends AppController {
 	}
 	
 	/**
-	 * ユーザ登録情報の更新
-	 */
-	public function edit($id=null){
-            /* 管理権限がある場合 */
-            if ($this->isAuthorized($this->Auth->user())) {
-
-            }else{
-                $this->Session->setFlash('管理者しか権限がありません。');
-                $this->redirect($this->referer());
-            }
-
-                // レイアウト関係
-                $this->layout = "sub";
-                $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
-                // タブの状態
-                $this->set('active1', 'active');
-                $this->set('active2', '');
-                $this->set('active3', '');
-                $this->set('active4', '');
-                $this->set('active5', '');
-                $this->set('active6', '');
-                $this->set('active7', '');
-                $this->set('active8', '');
-                $this->set('active9', '');
-                $this->set('active10', '');
-                // ユーザー名前
-                $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-                $this->set('user_name', $name);
-
-                // 初期値設定
-                $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
-                $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
-                //$username = $this->request->data('username');
-                //
-                //指定プライマリーキーのデータをセット
-                $this->set('username', $id);
-                $this->User->username = $id;
-                $this->request->data = $this->User->read(null, $id);
-
-                /*
-                // POSTの場合
-                if ($this->request->is('post')) {
-                    $username = $this->request->data['username'];
-                    $status = array('conditions' => array('User.username' => $username));
-                    $data = $this->User->find('first', $status);
-                    
-                    if ($this->User->validates() == false) {
-                        return null;
-                    }
-                    if (isset($this->request->data['submit'])) {
-                        // データを登録する
-                        $this->User->save($this->request->data);
-                        // 登録完了
-                        $this->Session->setFlash('ユーザー登録を完了しました。');
-
-                        // indexに移動する
-                        //$this->redirect(array('action' => 'index'));
-                    }
-
-                } else {
-                    $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
-                    $data = null;
-                }
-                $this->set('data',$data);
-            */
-	}
-
-	/**
-	 * ユーザ一覧。
-	 */
-    public function view() {
-        // レイアウト関係
-        $this->layout = "main";
-        $this->set("title_for_layout","ホーム - 派遣管理システム");
-        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-        $this->set('user_name', $name);
-        
-        $data = $this->User->find('all');
-        $this->set('data', $data);
-    }
-	/**
 	 * ユーザ登録。
 	 */
     public function add() {
@@ -156,22 +75,98 @@ class UsersController extends AppController {
             $this->set('user_name', $name); 
         
     	// POSTの場合
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->User->validates() == false) {
                 return null;
             }
             if (isset($this->request->data['submit'])) {
+                // 閲覧権限の配列をカンマ区切りに
+                $val = $this->setAuth($this->request->data['User']['auth']);
+                $this->request->data['User']['auth'] = $val;
+                
                 // モデルの状態をリセットする
                 $this->User->create();
                 // データを登録する
-                $this->User->save($this->request->data);
-                // 登録完了
-                $this->Session->setFlash('ユーザー登録を完了しました。');
+                if ($this->User->save($this->request->data)) {
+                    // 登録完了
+                    $this->Session->setFlash('ユーザー登録を完了しました。');
+                }
 
                 // indexに移動する
                 //$this->redirect(array('action' => 'index'));
             }
         }
+    }
+
+	/**
+	 * ユーザ登録情報の更新
+	 */
+	public function edit($id=null){
+            /* 管理権限がある場合 */
+            if ($this->isAuthorized($this->Auth->user())) {
+
+            }else{
+                $this->Session->setFlash('管理者しか権限がありません。');
+                $this->redirect($this->referer());
+            }
+
+                // レイアウト関係
+                $this->layout = "sub";
+                $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
+                // ユーザー名前
+                $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+                $this->set('user_name', $name);
+
+                // 初期値設定
+                $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
+                $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
+                $this->set('value', '');
+
+                // POSTの場合
+                if ($this->request->is('post') || $this->request->is('put')) {
+                    if ($this->User->validates() == false) {
+                        return null;
+                    }
+                    if (isset($this->request->data['regist'])) {
+                        // 閲覧権限の配列をカンマ区切りに
+                        $val = $this->setAuth($this->request->data['User']['auth']);
+                        $this->request->data['User']['auth'] = $val;
+
+                        // モデルの状態をリセットする
+                        //$this->User->create();
+                        // データを登録する
+                        if ($this->User->save($this->request->data)) {
+                            // 表示データの保持（権限）
+                            $value = explode(',', $this->request->data['User']['auth']);
+                            $this->set('value', $value);
+                            // 登録完了
+                            $this->Session->setFlash('ユーザー情報を更新しました。');
+                        }
+                    } else {
+                        // データのセット
+                        $this->request->data = $this->User->read(null, $this->request->data['User']['username']);
+                        $value = explode(',', $this->request->data['User']['auth']);
+                        $this->set('value', $value);
+                        //$this->log($this->request->data);
+                    }
+                } else {
+                    // 登録していた値をセット
+                    $this->request->data = $this->User->read(null, $id);
+                }
+	}
+
+	/**
+	 * ユーザ一覧。
+	 */
+    public function view() {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout","ホーム - 派遣管理システム");
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        
+        $data = $this->User->find('all');
+        $this->set('data', $data);
     }
 
 	/**
@@ -207,7 +202,7 @@ class UsersController extends AppController {
                     // indexに移動する
                     $this->redirect(array('action' => 'index'));
             } else {
-                //$this->request->data = $this->User->read(null, $this->Auth->user('username'));    
+                $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
             }
         }
     
@@ -245,6 +240,13 @@ class UsersController extends AppController {
                 $log = array('username' => $this->Auth->user('username'),
                     'status' => $this->LoginLog->status = 'login','ip_address' =>$this->request->clientIp(false));
                 $this->LoginLog->save($log);
+                // 所属のセット
+                $username = $this->Auth->user('username');
+                $conditions = array('username' => $username);
+                $result = $this->User->find('first', array('conditions' => $conditions));
+                $first_class = explode(',', $result['User']['auth']);
+                $this->Session->write('selected_class', $first_class[1]);
+                //$this->log($first_class[1]);
     
                 $this->redirect($this->Auth->redirect());
             }else{
@@ -265,10 +267,23 @@ class UsersController extends AppController {
         $log = array('username' => $this->Auth->user('username'),
             'status' => $this->LoginLog->status = 'logout','ip_address' => $this->request->clientIp(false));
         $this->LoginLog->save($log);
-                
+        // 所属のセッションを消す
+        $this->Session->delete('selected_class');
+        
     	$this->redirect($this->Auth->logout());
         //$this->redirect($this->Auth->redirect());
     	//eturn $this->flash('ログアウトしました。', '/users/index');
+    }
+    
+    /*** 所有権限をカンマ区切りに ***/
+    static public function setAuth($val){
+        $ret = '';
+        if (!empty($val)) {
+            foreach ($val as $value) {
+                $ret = $ret.','.$value;  
+            }
+        }
+        return $ret;
     }
 
 }

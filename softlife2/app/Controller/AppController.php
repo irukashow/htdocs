@@ -43,7 +43,7 @@ class AppController extends Controller {
         // 認証コンポーネントをViewで利用可能にしておく
         $this->set('auth',$this->Auth);
         
-        // 種別のセット
+        // 所属のセット
         $username = $this->Auth->user('username');
         $conditions = array('username' => $username);
         $result = $this->User->find('first', array('conditions' => $conditions));

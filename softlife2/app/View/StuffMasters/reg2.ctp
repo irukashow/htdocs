@@ -148,7 +148,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$stuff_id.'/'.$stuff_id.'.'.$after.'","証明写真","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している証明写真】</a>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$class.'/'.$stuff_id.'/'.$stuff_id.'.'.$after.'","証明写真","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している証明写真】</a>';
                         }
                     ?>
                 </td>
@@ -175,7 +175,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$stuff_id.'/'.$stuff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$class.'/'.$stuff_id.'/'.$stuff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
                         }
                     ?>
                 </td>

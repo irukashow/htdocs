@@ -10,41 +10,30 @@
         //echo '<script type="text/javascript">location.href = "softlife2/users/login/"</script>';
     }
     
-    // 種別コンボセット
-    if ($result['User']['auth11'] == 1) {
-        $class = array('11'=>'大阪-人材派遣');
-        $first_class = array('11'=>'大阪-人材派遣');
-    }
-    if ($result['User']['auth12'] == 1) {
-        $class = $class + array('12'=>'大阪-住宅営業');
-        if (is_null($first_class)) {
-            $first_class = array('12'=>'大阪-住宅営業');
+    // 所属カンマ区切りを配列に
+    $value = explode(',', $result['User']['auth']);
+    //$this->log($value);
+    // 所属コンボセット
+    foreach($value as $val) {
+        if ($val == '11') {
+            $class['11'] = '大阪-人材派遣';
         }
-    }
-    if ($result['User']['auth21'] == 1) {
-        $class = $class + array('21'=>'東京-人材派遣');
-        if (is_null($first_class)) {
-            $first_class = array('21'=>'東京-人材派遣');
-        } 
-    }
-    if ($result['User']['auth22'] == 1) {
-        $class = $class + array('22'=>'東京-住宅営業');
-        if (is_null($first_class)) {
-            $first_class = array('22'=>'東京-住宅営業');
+        if ($val == '12') {
+            $class['12'] = '大阪-住宅営業';
         }
-    }
-    if ($result['User']['auth31'] == 1) {
-        $class = $class + array('31'=>'名古屋-人材派遣');
-        if (is_null($first_class)) {
-            $first_class = array('31'=>'名古屋-人材派遣');
+        if ($val == '21') {
+            $class['21'] = '東京-人材派遣';
         }
-    }
-    if ($result['User']['auth32'] == 1) {
-        $class = $class + array('32'=>'名古屋-住宅営業');
-        if (is_null($first_class)) {
-            $first_class = array('32'=>'名古屋-住宅営業');
+        if ($val == '22') {
+            $class['22'] = '東京-住宅営業';
         }
-    }
+        if ($val == '31') {
+            $class['31'] = '名古屋-人材派遣';
+        }
+        if ($val == '32') {
+            $class['32'] = '名古屋-住宅営業';
+        }   
+    } 
     
 ?>
 
@@ -152,7 +141,7 @@ $(function() {
                 <td style="text-align: center;width:170px;vertical-align: middle;">
                     <?php echo $this->Form->create('Common', array('name' => 'form')); ?>
                     <?php echo $this->Form->input('class', array('name'=>'class','type'=>'select','label'=>false,'div'=>false, 
-                        'style' => '','id' => 'class','empty'=>array(0 => '選択してください'), 'selected' => $selected_class,
+                        'style' => '','id' => 'class', 'selected' => $selected_class,
                         'onChange'=>'form.submit();', 'options'=>$class)); ?>
                     <?php echo $this->Form->end(); ?>
                 </td>

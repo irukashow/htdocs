@@ -325,8 +325,8 @@
                     ?>
                                 <img src='<?=ROOTDIR ?>/img/noimage.jpg ?>' style='border:1px black solid; width:150px;'>
                     <?php } else { ?>
-                                <a href="<?=ROOTDIR ?>/files/stuff_reg/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>" rel="lightbox">
-                                    <img src='<?=ROOTDIR ?>/files/stuff_reg/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
+                                <a href="<?=ROOTDIR ?>/files/stuff_reg/<?=$class ?>/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>" rel="lightbox">
+                                    <img src='<?=ROOTDIR ?>/files/stuff_reg/<?=$class ?>/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
                                 </a>
                     <?php } ?>
                             </td>
@@ -526,7 +526,8 @@
             <div style="color: black;background-color: #ffff99;border:1px solid orange;padding:0px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
                 <?php echo $this->Form->submit('編集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
-                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'div' => false)); ?>
+                <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
+                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;

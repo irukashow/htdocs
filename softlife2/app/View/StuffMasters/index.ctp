@@ -185,7 +185,7 @@ window.onload = function(){
     <a href="<?=ROOTDIR ?>/stuff_masters/index/<?=$flag ?>" target="">検索条件クリア</a>
 </div>
 
-<?php echo $this->Form->create('StuffMaster', array('type' => 'post', 'name' => 'form', 'action' => '.')); ?>
+<?php echo $this->Form->create('StuffMaster', array('name' => 'form')); ?>
     
     <!-- 駅検索 -->
         <FIELDSET class='search'>
@@ -313,7 +313,7 @@ window.onload = function(){
                 ?>
             <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
                 <?php } else { ?>
-            <img src="<?=ROOTDIR ?>/files/stuff_reg/<?=$stuff_id ?>/<?=$stuff_id ?>.<?=$after ?>" width="80px">
+            <img src="<?=ROOTDIR ?>/files/stuff_reg/<?=$selected_class ?>/<?=$stuff_id ?>/<?=$stuff_id ?>.<?=$after ?>" width="80px">
                 <?php } ?>
             <br>
             <font style="font-weight: bold;color: #006699;"><?php echo $stuff_id; ?></font>
@@ -326,12 +326,12 @@ window.onload = function(){
 	<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>
     </td>
     <td align="center"><?php echo getAge(str_replace('-','',$data['StuffMaster']['birthday']))."<br>".getGender($data['StuffMaster']['gender']);?></td>
-    <td align="center"><?php echo '＜不明＞'; ?></td>
+    <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="center"><?php echo getOjt($data['StuffMaster']['ojt']).'<br>'.$data['StuffMaster']['ojt_date']; ?></td>
-    <td align="center"><?php echo '＜不明＞'; ?></td>
+    <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo getShokushu2($data['StuffMaster']['shokushu_shoukai']); ?></td>
     <td align="left"><?php echo date('Y-m-d', strtotime($data['StuffMaster']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
-    <td align="center"><?php echo '＜不明＞'; ?></td>
+    <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo getPref($data['StuffMaster']['address1']).'&nbsp;'.$data['StuffMaster']['address2']; ?></td>
     <td align="left">
         <?php echo getStation($data['StuffMaster']['s1_1'], 1); ?>

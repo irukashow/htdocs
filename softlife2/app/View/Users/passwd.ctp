@@ -4,7 +4,7 @@
         <legend style="font-size: 150%;color: red;"><?php echo __('パスワードを変更します。'); ?></legend>
         <?php 
                 echo $this->Form->input('username',array('type' => 'hidden'));
-	        echo $this->Form->input('password',array('label' => 'パスワード'));
+	        echo $this->Form->input('password',array('label' => 'パスワード', 'value' => ''));
     	?>
 
         <div style="text-align: left;">

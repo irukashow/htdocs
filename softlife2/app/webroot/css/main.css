@@ -386,30 +386,57 @@ option {
 	font-size: 120%;
 	padding: 0 3px;
 }
-input[type=password] {
+input[type=text] {
 	clear: left;
 	//float: left;
-	margin: 0px 6px 7px 2px;
+	//margin: 0px 6px 7px 2px;
 	width: auto;
         font-size: 100%;
 }
-input[type=password]:hover {
+input[type=text]:hover {
 	clear: left;
 	//float: left;
-	margin: 0px 6px 7px 2px;
+	//margin: 0px 6px 7px 2px;
 	width: auto;
         font-size: 100%;
-        background-color: #ffff99;
+        background-color: #ffffcc;
+}
+input[type=textarea] {
+	clear: left;
+	//float: left;
+	//margin: 0px 6px 7px 2px;
+	width: auto;
+        font-size: 100%;
+}
+input[type=textarea]:hover {
+	clear: left;
+	//float: left;
+	//margin: 0px 6px 7px 2px;
+	width: auto;
+        font-size: 100%;
+        background-color: #ffffcc;
+}
+textarea:hover {
+        background-color: #ffffcc;
+}
+select:hover {
+        background-color: #ffffcc;
 }
 input[type=checkbox] {
-	clear: left;
+	//clear: left;
 	float: left;
 	margin: 4px 6px 7px 2px;
 	width: auto;
 }
 div.checkbox label {
-	display: inline;
+	//display: inline;
 }
+
+/** checkbox **/
+div.checkbox {
+    float: left;
+}
+
 /*
 input[type=radio] {
 	float:left;
@@ -909,8 +936,4 @@ float: left;
 height:30px;
 }
 
-/** checkbox **/
-div.checkbox {
-    float: left;
-}
 

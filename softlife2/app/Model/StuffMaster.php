@@ -14,6 +14,7 @@ App::uses('AppModel', 'Model');
  */
 class StuffMaster extends AppModel {
     //public $useTable = 'stuff_masters';
+    //public $useTable = false;
     
     public $validate = array(
         // 登録１
