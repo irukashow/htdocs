@@ -269,7 +269,8 @@
         }   
         return $ret; 
     }
-    
+
+    /**
     // 都道府県の表示
     function getPref($code) {
         if (!is_null($code) && !empty($code)) {
@@ -292,6 +293,8 @@
         }
         return $ret; 
     }
+     * 
+     */
 ?>
 
 <?php foreach ($datas as $data): ?>
@@ -303,7 +306,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <font style="font-size: 100%;">登録年月日：<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>&nbsp;&nbsp;登録番号：<?=$id ?></font>
             </div>
-            <?php echo $this->Form->create('StuffMaster'); ?>
+            
                     <!-- プロフィール -->
                     <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 2px;border-spacing: 1px;">
                         <tr>
@@ -415,7 +418,7 @@
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>都道府県</td>
-                            <td style='width:70%;'><?=getPref($data['StuffMaster']['address1']) ?></td>
+                            <td style='width:70%;'><?=$data['StuffMaster']['address1_2'] ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>市区町村</td>
@@ -524,6 +527,7 @@
         </td>
         <td style="width:50%;vertical-align: top;padding-left: 5px;">
             <div style="color: black;background-color: #ffff99;border:1px solid orange;padding:0px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
+                <?php echo $this->Form->create('StuffMaster'); ?>
                 <?php echo $this->Form->submit('編集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
                 <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
@@ -538,21 +542,32 @@
                 <?php print($this->Html->link('次へ▶', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
                 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
                 <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?>
-                <?php echo $this->Form->end(); ?>
+                <?php echo $this->Form->end(); ?>  
             </div>
             
             <!-- 登録者メモ -->
             <font style="font-size: 120%;">登録者メモ</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
+            <?php echo $this->Form->create('StuffMemo'); ?>
+            <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
                 <tr>
-                    <td style='background-color: #e8ffff;width:70%;'>メモ一覧</td>
-                    <td style='background-color: #e8ffff;width:30%;'>コマンド</td>
+                    <td colspan="2" style='background-color: #e8ffff;'>メモ一覧</td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
+                    <td align="center" style="width:80%;">
+                        <?php echo $this->Form->input('memo',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:95%;padding:3px;')); ?>
+                        <?php echo $this->Form->input('username',array('type'=>'hidden', 'value' => $username)); ?>
+                        <?php echo $this->Form->input('stuff_id',array('type'=>'hidden', 'value' => $id)); ?>
+                    </td>
+                    <td align="center"><?php echo $this->Form->submit('書き込み', array('name' => 'comment','div' => false)); ?></td>
                 </tr>
+                <?php foreach($memo_datas as $data) { ?>
+                <tr>
+                    <td align="left"><?=$data['StuffMemo']['memo'] ?></td>
+                    <td align="center"><?php echo $this->Form->submit('削　除', array('name' => 'delete','div' => false)); ?></td>
+                </tr>
+                <?php } ?>
             </table>
+            <?php echo $this->Form->end(); ?>  
             
             <!-- 勤務実績一覧 -->
             <font style="font-size: 120%;">勤務実績一覧</font>
@@ -562,7 +577,7 @@
                     <td style='background-color: #e8ffff;width:70%;'>案件名</td>
                 </tr>
                 <tr>
-                    <td style='width:30%;'>2015-05-25</td>
+                    <td style='width:30%;'></td>
                     <td style='width:70%;'></td>
                 </tr>
             </table>
@@ -575,7 +590,7 @@
                     <td style='background-color: #e8ffff;width:70%;'>タイトル</td>
                 </tr>
                 <tr>
-                    <td style='width:30%;'>2015-05-25</td>
+                    <td style='width:30%;'></td>
                     <td style='width:70%;'></td>
                 </tr>
             </table>
@@ -643,7 +658,7 @@
                     <td style='width:70%;'><?= str_replace("\n","<br />",$data['StuffMaster']['hyouka_remarks']); ?></td>
                 </tr>
             </table>  
-                    
+                  
         </td>
     </tr>
 </table>

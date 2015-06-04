@@ -61,7 +61,7 @@
             if ($key <= 1) {
                 $ret = getShokushu($value);
             } else {
-                $ret = $ret.', '.getShokushu($value);
+                $ret = $ret.'<br>'.getShokushu($value);
             }  
         }
         return $ret;
@@ -79,7 +79,7 @@
         return $ret;
     }
     
-    // 路線・駅の表示
+    // 路線・駅の表示（スタッフマスタ内）
     function getStation($code, $flag) {
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
@@ -110,6 +110,7 @@
         
     }
     
+    /**
     // 都道府県の表示
     function getPref($code) {
         if (!is_null($code) && !empty($code)) {
@@ -130,19 +131,20 @@
         } else {
             $ret = '';
         }
-
         return $ret;
-        
     }
+     * 
+     */
+    
 ?>
 
 <style>
-  #loading{
-position:absolute;
-left:50%;
-top:60%;
-margin-left:-30px;
-  }
+#loading{
+    position:absolute;
+    left:50%;
+    top:60%;
+    margin-left:-30px;
+}
 </style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript">
@@ -162,7 +164,22 @@ window.onload = function(){
 }
   //-->
 </script>
-
+<script type="text/javascript">
+<!-- 
+//ID絞り込みテキストボックスでENTERが押された場合 
+function doSearch1(id) {
+    if(event.keyCode == 13){
+	var elm = document.createElement("input");
+	elm.setAttribute("name", "id");
+	elm.setAttribute("type", "hidden");
+	elm.setAttribute("value", id);
+	form.appendChild(elm);
+	form.submit();
+        return false;
+    }
+}
+//-->
+</script>    
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し -->
 <div id='headline'>
@@ -195,7 +212,7 @@ window.onload = function(){
 <?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
     'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
-<?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+<?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;',
     'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)')); ?>
 &nbsp;→
 <?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
@@ -227,10 +244,10 @@ window.onload = function(){
 <?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
 &nbsp;駅<BR>
             </DIV>
-            <div style='float: left;'>
-                <?php echo $this->Form->submit('検索', array('div'=>false, 'class' => '', 'name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
+            <div style='float: left;padding-left: 10px;'>
+                <?php echo $this->Form->submit('検索', array('name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
             </div>
-            <div style="clear: both; height: 0px;"></div>
+            <div style="clear: both; height: 5px;"></div>
         </FIELDSET>
     
     <!-- 年齢検索 -->
@@ -242,8 +259,8 @@ window.onload = function(){
                 &nbsp;～&nbsp;
                 <?php echo $this->Form->input('search_age_upper', array('type'=>'text', 'label' => false,'div' => false, 'placeholder'=>'上限年齢', 'style' => 'width:90px;')); ?>歳 
             </DIV>
-            <div style="margin-top: -5px;">
-                <?php echo $this->Form->submit('検索', array('div'=>false, 'class' => '', 'name' => 'search2', 'style' => 'font-size:100%; padding:5px 15px 5px 15px;')); ?>
+            <div style="float:left; margin-top: -15px;">
+                <?php echo $this->Form->submit('検索', array('name' => 'search2', 'style' => 'font-size:100%; padding:5px 15px 5px 15px;')); ?>
             </div>
         </FIELDSET>
     <p style="clear: both; height: 0px;"></p>
@@ -282,22 +299,24 @@ window.onload = function(){
     <th><?php echo $this->Paginator->sort('shokushu_shoukai','紹介可能職種');?></th>
     <th style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','就業状況<br>更新日<br>更新者', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('3m_spot','最近3ヶ月の勤務現場');?></th>
-    <th style="width:10%;"><?php echo $this->Paginator->sort('address1','都道府県');?></th>
+    <th style="width:10%;"><?php echo $this->Paginator->sort('address1','都道府県<br>市区郡（町村）', array('escape' => false));?></th>
     <th style="width:14%;"><?php echo $this->Paginator->sort('s1_1','沿線<br>最寄駅', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('nenmatsu_chousei','年末調整<br>希望有無', array('escape' => false));?></th>
   </tr>
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;">
+          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'style' => 'width:90%;', 'onkeydown' => 'doSearch1(this.value);')); ?>
+      </td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
-      <td style="background-color: #ffffe6;"><input name="txtTantou" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_tantou', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td></td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;"><input name="txtArea" type="text" style="width:90%;"></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_area', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td></td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
   </tr>
@@ -325,14 +344,14 @@ window.onload = function(){
         </a>
 	<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>
     </td>
-    <td align="center"><?php echo getAge(str_replace('-','',$data['StuffMaster']['birthday']))."<br>".getGender($data['StuffMaster']['gender']);?></td>
+    <td align="center"><?php echo $data['StuffMaster']['age'].'歳'."<br>".getGender($data['StuffMaster']['gender']);?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="center"><?php echo getOjt($data['StuffMaster']['ojt']).'<br>'.$data['StuffMaster']['ojt_date']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo getShokushu2($data['StuffMaster']['shokushu_shoukai']); ?></td>
     <td align="left"><?php echo date('Y-m-d', strtotime($data['StuffMaster']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
-    <td align="left"><?php echo getPref($data['StuffMaster']['address1']).'&nbsp;'.$data['StuffMaster']['address2']; ?></td>
+    <td align="left"><?php echo $data['StuffMaster']['address1_2'].'&nbsp;'.$data['StuffMaster']['address2']; ?></td>
     <td align="left">
         <?php echo getStation($data['StuffMaster']['s1_1'], 1); ?>
         <?php echo getStation($data['StuffMaster']['s1_2'], 1); ?>
