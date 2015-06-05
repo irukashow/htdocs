@@ -42,7 +42,7 @@ function affixZero(int) {
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>
         <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th style='background:#99ccff;text-align: center;'>項目</th>
                 <th style='background:#99ccff;text-align: center;' colspan='3'>入力内容</th>

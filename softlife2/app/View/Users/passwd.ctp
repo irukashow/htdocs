@@ -10,7 +10,7 @@
         <div style="text-align: left;">
             <?php echo $this->Form->submit('変更する', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
-            <?php print($this->Html->link('キャンセル', 'index', array('class'=>'button-rink'))); ?>
+            <?php print($this->Html->link('キャンセル', 'index', array('id'=>'button-delete'))); ?>
 
         </div>
     </fieldset>

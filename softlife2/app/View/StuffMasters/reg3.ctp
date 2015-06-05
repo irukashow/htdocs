@@ -3,6 +3,7 @@
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
     echo $this->Html->script('station');
+    echo $this->Html->css('stuffmaster');
 ?>
 <?php
     // 初期値セット
@@ -36,7 +37,7 @@ $(function() {
                 </td>
                 <td style="float: right;">
                     <?php print($this->Html->link('終了する', '', 
-                            array('class'=>'button-rink','style' => 'margin:0px;', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>
+                            array('id'=>'button-delete','style' => 'margin:0px;', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>
                 </td>
             </tr>
         </table>
@@ -47,7 +48,7 @@ $(function() {
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
         
         <!-- スタッフ情報 -->
-        <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 1px;'>
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
             <tr>
                 <th colspan="2" style='background:#99ccff;text-align: center;'>スタッフ情報</th>
             </tr>
@@ -59,7 +60,7 @@ $(function() {
             </tr>
         </table>
         <!-- 研修について -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="2" style='background:#99ccff;text-align: center;'>研修について</th>
             </tr>
@@ -74,7 +75,7 @@ $(function() {
         </table>
         
         <!-- 評価について -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="2" style='background:#99ccff;text-align: center;'>評価について</th>
             </tr>
@@ -221,7 +222,7 @@ $(function() {
 <?php $back_url = '/stuff_masters/reg2/'.$stuff_id; ?>
 <?php print($this->Html->link('戻　る', $back_url, array('class'=>'button-rink'))); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('終了する', '', array('class'=>'button-rink', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>    
+<?php print($this->Html->link('終了する', '', array('id'=>'button-delete', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>    
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

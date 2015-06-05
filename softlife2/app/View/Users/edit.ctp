@@ -48,9 +48,9 @@
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('更新する', array('name' => 'regist','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('戻　る', '/admin/index', array('class'=>'button-rink'))); ?>
+<?php print($this->Html->link('戻　る', '/admin/index', array('id'=>'button-delete'))); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('クリア', './edit', array('class'=>'button-rink2'))); ?>
+<?php print($this->Html->link('クリア', './edit', array('class'=>'button-rink'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

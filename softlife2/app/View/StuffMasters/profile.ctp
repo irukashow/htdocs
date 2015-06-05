@@ -297,18 +297,19 @@
      */
 ?>
 
-<?php foreach ($datas as $data): ?>
+<?php foreach ($datas as $data){ ?>
+<?php echo $this->Form->create('StuffMaster'); ?>
 <table border="0" style="margin:10px;width:98%;">
     <tr>
-        <td style="width:50%;">
-            <div style="color: black;background-color: #99ccff;border:1px solid #0099cc;padding:3px;vertical-align: middle;padding-right: 5px;">
+        <td style="width:50%;vertical-align: top;">
+            <div style="color: whitesmoke;background-color: #45bcd2;text-shadow: 1px 1px 3px #666666;border:1px solid #0099cc;padding:5px;vertical-align: middle;padding-right: 5px;">
                 <font style="font-size: 150%;">■登録者情報</font>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <font style="font-size: 100%;">登録年月日：<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>&nbsp;&nbsp;登録番号：<?=$id ?></font>
+                <font style="font-size: 100%;">登録年月日：<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>&nbsp;&nbsp;登録番号：<?=$data['StuffMaster']['id'] ?></font>
             </div>
             
                     <!-- プロフィール -->
-                    <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 2px;border-spacing: 1px;">
+                    <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 2px;border-spacing: 0px;">
                         <tr>
                             <td style='width:50%;'>
                                 <?=$data['StuffMaster']['name_sei2'] ?>&nbsp;<?=$data['StuffMaster']['name_mei2'] ?><br>
@@ -351,7 +352,7 @@
                     </table>
                     
                     <!-- 左項目１ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>勤務開始希望日</td>
                             <td style='width:70%;'><?=$data['StuffMaster']['job_startdate_kibou'] ?></td>
@@ -363,7 +364,7 @@
                     </table>
                     
                     <!-- 左項目２ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>電話番号１</td>
                             <td style='width:70%;'><?=$data['StuffMaster']['telno1'] ?></td>
@@ -383,7 +384,7 @@
                     </table>
                     
                     <!-- 左項目３ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>勤務開始希望日</td>
                             <td style='width:70%;'><?=$data['StuffMaster']['job_startdate_kibou'] ?></td>
@@ -395,7 +396,7 @@
                     </table>
                     
                     <!-- 左項目４ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>最寄駅①</td>
                             <td style='width:70%;'><?=getStation($data['StuffMaster']['s1_1']) ?></td>
@@ -411,7 +412,7 @@
                     </table>                    
                     
                     <!-- 左項目５ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>郵便番号</td>
                             <td style='width:70%;'><?=$data['StuffMaster']['zipcode1'] ?>-<?=$data['StuffMaster']['zipcode2'] ?></td>
@@ -433,7 +434,7 @@
                     </table>  
                     
                     <!-- 左項目６ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望職種</td>
                             <td style='width:70%;'><?=getShokushu2($data['StuffMaster']['shokushu_kibou']) ?></td>
@@ -526,29 +527,33 @@
             
         </td>
         <td style="width:50%;vertical-align: top;padding-left: 5px;">
-            <div style="color: black;background-color: #ffff99;border:1px solid orange;padding:0px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
-                <?php echo $this->Form->create('StuffMaster'); ?>
-                <?php echo $this->Form->submit('編集', array('name' => 'submit','div' => false)); ?>
+            <div style="color: black;background-color: #ffff99;border:1px solid orange;padding:5px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
+                <?php echo $this->Form->submit('編　集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
                 <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
-                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
+                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
+                <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('◀前へ', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
+                <?php echo $this->Paginator->prev('◀前へ', array(), null, array('class' => 'prev disabled')); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('次へ▶', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.close();'))); ?>
+                <?php echo $this->Paginator->next('次へ▶', array(), null, array('class' => 'next disabled')); ?>
                 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
-                <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?>
-                <?php echo $this->Form->end(); ?>  
+                <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?> 
             </div>
-            
+
             <!-- 登録者メモ -->
             <font style="font-size: 120%;">登録者メモ</font>
+            <!--
+            <br>
+            <iframe width="100%" height="200px" src="../memo/<?=$data['StuffMaster']['id'] ?>" frameborder='1' scrolling="no" style="margin-bottom: 10px;"></iframe>
+            <br>
+            -->
+            <div style="overflow-y:scroll;height:200px;margin-bottom: 10px;">
             <?php echo $this->Form->create('StuffMemo'); ?>
-            <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
+            <table border='1' cellspacing="0" cellpadding="2" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td colspan="2" style='background-color: #e8ffff;'>メモ一覧</td>
                 </tr>
@@ -558,20 +563,22 @@
                         <?php echo $this->Form->input('username',array('type'=>'hidden', 'value' => $username)); ?>
                         <?php echo $this->Form->input('stuff_id',array('type'=>'hidden', 'value' => $id)); ?>
                     </td>
-                    <td align="center"><?php echo $this->Form->submit('書き込み', array('name' => 'comment','div' => false)); ?></td>
+                    <td align="center"><?php echo $this->Form->submit('書き込み', array('name' => 'comment', 'div' => false, 'id' => 'button-create')); ?></td>
                 </tr>
-                <?php foreach($memo_datas as $data) { ?>
+                <?php foreach ($memo_datas as $mdata) { ?>
                 <tr>
-                    <td align="left"><?=$data['StuffMemo']['memo'] ?></td>
-                    <td align="center"><?php echo $this->Form->submit('削　除', array('name' => 'delete','div' => false)); ?></td>
+                    <td align="left" style="padding: 0 10px 0 10px;">
+                        <?=$mdata['StuffMemo']['memo'] ?>
+                    </td>
+                    <td align="center"><?php echo $this->Form->submit('削　除', array('name' => 'delete['.$mdata['StuffMemo']['id'].']', 'id' => 'button-delete', 'div' => false)); ?></td>
                 </tr>
                 <?php } ?>
             </table>
-            <?php echo $this->Form->end(); ?>  
-            
+            <?php echo $this->Form->end(); ?>
+            </div>
             <!-- 勤務実績一覧 -->
             <font style="font-size: 120%;">勤務実績一覧</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
+            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>日付</td>
                     <td style='background-color: #e8ffff;width:70%;'>案件名</td>
@@ -584,7 +591,7 @@
             
             <!-- メールボックス -->
             <font style="font-size: 120%;">メールボックス</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
+            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>日付</td>
                     <td style='background-color: #e8ffff;width:70%;'>タイトル</td>
@@ -596,7 +603,7 @@
             </table>
             
             <!-- 評価項目 -->
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 1px;">
+            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>OJT/実施日</td>
                     <td style='width:70%;'><?= getOjt($data['StuffMaster']['ojt']); ?> / <?= $data['StuffMaster']['ojt_date']; ?></td>
@@ -663,6 +670,7 @@
     </tr>
 </table>
 
-<?php endforeach; ?>
+<?php } ?>
+<?php echo $this->Form->end(); ?> 
 
 

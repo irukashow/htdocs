@@ -1,7 +1,7 @@
 <script type="text/javascript">
     onload = function() {
         document.getElementById('content').style.background='#ffffcc';
-        document.getElementById('content').style.height='600px';
+        document.getElementById('content').style.height='800px';
         //document.getElementById('cssmenu').style.background='#ffffcc';
     }
 </script>
@@ -15,9 +15,9 @@
     <a href="" target="_blank"></a>
 </div>
 
-<div style="width:30%; margin-top: 20px;margin-left: 30px;">
+<div style="width:30%;height: 1000px; margin-top: 20px;margin-left: 30px;">
 <?php echo $this->Form->create('User'); ?>
-    <fieldset style="border: none; margin-bottom: 20px;">
+    <fieldset style="border: none; margin-bottom: 20px;height: 800px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー管理'); ?></legend>
         <?php echo $this->Html->link('ユーザー一覧', '/account/'); ?>
         <br><br>

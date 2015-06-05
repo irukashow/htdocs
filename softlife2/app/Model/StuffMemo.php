@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class StuffMemo extends AppModel {
-    public $useTable = 'stuff_memo';
+    public $useTable = 'stuff_memos';
     /** 主キー(省略時は「id」になるので省略も可) */
     public $primaryKey = array('id');
 }

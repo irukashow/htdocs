@@ -13,6 +13,7 @@
     $selected3 = explode(',',$data['StuffMaster']['shokushu_keiken']);
     $selected4 = explode(',',$data['StuffMaster']['extra_job']);
     $selected5 = explode(',',$data['StuffMaster']['workable_day']);
+    $selected6 = explode(',',$data['StuffMaster']['regist_trigger']);
     
     // 路線のコンボセット
     function getLine($code) {
@@ -108,7 +109,7 @@ $(function() {
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
         
         <!-- スタッフ情報 -->
-        <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 1px;'>
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
             <tr>
                 <th colspan="2" style='background:#99ccff;text-align: center;'>スタッフ情報</th>
             </tr>
@@ -120,7 +121,7 @@ $(function() {
             </tr>
         </table>
         <!-- 個人情報付則 -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="7" style='background:#99ccff;text-align: center;'>個人情報付則</th>
             </tr>
@@ -250,7 +251,7 @@ $(function() {
         </table>
         
         <!-- 勤務について -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="4" style='background:#99ccff;text-align: center;'>勤務について</th>
             </tr>
@@ -265,10 +266,11 @@ $(function() {
                 </td>
             </tr>
 <?php 
-    $list_shokushu = array('1'=>'受付 ', '2'=>'フロア受付 ', '3'=>'シッター ', '4'=>'ナレーター ', '5'=>'ＤＨ ', '6'=>'看板持ち ', '7'=>'事務 ', '8'=>'誘導案内 ', '9'=>'内覧会スタッフ '); 
+    $list_shokushu = array('1'=>'受付　', '2'=>'フロア受付　', '3'=>'シッター　', '4'=>'ナレーター　', '5'=>'ＤＨ　', '6'=>'看板持ち　', '7'=>'事務　', '8'=>'誘導案内　', '9'=>'内覧会スタッフ '); 
     //$selected = array('1', '3', '7');
-    $list_shokugyou = array('1'=>'会社員 ', '2'=>'主婦 ', '3'=>'学生 ', '4'=>'派遣 ', '5'=>'アルバイト ', '6'=>'その他 ');
+    $list_shokugyou = array('1'=>'会社員　', '2'=>'主婦　', '3'=>'学生　', '4'=>'派遣　', '5'=>'アルバイト　', '6'=>'その他');
     $list_workable = array('1'=>'特になし ', '2'=>'平日のみ ', '3'=>'土日のみ ', '4'=>'土日祝のみ ', '5'=>'月 ', '6'=>'火 ', '7'=>'水 ', '8'=>'木 ', '9'=>'金 ', '10'=>'土 ', '11'=>'日 ');
+    $list_trigger = array('1' => '紹介　', '2' => 'インターネット求人媒体　', '3' => '紙面求人媒体　', '4' => '当社ＨＰ　', '5' => 'その他　');
 ?>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>紹介可能職種</td>
@@ -311,7 +313,7 @@ $(function() {
         </table>
          
         <!-- 経理関係 -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="8" style='background:#99ccff;text-align: center;'>経理関係</th>
             </tr>
@@ -369,7 +371,7 @@ $(function() {
         </table>
          
         <!-- その他 -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="6" style='background:#99ccff;text-align: center;'>その他</th>
             </tr>
@@ -415,7 +417,9 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:15%;'>登録のきっかけ</td>
-                <td colspan="5"><?php echo $this->Form->input('regist_trigger',array('type'=>'textarea','div'=>false,'maxlength'=>'200','label'=>false,'style'=>'width:90%;height:50px;')); ?></td> 
+                <td colspan="5">
+                    <?php echo $this->Form->input('regist_trigger', array('type'=>'select','multiple' => 'checkbox','div'=>'checkbox','label'=>false, 'style'=>'width:70%;text-align: left;','selected'=>$selected6, 'options'=>$list_trigger)); ?>
+                </td> 
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:15%;'>備考</td>
