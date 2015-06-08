@@ -215,9 +215,20 @@
  * the cake shell command: cake schema create Sessions
  *
  */
+        /**
 	Configure::write('Session', array(
 		'defaults' => 'php'
 	));
+         * 
+         */
+        Configure::write('Session', array(
+            'defaults' => 'php',
+            'timeout' => 1440, //1days
+            'autoRegenerate' => true,
+            'ini' => array(
+                'session.gc_maxlifetime' => 86400, //1days
+            )
+        ));
 
 /**
  * A random string used in security hashing methods.

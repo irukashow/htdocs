@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class StuffMastersController extends AppController {
-    public $uses = array('StuffMaster', 'User', 'Item', 'StuffMemo');
+    public $uses = array('StuffMaster', 'User', 'Item', 'StuffMemo', 'StuffMasterLog');
     // Paginationの設定（スタッフマスタ）
     public $paginate = array(
     //モデルの指定
@@ -45,7 +45,7 @@ class StuffMastersController extends AppController {
     
     public $title_for_layout = "スタッフマスタ - 派遣管理システム";
 
-    public function index($flag = null) {
+    public function index($flag = null, $stuff_id = null, $profile = null) {
         // 所属が選択されていなければ元の画面に戻す
         if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
             //$this->log($this->Session->read('selected_class'));
@@ -69,12 +69,25 @@ class StuffMastersController extends AppController {
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
         // 都道府県のセット
-        $conditions1 = array('item' => 10);
+        if (substr($selected_class, 0 ,1) == 1) {
+            // 大阪（関西地方）
+            $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
+        } elseif (substr($selected_class, 0, 1) == 2) {
+            // 東京（関東地方）
+            $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 8, 'id <= ' => 14));
+        } elseif (substr($selected_class, 0, 1) == 3) {
+            // 名古屋（中部地方）
+            $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
+        }
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
         $this->set('pref_arr', $pref_arr);
+        // 登録担当者配列
+        //$this->log($this->getTantou(), LOG_DEBUG);
+        $this->set('getTantou', $this->getTantou());
         // テーブルの設定
-        $this->StuffMaster->setSource('stuff_'.$this->Session->read('selected_class'));
+        $this->StuffMaster->setSource('stuff_'.$selected_class);
         // 引数の受け取り
         if (isset($this->params['named']['limit'])) {
             $limit = $this->params['named']['limit'];
@@ -87,22 +100,14 @@ class StuffMastersController extends AppController {
         $conditions2 = null;
         $conditions3 = null;
         
-        /**
-        // 最寄り駅での絞り込み
-        if(isset($this->request->data['search1'])) {
-            $conditions3 = array('s1_1' => ' >= '.$this->request->data['StuffMaster']['s1_1'], 's2_1' => ' <= '.$this->request->data['StuffMaster']['s2_1']);
-            $this->log('駅通ってる', LOG_DEBUG);
-            $this->log($conditions3, LOG_DEBUG);
-        }
-         * 
-         */
         //$this->log($this->request, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
             // 初期表示
-            if ($flag == '1') {
+            if ($flag == 1) {
                 $conditions2 = array('kaijo_flag' => 1);
             } else {
+                $flag = 0;
                 $conditions2 = array('kaijo_flag' => 0);
             }
             $this->set('flag', $flag);
@@ -112,42 +117,63 @@ class StuffMastersController extends AppController {
                 if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
                     $conditions2 += array('OR' =>
                         array(
+                            // 第一候補
                             array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_1'])),
                             array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_1'])),
                             array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_1']))
-                            )
-                        );
-                } else {
-                    // 登録番号で検索
-                    if (!empty($this->data['StuffMaster']['search_id'])){
-                        $search_id = $this->data['StuffMaster']['search_id'];
-                        $conditions2 += array('id' => $search_id);
-                    }
-                    // 氏名で検索
-                    if (!empty($this->data['StuffMaster']['search_name'])){
-                        $search_name = $this->data['StuffMaster']['search_name'];
-                        //$conditions2 += array( 'OR' => array(array('StuffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StuffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
-                        $conditions2 += array('CONCAT(StuffMaster.name_sei, StuffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
-                        $this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
-                        
-                    }
-                    // 年齢で検索
-                    if (!empty($this->data['StuffMaster']['search_age'])){
-                        $search_age = $this->data['StuffMaster']['search_age'];
-                        $conditions2 += array('StuffMaster.age' => $search_age);
-                    }
-                    // 担当者で検索
-                    if (!empty($this->data['StuffMaster']['search_tantou'])){
-                        $search_tantou = $this->data['StuffMaster']['search_tantou'];
-                        $conditions2 += array('tantou LIKE ' => '%'.$search_tantou.'%');
-                    } 
-                    // 都道府県
-                    if (!empty($this->data['StuffMaster']['search_area'])){
-                        $search_area = $this->data['StuffMaster']['search_area'];
-                        $this->log($search_area);
-                        $conditions2 += array('CONCAT(StuffMaster.address1_2, StuffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
-                    }  
+                        )
+                    );
                 }
+                if (!empty($this->request->data['StuffMaster']['s1_2']) && !empty($this->request->data['StuffMaster']['s2_2'])) {
+                    $conditions2 += array('OR' =>
+                        array(
+                            // 第二候補
+                            array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_2'])),
+                            array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_2'])),
+                            array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_2']))
+                        )
+                    );
+                }
+                if (!empty($this->request->data['StuffMaster']['s1_3']) && !empty($this->request->data['StuffMaster']['s2_3'])) {
+                    $conditions2 += array('OR' =>
+                        array(
+                            // 第三候補
+                            array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_3'])),
+                            array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_3'])),
+                            array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_3']))
+                        )
+                    );
+                }
+                $this->log($conditions2, LOG_DEBUG);
+                // 登録番号で検索
+                if (!empty($this->data['StuffMaster']['search_id'])){
+                    $search_id = $this->data['StuffMaster']['search_id'];
+                    $conditions2 += array('id' => $search_id);
+                }
+                // 氏名で検索
+                if (!empty($this->data['StuffMaster']['search_name'])){
+                    $search_name = $this->data['StuffMaster']['search_name'];
+                    //$conditions2 += array( 'OR' => array(array('StuffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StuffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
+                    $conditions2 += array('CONCAT(StuffMaster.name_sei, StuffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
+                    //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+
+                }
+                // 年齢で検索
+                if (!empty($this->data['StuffMaster']['search_age'])){
+                    $search_age = $this->data['StuffMaster']['search_age'];
+                    $conditions2 += array('StuffMaster.age' => $search_age);
+                }
+                // 担当者で検索
+                if (!empty($this->data['StuffMaster']['search_tantou'])){
+                    $search_tantou = $this->data['StuffMaster']['search_tantou'];
+                    $conditions2 += array('tantou LIKE ' => '%'.$search_tantou.'%');
+                } 
+                // 都道府県
+                if (!empty($this->data['StuffMaster']['search_area'])){
+                    $search_area = $this->data['StuffMaster']['search_area'];
+                    //$this->log($search_area);
+                    $conditions2 += array('CONCAT(StuffMaster.address1_2, StuffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
+                }  
             // 年齢での絞り込み
             } elseif (isset($this->request->data['search2'])) {
                 //$this->Session->setFlash($this->request->data['StuffMaster']['search_age_lower'].'-'.$this->request->data['StuffMaster']['search_age_upper']);
@@ -178,6 +204,15 @@ class StuffMastersController extends AppController {
                 $limit = $this->request->data['limit'];
                 $this->set('limit', $limit);
                 $this->redirect(array('limit' => $limit));
+            // プロフィールページへ
+            } elseif (isset($profile)) {
+                // ページ数（レコード番号）を取得
+                $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $stuff_id);
+                $page = $this->StuffMaster->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
+                $this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                $this->log($page, LOG_DEBUG);
+                $this->redirect(array('action' => 'profile', $flag, $stuff_id, 'page' => $page));
+                exit();
             }
 
             // 年齢の計算
@@ -186,7 +221,7 @@ class StuffMastersController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StuffMaster', $conditions2));
             $this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
-            $this->log($conditions2, LOG_DEBUG);
+            //$this->log($conditions2, LOG_DEBUG);
         } else {
             // 所属の取得とセット
             //$this->selected_class = $this->Session->read('selected_class');
@@ -196,23 +231,24 @@ class StuffMastersController extends AppController {
             // 年齢の計算
             $this->setAge($this->Session->read('selected_class'));
             // 初期表示
-            if ($flag == '1') {
+            if ($flag == 1) {
                 $conditions3 = array('kaijo_flag' => 1);
             } else {
+                $flag = 0;
                 $conditions3 = array('kaijo_flag' => 0);
             }
             $this->set('flag', $flag);
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StuffMaster', $conditions3));
             //$this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
-            $this->log('そと通ってる', LOG_DEBUG);
+            //$this->log('そと通ってる', LOG_DEBUG);
         }
         $this->set('selected_class', $this->Session->read('selected_class'));
         
       }
 
     // プロフィールページ
-    public function profile($stuff_id = null) {
+    public function profile($flag = null, $stuff_id = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout",$this->title_for_layout);
@@ -227,46 +263,67 @@ class StuffMastersController extends AppController {
         $this->set('id', $stuff_id); 
         $this->set('username', $this->Auth->user('username')); 
         // テーブルの設定
-        $this->StuffMaster->setSource('stuff_'.$this->Session->read('selected_class'));
-        $this->set('class', $this->Session->read('selected_class'));
+        $selected_class = $this->Session->read('selected_class');
+        $this->StuffMaster->setSource('stuff_'.$selected_class);
+        $this->set('class', $selected_class);
         //$this->log('stuff_'.$this->Session->read('selected_class'), LOG_DEBUG);
         //$this->log($this->StuffMaster->useTable);
         $this->StuffMemo->setSource('stuff_memos');
         // 登録していた値をセット
-        $this->set('memo_datas', $this->StuffMemo->find('all', array('conditions' => array('stuff_id' => $stuff_id), 'order' => array('id' => 'desc'))));  
-
+        $this->set('memo_datas', $this->StuffMemo->find('all', array('conditions' => array('class' => $selected_class, 'stuff_id' => $stuff_id), 'order' => array('id' => 'desc')))); 
+        $this->log($this->StuffMemo->getDataSource()->getLog(), LOG_DEBUG);
+        
         // ページネーション
-        $conditions2 = array('id' => $stuff_id);
+        //$conditions2 = array('id' => $stuff_id, 'kaijo_flag' => $flag);
+        $conditions2 = array('kaijo_flag' => $flag);
         //$conditions2 = null;
         $this->paginate = array(
             'fields' => '*' ,
             'limit' =>  '1',
-            'page' => '1',
+            //'page' => $page,
             'order' => 'id',
             'conditions' => $conditions2
         );
         $this->set('datas', $this->paginate('StuffMaster'));
-        //$this->redirect(array('action' => 'profile', 'page' => 3));
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
+            // 登録編集
             if (isset($this->request->data['submit'])) {
                 $this->redirect(array('action' => 'reg1', $stuff_id));
+            // 登録解除
             } elseif (isset($this->request->data['release'])) {
-                $this->StuffMaster->save($this->request->data);
+                $sql = '';
+                $sql = $sql.' UPDATE softlife.stuff_'.$selected_class; 
+                $sql = $sql.' SET id = '.$this->request->data['StuffMaster']['id'].', kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
+                $sql = $sql.' WHERE softlife.stuff_'.$selected_class.'.id = '.$this->request->data['StuffMaster']['id'];
+                //$this->log($sql, LOG_DEBUG);
+                $this->StuffMaster->query($sql);
+                $this->redirect(array('action' => 'profile', $flag, $stuff_id, 'page' => 1));
+                //$this->StuffMaster->save($this->request->data);
+                //$this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
                 $this->Session->setFlash('登録解除しました。');
+            // メモ追加
             } elseif (isset($this->request->data['comment'])) {
-                $this->StuffMemo->save($this->request->data);
-                $this->log($this->StuffMemo->getDataSource()->getLog(), LOG_DEBUG);
+                $sql = '';
+                $sql = $sql.' INSERT INTO softlife.stuff_memos (memo, class, username, stuff_id, created)';
+                $sql = $sql.' VALUES ("'.$this->request->data['StuffMemo']['memo'].'", '.$selected_class.', '
+                    .$this->request->data['StuffMemo']['username'].','.$stuff_id.', CURRENT_TIMESTAMP())';
+                $this->StuffMemo->query($sql);
+                $this->redirect(array('action' => 'profile', $flag, $stuff_id));
+                //$this->StuffMemo->save($this->request->data);
+                //$this->log($this->StuffMemo->getDataSource()->getLog(), LOG_DEBUG);
                 //$this->redirect($this->referer());
                 //$this->Session->setFlash('メモを追加しました。');
+            // メモ削除
             } elseif (isset($this->request->data['delete'])) {
-                $id = array_keys($this->request->data['delete'])[0];
-                $sql = "";
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                $sql = '';
                 $sql = $sql.' DELETE FROM stuff_memos';
                 $sql = $sql.' WHERE id = '.$id;
                 $this->StuffMemo->query($sql);
-                $this->redirect(array('action' => 'profile', $stuff_id));
+                $this->redirect(array('action' => 'profile', $flag, $stuff_id));
             } 
         } else {
             
@@ -285,34 +342,53 @@ class StuffMastersController extends AppController {
     
     // 登録ページ（その１）
     public function reg1($stuff_id = null) {
-          // レイアウト関係
-          $this->layout = "sub";
-          $this->set("title_for_layout", $this->title_for_layout);
-          // 都道府県のセット
-          mb_language("uni");
-          mb_internal_encoding("utf-8"); //内部文字コードを変更
-          mb_http_input("auto");
-          mb_http_output("utf-8");
-          $conditions = array('item' => 10);
-          $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
-          $this->set('pref_arr', $pref_arr); 
-          $this->set('stuff_id', $stuff_id); 
-          $this->StuffMaster->id = $stuff_id;
-          $this->set('username', $this->Auth->user('username')); 
-          //$this->StuffMaster->id = $stuff_id;
-          // テーブルの設定
-          $this->StuffMaster->setSource('stuff_'.$this->Session->read('selected_class'));
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 都道府県のセット
+        mb_language("uni");
+        mb_internal_encoding("utf-8"); //内部文字コードを変更
+        mb_http_input("auto");
+        mb_http_output("utf-8");
+        $selected_class = $this->Session->read('selected_class');
+        // 都道府県のセット
+        if (substr($selected_class, 0 ,1) == 1) {
+            // 大阪（関西地方）
+            $conditions = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
+        } elseif (substr($selected_class, 0, 1) == 2) {
+            // 東京（関東地方）
+            $conditions = array('item' => 10, 'AND' => array('id >= ' => 8, 'id <= ' => 14));
+        } elseif (substr($selected_class, 0, 1) == 3) {
+            // 名古屋（中部地方）
+            $conditions = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
+        }
+        $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+        $this->set('pref_arr', $pref_arr); 
+        // 登録担当者
+        $conditions2 = array('area' => substr($selected_class, 0, 1));
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions2));
+        $this->set('name_arr', $name_arr); 
+        // その他
+        $this->set('stuff_id', $stuff_id); 
+        $this->StuffMaster->id = $stuff_id;
+        $this->set('username', $this->Auth->user('username')); 
+        //$this->StuffMaster->id = $stuff_id;
+        // テーブルの設定
+        $this->StuffMaster->setSource('stuff_'.$selected_class);
 
-      // post時の処理
-      if ($this->request->is('post') || $this->request->is('put')) {
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->StuffMaster->validates() == false) {
                 exit();
             }
             if (isset($this->request->data['submit'])) {
                 // 都道府県の名称のセット
-                $conditions = array('item' => 10, 'id' => $this->request->data['StuffMaster']['address1']);
-                $result = $this->Item->find('first', array('conditions' => $conditions));
-                $this->request->data['StuffMaster']['address1_2'] = $result['Item']['value'];
+                if (!empty($this->request->data['StuffMaster']['address1'])) {
+                    $conditions = array('item' => 10, 'id' => $this->request->data['StuffMaster']['address1']);
+                    $result = $this->Item->find('first', array('conditions' => $conditions));
+                    $this->request->data['StuffMaster']['address1_2'] = $result['Item']['value'];
+                }
                 // モデルの状態をリセットする
                 //$this->StuffMaster->create();
                 // データを登録する
@@ -329,10 +405,10 @@ class StuffMastersController extends AppController {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
             }    
-      } else {
-          // 登録していた値をセット
-          $this->request->data = $this->StuffMaster->read(null, $stuff_id);
-      }
+        } else {
+            // 登録していた値をセット
+            $this->request->data = $this->StuffMaster->read(null, $stuff_id);
+        }
     }
     
     // 登録ページ（その２）
@@ -345,7 +421,18 @@ class StuffMastersController extends AppController {
         mb_internal_encoding("utf-8"); //内部文字コードを変更
         mb_http_input("auto");
         mb_http_output("utf-8");
-        $conditions = array('item' => 10);
+        $selected_class = $this->Session->read('selected_class');
+        // 都道府県のセット
+        if (substr($selected_class, 0 ,1) == 1) {
+            // 大阪（関西地方）
+            $conditions = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
+        } elseif (substr($selected_class, 0, 1) == 2) {
+            // 東京（関東地方）
+            $conditions = array('item' => 10, 'AND' => array('id >= ' => 8, 'id <= ' => 14));
+        } elseif (substr($selected_class, 0, 1) == 3) {
+            // 名古屋（中部地方）
+            $conditions = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
+        }
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
         $this->set('stuff_id', $stuff_id); 
@@ -355,11 +442,12 @@ class StuffMastersController extends AppController {
         $this->set('datas', $this->StuffMaster->find('first', 
                 array('fields' => array('created', 'modified'), 'conditions' => array('id' => $stuff_id) )));
         $this->set('username', $this->Auth->user('username')); 
-        $this->set('class', $this->getClass($this->Session->read('selected_class')));
+        $this->set('class_name', $this->getClass($selected_class));
+        $this->set('class', $selected_class);
 
         // ファイルアップロード処理の初期セット
         $ds = DIRECTORY_SEPARATOR;  //1
-        $storeFolder = 'files/stuff_reg'.$ds.$this->Session->read('selected_class').$ds.$stuff_id.$ds;   //2
+        $storeFolder = 'files/stuff_reg'.$ds.$this->Session->read('selected_class').$ds.sprintf('%05d', $stuff_id).$ds;   //2
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -397,10 +485,10 @@ class StuffMastersController extends AppController {
                         // ファイルアップ実行
                         if (move_uploaded_file($tempFile, $targetFile)) {
                             // アップの成功
-                            $this->log('ファイルのアップロードに成功しました：'.$stuff_id, LOG_DEBUG);
+                            $this->log('ファイルのアップロードに成功しました：'.$stuff_id);
                         } else {
                             // アップの失敗
-                            $this->log('ファイルのアップロードに失敗しました。'.$stuff_id, LOG_DEBUG);
+                            $this->log('ファイルのアップロードに失敗しました。'.$stuff_id);
                         }
                     }
                 }
@@ -562,16 +650,6 @@ class StuffMastersController extends AppController {
     }
     return $return;
   }
-  
-  /*** 年齢から生年月日の最小値を得る ***/
-  static public function getMinBirth($age){
-    $ret = '1900-01-01';
-    // セットされていれば年月日に変換
-    if(isset($age)){
-      $ret = true;
-    }
-      return $ret;
-    }
     
     /*** 職種をカンマ区切りに ***/
     static public function setShokushu($val){
@@ -597,6 +675,16 @@ class StuffMastersController extends AppController {
         return $class;
     } 
     
+    /*** 登録担当者の検索 ***/
+    public function getTantou(){
+        // 所属を配列に
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $result = $this->User->find('list', array('fields' => array('username', 'name')));
+        $result = $result + array('', '');
+        
+        return $result;
+    } 
+    
     /*** 所属により参照するテーブルを変更 ***/
     public function setTable($val){
         $tablename = '';
@@ -618,6 +706,18 @@ class StuffMastersController extends AppController {
         
         // sqlの実行
         $ret = $this->StuffMaster->query($sql);
+        
+        return $ret;
+    }
+    
+    /** マスタ更新ログ書き込み **/
+    public function writeSMLog($username, $class, $stuff_id, $kaijo_flag, $status) {
+        $sql = '';
+        $sql = $sql. ' INSERT INTO stuff_master_logs ';
+        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$stuff_id.', '.$kaijo_flag.', '.$status.', '.$this->RequestHandler->getClientIP().', now())';
+        
+        // sqlの実行
+        $ret = $this->StuffMasterLog->query($sql);
         
         return $ret;
     }

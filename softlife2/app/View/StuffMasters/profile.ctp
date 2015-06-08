@@ -7,295 +7,9 @@
     echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
     echo $this->Html->css('stuffmaster');
     echo $this->Html->css('lightbox');
-    
-    // 年齢換算
-    function getAge($str) {
-        return floor ((date('Ymd') - $str)/10000);
-    }
-    // 性別変換
-    function getGender($value) {
-        $ret = null;
-        if ($value == 1) {
-            $ret = '<img src="'.ROOTDIR.'/img/woman.png" style="width:30px;">';
-        } elseif ($value == 2) {
-            $ret = '<img src="'.ROOTDIR.'/img/man.png" style="width:30px;">';
-        } else {
-            $ret = '未分類';
-        }
-        return $ret;
-    }
-    // 有無
-    function getTF($value) {
-        $ret = null;
-        if ($value == 1) {
-            $ret = '無';
-        }else if ($value == 2) {
-            $ret = '有';
-        }
-        
-        return $ret;
-    }
-    // OJT済未済
-    function getOjt($value) {
-        $ret = '&nbsp;';
-        if ($value == 0) {
-            $ret = '未済';
-        } elseif ($value == 1) {
-            $ret = '済';
-        }
-        return $ret;
-    }
-    // 雇用形態
-    function getStatus($value) {
-        $ret = null;
-        if ($value == 1) {
-            $ret = '正社員';
-        } elseif ($value == 2) {
-            $ret = '契約社員';
-        } elseif ($value == 3) {
-            $ret = '人材派遣スタッフ';
-        }
-        return $ret;
-    }
-    // 通勤時間
-    function getComuterTime($value) {
-        $ret = null;
-        if ($value == 30) {
-            $ret = '30分以内';
-        } elseif ($value == 60) {
-            $ret = '1時間以内';
-        } elseif ($value == 90) {
-            $ret = '1時間30分以内';
-        } elseif ($value == 100) {
-            $ret = '1時間30分以上可';   
-        }
-        return $ret;
-    }
-    // 年末調整
-    function getNenmatsu($value) {
-        $ret = null;
-        if ($value == 1) {
-            $ret = 'なし';
-        } elseif ($value == 2) {
-            $ret = '希望';
-        }
-        return $ret;
-    }
-    // 職種
-    function getShokushu($value) {
-        $ret = "";
-        if ($value == 1) {
-            $ret = '受付';
-        } elseif ($value == 2) {
-            $ret = 'フロア受付';
-        } elseif ($value == 3) {
-            $ret = 'シッター';
-        } elseif ($value == 4) {
-            $ret = 'ナレーター';  
-        } elseif ($value == 5) {
-            $ret = 'ＤＨ';
-        } elseif ($value == 6) {
-            $ret = '看板持ち';
-        } elseif ($value == 7) {
-            $ret = '事務';
-        } elseif ($value == 8) {
-            $ret = '誘導案内';
-        } elseif ($value == 9) {
-            $ret = '内覧会スタッフ';
-        } else {
-            $ret = '';
-        }
-        return $ret;
-    }
-    function getShokushu2($array) {
-        $ret = "";
-        $_array = explode(',', $array);
-        foreach ($_array as $key => $value) {
-            if ($key <= 1) {
-                $ret = getShokushu($value);
-            } else {
-                $ret = $ret.', '.getShokushu($value);
-            }  
-        }
-        return $ret;
-    }
-     function getShokushu3($array) {
-        $ret = "";
-        $_array = explode(',', $array);
-        foreach ($_array as $key => $value) {
-            if ($key <= 1) {
-                $ret = getShokushu($value);
-            } else {
-                $ret = $ret.'<br>'.getShokushu($value);
-            }  
-        }
-        return $ret;
-    }
-    // その他の職業
-    function getShokugyou($value) {
-        $ret = "";
-        if ($value == 1) {
-            $ret = '会社員';
-        } elseif ($value == 2) {
-            $ret = '主婦';
-        } elseif ($value == 3) {
-            $ret = '学生';
-        } elseif ($value == 4) {
-            $ret = '派遣';  
-        } elseif ($value == 5) {
-            $ret = 'アルバイト';
-        } elseif ($value == 6) {
-            $ret = 'その他';
-        } else {
-            $ret = '';
-        }
-        return $ret;
-    }
-    function getShokugyou2($array) {
-        $ret = "";
-        $_array = explode(',', $array);
-        foreach ($_array as $key => $value) {
-            if ($key <= 1) {
-                $ret = getShokugyou($value);
-            } else {
-                $ret = $ret.', '.getShokugyou($value);
-            }  
-        }
-        return $ret;
-    }
-    // その他の職業（その他）
-    function getShokugyou3($val) {
-        $ret = "";
-        if (is_null($val) || empty($val)) {
-            $ret = "";
-        } else {
-            $ret = '('.$val.')';
-        }
-        return $ret;
-    }
-    // 勤務可能曜日
-    function getWorkable($value) {
-        $ret = "";
-        if ($value == 1) {
-            $ret = '特になし';
-        } elseif ($value == 2) {
-            $ret = '平日のみ';
-        } elseif ($value == 3) {
-            $ret = '土日のみ';
-        } elseif ($value == 4) {
-            $ret = '土日祝のみ';  
-        } elseif ($value == 5) {
-            $ret = '月';
-        } elseif ($value == 6) {
-            $ret = '火';
-        } elseif ($value == 7) {
-            $ret = '水';
-        } elseif ($value == 8) {
-            $ret = '木';
-        } elseif ($value == 9) {
-            $ret = '金';  
-        } elseif ($value == 10) {
-            $ret = '土';
-        } elseif ($value == 11) {
-            $ret = '日';
-        } else {
-            $ret = '';
-        }
-        return $ret;
-    }
-    function getWorkable2($array) {
-        $ret = "";
-        $_array = explode(',', $array);
-        foreach ($_array as $key => $value) {
-            if ($key <= 1) {
-                $ret = getWorkable($value);
-            } else {
-                $ret = $ret.', '.getWorkable($value);
-            }  
-        }
-        return $ret;
-    }
-    // 口座種別
-    function getKouza($value) {
-        $ret = null;
-        if ($value == 1) {
-            $ret = '普通';
-        } elseif ($value == 2) {
-            $ret = '当座';
-        }
-        return $ret;  
-    }
-    // 評価
-    function getHyouka($value) {
-        $ret = null;
-        if ($value == 0) {
-            $ret = '&nbsp;';
-        } elseif ($value == 1) {
-            $ret = '1 ■';
-        } elseif ($value == 2) {
-            $ret = '2 ■■';
-        } elseif ($value == 3) {
-            $ret = '3 ■■■';
-        } elseif ($value == 4) {
-            $ret = '4 ■■■■';
-        } elseif ($value == 5) {
-            $ret = '5 ■■■■■'; 
-        }
-        return $ret;
-    }
-    
-    // 路線・駅の表示
-    function getStation($code) {
-        if (!is_null($code) && !empty($code)) {
-            $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
-            //$xml = "http://www.ekidata.jp/api/s/3300610.xml";//ファイルを指定
-            // simplexml_load_fileは使えない処理
-            $xml_data = "";
-            $cp = curl_init();
-            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $cp, CURLOPT_HEADER, false );
-            curl_setopt($cp, CURLOPT_URL, $xml);
-            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
-            $xml_data = curl_exec($cp);
-            curl_close($cp);
-            $original_xml = simplexml_load_string($xml_data);
-            $xml_ary = json_decode(json_encode($original_xml), true);
-
-            $line_name = $xml_ary['station']['line_name'];
-            $station_name = $xml_ary['station']['station_name'];
-            $ret = $line_name.' '.$station_name.'駅';
-        } else {
-            $ret = '';
-        }   
-        return $ret; 
-    }
-
-    /**
-    // 都道府県の表示
-    function getPref($code) {
-        if (!is_null($code) && !empty($code)) {
-            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
-            // simplexml_load_fileは使えない処理
-            $xml_data = "";
-            $cp = curl_init();
-            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $cp, CURLOPT_HEADER, false );
-            curl_setopt($cp, CURLOPT_URL, $xml);
-            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
-            $xml_data = curl_exec($cp);
-            curl_close($cp);
-            $original_xml = simplexml_load_string($xml_data);
-            $xml_ary = json_decode(json_encode($original_xml), true);
-
-            $ret = $xml_ary['pref']['name'];
-        } else {
-            $ret = '';
-        }
-        return $ret; 
-    }
-     * 
-     */
 ?>
+
+<?php require('profile_element.ctp'); ?>
 
 <?php foreach ($datas as $data){ ?>
 <?php echo $this->Form->create('StuffMaster'); ?>
@@ -329,8 +43,8 @@
                     ?>
                                 <img src='<?=ROOTDIR ?>/img/noimage.jpg ?>' style='border:1px black solid; width:150px;'>
                     <?php } else { ?>
-                                <a href="<?=ROOTDIR ?>/files/stuff_reg/<?=$class ?>/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>" rel="lightbox">
-                                    <img src='<?=ROOTDIR ?>/files/stuff_reg/<?=$class ?>/<?=$id ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
+                                <a href="<?=ROOTDIR ?>/files/stuff_reg/<?=$class ?>/<?=sprintf('%05d', $id) ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>" rel="lightbox">
+                                    <img src='<?=ROOTDIR ?>/files/stuff_reg/<?=$class ?>/<?=sprintf('%05d', $id) ?>/<?=$id ?>.<?=$data['StuffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
                                 </a>
                     <?php } ?>
                             </td>
@@ -533,14 +247,14 @@
                 <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
                 <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'javascript:window.opener.location.reload();window.close();'))); ?>
+                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'javascript:window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
                 &nbsp;&nbsp;
                 <?php echo $this->Paginator->prev('◀前へ', array(), null, array('class' => 'prev disabled')); ?>
                 &nbsp;&nbsp;
                 <?php echo $this->Paginator->next('次へ▶', array(), null, array('class' => 'next disabled')); ?>
-                <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
+                <?php echo $this->Form->input('stuff_id', array('type'=>'hidden', 'value' => $data['StuffMaster']['id'])); ?>
                 <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?> 
             </div>
 
@@ -561,7 +275,8 @@
                     <td align="center" style="width:80%;">
                         <?php echo $this->Form->input('memo',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:95%;padding:3px;')); ?>
                         <?php echo $this->Form->input('username',array('type'=>'hidden', 'value' => $username)); ?>
-                        <?php echo $this->Form->input('stuff_id',array('type'=>'hidden', 'value' => $id)); ?>
+                        <?php echo $this->Form->input('class',array('type'=>'hidden', 'value' => $class)); ?>
+                        <?php echo $this->Form->input('stuff_id',array('type'=>'hidden', 'value' => $data['StuffMaster']['id'])); ?>
                     </td>
                     <td align="center"><?php echo $this->Form->submit('書き込み', array('name' => 'comment', 'div' => false, 'id' => 'button-create')); ?></td>
                 </tr>

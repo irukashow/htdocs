@@ -51,7 +51,7 @@ function doSearch1(id) {
     <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/stuff_masters/index/" target="">登録リスト</a>
+    <a href="<?=ROOTDIR ?>/stuff_masters/index/0" target="">登録リスト</a>
     &nbsp;
     <b>登録解除リスト</b>
 <?php } else { ?>
@@ -186,27 +186,28 @@ function doSearch1(id) {
     <td align="right">&nbsp;</td>
     <?php $stuff_id = $data['StuffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/<?php echo $data['StuffMaster']['id']; ?>','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/index/<?php echo $flag ?>/<?php echo $data['StuffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
                 <?php
                     $after = $data['StuffMaster']['pic_extension'];
                     if (is_null($after)) {
                 ?>
             <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
                 <?php } else { ?>
-            <img src="<?=ROOTDIR ?>/files/stuff_reg/<?=$selected_class ?>/<?=$stuff_id ?>/<?=$stuff_id ?>.<?=$after ?>" width="80px">
+            <img src="<?=ROOTDIR ?>/files/stuff_reg/<?=$selected_class ?>/<?=sprintf('%05d', $stuff_id) ?>/<?=$stuff_id ?>.<?=$after ?>" width="80px">
                 <?php } ?>
             <br>
             <font style="font-weight: bold;color: #006699;"><?php echo $stuff_id; ?></font>
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/profile/<?php echo $data['StuffMaster']['id']; ?>','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/index/<?php echo $flag ?>/<?php echo $data['StuffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?><br>
         </a>
 	<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>
     </td>
     <td align="center"><?php echo $data['StuffMaster']['age'].'歳'."<br>".getGender($data['StuffMaster']['gender']);?></td>
-    <td align="center"><?php echo '＜？＞'; ?></td>
+    <?php $tantou_user = $data['StuffMaster']['tantou']; ?>
+    <td align="center"><?php echo $getTantou[$tantou_user]; ?></td>
     <td align="center"><?php echo getOjt($data['StuffMaster']['ojt']).'<br>'.$data['StuffMaster']['ojt_date']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo getShokushu2($data['StuffMaster']['shokushu_shoukai']); ?></td>
@@ -236,3 +237,4 @@ function doSearch1(id) {
 <!--- スタッフマスタ本体 END --->
 
 <?php echo $this->Form->end(); ?>
+

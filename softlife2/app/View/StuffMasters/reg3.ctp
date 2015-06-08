@@ -37,7 +37,7 @@ $(function() {
                 </td>
                 <td style="float: right;">
                     <?php print($this->Html->link('終了する', '', 
-                            array('id'=>'button-delete','style' => 'margin:0px;', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>
+                            array('class'=>'button-rink','style' => 'margin:0px;', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>
                 </td>
             </tr>
         </table>
@@ -217,12 +217,12 @@ $(function() {
          
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('登録完了', array('name' => 'submit','div' => false)); ?>
+<?php echo $this->Form->submit('登録を完了する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
 <?php $back_url = '/stuff_masters/reg2/'.$stuff_id; ?>
-<?php print($this->Html->link('戻　る', $back_url, array('class'=>'button-rink'))); ?>
+<?php print($this->Html->link('戻　る', $back_url, array('id'=>'button-delete'))); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('終了する', '', array('id'=>'button-delete', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>    
+<?php print($this->Html->link('終了する', '', array('class'=>'button-rink', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>    
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

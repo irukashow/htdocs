@@ -51,8 +51,8 @@ function affixZero(int) {
                 <td style='background-color: #e8ffff;width:20%;'>登録担当者</td>
                 <td colspan="2">
                     <?php  
-                        $select1=array(''=>'','1'=>'担当者A','2'=>'担当者B','3'=>'担当者C');
-                        echo $this->Form->input( 'tantou', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false,'style' => 'float:none;', 'options' => $select1));
+                        //$select1=array(''=>'','1'=>'担当者A','2'=>'担当者B','3'=>'担当者C');
+                        echo $this->Form->input( 'tantou', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false, 'empty' => array('0' => '選択してください'), 'style' => 'float:none;', 'options' => $name_arr));
                     ?>
                 </td>
             </tr>
@@ -170,7 +170,7 @@ function affixZero(int) {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('次へ進む', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('キャンセル', 'javascript:void(0);', array('class'=>'button-rink', 'onclick'=>'window.close();'))); ?>
+<?php print($this->Html->link('キャンセル', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

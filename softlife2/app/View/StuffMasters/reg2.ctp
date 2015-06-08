@@ -2,87 +2,14 @@
     echo $this->Html->script( 'tools');
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
+    //echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
+    echo $this->Html->script('lightbox');
     echo $this->Html->script('station3');
+    echo $this->Html->css('lightbox');
 ?>
-<?php
-    // 初期値セット
-    $created = date('Y/m/d', strtotime($datas['StuffMaster']['created']));
-    $modified = date('Y/m/d', strtotime($datas['StuffMaster']['modified']));
-    $selected1 = explode(',',$data['StuffMaster']['shokushu_shoukai']);
-    $selected2 = explode(',',$data['StuffMaster']['shokushu_kibou']);
-    $selected3 = explode(',',$data['StuffMaster']['shokushu_keiken']);
-    $selected4 = explode(',',$data['StuffMaster']['extra_job']);
-    $selected5 = explode(',',$data['StuffMaster']['workable_day']);
-    $selected6 = explode(',',$data['StuffMaster']['regist_trigger']);
-    
-    // 路線のコンボセット
-    function getLine($code) {
-        if (!is_null($code) && !empty($code)) {
-            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
-            // simplexml_load_fileは使えない処理
-            $xml_data = "";
-            $cp = curl_init();
-            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $cp, CURLOPT_HEADER, false );
-            curl_setopt($cp, CURLOPT_URL, $xml);
-            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
-            $xml_data = curl_exec($cp);
-            curl_close($cp);
-            $original_xml = simplexml_load_string($xml_data);
-            $xml_ary = json_decode(json_encode($original_xml), true);
-            $line_ary = $xml_ary['line'];
 
-            foreach ($line_ary as $value) {
-                $ret[$value['line_cd']] = $value['line_name'];
-            }
+<?php require('reg2_element.ctp'); ?>
 
-            //$ret = $xml_ary['pref']['name'];
-        } else {
-            $ret = '';
-        }
-        
-        return $ret;
-    }
-    
-    $line1 = getLine($data['StuffMaster']['pref1']);
-    $line2 = getLine($data['StuffMaster']['pref2']);
-    $line3 = getLine($data['StuffMaster']['pref3']);
-    
-    // 駅のコンボセット
-    function getStation($code) {
-    //$code = $data['StuffMaster']['s0_1'];
-        if (!is_null($code) && !empty($code)) {
-            $xml = "http://www.ekidata.jp/api/l/".$code.".xml";//ファイルを指定
-            // simplexml_load_fileは使えない処理
-            $xml_data = "";
-            $cp = curl_init();
-            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $cp, CURLOPT_HEADER, false );
-            curl_setopt($cp, CURLOPT_URL, $xml);
-            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
-            $xml_data = curl_exec($cp);
-            curl_close($cp);
-            $original_xml = simplexml_load_string($xml_data);
-            $xml_ary = json_decode(json_encode($original_xml), true);
-            $station_ary = $xml_ary['station'];
-
-            foreach ($station_ary as $value) {
-                $ret[$value['station_cd']] = $value['station_name'];
-            }
-
-            //$ret = $xml_ary['pref']['name'];
-        } else {
-            $ret = '';
-        }
-        
-        return $ret;
-    }
-    
-    $station1 = getStation($data['StuffMaster']['s0_1']);
-    $station2 = getStation($data['StuffMaster']['s0_2']);
-    $station3 = getStation($data['StuffMaster']['s0_3']);
-    
-?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
   href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
@@ -116,7 +43,7 @@ $(function() {
             <tr>
                 <td colspan="2">
                     登録番号：<?=$stuff_id ?>&nbsp;&nbsp;
-                    作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
+                    作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class_name ?>
                 </td>
             </tr>
         </table>
@@ -149,7 +76,8 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$class.'/'.$stuff_id.'/'.$stuff_id.'.'.$after.'","証明写真","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している証明写真】</a>';
+                            echo '<a href="'.ROOTDIR.'/files/stuff_reg/'.$class.'/'.sprintf('%05d', $stuff_id).'/'.$stuff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
+                                    . '【保存している証明写真】</a>';
                         }
                     ?>
                 </td>
@@ -176,7 +104,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$class.'/'.$stuff_id.'/'.$stuff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/stuff_reg/'.$class.'/'.sprintf('%05d', $stuff_id).'/'.$stuff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
                         }
                     ?>
                 </td>
@@ -433,7 +361,7 @@ $(function() {
 <?php echo $this->Form->submit('次へ進む', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
 <?php $back_url = '/stuff_masters/reg1/'.$stuff_id; ?>
-<?php print($this->Html->link('戻　る', $back_url, array('class'=>'button-rink'))); ?>
+<?php print($this->Html->link('戻　る', $back_url, array('id'=>'button-delete'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

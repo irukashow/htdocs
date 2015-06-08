@@ -127,7 +127,7 @@ $(function() {
                         <ul>
                             <li class='<?= $active1 ?>'><a href='<?=ROOTDIR ?>/users/'>ホーム<br><div>Home</div></a></li>
                            <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/'>メッセージ<br><div>Message</div></a></li>
-                           <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/stuff_masters/'>スタッフ管理<br><div>Stuff Management</div></a></li>
+                           <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/stuff_masters/index/0'>スタッフ管理<br><div>Stuff Management</div></a></li>
                            <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/'>案件管理<br><div>Case Management</div></a></li>
                            <li class='<?= $active5 ?>'><a href='#'>その他<br><div>etc</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
