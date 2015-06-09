@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class Log extends AppModel {
-    public $useTable = array('login_logs', 'users');
+    public $useTable = 'login_logs';
     /** 主キー(省略時は「id」になるので省略も可) */
     //public $primaryKey = 'username';    
 }

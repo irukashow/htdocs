@@ -15,20 +15,28 @@
 ?>
 <?php echo $this->Form->create('Menu'); ?>
 
+<div style="padding: 15px;">
+    <div style="float:left;">
+        <font style="font-size: 150%;color: red;"><?= $headline ?></font>
+    </div>
+    <div style="float:right;">
+        <a href='/softlife2/admin/'>ホームへ戻る</a>
+    </div>
+    <div style="clear:both;"></div>
+    
 <!-- ページネーション -->
-<div class="pageNav03" style="margin: 10px;">
 <?php
-	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
-	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
-        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+    echo $this->Paginator->numbers (
+        array (
+            'before' => $this->Paginator->hasPrev() ? $this->Paginator->first('<<').' | ' : '',
+            'after' => $this->Paginator->hasNext() ? ' | '.$this->Paginator->last('>>') : '',
+            )
+        );
 ?>
- </div>
 
 <!--- スタッフマスタ本体 START --->
 <table id="stuff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
-  <tr>
+  <tr class="col">
       <th><?php echo $this->Paginator->sort('id',"No.");?></th>
       <th><?php echo $this->Paginator->sort('version_no','バージョン番号');?></th>
       <th><?php echo $this->Paginator->sort('status','ステータス');?></th>
@@ -49,17 +57,18 @@
 </table>
 
 <!-- ページネーション -->
-<div class="pageNav03" style="margin: 10px;">
 <?php
-	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
-	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
-        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+    echo $this->Paginator->numbers (
+        array (
+            'before' => $this->Paginator->hasPrev() ? $this->Paginator->first('<<').' | ' : '',
+            'after' => $this->Paginator->hasNext() ? ' | '.$this->Paginator->last('>>') : '',
+            )
+        );
 ?>
- </div>
 <!--- スタッフマスタ本体 END --->
 
 <?php echo $this->Form->end(); ?>
-
+<br>
 <a href="/softlife2/users/index">ホームへ戻る</a>
+
+</div>

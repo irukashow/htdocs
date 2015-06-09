@@ -60,9 +60,12 @@ class AppController extends Controller {
     }
     
     // 項目テーブルからの値変換関数
+    /**
     public function getValue($item, $id) {
         $conditions = array('item' => $item, 'id' => $id);
         $value = $this->Item->find('first', array('conditions' => $conditions));
         return $value;
     } 
+     * 
+     */
 }

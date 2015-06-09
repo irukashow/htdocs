@@ -3,7 +3,6 @@
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
     echo $this->Html->script('station');
-
 ?>
 
 <!-- for Datepicker -->
@@ -29,7 +28,7 @@ $(function() {
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('バージョン情報入力ページ'); ?></legend>
 
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th style='background:#99ccff;text-align: center;'>項目</th>
                 <th style='background:#99ccff;text-align: center;'>入力内容</th>

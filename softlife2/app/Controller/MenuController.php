@@ -20,8 +20,9 @@ class MenuController extends AppController {
 
     public function version() {
         // レイアウト関係
-        $this->layout = "sub";
-        $this->set("title_for_layout","バージョン更新情報 - 派遣管理システム");
+        $this->layout = "log";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", 'バージョン更新履歴');
         
         // 初期値設定
         //$this->set('datas', $this->Menu->find('all'));

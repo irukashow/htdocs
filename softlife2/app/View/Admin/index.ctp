@@ -19,21 +19,21 @@
 <?php echo $this->Form->create('User'); ?>
     <fieldset style="border: none; margin-bottom: 20px;height: 800px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー管理'); ?></legend>
-        <?php echo $this->Html->link('ユーザー一覧', '/account/'); ?>
+        <?php echo $this->Html->link('ユーザー一覧', '/users/view'); ?>
         <br><br>
-        <?php echo $this->Html->link('新規ユーザ登録', '/users/add/'); ?>
+        <?php echo $this->Html->link('ユーザー登録（新規）', '/users/add/'); ?>
         <br><br>
-        <?php echo $this->Html->link('ユーザー情報更新', '/users/edit/'); ?>
+        <?php echo $this->Html->link('ユーザー登録（更新）', '/users/edit/'); ?>
         <br><br>
     
         <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __('システム管理'); ?></legend>
         <?php echo $this->Html->link('バージョン情報入力ページ', './version/'); ?>
         <br><br>
-        <?php echo $this->Html->link('バージョン更新情報', '/version_remarks/'); ?>
+        <?php echo $this->Html->link('バージョン更新履歴', '/menu/version'); ?>
         <br><br>
-        <?php echo $this->Html->link('スタッフマスタ履歴', '/stuffmaster_log/'); ?>
+        <?php echo $this->Html->link('スタッフマスタ更新履歴', '/log/stuff_master'); ?>
         <br><br>
-        <?php echo $this->Html->link('ログイン履歴', '/login_log/'); ?>
+        <?php echo $this->Html->link('ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
          <br><br>
 
     </fieldset>

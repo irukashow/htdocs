@@ -99,6 +99,12 @@ class StuffMastersController extends AppController {
         $conditions1 = null;
         $conditions2 = null;
         $conditions3 = null;
+        $line1 = null;
+        $line2 = null;
+        $line3 = null;
+        $station1 = null;
+        $station2 = null;
+        $station3 = null;
         
         //$this->log($this->request, LOG_DEBUG);
         // POSTの場合
@@ -114,37 +120,34 @@ class StuffMastersController extends AppController {
             
             // 最寄り駅での絞り込み
             if(isset($this->request->data['search1'])) {
-                if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
-                    $conditions2 += array('OR' =>
-                        array(
-                            // 第一候補
-                            array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_1'])),
-                            array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_1'])),
-                            array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_1']))
-                        )
-                    );
-                }
-                if (!empty($this->request->data['StuffMaster']['s1_2']) && !empty($this->request->data['StuffMaster']['s2_2'])) {
-                    $conditions2 += array('OR' =>
-                        array(
-                            // 第二候補
-                            array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_2'])),
-                            array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_2'])),
-                            array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_2']))
-                        )
-                    );
-                }
-                if (!empty($this->request->data['StuffMaster']['s1_3']) && !empty($this->request->data['StuffMaster']['s2_3'])) {
-                    $conditions2 += array('OR' =>
-                        array(
-                            // 第三候補
-                            array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_3'])),
-                            array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_3'])),
-                            array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_3']))
-                        )
-                    );
-                }
+                //if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
+                $conditions2 += array('OR' =>
+                    array(
+                        // 第一候補
+                        array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_1'])),
+                        array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_1'])),
+                        array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_1'])),
+                        // 第二候補
+                        array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_2'])),
+                        array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_2'])),
+                        array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_2'])),
+                        // 第三候補
+                        array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_3'])),
+                        array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_3'])),
+                        array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_3'])),
+                    )
+                );
+  
+                
                 $this->log($conditions2, LOG_DEBUG);
+                
+                $line1 = $this->getLine($this->request->data['StuffMaster']['pref1']);
+                $line2 = $this->getLine($this->request->data['StuffMaster']['pref2']);
+                $line3 = $this->getLine($this->request->data['StuffMaster']['pref3']);
+                $station1 = $this->getStation($this->request->data['StuffMaster']['s0_1']);
+                $station2 = $this->getStation($this->request->data['StuffMaster']['s0_2']);
+                $station3 = $this->getStation($this->request->data['StuffMaster']['s0_3']);
+                
                 // 登録番号で検索
                 if (!empty($this->data['StuffMaster']['search_id'])){
                     $search_id = $this->data['StuffMaster']['search_id'];
@@ -209,8 +212,8 @@ class StuffMastersController extends AppController {
                 // ページ数（レコード番号）を取得
                 $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $stuff_id);
                 $page = $this->StuffMaster->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
-                $this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
-                $this->log($page, LOG_DEBUG);
+                //$this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                //$this->log($page, LOG_DEBUG);
                 $this->redirect(array('action' => 'profile', $flag, $stuff_id, 'page' => $page));
                 exit();
             }
@@ -245,6 +248,13 @@ class StuffMastersController extends AppController {
         }
         $this->set('selected_class', $this->Session->read('selected_class'));
         
+        // 路線・駅のコンボ値セット
+        $this->set('line1', $line1);
+        $this->set('line2', $line2);
+        $this->set('line3', $line3);
+        $this->set('station1', $station1);
+        $this->set('station2', $station2);
+        $this->set('station3', $station3);        
       }
 
     // プロフィールページ
@@ -261,7 +271,8 @@ class StuffMastersController extends AppController {
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
         $this->set('id', $stuff_id); 
-        $this->set('username', $this->Auth->user('username')); 
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
         // テーブルの設定
         $selected_class = $this->Session->read('selected_class');
         $this->StuffMaster->setSource('stuff_'.$selected_class);
@@ -295,14 +306,18 @@ class StuffMastersController extends AppController {
             } elseif (isset($this->request->data['release'])) {
                 $sql = '';
                 $sql = $sql.' UPDATE softlife.stuff_'.$selected_class; 
-                $sql = $sql.' SET id = '.$this->request->data['StuffMaster']['id'].', kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
-                $sql = $sql.' WHERE softlife.stuff_'.$selected_class.'.id = '.$this->request->data['StuffMaster']['id'];
+                $sql = $sql.' SET id = '.$this->request->data['StuffMaster']['stuff_id'].', kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
+                $sql = $sql.' WHERE softlife.stuff_'.$selected_class.'.id = '.$this->request->data['StuffMaster']['stuff_id'];
                 //$this->log($sql, LOG_DEBUG);
                 $this->StuffMaster->query($sql);
+                // ログ書き込み
+                
+                $this->setSMLog($username, $selected_class, $stuff_id, $this->request->data['StuffMaster']['stuff_name'], $flag, 9, $this->request->clientIp()); // 登録解除コード:9
                 $this->redirect(array('action' => 'profile', $flag, $stuff_id, 'page' => 1));
                 //$this->StuffMaster->save($this->request->data);
                 //$this->log($this->StuffMaster->getDataSource()->getLog(), LOG_DEBUG);
                 $this->Session->setFlash('登録解除しました。');
+                /**
             // メモ追加
             } elseif (isset($this->request->data['comment'])) {
                 $sql = '';
@@ -324,6 +339,8 @@ class StuffMastersController extends AppController {
                 $sql = $sql.' WHERE id = '.$id;
                 $this->StuffMemo->query($sql);
                 $this->redirect(array('action' => 'profile', $flag, $stuff_id));
+                 * 
+                 */
             } 
         } else {
             
@@ -334,10 +351,38 @@ class StuffMastersController extends AppController {
     public function memo($stuff_id = null) {
         $this->layout = false;
         $this->StuffMemo->setSource('stuff_memos');
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('class', $selected_class);
         $this->set('id', $stuff_id);
         $this->set('username', $this->Auth->user('username')); 
         // 登録していた値をセット
-        $this->set('memo_datas', $this->StuffMemo->find('all', array('conditions' => array('stuff_id' => $stuff_id), 'order' => array('id' => 'desc'))));  
+        $this->set('memo_datas', $this->StuffMemo->find('all', array('conditions' => array('class' => $selected_class, 'stuff_id' => $stuff_id), 'order' => array('id' => 'desc'))));  
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {        
+            // メモ追加
+            if (isset($this->request->data['comment'])) {
+                $sql = '';
+                $sql = $sql.' INSERT INTO softlife.stuff_memos (memo, class, username, stuff_id, created)';
+                $sql = $sql.' VALUES ("'.$this->request->data['StuffMemo']['memo'].'", '.$selected_class.', '
+                    .$this->request->data['StuffMemo']['username'].','.$stuff_id.', CURRENT_TIMESTAMP())';
+                $this->StuffMemo->query($sql);
+                $this->redirect(array('action' => 'memo', $stuff_id));
+                //$this->StuffMemo->save($this->request->data);
+                //$this->log($this->StuffMemo->getDataSource()->getLog(), LOG_DEBUG);
+                //$this->redirect($this->referer());
+                //$this->Session->setFlash('メモを追加しました。');
+            // メモ削除
+            } elseif (isset($this->request->data['delete'])) {
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                $sql = '';
+                $sql = $sql.' DELETE FROM stuff_memos';
+                $sql = $sql.' WHERE id = '.$id;
+                $this->StuffMemo->query($sql);
+                $this->redirect(array('action' => 'memo', $stuff_id));
+            }   
+        }
     }
     
     // 登録ページ（その１）
@@ -710,11 +755,70 @@ class StuffMastersController extends AppController {
         return $ret;
     }
     
+    // 路線のコンボセット
+    function getLine($code) {
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
+            // simplexml_load_fileは使えない処理
+            $xml_data = "";
+            $cp = curl_init();
+            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $cp, CURLOPT_HEADER, false );
+            curl_setopt($cp, CURLOPT_URL, $xml);
+            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
+            $xml_data = curl_exec($cp);
+            curl_close($cp);
+            $original_xml = simplexml_load_string($xml_data);
+            $xml_ary = json_decode(json_encode($original_xml), true);
+            $line_ary = $xml_ary['line'];
+
+            foreach ($line_ary as $value) {
+                $ret[$value['line_cd']] = $value['line_name'];
+            }
+
+            //$ret = $xml_ary['pref']['name'];
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+    }
+
+    // 駅のコンボセット
+    function getStation($code) {
+    //$code = $data['StuffMaster']['s0_1'];
+        if (!is_null($code) && !empty($code)) {
+            $xml = "http://www.ekidata.jp/api/l/".$code.".xml";//ファイルを指定
+            // simplexml_load_fileは使えない処理
+            $xml_data = "";
+            $cp = curl_init();
+            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $cp, CURLOPT_HEADER, false );
+            curl_setopt($cp, CURLOPT_URL, $xml);
+            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
+            $xml_data = curl_exec($cp);
+            curl_close($cp);
+            $original_xml = simplexml_load_string($xml_data);
+            $xml_ary = json_decode(json_encode($original_xml), true);
+            $station_ary = $xml_ary['station'];
+
+            foreach ($station_ary as $value) {
+                $ret[$value['station_cd']] = $value['station_name'];
+            }
+
+            //$ret = $xml_ary['pref']['name'];
+        } else {
+            $ret = '';
+        }
+        
+        return $ret;
+    }
+    
     /** マスタ更新ログ書き込み **/
-    public function writeSMLog($username, $class, $stuff_id, $kaijo_flag, $status) {
+    public function setSMLog($username, $class, $stuff_id, $stuff_name, $kaijo_flag, $status, $ip_address) {
         $sql = '';
-        $sql = $sql. ' INSERT INTO stuff_master_logs ';
-        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$stuff_id.', '.$kaijo_flag.', '.$status.', '.$this->RequestHandler->getClientIP().', now())';
+        $sql = $sql. ' INSERT INTO stuff_master_logs (username, class, stuff_id, stuff_name, kaijo_flag, status, ip_address, created)';
+        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$stuff_id.', "'.$stuff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
         
         // sqlの実行
         $ret = $this->StuffMasterLog->query($sql);

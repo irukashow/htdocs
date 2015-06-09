@@ -1,11 +1,11 @@
 <div style="width:35%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-<?php echo $this->Form->create('User', array('name' => 'form')); ?>
+<?php echo $this->Form->create('User', array('type' => 'post', 'name' => 'form')); ?>
 <?php $list1 = array(''=>'', '1'=>'大阪', '2'=>'東京', '3'=>'名古屋', '99'=>'すべて'); ?>
 <?php $list2 = array('11'=>'大阪-人材派遣　', '12'=>'大阪-住宅営業　', '21'=>'東京-人材派遣　', '22'=>'東京-住宅営業　', '31'=>'名古屋-人材派遣　', '32'=>'名古屋-住宅営業　'); ?>
     
     <fieldset style="border:none;margin-bottom: 0px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー情報を更新してください。'); ?></legend>
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 1px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
                 <th style="width:30%;background-color:#e8ffff;"><div class="required"><label>氏名 (姓・名)</label></div></th>
                 <td style="padding-left: 5px;">
@@ -48,7 +48,7 @@
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('更新する', array('name' => 'regist','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('戻　る', '/admin/index', array('id'=>'button-delete'))); ?>
+<?php print($this->Html->link('戻　る', '/admin/index', array('id' => 'button-delete'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Html->link('クリア', './edit', array('class'=>'button-rink'))); ?>
     </div>

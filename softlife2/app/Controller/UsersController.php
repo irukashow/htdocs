@@ -124,6 +124,7 @@ class UsersController extends AppController {
 
                 // POSTの場合
                 if ($this->request->is('post') || $this->request->is('put')) {
+                    $this->log($this->request, LOG_DEBUG);
                     if ($this->User->validates() == false) {
                         return null;
                     }
@@ -144,14 +145,21 @@ class UsersController extends AppController {
                         }
                     } else {
                         // データのセット
-                        $this->request->data = $this->User->read(null, $this->request->data['User']['username']);
-                        $value = explode(',', $this->request->data['User']['auth']);
-                        $this->set('value', $value);
-                        //$this->log($this->request->data);
+                        if (!empty($this->request->data['User']['username'])) {
+                            $this->request->data = $this->User->read(null, $this->request->data['User']['username']);
+                            $value = explode(',', $this->request->data['User']['auth']);
+                            $this->set('value', $value);
+                            //$this->log($this->request->data);
+                        } else {
+                            $this->request->data = $this->User->read(null, $this->request->data['username']);
+                            $value = explode(',', $this->request->data['User']['auth']);
+                            $this->set('value', $value);
+                        }
                     }
                 } else {
                     // 登録していた値をセット
                     $this->request->data = $this->User->read(null, $id);
+                    
                 }
 	}
 
@@ -160,13 +168,12 @@ class UsersController extends AppController {
 	 */
     public function view() {
         // レイアウト関係
-        $this->layout = "main";
-        $this->set("title_for_layout","ホーム - 派遣管理システム");
-        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-        $this->set('user_name', $name);
-        
-        $data = $this->User->find('all');
-        $this->set('data', $data);
+        $this->layout = "log";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", 'ユーザー一覧');
+        $this->set('getValue', $this->getValue());      // 項目テーブル
+
+        $this->set('datas', $this->paginate('User'));
     }
 
 	/**
@@ -285,5 +292,14 @@ class UsersController extends AppController {
         }
         return $ret;
     }
+    
+    // 項目マスタ
+    public function getValue(){
+        $conditions = null;
+        $result = $this->Item->find('list', array('fields' => array('id', 'value', 'item'), 'conditions' => $conditions));
+        //$this->log($result, LOG_DEBUG);
+        
+        return $result;
+    } 
 
 }

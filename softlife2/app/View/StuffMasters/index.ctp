@@ -74,11 +74,11 @@ function doSearch1(id) {
     'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
 <?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;',
-    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)')); ?>
+    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)', 'options'=>$line1)); ?>
 &nbsp;→
-<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
 &nbsp;駅&nbsp;～&nbsp;
-<?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
 &nbsp;駅<BR>
 
                 <SPAN>路線②</SPAN>
@@ -86,11 +86,11 @@ function doSearch1(id) {
     'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
 <?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)')); ?>
+    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)', 'options'=>$line2)); ?>
 &nbsp;→
-<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
 &nbsp;駅&nbsp;～&nbsp;
-<?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
 &nbsp;駅<BR>
 
                 <SPAN>路線③</SPAN>
@@ -98,11 +98,11 @@ function doSearch1(id) {
     'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
 &nbsp;→
 <?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)')); ?>
+    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)', 'options'=>$line3)); ?>
 &nbsp;→
-<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
 &nbsp;駅&nbsp;～&nbsp;
-<?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;')); ?>
+<?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
 &nbsp;駅<BR>
             </DIV>
             <div style='float: left;padding-left: 10px;'>
@@ -215,9 +215,9 @@ function doSearch1(id) {
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo $data['StuffMaster']['address1_2'].'&nbsp;'.$data['StuffMaster']['address2']; ?></td>
     <td align="left">
-        <?php echo getStation($data['StuffMaster']['s1_1'], 1); ?>
-        <?php echo getStation($data['StuffMaster']['s1_2'], 1); ?>
-        <?php echo getStation($data['StuffMaster']['s1_3'], 0); ?>
+        <?php echo getStation0($data['StuffMaster']['s1_1'], 1); ?>
+        <?php echo getStation0($data['StuffMaster']['s1_2'], 1); ?>
+        <?php echo getStation0($data['StuffMaster']['s1_3'], 0); ?>
     </td>
     <td align="center"><?php echo getNenmatsu($data['StuffMaster']['nenmatsu_chousei']); ?></td>
   </tr>

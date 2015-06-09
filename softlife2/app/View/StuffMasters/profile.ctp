@@ -255,16 +255,16 @@
                 &nbsp;&nbsp;
                 <?php echo $this->Paginator->next('次へ▶', array(), null, array('class' => 'next disabled')); ?>
                 <?php echo $this->Form->input('stuff_id', array('type'=>'hidden', 'value' => $data['StuffMaster']['id'])); ?>
+                <?php echo $this->Form->input('stuff_name', array('type'=>'hidden', 'value' => $data['StuffMaster']['name_sei'].' '.$data['StuffMaster']['name_mei'])); ?>
                 <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?> 
             </div>
 
             <!-- 登録者メモ -->
             <font style="font-size: 120%;">登録者メモ</font>
+            <br>
+            <iframe width="100%" height="200px" src="<?=ROOTDIR ?>/stuff_masters/memo/<?=$data['StuffMaster']['id'] ?>" frameborder='0' scrolling="yes" style="margin-bottom: 10px;"></iframe>
+            <br>
             <!--
-            <br>
-            <iframe width="100%" height="200px" src="../memo/<?=$data['StuffMaster']['id'] ?>" frameborder='1' scrolling="no" style="margin-bottom: 10px;"></iframe>
-            <br>
-            -->
             <div style="overflow-y:scroll;height:200px;margin-bottom: 10px;">
             <?php echo $this->Form->create('StuffMemo'); ?>
             <table border='1' cellspacing="0" cellpadding="2" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
@@ -288,9 +288,11 @@
                     <td align="center"><?php echo $this->Form->submit('削　除', array('name' => 'delete['.$mdata['StuffMemo']['id'].']', 'id' => 'button-delete', 'div' => false)); ?></td>
                 </tr>
                 <?php } ?>
+                
             </table>
             <?php echo $this->Form->end(); ?>
             </div>
+            -->
             <!-- 勤務実績一覧 -->
             <font style="font-size: 120%;">勤務実績一覧</font>
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">

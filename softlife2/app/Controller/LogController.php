@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class LogController extends AppController {
-    var $uses = array('LoginLogs', 'Users');
+    var $uses = array('LoginLogs', 'Users', 'Item', 'StuffMaster', 'StuffMasterLogs');
     public $title_for_layout = "ログイン履歴 - 派遣管理システム";
     
     public $paginate = array (
@@ -27,11 +27,11 @@ class LogController extends AppController {
                 'table' => 'users',
                 'alias' => 'Users',
                 'conditions' => 'LoginLogs.username = Users.username' 
+                ) 
             ) 
-        ) 
-    ), 
-    "Role" => array() 
-);
+        ), 
+        "Role" => array() 
+    );
     
     // ルート
     public function index() {
@@ -44,23 +44,32 @@ class LogController extends AppController {
         $this->layout = "log";
         $this->set("title_for_layout", $this->title_for_layout);
         $this->set("headline", 'ログイン履歴');
-        
-        /*
-        $option = array();
-        $option['recursive'] = -1; 
-        $option['joins'][] = array(
-            'type' => 'LEFT',
-            'table' => 'users',
-            'alias' => 'Users',
-            'conditions' => 'Users.username = LoginLogs.username'
-        );
-        $option['order'] = 'id';
-        //$option['conditions'] = array('User.id' => 1, 'Post.isPrivate' => 1);
-        $option['fields'] = array('LoginLogs.*, Users.name_sei, Users.name_mei'); //<- 追加
-        $result = $this->LoginLogs->find('all', $option);
-         * 
-         */
 
         $this->set('datas', $this->paginate('LoginLogs'));
     }
+    
+    // スタッフマスタ更新履歴
+    public function stuff_master() {
+        // レイアウト関係
+        $this->layout = "log";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", 'スタッフマスタ更新履歴');
+        // テーブルの設定
+        $this->LoginLogs->setSource('stuff_master_logs');
+        // 項目配列セット
+        $this->set('data_item', $this->getValue());
+        
+        $this->set('datas', $this->paginate('LoginLogs'));
+        //$this->log($this->LoginLogs->getDataSource()->getLog(), LOG_DEBUG);
+        //$this->paginate['joins'] = null;
+    }
+    
+    // 項目マスタ
+    public function getValue(){
+        $conditions = null;
+        $result = $this->Item->find('list', array('fields' => array('id', 'value', 'item'), 'conditions' => $conditions));
+        //$this->log($result, LOG_DEBUG);
+        
+        return $result;
+    } 
 }
