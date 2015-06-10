@@ -8,12 +8,38 @@
     echo $this->Html->css('stuffmaster');
     echo $this->Html->css('lightbox');
 ?>
-
 <?php require('profile_element.ctp'); ?>
 
+<style>
+#loading{
+    position:absolute;
+    left:50%;
+    top:40%;
+    margin-left:-30px;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+<script type="text/javascript">
+  <!--
+//コンテンツの非表示
+$(function(){
+    $('#profile').css('display', 'none');
+});
+//ページの読み込み完了後に実行
+window.onload = function(){
+    $(function() {
+        //ページの読み込みが完了したのでアニメーションはフェードアウトさせる
+        $("#loading").fadeOut();
+        //ページの表示準備が整ったのでコンテンツをフェードインさせる
+        $("#profile").fadeIn();
+    });
+}
+  //-->
+</script>
+<div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <?php foreach ($datas as $data){ ?>
 <?php echo $this->Form->create('StuffMaster'); ?>
-<table border="0" style="margin:10px;width:98%;">
+<table id='profile' border="0" style="margin:10px;width:98%;">
     <tr>
         <td style="width:50%;vertical-align: top;">
             <div style="color: whitesmoke;background-color: #45bcd2;text-shadow: 1px 1px 3px #666666;border:1px solid #0099cc;padding:5px;vertical-align: middle;padding-right: 5px;">
@@ -247,7 +273,7 @@
                 <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
                 <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'javascript:window.opener.location.reload();window.close();'))); ?>
+                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'javascript:window.close();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
                 &nbsp;&nbsp;

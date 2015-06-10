@@ -94,19 +94,21 @@ class StuffMastersController extends AppController {
         } else {
             $limit = '10';
         }
+        // 登録担当者
+        $conditions = array('area' => substr($selected_class, 0, 1));
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
+        $this->set('name_arr', $name_arr); 
         // 表示件数の初期値
         $this->set('limit', $limit);
-        $conditions1 = null;
-        $conditions2 = null;
-        $conditions3 = null;
-        $line1 = null;
-        $line2 = null;
-        $line3 = null;
-        $station1 = null;
-        $station2 = null;
-        $station3 = null;
+        $conditions1 = null;$conditions2 = null;$conditions3 = null;
+        $line1 = null;$line2 = null;$line3 = null;
+        $station1 = null;$station2 = null;$station3 = null;
+        $array_11 = null;$array_12 = null;$array_13 = null;
+        $array_21 = null;$array_22 = null;$array_23 = null;
+        $array_31 = null;$array_32 = null;$array_33 = null;
         
-        //$this->log($this->request, LOG_DEBUG);
+        $this->log($this->request, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
             // 初期表示
@@ -120,7 +122,35 @@ class StuffMastersController extends AppController {
             
             // 最寄り駅での絞り込み
             if(isset($this->request->data['search1'])) {
-                //if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
+                // 駅コンボ値セット
+                $line1 = $this->getLine($this->request->data['StuffMaster']['pref1']);
+                $line2 = $this->getLine($this->request->data['StuffMaster']['pref2']);
+                $line3 = $this->getLine($this->request->data['StuffMaster']['pref3']);
+                $station1 = $this->getStation($this->request->data['StuffMaster']['s0_1']);
+                $station2 = $this->getStation($this->request->data['StuffMaster']['s0_2']);
+                $station3 = $this->getStation($this->request->data['StuffMaster']['s0_3']);
+                
+                if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
+                    $array_11 = array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_1']));
+                    $array_12 = array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_1']));
+                    $array_13 = array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_1']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_1']));
+                }
+                if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
+                    $array_21 = array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_2']));
+                    $array_22 = array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_2']));
+                    $array_23 = array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_2']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_2']));
+                }
+                if (!empty($this->request->data['StuffMaster']['s1_1']) && !empty($this->request->data['StuffMaster']['s2_1'])) {
+                    $array_31 = array(array('StuffMaster.s1_1 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_1 <= ' => $this->request->data['StuffMaster']['s2_3']));
+                    $array_32 = array(array('StuffMaster.s1_2 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_2 <= ' => $this->request->data['StuffMaster']['s2_3']));
+                    $array_33 = array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_3']));
+                }
+                $conditions2 += array('OR' =>
+                    array($array_11, $array_12, $array_13,
+                        $array_21, $array_22, $array_23,
+                        $array_31, $array_32, $array_33)
+                    );
+                /**
                 $conditions2 += array('OR' =>
                     array(
                         // 第一候補
@@ -137,16 +167,9 @@ class StuffMastersController extends AppController {
                         array(array('StuffMaster.s1_3 >=' => $this->request->data['StuffMaster']['s1_3']), array('StuffMaster.s1_3 <= ' => $this->request->data['StuffMaster']['s2_3'])),
                     )
                 );
-  
-                
-                $this->log($conditions2, LOG_DEBUG);
-                
-                $line1 = $this->getLine($this->request->data['StuffMaster']['pref1']);
-                $line2 = $this->getLine($this->request->data['StuffMaster']['pref2']);
-                $line3 = $this->getLine($this->request->data['StuffMaster']['pref3']);
-                $station1 = $this->getStation($this->request->data['StuffMaster']['s0_1']);
-                $station2 = $this->getStation($this->request->data['StuffMaster']['s0_2']);
-                $station3 = $this->getStation($this->request->data['StuffMaster']['s0_3']);
+                 * 
+                 */
+                //$this->log($conditions2, LOG_DEBUG);
                 
                 // 登録番号で検索
                 if (!empty($this->data['StuffMaster']['search_id'])){
@@ -159,24 +182,22 @@ class StuffMastersController extends AppController {
                     //$conditions2 += array( 'OR' => array(array('StuffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StuffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
                     $conditions2 += array('CONCAT(StuffMaster.name_sei, StuffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
                     //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
-
                 }
                 // 年齢で検索
                 if (!empty($this->data['StuffMaster']['search_age'])){
                     $search_age = $this->data['StuffMaster']['search_age'];
                     $conditions2 += array('StuffMaster.age' => $search_age);
                 }
-                // 担当者で検索
-                if (!empty($this->data['StuffMaster']['search_tantou'])){
-                    $search_tantou = $this->data['StuffMaster']['search_tantou'];
-                    $conditions2 += array('tantou LIKE ' => '%'.$search_tantou.'%');
-                } 
                 // 都道府県
                 if (!empty($this->data['StuffMaster']['search_area'])){
                     $search_area = $this->data['StuffMaster']['search_area'];
                     //$this->log($search_area);
                     $conditions2 += array('CONCAT(StuffMaster.address1_2, StuffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
-                }  
+                }
+            // 担当者で絞り込み
+            } elseif (!empty($this->data['StuffMaster']['search_tantou'])){
+                $search_tantou = $this->data['StuffMaster']['search_tantou'];
+                $conditions2 += array('StuffMaster.tantou' => $search_tantou);
             // 年齢での絞り込み
             } elseif (isset($this->request->data['search2'])) {
                 //$this->Session->setFlash($this->request->data['StuffMaster']['search_age_lower'].'-'.$this->request->data['StuffMaster']['search_age_upper']);
@@ -301,7 +322,7 @@ class StuffMastersController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             // 登録編集
             if (isset($this->request->data['submit'])) {
-                $this->redirect(array('action' => 'reg1', $stuff_id));
+                $this->redirect(array('action' => 'reg1', $stuff_id, 1));
             // 登録解除
             } elseif (isset($this->request->data['release'])) {
                 $sql = '';
@@ -311,7 +332,6 @@ class StuffMastersController extends AppController {
                 //$this->log($sql, LOG_DEBUG);
                 $this->StuffMaster->query($sql);
                 // ログ書き込み
-                
                 $this->setSMLog($username, $selected_class, $stuff_id, $this->request->data['StuffMaster']['stuff_name'], $flag, 9, $this->request->clientIp()); // 登録解除コード:9
                 $this->redirect(array('action' => 'profile', $flag, $stuff_id, 'page' => 1));
                 //$this->StuffMaster->save($this->request->data);
@@ -386,7 +406,7 @@ class StuffMastersController extends AppController {
     }
     
     // 登録ページ（その１）
-    public function reg1($stuff_id = null) {
+    public function reg1($stuff_id = null, $koushin_flag = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -417,7 +437,10 @@ class StuffMastersController extends AppController {
         // その他
         $this->set('stuff_id', $stuff_id); 
         $this->StuffMaster->id = $stuff_id;
-        $this->set('username', $this->Auth->user('username')); 
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+
         //$this->StuffMaster->id = $stuff_id;
         // テーブルの設定
         $this->StuffMaster->setSource('stuff_'.$selected_class);
@@ -438,14 +461,22 @@ class StuffMastersController extends AppController {
                 //$this->StuffMaster->create();
                 // データを登録する
                 if ($this->StuffMaster->save($this->request->data)) {
-                    if (isset($stuff_id)) {
-                    // 登録したIDを取得
-                        $id = $stuff_id;
-                    } else {
+                    if ($stuff_id == 0) {
+                        // 新規登録したIDを取得
                         $id = $this->StuffMaster->getLastInsertID();
-                    } 
+                        // ログ書き込み
+                        $this->setSMLog($username, $selected_class, $id, $this->request->data['StuffMaster']['name_sei'].' '.$this->request->data['StuffMaster']['name_mei'], 9, 1, $this->request->clientIp()); // 新規登録１コード:1
+                    } else {
+                        $id = $stuff_id;
+                        // ログ書き込み
+                        $this->setSMLog($username, $selected_class, $id, $this->request->data['StuffMaster']['name_sei'].' '.$this->request->data['StuffMaster']['name_mei'], 9, 11, $this->request->clientIp()); // 更新登録１コード:11
+                    }
+                    
                     // 登録２にリダイレクト
-                    $this->redirect(array('action' => 'reg2', $id));
+                    //$this->redirect(array('action' => 'reg2', $id, $koushin_flag));
+                    // 登録完了メッセージ
+                    $this->Session->setFlash('登録しました。');
+                    $this->redirect(array('action' => 'reg1', $id, $koushin_flag));
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
@@ -457,7 +488,7 @@ class StuffMastersController extends AppController {
     }
     
     // 登録ページ（その２）
-    public function reg2($stuff_id = null) {
+    public function reg2($stuff_id = null, $koushin_flag = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout",$this->title_for_layout);
@@ -486,9 +517,11 @@ class StuffMastersController extends AppController {
         // 初期値設定
         $this->set('datas', $this->StuffMaster->find('first', 
                 array('fields' => array('created', 'modified'), 'conditions' => array('id' => $stuff_id) )));
-        $this->set('username', $this->Auth->user('username')); 
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
         $this->set('class_name', $this->getClass($selected_class));
         $this->set('class', $selected_class);
+        $this->set('koushin_flag', $koushin_flag);
 
         // ファイルアップロード処理の初期セット
         $ds = DIRECTORY_SEPARATOR;  //1
@@ -562,14 +595,41 @@ class StuffMastersController extends AppController {
                 $this->request->data['StuffMaster']['extra_job'] = $val4;
                 $this->request->data['StuffMaster']['workable_day'] = $val5;
                 $this->request->data['StuffMaster']['regist_trigger'] = $val6;
+                // 駅を未入力ならばNULLをセットする
+                if (empty($this->request->data['StuffMaster']['s1_1'])) {
+                    //$this->request->data['StuffMaster']['pref1'] = null;
+                    //$this->request->data['StuffMaster']['s0_1'] = null;
+                    $this->request->data['StuffMaster']['s1_1'] = null;
+                }
+                if (empty($this->request->data['StuffMaster']['s1_2'])) {
+                    //$this->request->data['StuffMaster']['pref2'] = null;
+                    //$this->request->data['StuffMaster']['s0_2'] = null;
+                    $this->request->data['StuffMaster']['s1_2'] = null;
+                }
+                if (empty($this->request->data['StuffMaster']['s1_3'])) {
+                    //$this->request->data['StuffMaster']['pref3'] = null;
+                    //$this->request->data['StuffMaster']['s0_3'] = null;
+                    $this->request->data['StuffMaster']['s1_3'] = null;
+                }
                 // モデルの状態をリセットする
                 //$this->StuffMaster->create();
                 // データを登録する
                 if ($this->StuffMaster->save($this->request->data)) {
                     // 登録したIDを取得
                     //$id = $this->StuffMaster->getLastInsertID();
+                    // ログ書き込み
+                    if ($koushin_flag == 0) {
+                        $this->setSMLog($username, $selected_class, $stuff_id, $this->request->data['StuffMaster']['name_sei'].' '.$this->request->data['StuffMaster']['name_mei'], 
+                            9, 2, $this->request->clientIp()); // 新規登録２コード:2
+                    } elseif ($koushin_flag == 1) {
+                        $this->setSMLog($username, $selected_class, $stuff_id, $this->request->data['StuffMaster']['name_sei'].' '.$this->request->data['StuffMaster']['name_mei'], 
+                            9, 12, $this->request->clientIp()); // 更新登録２コード:12 
+                    }
                     // 登録２にリダイレクト
-                    $this->redirect(array('action' => 'reg3', $stuff_id));
+                    //$this->redirect(array('action' => 'reg3', $stuff_id, $koushin_flag));
+                    // 登録完了メッセージ
+                    $this->Session->setFlash('登録しました。');
+                    $this->redirect(array('action' => 'reg2', $stuff_id, $koushin_flag));
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
@@ -591,7 +651,7 @@ class StuffMastersController extends AppController {
     }
     
     // 登録ページ（その３）
-    public function reg3($stuff_id = null) {
+    public function reg3($stuff_id = null, $koushin_flag = null) {
           // レイアウト関係
           $this->layout = "sub";
           $this->set("title_for_layout",$this->title_for_layout);
@@ -609,8 +669,12 @@ class StuffMastersController extends AppController {
         // 初期値設定
         $this->set('datas', $this->StuffMaster->find('first', 
                 array('fields' => array('created', 'modified'), 'conditions' => array('id' => $stuff_id) )));
-        $this->set('username', $this->Auth->user('username')); 
-        $this->set('class', $this->getClass($this->Session->read('selected_class')));
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $selected_class = $this->Session->read('selected_class');
+        $class = $this->getClass($selected_class);
+        $this->set('class', $class);
+        $this->set('koushin_flag', $koushin_flag);
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -622,10 +686,18 @@ class StuffMastersController extends AppController {
                 //$this->StuffMaster->create();
                 // データを登録する
                 if ($this->StuffMaster->save($this->request->data)) {
+                    // ログ書き込み
+                    if ($koushin_flag == 0) {
+                        $this->setSMLog($username, $selected_class, $stuff_id, $this->request->data['StuffMaster']['name_sei'].' '.$this->request->data['StuffMaster']['name_mei'], 
+                            9, 3, $this->request->clientIp()); // 新規登録３コード:3
+                    } elseif ($koushin_flag == 1) {
+                        $this->setSMLog($username, $selected_class, $stuff_id, $this->request->data['StuffMaster']['name_sei'].' '.$this->request->data['StuffMaster']['name_mei'], 
+                            9, 13, $this->request->clientIp()); // 更新登録３コード:13 
+                    }
                     // 登録したIDを取得
                     //$id = $this->StuffMaster->getLastInsertID();
                     // 登録完了メッセージ
-                    $this->Session->setFlash('登録がすべて完了しました。');
+                    $this->Session->setFlash('登録しました。');
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }

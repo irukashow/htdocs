@@ -1,3 +1,8 @@
+<?php
+    echo $this->Html->css('stuffmaster');
+    echo $this->Html->script('station3');
+?>
+
 <?php require('index_element.ctp'); ?>
 <style>
 #loading{
@@ -46,9 +51,9 @@ function doSearch1(id) {
 <div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="alert('制作中');" id="pre_regist">仮登録リスト</a>
+    <a href="javascript:void(0);" onclick="alert('制作予定');" id="pre_regist">仮登録リスト</a>
     &nbsp;
-    <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/reg1','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
+    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/stuff_masters/reg1/0/0','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 1) { ?>
     <a href="<?=ROOTDIR ?>/stuff_masters/index/0" target="">登録リスト</a>
@@ -171,7 +176,10 @@ function doSearch1(id) {
       </td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_tantou', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td></td>
+      <td style="background-color: #ffffe6;">
+          <?php echo $this->Form->input('search_tantou', 
+                  array('type'=>'select', 'label' => false, 'style' => 'width:90%;','empty' => array('' => ''), 'options' => $name_arr, 'onchange' => 'form.submit();')); ?>
+      </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
@@ -186,7 +194,7 @@ function doSearch1(id) {
     <td align="right">&nbsp;</td>
     <?php $stuff_id = $data['StuffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/index/<?php echo $flag ?>/<?php echo $data['StuffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/stuff_masters/index/<?php echo $flag ?>/<?php echo $data['StuffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
                 <?php
                     $after = $data['StuffMaster']['pic_extension'];
                     if (is_null($after)) {
@@ -200,7 +208,7 @@ function doSearch1(id) {
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('/softlife2/stuff_masters/index/<?php echo $flag ?>/<?php echo $data['StuffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/stuff_masters/index/<?php echo $flag ?>/<?php echo $data['StuffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?><br>
         </a>
 	<?=date('Y-m-d', strtotime($data['StuffMaster']['created'])); ?>

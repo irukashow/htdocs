@@ -29,23 +29,17 @@ $(function() {
 </script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 20px;">
-        <table border="0" style="width: 100%;height: 20px;">
-            <tr>
-                <td>
-                    <div style="font-size: 150%;color: red;float:left;"><?php echo __('スタッフ登録 （評価関連）'); ?></div>
-                </td>
-                <td style="float: right;">
-                    <?php print($this->Html->link('終了する', '', 
-                            array('class'=>'button-rink','style' => 'margin:0px;', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>
-                </td>
-            </tr>
-        </table>
-        <div style="clear: both;height: 0px;"></div>
+    <fieldset style="border:none;margin-bottom: 10px;">
+        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （評価関連）'); ?></legend>
+        <a href="<?=ROOTDIR ?>/stuff_masters/reg1/<?=$stuff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+        <a href="<?=ROOTDIR ?>/stuff_masters/reg2/<?=$stuff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+        <font color="blue">評価関連</font>&nbsp;
         
 <?php echo $this->Form->create('StuffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>  
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
+<?php echo $this->Form->input('name_sei', array('type'=>'hidden')); ?>
+<?php echo $this->Form->input('name_mei', array('type'=>'hidden')); ?>
         
         <!-- スタッフ情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
@@ -54,7 +48,7 @@ $(function() {
             </tr>
             <tr>
                 <td colspan="2">
-                    No.<?='0001' ?>&nbsp;&nbsp;登録番号：<?=$stuff_id ?>&nbsp;&nbsp;
+                    登録番号：<?=$stuff_id ?>&nbsp;&nbsp;
                     作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
                 </td>
             </tr>
@@ -217,12 +211,9 @@ $(function() {
          
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('登録を完了する', array('name' => 'submit','div' => false)); ?>
+<?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php $back_url = '/stuff_masters/reg2/'.$stuff_id; ?>
-<?php print($this->Html->link('戻　る', $back_url, array('id'=>'button-delete'))); ?>
-    &nbsp;&nbsp;
-<?php print($this->Html->link('終了する', '', array('class'=>'button-rink', 'onclick' => 'window.opener.location.reload();window.close();'))); ?>    
+<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>  
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

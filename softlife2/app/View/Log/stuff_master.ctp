@@ -3,7 +3,7 @@
         <font style="font-size: 150%;color: red;"><?= $headline ?></font>
     </div>
     <div style="float:right;">
-        <a href='/softlife2/admin/'>管理者ページへ戻る</a>
+        <a href='<?=ROOTDIR ?>/admin/'>管理者ページへ戻る</a>
     </div>
     <div style="clear:both;"></div>
 <?php
@@ -55,6 +55,6 @@
         );
 ?>
 <br>
-<a href='/softlife2/admin/'>管理者ページへ戻る</a>
+<a href='<?=ROOTDIR ?>/admin/'>管理者ページへ戻る</a>
 
 </div>

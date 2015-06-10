@@ -1,8 +1,6 @@
 <?php
-    echo $this->Html->css( 'stuffmaster');
-    echo $this->Html->script('station3');
-    
-    // 年齢換算
+
+     // 年齢換算
     function getAge($str) {
         return floor ((date('Ymd') - $str)/10000).'歳';
     }

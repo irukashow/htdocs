@@ -35,9 +35,18 @@ function affixZero(int) {
 
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 
-<div style="width:80%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 20px;">
+<div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
+    <fieldset style="border:none;margin-bottom: 10px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （登録情報）'); ?></legend>
+<?php if ($stuff_id == 0) { ?>
+        <font color=blue>登録情報</font>&nbsp;>>&nbsp;
+        基本情報&nbsp;>>&nbsp;
+        評価関連&nbsp;
+<?php } else { ?>
+        <font color=blue>登録情報</font>&nbsp;>>&nbsp;
+        <a href="<?=ROOTDIR ?>/stuff_masters/reg2/<?=$stuff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+        <a href="<?=ROOTDIR ?>/stuff_masters/reg3/<?=$stuff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+<?php } ?>
 <?php echo $this->Form->create('StuffMaster'); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>
         <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
@@ -68,15 +77,15 @@ function affixZero(int) {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>氏名</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('name_sei',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:30%;')); ?>
-                    <?php echo $this->Form->input('name_mei',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('name_sei',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
+                    <?php echo $this->Form->input('name_mei',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>氏名（フリガナ）</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('name_sei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:30%;')); ?>
-                    <?php echo $this->Form->input('name_mei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('name_sei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
+                    <?php echo $this->Form->input('name_mei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
                 </td>
             </tr>
             <tr>
@@ -101,9 +110,9 @@ function affixZero(int) {
                 <td style='background-color: #e8ffff;width:20%;'>郵便番号</td>
                 <td>
                     <?php echo $this->Form->input('zipcode1',
-                            array('label'=>false,'div'=>false,'maxlength'=>'3','style'=>'width:12%;')); ?>-
+                            array('label'=>false,'div'=>false,'maxlength'=>'3','style'=>'width:6%;')); ?>-
                     <?php echo $this->Form->input('zipcode2',
-                            array('label'=>false,'div'=>false,'maxlength'=>'4','style'=>'width:16%;',
+                            array('label'=>false,'div'=>false,'maxlength'=>'4','style'=>'width:8%;',
                                 'onKeyUp'=>"AjaxZip3.zip2addr('data[StuffMaster][zipcode1]',this,'data[StuffMaster][address1]','data[StuffMaster][address2]','data[StuffMaster][address3]','data[StuffMaster][address4]');")); ?>
                             &nbsp;&nbsp;<font size="2">※住所を町村名まで自動で入力します。</font>
                 </td>
@@ -142,35 +151,33 @@ function affixZero(int) {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>電話番号１</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('telno1',array('label'=>false,'div'=>false,'style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('telno1',array('label'=>false,'div'=>false,'style'=>'width:20%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>電話番号２</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('telno2',array('label'=>false,'div'=>false,'style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('telno2',array('label'=>false,'div'=>false,'style'=>'width:20%;')); ?>
                 </td>
             </tr> 
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>メールアドレス１</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:50%;')); ?>
+                    <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:40%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>メールアドレス２</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:50%;')); ?>
+                    <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:40%;')); ?>
                 </td>
             </tr>  
         </table>
-
-
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('次へ進む', array('name' => 'submit','div' => false)); ?>
+<?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('キャンセル', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.close();'))); ?>
+<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

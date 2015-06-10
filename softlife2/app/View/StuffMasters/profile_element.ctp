@@ -241,7 +241,7 @@
             $xml = "http://www.ekidata.jp/api/s/".$code.".xml";//ファイルを指定
             //$xml = "http://www.ekidata.jp/api/s/3300610.xml";//ファイルを指定
             // simplexml_load_fileは使えない処理
-            $xml_data = "";
+            //$xml_data = "";
             $cp = curl_init();
             curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt( $cp, CURLOPT_HEADER, false );

@@ -6,7 +6,7 @@
 <div id='headline'>
     ★ メッセージボックス
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="#" target="" id='button-send'>メッセージを送る</a>
+    <a href="send" target="" id='button-send'>メッセージを送る</a>
 </div>
 
 <!-- メインペイン -->

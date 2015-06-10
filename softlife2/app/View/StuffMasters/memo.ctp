@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" type="text/css" href="/softlife2/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="<?=ROOTDIR ?>/css/main.css" />
 </head>
     <body style="width:535px;background-color: white;margin-top: 0px;margin-left: 0px;">
 <?php echo $this->Form->create('StuffMemo'); ?>

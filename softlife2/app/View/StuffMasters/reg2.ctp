@@ -29,11 +29,17 @@ $(function() {
 </script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 20px;">
+    <fieldset style="border:none;margin-bottom: 10px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （基本情報）'); ?></legend>
+        <a href="<?=ROOTDIR ?>/stuff_masters/reg1/<?=$stuff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+        <font color="blue">基本情報</font>&nbsp;>>&nbsp;
+        <a href="<?=ROOTDIR ?>/stuff_masters/reg3/<?=$stuff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+        
 <?php echo $this->Form->create('StuffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $stuff_id)); ?>   
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
+<?php echo $this->Form->input('name_sei', array('type'=>'hidden')); ?>
+<?php echo $this->Form->input('name_mei', array('type'=>'hidden')); ?>
         
         <!-- スタッフ情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
@@ -358,10 +364,9 @@ $(function() {
 
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('次へ進む', array('name' => 'submit','div' => false)); ?>
+<?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php $back_url = '/stuff_masters/reg1/'.$stuff_id; ?>
-<?php print($this->Html->link('戻　る', $back_url, array('id'=>'button-delete'))); ?>
+<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?> 
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

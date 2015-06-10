@@ -1,16 +1,3 @@
-<?php
-    if($auth->loggedIn())
-    {
-        //echo $this->Html->link('ログアウト', '/users/logout/');
-    }else{
-        //echo $this->Html->link('ログイン', '/users/login/');
-        // ログイン画面へ遷移
-        //header('Location: login');
-        //exit();
-        //echo '<script type="text/javascript">location.href = "/softlife2/users/login/"</script>';
-    }
-?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -53,7 +40,7 @@ $(function() {
         <table style="width: 100%;height: 40px;">
             <tr>
                 <td style="padding-top: 11px;">
-                    <a href="/softlife2/users/" class="logo">&nbsp;</a>
+                    <a href="<?=ROOTDIR ?>/users/" class="logo">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>
                     </font>

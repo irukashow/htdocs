@@ -23,7 +23,7 @@
         <table style="width: 100%;" border="0">
             <tr>
                 <td style="padding-top: 12px;">
-                    <a href="/softlife2/users/" class="logo">&nbsp;</a>
+                    <a href="<?=ROOTDIR ?>/users/" class="logo">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>
                     </font>

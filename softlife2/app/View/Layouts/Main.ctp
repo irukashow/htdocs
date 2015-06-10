@@ -1,15 +1,4 @@
-<?php
-    if($auth->loggedIn())
-    {
-        //echo $this->Html->link('ログアウト', '/users/logout/');
-    }else{
-        //echo $this->Html->link('ログイン', '/users/login/');
-        // ログイン画面へ遷移
-        //header('Location: login');
-        //exit();
-        //echo '<script type="text/javascript">location.href = "softlife2/users/login/"</script>';
-    }
-    
+<?php 
     // 所属カンマ区切りを配列に
     $value = explode(',', $result['User']['auth']);
     //$this->log($value);
@@ -34,7 +23,6 @@
             $class['32'] = '名古屋-住宅営業';
         }   
     } 
-    
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
