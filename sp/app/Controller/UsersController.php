@@ -220,7 +220,7 @@ class UsersController extends AppController {
        
         // レイアウト関係
         $this->layout = "main";
-        $this->set("title_for_layout","ログイン - 派遣管理システム");
+        $this->set("title_for_layout","スタッフ専用サイト");
         
         // 初期値設定
         $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");

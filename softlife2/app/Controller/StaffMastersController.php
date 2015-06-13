@@ -303,7 +303,7 @@ class StaffMastersController extends AppController {
         $this->StaffMemo->setSource('staff_memos');
         // 登録していた値をセット
         $this->set('memo_datas', $this->StaffMemo->find('all', array('conditions' => array('class' => $selected_class, 'staff_id' => $staff_id), 'order' => array('id' => 'desc')))); 
-        $this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG);
+        //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG);
         
         // ページネーション
         //$conditions2 = array('id' => $staff_id, 'kaijo_flag' => $flag);
@@ -447,7 +447,12 @@ class StaffMastersController extends AppController {
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->StaffMaster->validates() == false) {
+            if ($this->StaffMaster->validates($this->request->data)) {
+                // バリデーションOKの場合の処理
+                $this->log('OK!', LOG_DEBUG);
+            } else {
+                // バリデーションNGの場合の処理
+                $this->log( $this->StaffMaster->validationErrors, LOG_DEBUG);
                 exit();
             }
             if (isset($this->request->data['submit'])) {
@@ -515,8 +520,8 @@ class StaffMastersController extends AppController {
         // テーブルの設定
         $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
         // 初期値設定
-        $this->set('datas', $this->StaffMaster->find('first', 
-                array('fields' => array('created', 'modified'), 'conditions' => array('id' => $staff_id) )));
+        $this->set('data', $this->StaffMaster->find('list', 
+                array('fields' => array('*'), 'conditions' => array('id' => $staff_id) )));
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
         $this->set('class_name', $this->getClass($selected_class));
@@ -529,7 +534,8 @@ class StaffMastersController extends AppController {
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->StaffMaster->validates() == false) {
+            $this->log($this->StaffMaster->validates($this->request->data), LOG_DEBUG);
+            if (!$this->StaffMaster->validates($this->request->data)) {
                 exit();
             }           
             if (isset($this->request->data['submit'])) {

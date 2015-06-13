@@ -15,7 +15,7 @@
                 <p>給与情報</p>
 	</div>
 	<div data-role="footer">
-		<h2>&copy; 2015 SOFTLIFE Co., Ltd.</h2>
+            <h2>&copy; 2015 SOFTLIFE Co., Ltd.</h2>
 	</div>
 </div>
  
@@ -51,6 +51,12 @@
 			</ul>
 		</div>
 		<p>メッセージの閲覧・送信</p>
+                <ul data-role="listview" data-count-theme="b">
+                    <li data-icon="mail"><a href="#">受信トレイ<span class="ui-li-count">368</span></a></li>
+                    <li data-icon="edit"><a href="#">下書き<span class="ui-li-count">5</span></a></li>
+                    <li data-icon="action"><a href="#">送信済み<span class="ui-li-count">254</span></a></li>
+                    <li data-icon="delete"><a href="#">削除済み<span class="ui-li-count">64</span></a></li>
+                </ul>
 	</div>
 	<div data-role="footer">
 		<h2>&copy; 2015 SOFTLIFE Co., Ltd.</h2>

@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class StaffMaster extends AppModel {
-    public $useTable = 'staff_masters';
+    //public $useTable = 'staff_masters';
     //public $useTable = false;
     
     public $validate = array(
@@ -25,6 +25,18 @@ class StaffMaster extends AppModel {
         'name_mei' =>  array(
                 'rule' => 'notEmpty',
                 'message' => '氏名（名）を入力してください。'
+        ),
+        'zipcode1' =>  array(
+            'rule' => 'numeric',
+            'required' => false,
+            'allowEmpty' => true,
+            'message' => '郵便番号は半角数字で入力して下さい。'
+        ),
+        'zipcode2' =>  array(
+            'rule' => 'numeric',
+            'required' => false,
+            'allowEmpty' => true,
+            'message' => '郵便番号は半角数字で入力して下さい。'
         ),
         'email1' => array(
             'rule' => array('email', false),

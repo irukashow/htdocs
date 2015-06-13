@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class MessageController extends AppController {
-    public $uses = array('Message');
+    public $uses = array('MessageMember');
 
     public function index() {
         // レイアウト関係
@@ -36,9 +36,17 @@ class MessageController extends AppController {
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
+        // テーブルの設定
+        $this->MessageMember->setSource('message_member');
         // 受信メッセージ一覧の表示
-        $datas = $this->Message->find('all');
-        $this->set('datas', $datas);
+        $this->paginate = array(
+            'MessageMember' => array(
+                'conditions' => null,
+                'limit' =>20,                        //1ページ表示できるデータ数の設定
+                'order' => array('id' => 'desc'),  //データを降順に並べる
+            )
+        );
+        $this->set('datas', $this->paginate());
         
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -73,6 +81,8 @@ class MessageController extends AppController {
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
         $this->set('selected_class', $this->Session->read('selected_class'));
+        // テーブルの設定
+        $this->MessageMember->setSource('message_member');
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -87,8 +97,8 @@ class MessageController extends AppController {
             } elseif (isset($this->request->data['send'])) {
                 // データを登録する
                 //$this->Message->create();
-                if ($this->Message->save($this->request->data)) {
-                    $this->log($this->Message->getDataSource()->getLog(), LOG_DEBUG);
+                if ($this->MessageMember->save($this->request->data)) {
+                    $this->log($this->MessageMember->getDataSource()->getLog(), LOG_DEBUG);
                     //$this->Session->setFlash('送信処理を完了しました。');
                     $this->redirect('index');
                 }                
@@ -123,13 +133,27 @@ class MessageController extends AppController {
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
         $this->set('selected_class', $this->Session->read('selected_class'));
+        // テーブルの設定
+        $this->MessageMember->setSource('message_member');
+        // 既読フラグ: 1
+        // 更新する内容を設定
+        $data = array('MessageMember' => array('id' => $id, 'kidoku_flag' => 1));
+        // 更新する項目（フィールド指定）
+        $fields = array('kidoku_flag');
+        // 更新
+        if ($this->MessageMember->save($data, false, $fields)) {
+        }
         // 受信メッセージの内容表示
-        $datas = $this->Message->find('first', array('conditions' => array('id' => $id)));
+        $datas = $this->MessageMember->find('first', array('conditions' => array('id' => $id)));
+        //$this->log($this->MessageMember->getDataSource()->getLog(), LOG_DEBUG);
         $this->set('data', $datas);
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            $this->log($this->request->data, LOG_DEBUG);
+            //$this->log($this->request->data, LOG_DEBUG);
+            if ($this->MessageMember->validates() == false) {
+                exit();
+            }
             // 属性の変更
             if (isset($this->request->data['class'])) {
                 $class = $this->request->data['class'];
@@ -140,8 +164,8 @@ class MessageController extends AppController {
             } elseif (isset($this->request->data['send'])) {
                 // データを登録する
                 //$this->Message->create();
-                if ($this->Message->save($this->request->data)) {
-                    $this->log($this->Message->getDataSource()->getLog(), LOG_DEBUG);
+                if ($this->MessageMember->save($this->request->data)) {
+                    $this->log($this->MessageMember->getDataSource()->getLog(), LOG_DEBUG);
                     //$this->Session->setFlash('送信処理を完了しました。');
                     $this->redirect('index');
                 }                

@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-
+        public $uses = array('MessageMember');
 	// Authコンポーネントの利用設定。
 	public $components = array('Auth'=>array('allowedActions'=>array('login')));
         // タイトル
@@ -30,7 +30,18 @@ class UsersController extends AppController {
             $this->set('user_name', $name);
             $this->set('name', $name);
             //$this->set('sessions', $this->Session);
-            
+            // テーブルの設定
+            $this->MessageMember->setSource('message_member');
+            // 受信メッセージ一覧の表示
+            $this->paginate = array(
+                'MessageMember' => array(
+                    'conditions' => null,
+                    'limit' =>20,                        //1ページ表示できるデータ数の設定
+                    'order' => array('id' => 'desc'),  //データを降順に並べる
+                )
+            );
+            $this->set('datas', $this->paginate());
+
             // POSTの場合
             if ($this->request->is('post')) {
                 // 属性の変更

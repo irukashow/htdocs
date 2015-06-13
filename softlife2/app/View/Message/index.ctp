@@ -22,8 +22,15 @@
             <td style="width:70%;">
     <!-- メッセージ一覧 -->
     <div id='message-list'>
-        <?php echo $this->Form->create('Message', array('name' => 'form')); ?>
-        <font style='font-weight: bold;font-size: 110%;'>[受信箱]</font>
+        <?php echo $this->Form->create('MessageMember', array('name' => 'form')); ?>
+        <font style='font-weight: bold;font-size: 110%;'>[受信箱]</font><br>
+        <?php echo $this->paginator->numbers (
+            array (
+                'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
+                'after' => $this->paginator->hasNext() ? ' | '.$this->paginator->last('>>') : '',
+            )
+        );
+        ?>
         <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void">
             <tr style='background-color: #459ed2;'>
                 <th style='width:5%;'>&nbsp;</th>
@@ -32,20 +39,31 @@
                 <th style='width:25%;'>作成日時</th>
             </tr>
             <?php foreach ($datas as $data) { ?>
-            <tr>
+        <?php if ($data['MessageMember']['kidoku_flag'] == 0) { ?>
+            <tr style='background-color: #fff6d7; border:1px solid orange; font-weight: bold;'>
+        <?php } elseif ($data['MessageMember']['kidoku_flag'] == 1) { ?>
+            <tr>    
+        <?php } ?>   
                 <td style="padding-top: 8px;">
                     <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
                 </td>
                 <td class='message-content'>
-                    <?php echo $this->Html->link($data['Message']['title'], 'detail/'.$data['Message']['id'], array('style'=>'text-decoration: none;')) ?>
+                    <?php echo $this->Html->link($data['MessageMember']['title'], 'detail/'.$data['MessageMember']['id'], array('style'=>'color: blue;')) ?>
                 </td>
                 <td class='message-content'>
-                    <?php echo $this->Html->link($data['Message']['name'], 'detail/'.$data['Message']['id'], array('style'=>'text-decoration: none;')) ?>
+                    <?php echo $this->Html->link($data['MessageMember']['name'], 'detail/'.$data['MessageMember']['id'], array('style'=>'')) ?>
                 </td>
-                <td class='message-content'><?=$data['Message']['modified']; ?></td>
+                <td class='message-content'><?=$data['MessageMember']['modified']; ?></td>
             </tr>
             <?php } ?>
         </table>
+        <?php echo $this->paginator->numbers (
+            array (
+                'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
+                'after' => $this->paginator->hasNext() ? ' | '.$this->paginator->last('>>') : '',
+            )
+        );
+        ?>
         <?php echo $this->Form->end(); ?>
     </div>
                 </td>

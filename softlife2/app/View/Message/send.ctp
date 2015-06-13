@@ -12,7 +12,7 @@
 </div>
 
 <div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
-<?php echo $this->Form->create('Message', array('name' => 'form')); ?>
+<?php echo $this->Form->create('MessageMember', array('name' => 'form')); ?>
     <table id="" border="0" width="60%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
         <tr>
             <td width="80px">差出人</td>
@@ -25,16 +25,17 @@
         <tr>
             <td>標題</td>
             <td>
-                <?php echo $this->Form->input('title', array('type' => 'textbox', 'label' => false,  'div' => '', 'style' => 'width: 100%;')); ?>
+                <?php echo $this->Form->input('title', array('label' => false, 'style' => 'width: 100%;')); ?>
             </td>  
             <td align="left">
-                <?php echo $this->Form->input('', array('type' => 'checkbox', 'label' => 'エディタ',  'div' => '', 'onclick' => "toggleHtmlEditor(this.checked,'myArea3','full');")); ?>
+                <?php echo $this->Form->input('editor', array('type' => 'checkbox', 'label' => 'エディタ',  'div' => '', 'onclick' => "toggleHtmlEditor(this.checked,'myArea3','full');")); ?>
             </td>
         </tr>
         <tr>
             <td style="vertical-align: -10px;">本文</td>
             <td align="left" colspan="2">
-                <?php echo $this->Form->input('body', array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 700px; height: 200px;margin-left:0px;')); ?>
+                <?php echo $this->Form->input('body', 
+                        array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 700px; height: 200px;margin-left:0px;', 'required' => 'required')); ?>
             </td>
         </tr>
         <tr>
@@ -53,7 +54,7 @@
             <td align="left" colspan="2">
                 <?php echo $this->Form->submit('送信する', array('name' => 'send', 'div' => false, 'id' => 'button-send', 'style' => 'font-size:110%; padding:10px 15px 10px 15px;')); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Form->submit('キャンセル', array('name' => 'cancel', 'div' => false, 'id'=>'button-delete', 'style'=>''))); ?>
+                <a href='<?=ROOTDIR ?>/message/index' id='button-delete'>キャンセル</a>
             </td>
         </tr>
     </table>

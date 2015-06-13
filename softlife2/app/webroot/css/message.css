@@ -44,6 +44,9 @@ border-spacing: 0px 3px;
 margin-top: 0px;
 //border: none;
 }
+#message-table tr{
+background-color: #e9ffff;
+}
 #message-table th{
 background-color: #459ed2;
 color: white; 
@@ -52,8 +55,14 @@ padding: 3px 3px 3px 5px;
 }
 #message-table td{
 padding: 3px 3px 3px 5px;
-background-color: #e9ffff;
+//background-color: #e9ffff;
 //border: 1px solid #b9b9b9;
+}
+#message-table a{
+text-decoration: none;
+}
+#message-table a:hover{
+text-decoration: underline;
 }
 
 /** メッセージ作成ボタン **/

@@ -1,7 +1,7 @@
 <?php
     // 初期値セット
-    $created = date('Y/m/d', strtotime($datas['StaffMaster']['created']));
-    $modified = date('Y/m/d', strtotime($datas['StaffMaster']['modified']));
+    $created = date('Y/m/d', strtotime($data['StaffMaster']['created']));
+    $modified = date('Y/m/d', strtotime($data['StaffMaster']['modified']));
     $selected1 = explode(',',$data['StaffMaster']['shokushu_shoukai']);
     $selected2 = explode(',',$data['StaffMaster']['shokushu_kibou']);
     $selected3 = explode(',',$data['StaffMaster']['shokushu_keiken']);

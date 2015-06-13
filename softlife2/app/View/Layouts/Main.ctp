@@ -117,7 +117,7 @@ $(function() {
                            <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/'>メッセージ<br><div>Message</div></a></li>
                            <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/staff_masters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
                            <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/'>案件管理<br><div>Case Management</div></a></li>
-                           <li class='<?= $active5 ?>'><a href='' onclick='alert("追加予定")'>その他<br><div>etc</div></a></li>
+                           <li class='<?= $active5 ?>'><a href='' onclick='alert("制作予定")'>シフト管理<br><div>Shift Management</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>

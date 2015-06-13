@@ -13,6 +13,18 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class Message extends AppModel {
-    public $useTable = 'messages';
+    public $useTable = 'message_member';
+    
+    public $validate = array(
+        // メッセージ送信
+        'title' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '標題を入力してください。'
+        ),
+        'body' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '本文を入力してください。'
+        )
+        );
     
 }

@@ -14,34 +14,38 @@
 <div style="border:1px solid #cccc99;background-color: #ffffea ;padding: 5px 5px 5px 5px;border-radius:5px;">
 <?php echo $this->Form->create('Message', array('name' => 'form')); ?>
     <table id="" border="0" width="99.5%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;">
-        <tr style="background-color: #45bcd2; color: white; font-weight: bold; font-size: 120%;">
+        <tr style="background-color: #459ed2; color: white; font-weight: bold; font-size: 120%;">
             <td>
                 <img src='<?=ROOTDIR ?>/img/msg.gif' style='vertical-align: -4px;'>
-                <?php echo $data['Message']['title']; ?>
+                <?php echo $data['MessageMember']['title']; ?>
             </td>  
         </tr>
-        <tr style="background-color: #eaffff;">
+        <tr style="background-color: #ffffea;">
             <td>
-                差出人： <font style="font-size: 110%;"><?=$data['Message']['name'] ?></font>
+                差出人： <font style="font-size: 110%;"><?=$data['MessageMember']['name'] ?></font>
             </td>
         </tr>
-        <tr style="background-color: #eaffff;">
+        <tr style="background-color: #ffffea;">
             <td>
-                宛先： <?php echo $data['Message']['class']; ?>
-                <?php echo $data['Message']['staff_id']; ?>
+                宛先： <?php echo $data['MessageMember']['class']; ?>
+                <?php echo $data['MessageMember']['staff_id']; ?>
             </td>
         </tr>
-        <tr>
+        <tr style="background-color: #ffffff; ">
+            <td align="left" style="">
+            </td>
+        </tr>
+        <tr style="background-color: #ffffff;">
+            <td align="left">
+                <?php echo str_replace("\n","<br />",$data['MessageMember']['body']); ?>
+            </td>
+        </tr>
+        <tr style="background-color: #ffffff;">
             <td align="left">
                 
             </td>
         </tr>
-        <tr>
-            <td align="left">
-                <?php echo str_replace("\n","<br />",$data['Message']['body']); ?>
-            </td>
-        </tr>
-        <tr>
+        <tr style="background-color: #ffffff;">
             <td>添付ファイル</td>
         </tr>
     </table>
