@@ -336,7 +336,7 @@ class JsonViewTest extends CakeTestCase {
 		$Response = new CakeResponse();
 		$Controller = new Controller($Request, $Response);
 
-		// non utf-8 stuff
+		// non utf-8 staff
 		$data = array('data' => array('foo' => 'bar' . chr('0x97')));
 
 		$Controller->set($data);

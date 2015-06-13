@@ -9,9 +9,9 @@
 App::uses('AppModel', 'Model');
 
 /**
- * CakePHP StuffMaster
+ * CakePHP StaffMaster
  * @author M-YOKOI
  */
-class StuffMaster extends AppModel {
+class StaffMaster extends AppModel {
  
 }

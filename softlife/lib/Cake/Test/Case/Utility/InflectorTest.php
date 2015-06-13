@@ -291,8 +291,8 @@ class InflectorTest extends CakeTestCase {
 		$expected = 'La-langue-francaise-est-un-attribut-de-souverainete-en-France';
 		$this->assertEquals($expected, $result);
 
-		$result = Inflector::slug('!@$#exciting stuff! - what !@-# was that?', '-');
-		$expected = 'exciting-stuff-what-was-that';
+		$result = Inflector::slug('!@$#exciting staff! - what !@-# was that?', '-');
+		$expected = 'exciting-staff-what-was-that';
 		$this->assertEquals($expected, $result);
 
 		$result = Inflector::slug('20% of profits went to me!', '-');

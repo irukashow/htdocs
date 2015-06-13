@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <?php echo $this->Html->charset(); ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
   <title>
     <?php echo $title_for_layout; ?>
   </title>
@@ -23,7 +24,7 @@
         <table style="width: 100%;" border="0">
             <tr>
                 <td style="padding-top: 12px;">
-                    <a href="<?=ROOTDIR ?>/users/" class="logo">&nbsp;</a>
+                    <a href="<?=ROOTDIR ?>/users/">&nbsp;</a>
                     <font size="3">
                         <?php echo HEADER; ?>
                     </font>

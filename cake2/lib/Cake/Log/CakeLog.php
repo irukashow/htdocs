@@ -391,7 +391,7 @@ class CakeLog {
  *
  * Write a message to the 'warning' log:
  *
- * `CakeLog::write('warning', 'Stuff is broken here');`
+ * `CakeLog::write('warning', 'Staff is broken here');`
  *
  * @param int|string $type Type of message being written. When value is an integer
  *    or a string matching the recognized levels, then it will

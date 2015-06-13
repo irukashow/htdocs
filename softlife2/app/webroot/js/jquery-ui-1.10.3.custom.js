@@ -2010,7 +2010,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 		this.cancelHelperRemoval = false;
 	},
 
-	// From now on bulk stuff - mainly helpers
+	// From now on bulk staff - mainly helpers
 
 	_trigger: function(type, event, ui) {
 		ui = ui || this._uiHash();
@@ -2123,7 +2123,7 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 
 
 			if(innermostIntersecting) {
-				//If it intersects, we use a little isOver variable and set it once, so our move-in stuff gets fired only once
+				//If it intersects, we use a little isOver variable and set it once, so our move-in staff gets fired only once
 				if(!this.instance.isOver) {
 
 					this.instance.isOver = 1;

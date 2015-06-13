@@ -85,3 +85,6 @@ background-color: #e9ffff;
   background-image: linear-gradient(to bottom, #f2bc8c, #f5b658);
   text-decoration: none;
 }
+.nicEdit-pane {
+    color: black;
+}

@@ -650,11 +650,11 @@ class DboSourceTest extends CakeTestCase {
  */
 	public function testCacheMethod() {
 		$this->testDb->cacheMethods = true;
-		$result = $this->testDb->cacheMethod('name', 'some-key', 'stuff');
-		$this->assertEquals('stuff', $result);
+		$result = $this->testDb->cacheMethod('name', 'some-key', 'staff');
+		$this->assertEquals('staff', $result);
 
 		$result = $this->testDb->cacheMethod('name', 'some-key');
-		$this->assertEquals('stuff', $result);
+		$this->assertEquals('staff', $result);
 
 		$result = $this->testDb->cacheMethod('conditions', 'some-key');
 		$this->assertNull($result);
@@ -663,8 +663,8 @@ class DboSourceTest extends CakeTestCase {
 		$this->assertNull($result);
 
 		$this->testDb->cacheMethods = false;
-		$result = $this->testDb->cacheMethod('name', 'some-key', 'stuff');
-		$this->assertEquals('stuff', $result);
+		$result = $this->testDb->cacheMethod('name', 'some-key', 'staff');
+		$this->assertEquals('staff', $result);
 
 		$result = $this->testDb->cacheMethod('name', 'some-key');
 		$this->assertNull($result);
@@ -691,7 +691,7 @@ class DboSourceTest extends CakeTestCase {
  */
 	public function testFlushMethodCache() {
 		$this->testDb->cacheMethods = true;
-		$this->testDb->cacheMethod('name', 'some-key', 'stuff');
+		$this->testDb->cacheMethod('name', 'some-key', 'staff');
 
 		Cache::write('method_cache', DboTestSource::$methodCache, '_cake_core_');
 

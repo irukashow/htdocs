@@ -1,7 +1,7 @@
 <h1>Index Page</h1>
-<p>StuffMaster Find View.</p>
+<p>StaffMaster Find View.</p>
 <?php
-  echo $this->Form->create('StuffMaster');
+  echo $this->Form->create('StaffMaster');
   echo $this->Form->input('name_sei');
   echo $this->Form->end('Submit');
 ?>

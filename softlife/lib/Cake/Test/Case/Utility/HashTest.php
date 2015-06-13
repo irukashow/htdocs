@@ -71,7 +71,7 @@ class HashTest extends CakeTestCase {
 						'test' => array(
 							1 => 'foo',
 							2 => array(
-								'and' => array('more' => 'stuff')
+								'and' => array('more' => 'staff')
 							)
 						)
 					)

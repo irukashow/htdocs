@@ -1,3 +1,31 @@
+<?php 
+    // 所属カンマ区切りを配列に
+    $value = explode(',', $result['User']['auth']);
+    //$this->log($value);
+    // 所属コンボセット
+    foreach($value as $val) {
+        if ($val == '11') {
+            $class['11'] = '大阪-人材派遣';
+        }
+        if ($val == '12') {
+            $class['12'] = '大阪-住宅営業';
+        }
+        if ($val == '21') {
+            $class['21'] = '東京-人材派遣';
+        }
+        if ($val == '22') {
+            $class['22'] = '東京-住宅営業';
+        }
+        if ($val == '31') {
+            $class['31'] = '名古屋-人材派遣';
+        }
+        if ($val == '32') {
+            $class['32'] = '名古屋-住宅営業';
+        }   
+    } 
+?>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

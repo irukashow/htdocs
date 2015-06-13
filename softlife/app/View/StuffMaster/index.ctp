@@ -97,7 +97,7 @@ style="float: left;"><SPAN>年齢</SPAN><INPUT class="r" id="PARM10_from" style=
       <DIV>
           
 <!--- スタッフマスタ本体 START --->
-<table id="stuff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
+<table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr>
       <th><?php echo $this->Paginator->sort('id',"No.");?></th>
       <th><?php echo $this->Paginator->sort('imgdat','写真');?></th>
@@ -115,19 +115,19 @@ style="float: left;"><SPAN>年齢</SPAN><INPUT class="r" id="PARM10_from" style=
   </tr>
   <?php foreach ($datas as $data): ?>
   <tr>
-    <td><?php echo $data['StuffMaster']['id']; ?></td>
+    <td><?php echo $data['StaffMaster']['id']; ?></td>
     <td align="center"><img src="/softlife/img/noimage.jpg" width="50"></td>
-    <td><?php echo $data['StuffMaster']['name_sei']." ".$data['StuffMaster']['name_mei'];?></td>
-    <td><?php echo $data['StuffMaster']['age']."<br>".$data['StuffMaster']['sex'];?></td>
-    <td><?php echo $data['StuffMaster']['tantou']; ?></td>
-    <td><?php echo $data['StuffMaster']['ojt_date']; ?></td>
-    <td><?php echo $data['StuffMaster']['service_count']; ?></td>
-    <td><?php echo $data['StuffMaster']['shoukai_shokushu']; ?></td>
-    <td><?php echo $data['StuffMaster']['koushin_date'].'<br>'.$data['StuffMaster']['koushin_person']; ?></td>
-    <td><?php echo $data['StuffMaster']['3m_spot']; ?></td>
-    <td><?php echo $data['StuffMaster']['address1']; ?></td>
-    <td><?php echo $data['StuffMaster']['traffic1'].'<br>'.$data['StuffMaster']['traffic2']; ?></td>
-    <td><?php echo $data['StuffMaster']['nenmatsu_chousei']; ?></td>
+    <td><?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?></td>
+    <td><?php echo $data['StaffMaster']['age']."<br>".$data['StaffMaster']['sex'];?></td>
+    <td><?php echo $data['StaffMaster']['tantou']; ?></td>
+    <td><?php echo $data['StaffMaster']['ojt_date']; ?></td>
+    <td><?php echo $data['StaffMaster']['service_count']; ?></td>
+    <td><?php echo $data['StaffMaster']['shoukai_shokushu']; ?></td>
+    <td><?php echo $data['StaffMaster']['koushin_date'].'<br>'.$data['StaffMaster']['koushin_person']; ?></td>
+    <td><?php echo $data['StaffMaster']['3m_spot']; ?></td>
+    <td><?php echo $data['StaffMaster']['address1']; ?></td>
+    <td><?php echo $data['StaffMaster']['traffic1'].'<br>'.$data['StaffMaster']['traffic2']; ?></td>
+    <td><?php echo $data['StaffMaster']['nenmatsu_chousei']; ?></td>
   </tr>
   <?php endforeach; ?>
 </table>

@@ -37,7 +37,7 @@ App::uses('Hash', 'Utility');
  * top level element named `<response>` containing all the named view variables:
  *
  * ```
- * $this->set(compact('posts', 'users', 'stuff'));
+ * $this->set(compact('posts', 'users', 'staff'));
  * $this->set('_serialize', array('posts', 'users'));
  * ```
  *

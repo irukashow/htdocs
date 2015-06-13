@@ -33,7 +33,7 @@ App::uses('View', 'View');
  * all the named view variables:
  *
  * ```
- * $this->set(compact('posts', 'users', 'stuff'));
+ * $this->set(compact('posts', 'users', 'staff'));
  * $this->set('_serialize', array('posts', 'users'));
  * ```
  *

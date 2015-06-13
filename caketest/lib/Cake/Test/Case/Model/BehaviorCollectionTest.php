@@ -340,7 +340,7 @@ class Test2Behavior extends TestBehavior {
 
 	public $mapMethods = array('/mappingRobot(\w+)/' => 'mapped');
 
-	public function resolveMethod(Model $model, $stuff) {
+	public function resolveMethod(Model $model, $staff) {
 	}
 
 	public function mapped(Model $model, $method, $query) {

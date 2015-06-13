@@ -7,7 +7,7 @@
 <div style="margin-top: 50px;margin-bottom: 50px;">
 
 <center>
-    <table cellspacing="5" cellpadding="5" border="2" align="center" id="stuff_master">
+    <table cellspacing="5" cellpadding="5" border="2" align="center" id="staff_master">
  <tr>    
      <td>   
 <table cellspacing="10" cellpadding="20" border="0" align="center" style="background-color: #ccffcc;">

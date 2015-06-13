@@ -1,6 +1,7 @@
 <?php
     echo $this->Html->script('nicEdit');
     //echo $this->Html->image('nicEditorIcons');
+    echo $this->Html->css('message');
 ?>
 <script type="text/javascript">
 	//bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
@@ -10,28 +11,49 @@
     ★ メッセージの送信
 </div>
 
-<div id="">
-<?php echo $this->Form->create(FALSE, array('name' => 'form')); ?>
-    <table id="" border="0" width="40%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
+<div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
+<?php echo $this->Form->create('Message', array('name' => 'form')); ?>
+    <table id="" border="0" width="60%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
+        <tr>
+            <td width="80px">差出人</td>
+            <td>
+                <font style="font-size: 110%;"><?=$user_name ?></font>
+                <?php echo $this->Form->input('username', array('type' => 'hidden', 'label' => false,  'value' => $username)); ?>
+                <?php echo $this->Form->input('name', array('type' => 'hidden', 'label' => false,  'value' => $user_name)); ?>
+            </td>
+        </tr>
         <tr>
             <td>標題</td>
             <td>
                 <?php echo $this->Form->input('title', array('type' => 'textbox', 'label' => false,  'div' => '', 'style' => 'width: 100%;')); ?>
             </td>  
             <td align="left">
-                <?php echo $this->Form->input('editor', array('type' => 'checkbox', 'label' => 'エディタ',  'div' => '', 'onclick' => "toggleHtmlEditor(this.checked,'myArea3','full');")); ?>
+                <?php echo $this->Form->input('', array('type' => 'checkbox', 'label' => 'エディタ',  'div' => '', 'onclick' => "toggleHtmlEditor(this.checked,'myArea3','full');")); ?>
             </td>
         </tr>
         <tr>
             <td style="vertical-align: -10px;">本文</td>
             <td align="left" colspan="2">
-                <?php echo $this->Form->input('content', array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 500px; height: 200px;margin-left:0px;')); ?>
+                <?php echo $this->Form->input('body', array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 700px; height: 200px;margin-left:0px;')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>添付ファイル</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>宛先</td>
+            <td>
+                <?php echo $this->Form->input('class', array('type' => 'select', 'label' => false,  'options' => $selected_class, 'style' => 'padding: 5px;')); ?>
+                <?php echo $this->Form->input('staff_id', array('type' => 'hidden', 'label' => false,  'value' => '1')); ?>
             </td>
         </tr>
         <tr>
             <td></td>
             <td align="left" colspan="2">
-                <?php echo $this->Form->submit('送　信', array('name' => 'send', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
+                <?php echo $this->Form->submit('送信する', array('name' => 'send', 'div' => false, 'id' => 'button-send', 'style' => 'font-size:110%; padding:10px 15px 10px 15px;')); ?>
+                &nbsp;&nbsp;
+                <?php print($this->Form->submit('キャンセル', array('name' => 'cancel', 'div' => false, 'id'=>'button-delete', 'style'=>''))); ?>
             </td>
         </tr>
     </table>

@@ -254,10 +254,10 @@ class StringTest extends CakeTestCase {
 		);
 		$this->assertEquals('', $result);
 
-		$result = String::cleanInsert(':in.complete or stuff', array(
+		$result = String::cleanInsert(':in.complete or staff', array(
 			'clean' => true, 'before' => ':', 'after' => ''
 		));
-		$this->assertEquals('stuff', $result);
+		$this->assertEquals('staff', $result);
 
 		$result = String::cleanInsert(
 			'<p class=":missing" id=":missing">Text here</p>',

@@ -22,6 +22,7 @@
             <td style="width:70%;">
     <!-- メッセージ一覧 -->
     <div id='message-list'>
+        <?php echo $this->Form->create('Message', array('name' => 'form')); ?>
         <font style='font-weight: bold;font-size: 110%;'>[受信箱]</font>
         <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void">
             <tr style='background-color: #459ed2;'>
@@ -30,31 +31,22 @@
                 <th style='width:20%;'>差出人</th>
                 <th style='width:25%;'>作成日時</th>
             </tr>
+            <?php foreach ($datas as $data) { ?>
             <tr>
                 <td style="padding-top: 8px;">
                     <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
                 </td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>案件Aについての問い合わせ</a></td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>○○ △△子</a></td>
-                <td class='message-content'>2015-07-15 10:27</td>
-            </tr>
-            <tr>
-                <td style="padding-top: 8px;">
-                    <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
+                <td class='message-content'>
+                    <?php echo $this->Html->link($data['Message']['title'], 'detail/'.$data['Message']['id'], array('style'=>'text-decoration: none;')) ?>
                 </td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>案件Aについての問い合わせ</a></td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>○○ △△子</a></td>
-                <td class='message-content'>2015-07-15 10:27</td>
-            </tr>
-            <tr>
-                <td style="padding-top: 8px;">
-                    <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
+                <td class='message-content'>
+                    <?php echo $this->Html->link($data['Message']['name'], 'detail/'.$data['Message']['id'], array('style'=>'text-decoration: none;')) ?>
                 </td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>案件Aについての問い合わせ</a></td>
-                <td class='message-content'><a href='#' style='text-decoration: none;'>○○ △△子</a></td>
-                <td class='message-content'>2015-07-15 10:27</td>
+                <td class='message-content'><?=$data['Message']['modified']; ?></td>
             </tr>
+            <?php } ?>
         </table>
+        <?php echo $this->Form->end(); ?>
     </div>
                 </td>
         </tr>

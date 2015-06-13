@@ -1,0 +1,651 @@
+table.dataTable {
+	margin: 0px auto; width: 100%; clear: both; border-collapse: separate; border-spacing: 0;
+}
+table.dataTable thead th {
+	font-weight: bold;
+}
+table.dataTable tfoot th {
+	font-weight: bold;
+}
+table.dataTable thead th {
+	padding: 10px 18px; border-bottom-color: rgb(17, 17, 17); border-bottom-width: 1px; border-bottom-style: solid;
+}
+table.dataTable thead th:active {
+	
+}
+table.dataTable thead td:active {
+	
+}
+table.dataTable tfoot th {
+	padding: 10px 18px 6px; border-top-color: rgb(17, 17, 17); border-top-width: 1px; border-top-style: solid;
+}
+table.dataTable tfoot td {
+	padding: 10px 18px 6px; border-top-color: rgb(17, 17, 17); border-top-width: 1px; border-top-style: solid;
+}
+table.dataTable thead .sorting {
+	cursor: pointer;
+}
+table.dataTable thead .sorting_asc {
+	cursor: pointer;
+}
+table.dataTable thead .sorting_desc {
+	cursor: pointer;
+}
+table.dataTable thead .sorting {
+	background-position: right; background-repeat: no-repeat;
+}
+table.dataTable thead .sorting_asc {
+	background-position: right; background-repeat: no-repeat;
+}
+table.dataTable thead .sorting_desc {
+	background-position: right; background-repeat: no-repeat;
+}
+table.dataTable thead .sorting_asc_disabled {
+	background-position: right; background-repeat: no-repeat;
+}
+table.dataTable thead .sorting_desc_disabled {
+	background-position: right; background-repeat: no-repeat;
+}
+table.dataTable thead .sorting {
+	background-image: url("../images/sort_both.png");
+}
+table.dataTable thead .sorting_asc {
+	background-image: url("../images/sort_asc.png");
+}
+table.dataTable thead .sorting_desc {
+	background-image: url("../images/sort_desc.png");
+}
+table.dataTable thead .sorting_asc_disabled {
+	background-image: url("../images/sort_asc_disabled.png");
+}
+table.dataTable thead .sorting_desc_disabled {
+	background-image: url("../images/sort_desc_disabled.png");
+}
+table.dataTable tbody tr {
+	background-color: white;
+}
+table.dataTable tbody tr.selected {
+	background-color: rgb(176, 190, 217);
+}
+table.dataTable tbody th {
+	padding: 8px 10px;
+}
+table.dataTable tbody td {
+	padding: 8px 10px;
+}
+table.row-border.dataTable tbody th {
+	border-top-color: rgb(221, 221, 221); border-top-width: 1px; border-top-style: solid;
+}
+table.row-border.dataTable tbody td {
+	border-top-color: rgb(221, 221, 221); border-top-width: 1px; border-top-style: solid;
+}
+table.display.dataTable tbody th {
+	border-top-color: rgb(221, 221, 221); border-top-width: 1px; border-top-style: solid;
+}
+table.display.dataTable tbody td {
+	border-top-color: rgb(221, 221, 221); border-top-width: 1px; border-top-style: solid;
+}
+table.row-border.dataTable tbody tr:first-child th {
+	border-top-color: currentColor; border-top-width: medium; border-top-style: none;
+}
+table.row-border.dataTable tbody tr:first-child td {
+	border-top-color: currentColor; border-top-width: medium; border-top-style: none;
+}
+table.display.dataTable tbody tr:first-child th {
+	border-top-color: currentColor; border-top-width: medium; border-top-style: none;
+}
+table.display.dataTable tbody tr:first-child td {
+	border-top-color: currentColor; border-top-width: medium; border-top-style: none;
+}
+table.cell-border.dataTable tbody th {
+	border-top-color: rgb(221, 221, 221); border-right-color: rgb(221, 221, 221); border-top-width: 1px; border-right-width: 1px; border-top-style: solid; border-right-style: solid;
+}
+table.cell-border.dataTable tbody td {
+	border-top-color: rgb(221, 221, 221); border-right-color: rgb(221, 221, 221); border-top-width: 1px; border-right-width: 1px; border-top-style: solid; border-right-style: solid;
+}
+table.cell-border.dataTable tbody tr th:first-child {
+	border-left-color: rgb(221, 221, 221); border-left-width: 1px; border-left-style: solid;
+}
+table.cell-border.dataTable tbody tr td:first-child {
+	border-left-color: rgb(221, 221, 221); border-left-width: 1px; border-left-style: solid;
+}
+table.cell-border.dataTable tbody tr:first-child th {
+	border-top-color: currentColor; border-top-width: medium; border-top-style: none;
+}
+table.cell-border.dataTable tbody tr:first-child td {
+	border-top-color: currentColor; border-top-width: medium; border-top-style: none;
+}
+table.stripe.dataTable tbody tr.odd {
+	background-color: rgb(249, 249, 249);
+}
+table.display.dataTable tbody tr.odd {
+	background-color: rgb(249, 249, 249);
+}
+table.stripe.dataTable tbody tr.selected.odd {
+	background-color: rgb(171, 185, 211);
+}
+table.display.dataTable tbody tr.selected.odd {
+	background-color: rgb(171, 185, 211);
+}
+table.hover.dataTable tbody tr:hover {
+	background-color: whitesmoke;
+}
+table.hover.dataTable tbody tr.odd:hover {
+	background-color: whitesmoke;
+}
+table.hover.dataTable tbody tr.even:hover {
+	background-color: whitesmoke;
+}
+table.display.dataTable tbody tr:hover {
+	background-color: whitesmoke;
+}
+table.display.dataTable tbody tr.odd:hover {
+	background-color: whitesmoke;
+}
+table.display.dataTable tbody tr.even:hover {
+	background-color: whitesmoke;
+}
+table.hover.dataTable tbody tr.selected:hover {
+	background-color: rgb(169, 183, 209);
+}
+table.hover.dataTable tbody tr.selected.odd:hover {
+	background-color: rgb(169, 183, 209);
+}
+table.hover.dataTable tbody tr.selected.even:hover {
+	background-color: rgb(169, 183, 209);
+}
+table.display.dataTable tbody tr.selected:hover {
+	background-color: rgb(169, 183, 209);
+}
+table.display.dataTable tbody tr.selected.odd:hover {
+	background-color: rgb(169, 183, 209);
+}
+table.display.dataTable tbody tr.selected.even:hover {
+	background-color: rgb(169, 183, 209);
+}
+table.order-column.dataTable tbody tr > .sorting_1 {
+	background-color: rgb(249, 249, 249);
+}
+table.order-column.dataTable tbody tr > .sorting_2 {
+	background-color: rgb(249, 249, 249);
+}
+table.order-column.dataTable tbody tr > .sorting_3 {
+	background-color: rgb(249, 249, 249);
+}
+table.display.dataTable tbody tr > .sorting_1 {
+	background-color: rgb(249, 249, 249);
+}
+table.display.dataTable tbody tr > .sorting_2 {
+	background-color: rgb(249, 249, 249);
+}
+table.display.dataTable tbody tr > .sorting_3 {
+	background-color: rgb(249, 249, 249);
+}
+table.order-column.dataTable tbody tr.selected > .sorting_1 {
+	background-color: rgb(172, 186, 212);
+}
+table.order-column.dataTable tbody tr.selected > .sorting_2 {
+	background-color: rgb(172, 186, 212);
+}
+table.order-column.dataTable tbody tr.selected > .sorting_3 {
+	background-color: rgb(172, 186, 212);
+}
+table.display.dataTable tbody tr.selected > .sorting_1 {
+	background-color: rgb(172, 186, 212);
+}
+table.display.dataTable tbody tr.selected > .sorting_2 {
+	background-color: rgb(172, 186, 212);
+}
+table.display.dataTable tbody tr.selected > .sorting_3 {
+	background-color: rgb(172, 186, 212);
+}
+table.display.dataTable tbody tr.odd > .sorting_1 {
+	background-color: rgb(241, 241, 241);
+}
+table.stripe.order-column.dataTable tbody tr.odd > .sorting_1 {
+	background-color: rgb(241, 241, 241);
+}
+table.display.dataTable tbody tr.odd > .sorting_2 {
+	background-color: rgb(243, 243, 243);
+}
+table.stripe.order-column.dataTable tbody tr.odd > .sorting_2 {
+	background-color: rgb(243, 243, 243);
+}
+table.display.dataTable tbody tr.odd > .sorting_3 {
+	background-color: whitesmoke;
+}
+table.stripe.order-column.dataTable tbody tr.odd > .sorting_3 {
+	background-color: whitesmoke;
+}
+table.display.dataTable tbody tr.selected.odd > .sorting_1 {
+	background-color: rgb(166, 179, 205);
+}
+table.stripe.order-column.dataTable tbody tr.selected.odd > .sorting_1 {
+	background-color: rgb(166, 179, 205);
+}
+table.display.dataTable tbody tr.selected.odd > .sorting_2 {
+	background-color: rgb(167, 181, 206);
+}
+table.stripe.order-column.dataTable tbody tr.selected.odd > .sorting_2 {
+	background-color: rgb(167, 181, 206);
+}
+table.display.dataTable tbody tr.selected.odd > .sorting_3 {
+	background-color: rgb(169, 182, 208);
+}
+table.stripe.order-column.dataTable tbody tr.selected.odd > .sorting_3 {
+	background-color: rgb(169, 182, 208);
+}
+table.display.dataTable tbody tr.even > .sorting_1 {
+	background-color: rgb(249, 249, 249);
+}
+table.stripe.order-column.dataTable tbody tr.even > .sorting_1 {
+	background-color: rgb(249, 249, 249);
+}
+table.display.dataTable tbody tr.even > .sorting_2 {
+	background-color: rgb(251, 251, 251);
+}
+table.stripe.order-column.dataTable tbody tr.even > .sorting_2 {
+	background-color: rgb(251, 251, 251);
+}
+table.display.dataTable tbody tr.even > .sorting_3 {
+	background-color: rgb(253, 253, 253);
+}
+table.stripe.order-column.dataTable tbody tr.even > .sorting_3 {
+	background-color: rgb(253, 253, 253);
+}
+table.display.dataTable tbody tr.selected.even > .sorting_1 {
+	background-color: rgb(172, 186, 212);
+}
+table.stripe.order-column.dataTable tbody tr.selected.even > .sorting_1 {
+	background-color: rgb(172, 186, 212);
+}
+table.display.dataTable tbody tr.selected.even > .sorting_2 {
+	background-color: rgb(173, 187, 214);
+}
+table.stripe.order-column.dataTable tbody tr.selected.even > .sorting_2 {
+	background-color: rgb(173, 187, 214);
+}
+table.display.dataTable tbody tr.selected.even > .sorting_3 {
+	background-color: rgb(175, 189, 216);
+}
+table.stripe.order-column.dataTable tbody tr.selected.even > .sorting_3 {
+	background-color: rgb(175, 189, 216);
+}
+table.display.dataTable tbody tr:hover > .sorting_1 {
+	background-color: rgb(234, 234, 234);
+}
+table.display.dataTable tbody tr.odd:hover > .sorting_1 {
+	background-color: rgb(234, 234, 234);
+}
+table.display.dataTable tbody tr.even:hover > .sorting_1 {
+	background-color: rgb(234, 234, 234);
+}
+table.hover.order-column.dataTable tbody tr:hover > .sorting_1 {
+	background-color: rgb(234, 234, 234);
+}
+table.hover.order-column.dataTable tbody tr.odd:hover > .sorting_1 {
+	background-color: rgb(234, 234, 234);
+}
+table.hover.order-column.dataTable tbody tr.even:hover > .sorting_1 {
+	background-color: rgb(234, 234, 234);
+}
+table.display.dataTable tbody tr:hover > .sorting_2 {
+	background-color: rgb(235, 235, 235);
+}
+table.display.dataTable tbody tr.odd:hover > .sorting_2 {
+	background-color: rgb(235, 235, 235);
+}
+table.display.dataTable tbody tr.even:hover > .sorting_2 {
+	background-color: rgb(235, 235, 235);
+}
+table.hover.order-column.dataTable tbody tr:hover > .sorting_2 {
+	background-color: rgb(235, 235, 235);
+}
+table.hover.order-column.dataTable tbody tr.odd:hover > .sorting_2 {
+	background-color: rgb(235, 235, 235);
+}
+table.hover.order-column.dataTable tbody tr.even:hover > .sorting_2 {
+	background-color: rgb(235, 235, 235);
+}
+table.display.dataTable tbody tr:hover > .sorting_3 {
+	background-color: rgb(238, 238, 238);
+}
+table.display.dataTable tbody tr.odd:hover > .sorting_3 {
+	background-color: rgb(238, 238, 238);
+}
+table.display.dataTable tbody tr.even:hover > .sorting_3 {
+	background-color: rgb(238, 238, 238);
+}
+table.hover.order-column.dataTable tbody tr:hover > .sorting_3 {
+	background-color: rgb(238, 238, 238);
+}
+table.hover.order-column.dataTable tbody tr.odd:hover > .sorting_3 {
+	background-color: rgb(238, 238, 238);
+}
+table.hover.order-column.dataTable tbody tr.even:hover > .sorting_3 {
+	background-color: rgb(238, 238, 238);
+}
+table.display.dataTable tbody tr.selected:hover > .sorting_1 {
+	background-color: rgb(161, 174, 199);
+}
+table.display.dataTable tbody tr.selected.odd:hover > .sorting_1 {
+	background-color: rgb(161, 174, 199);
+}
+table.display.dataTable tbody tr.selected.even:hover > .sorting_1 {
+	background-color: rgb(161, 174, 199);
+}
+table.hover.order-column.dataTable tbody tr.selected:hover > .sorting_1 {
+	background-color: rgb(161, 174, 199);
+}
+table.hover.order-column.dataTable tbody tr.selected.odd:hover > .sorting_1 {
+	background-color: rgb(161, 174, 199);
+}
+table.hover.order-column.dataTable tbody tr.selected.even:hover > .sorting_1 {
+	background-color: rgb(161, 174, 199);
+}
+table.display.dataTable tbody tr.selected:hover > .sorting_2 {
+	background-color: rgb(162, 175, 200);
+}
+table.display.dataTable tbody tr.selected.odd:hover > .sorting_2 {
+	background-color: rgb(162, 175, 200);
+}
+table.display.dataTable tbody tr.selected.even:hover > .sorting_2 {
+	background-color: rgb(162, 175, 200);
+}
+table.hover.order-column.dataTable tbody tr.selected:hover > .sorting_2 {
+	background-color: rgb(162, 175, 200);
+}
+table.hover.order-column.dataTable tbody tr.selected.odd:hover > .sorting_2 {
+	background-color: rgb(162, 175, 200);
+}
+table.hover.order-column.dataTable tbody tr.selected.even:hover > .sorting_2 {
+	background-color: rgb(162, 175, 200);
+}
+table.display.dataTable tbody tr.selected:hover > .sorting_3 {
+	background-color: rgb(164, 178, 203);
+}
+table.display.dataTable tbody tr.selected.odd:hover > .sorting_3 {
+	background-color: rgb(164, 178, 203);
+}
+table.display.dataTable tbody tr.selected.even:hover > .sorting_3 {
+	background-color: rgb(164, 178, 203);
+}
+table.hover.order-column.dataTable tbody tr.selected:hover > .sorting_3 {
+	background-color: rgb(164, 178, 203);
+}
+table.hover.order-column.dataTable tbody tr.selected.odd:hover > .sorting_3 {
+	background-color: rgb(164, 178, 203);
+}
+table.hover.order-column.dataTable tbody tr.selected.even:hover > .sorting_3 {
+	background-color: rgb(164, 178, 203);
+}
+table.no-footer.dataTable {
+	border-bottom-color: rgb(17, 17, 17); border-bottom-width: 1px; border-bottom-style: solid;
+}
+table.nowrap.dataTable th {
+	white-space: nowrap;
+}
+table.nowrap.dataTable td {
+	white-space: nowrap;
+}
+table.compact.dataTable thead th {
+	padding: 4px 17px 4px 4px;
+}
+table.compact.dataTable thead td {
+	padding: 4px 17px 4px 4px;
+}
+table.compact.dataTable tfoot th {
+	padding: 4px;
+}
+table.compact.dataTable tfoot td {
+	padding: 4px;
+}
+table.compact.dataTable tbody th {
+	padding: 4px;
+}
+table.compact.dataTable tbody td {
+	padding: 4px;
+}
+table.dataTable th.dt-left {
+	text-align: left;
+}
+table.dataTable td.dt-left {
+	text-align: left;
+}
+table.dataTable th.dt-center {
+	text-align: center;
+}
+table.dataTable td.dt-center {
+	text-align: center;
+}
+table.dataTable td.dataTables_empty {
+	text-align: center;
+}
+table.dataTable th.dt-right {
+	text-align: right;
+}
+table.dataTable td.dt-right {
+	text-align: right;
+}
+table.dataTable th.dt-justify {
+	text-align: justify;
+}
+table.dataTable td.dt-justify {
+	text-align: justify;
+}
+table.dataTable th.dt-nowrap {
+	white-space: nowrap;
+}
+table.dataTable td.dt-nowrap {
+	white-space: nowrap;
+}
+table.dataTable thead th.dt-head-left {
+	text-align: left;
+}
+table.dataTable thead td.dt-head-left {
+	text-align: left;
+}
+table.dataTable tfoot th.dt-head-left {
+	text-align: left;
+}
+table.dataTable tfoot td.dt-head-left {
+	text-align: left;
+}
+table.dataTable thead th.dt-head-center {
+	text-align: center;
+}
+table.dataTable thead td.dt-head-center {
+	text-align: center;
+}
+table.dataTable tfoot th.dt-head-center {
+	text-align: center;
+}
+table.dataTable tfoot td.dt-head-center {
+	text-align: center;
+}
+table.dataTable thead th.dt-head-right {
+	text-align: right;
+}
+table.dataTable thead td.dt-head-right {
+	text-align: right;
+}
+table.dataTable tfoot th.dt-head-right {
+	text-align: right;
+}
+table.dataTable tfoot td.dt-head-right {
+	text-align: right;
+}
+table.dataTable thead th.dt-head-justify {
+	text-align: justify;
+}
+table.dataTable thead td.dt-head-justify {
+	text-align: justify;
+}
+table.dataTable tfoot th.dt-head-justify {
+	text-align: justify;
+}
+table.dataTable tfoot td.dt-head-justify {
+	text-align: justify;
+}
+table.dataTable thead th.dt-head-nowrap {
+	white-space: nowrap;
+}
+table.dataTable thead td.dt-head-nowrap {
+	white-space: nowrap;
+}
+table.dataTable tfoot th.dt-head-nowrap {
+	white-space: nowrap;
+}
+table.dataTable tfoot td.dt-head-nowrap {
+	white-space: nowrap;
+}
+table.dataTable tbody th.dt-body-left {
+	text-align: left;
+}
+table.dataTable tbody td.dt-body-left {
+	text-align: left;
+}
+table.dataTable tbody th.dt-body-center {
+	text-align: center;
+}
+table.dataTable tbody td.dt-body-center {
+	text-align: center;
+}
+table.dataTable tbody th.dt-body-right {
+	text-align: right;
+}
+table.dataTable tbody td.dt-body-right {
+	text-align: right;
+}
+table.dataTable tbody th.dt-body-justify {
+	text-align: justify;
+}
+table.dataTable tbody td.dt-body-justify {
+	text-align: justify;
+}
+table.dataTable tbody th.dt-body-nowrap {
+	white-space: nowrap;
+}
+table.dataTable tbody td.dt-body-nowrap {
+	white-space: nowrap;
+}
+table.dataTable {
+	box-sizing: content-box; -webkit-box-sizing: content-box; -moz-box-sizing: content-box;
+}
+table.dataTable th {
+	box-sizing: content-box; -webkit-box-sizing: content-box; -moz-box-sizing: content-box;
+}
+table.dataTable td {
+	box-sizing: content-box; -webkit-box-sizing: content-box; -moz-box-sizing: content-box;
+}
+.dataTables_wrapper {
+	clear: both; position: relative; -ms-zoom: 1;
+}
+.dataTables_wrapper .dataTables_length {
+	float: left;
+}
+.dataTables_wrapper .dataTables_filter {
+	text-align: right; float: right;
+}
+.dataTables_wrapper .dataTables_filter input {
+	margin-left: 0.5em;
+}
+.dataTables_wrapper .dataTables_info {
+	padding-top: 0.75em; clear: both; float: left;
+}
+.dataTables_wrapper .dataTables_paginate {
+	text-align: right; padding-top: 0.25em; float: right;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	padding: 0.5em 1em; border: 1px solid transparent; border-image: none; text-align: center; color: rgb(51, 51, 51) !important; text-decoration: none !important; margin-left: 2px; display: inline-block; cursor: pointer; min-width: 1.5em; box-sizing: border-box;
+}
+.dataTables_wrapper .dataTables_paginate .current.paginate_button {
+	background: linear-gradient(white 0%, gainsboro 100%); border: 1px solid rgb(202, 202, 202); border-image: none; color: rgb(51, 51, 51) !important;
+}
+.dataTables_wrapper .dataTables_paginate .current.paginate_button:hover {
+	background: linear-gradient(white 0%, gainsboro 100%); border: 1px solid rgb(202, 202, 202); border-image: none; color: rgb(51, 51, 51) !important;
+}
+.dataTables_wrapper .dataTables_paginate .disabled.paginate_button {
+	background: none; border: 1px solid transparent; border-image: none; color: rgb(102, 102, 102) !important; cursor: default; box-shadow: none;
+}
+.dataTables_wrapper .dataTables_paginate .disabled.paginate_button:hover {
+	background: none; border: 1px solid transparent; border-image: none; color: rgb(102, 102, 102) !important; cursor: default; box-shadow: none;
+}
+.dataTables_wrapper .dataTables_paginate .disabled.paginate_button:active {
+	background: none; border: 1px solid transparent; border-image: none; color: rgb(102, 102, 102) !important; cursor: default; box-shadow: none;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+	background: linear-gradient(rgb(88, 88, 88) 0%, rgb(17, 17, 17) 100%); border: 1px solid rgb(17, 17, 17); border-image: none; color: white !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:active {
+	background: linear-gradient(rgb(43, 43, 43) 0%, rgb(12, 12, 12) 100%); box-shadow: inset 0px 0px 3px #111;
+}
+.dataTables_wrapper .dataTables_paginate .ellipsis {
+	padding: 0px 1em;
+}
+.dataTables_wrapper .dataTables_processing {
+	background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 25%, rgba(255, 255, 255, 0.9) 75%, rgba(255, 255, 255, 0) 100%); left: 50%; top: 50%; width: 100%; height: 40px; text-align: center; padding-top: 20px; font-size: 1.2em; margin-top: -25px; margin-left: -50%; position: absolute;
+}
+.dataTables_wrapper .dataTables_length {
+	color: rgb(51, 51, 51);
+}
+.dataTables_wrapper .dataTables_filter {
+	color: rgb(51, 51, 51);
+}
+.dataTables_wrapper .dataTables_info {
+	color: rgb(51, 51, 51);
+}
+.dataTables_wrapper .dataTables_processing {
+	color: rgb(51, 51, 51);
+}
+.dataTables_wrapper .dataTables_paginate {
+	color: rgb(51, 51, 51);
+}
+.dataTables_wrapper .dataTables_scroll {
+	clear: both;
+}
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+	-webkit-overflow-scrolling: touch;
+}
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody th > div.dataTables_sizing {
+	margin: 0px !important; padding: 0px !important; height: 0px; overflow: hidden;
+}
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody td > div.dataTables_sizing {
+	margin: 0px !important; padding: 0px !important; height: 0px; overflow: hidden;
+}
+.no-footer.dataTables_wrapper .dataTables_scrollBody {
+	border-bottom-color: rgb(17, 17, 17); border-bottom-width: 1px; border-bottom-style: solid;
+}
+.no-footer.dataTables_wrapper div.dataTables_scrollHead table {
+	border-bottom-color: currentColor; border-bottom-width: medium; border-bottom-style: none;
+}
+.no-footer.dataTables_wrapper div.dataTables_scrollBody table {
+	border-bottom-color: currentColor; border-bottom-width: medium; border-bottom-style: none;
+}
+.dataTables_wrapper::after {
+	height: 0px; clear: both; display: block; visibility: hidden; content: "";
+}
+@media screen and (max-width:767px)
+{
+.dataTables_wrapper .dataTables_info {
+	text-align: center; float: none;
+}
+.dataTables_wrapper .dataTables_paginate {
+	text-align: center; float: none;
+}
+.dataTables_wrapper .dataTables_paginate {
+	margin-top: 0.5em;
+}
+}
+@media screen and (max-width:640px)
+{
+.dataTables_wrapper .dataTables_length {
+	text-align: center; float: none;
+}
+.dataTables_wrapper .dataTables_filter {
+	text-align: center; float: none;
+}
+.dataTables_wrapper .dataTables_filter {
+	margin-top: 0.5em;
+}
+}

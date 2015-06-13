@@ -147,7 +147,7 @@ class CakeResponse {
 		'set' => 'application/set',
 		'sh' => 'application/x-sh',
 		'shar' => 'application/x-shar',
-		'sit' => 'application/x-stuffit',
+		'sit' => 'application/x-staffit',
 		'skd' => 'application/x-koan',
 		'skm' => 'application/x-koan',
 		'skp' => 'application/x-koan',

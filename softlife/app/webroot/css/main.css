@@ -23,30 +23,30 @@ span.current{
 }
 
 
-table#stuff_master {
+table#staff_master {
 border-collapse: separate;
 border-spacing: 0;
 border-top: 1px solid #999;
 border-left: 1px solid #999;
 border-radius: 8px;
 }
-table#stuff_master tr:first-child td:last-child {
+table#staff_master tr:first-child td:last-child {
 border-radius: 0 8px 0 0;
 }
-table#stuff_master tr:last-child td:first-child {
+table#staff_master tr:last-child td:first-child {
 border-radius: 0 0 0 8px;
 }
-table#stuff_master tr:last-child td:last-child {
+table#staff_master tr:last-child td:last-child {
 border-radius: 0 0 8px 0;
 }
 
-table#stuff_master tr th{
+table#staff_master tr th{
     background-color: #006699;
     //font-weight: bold;
     //color: white;
 }
 
-table#stuff_master tr th a{
+table#staff_master tr th a{
     background-color: #006699;
     font-weight: bold;
     color: white;

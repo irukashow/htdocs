@@ -1,5 +1,5 @@
 <h1>Index Page</h1>
-<p>StuffMaster Find View.</p>
+<p>StaffMaster Find View.</p>
 <form method="post" action="./find">
   ID:<input type="text" name="id" value="<?=$_POST['id']?>"/>
   <input type="submit" />
@@ -9,15 +9,15 @@
 <?php if (isset($data)): ?>
   <tr>
     <td>氏名:</td>
-    <td><?php echo $data['StuffMaster']['name_sei'].' '.$data['StuffMaster']['name_mei']; ?></td>
+    <td><?php echo $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?></td>
   </tr>
   <tr>
     <td>年齢:</td>
-    <td><?php echo $data['StuffMaster']['age']; ?></td>
+    <td><?php echo $data['StaffMaster']['age']; ?></td>
   </tr>
   <tr>
     <td>性別:</td>
-    <td><?php echo $data['StuffMaster']['sex']; ?></td>
+    <td><?php echo $data['StaffMaster']['sex']; ?></td>
   </tr>
 <?php endif; ?>
 </table>

@@ -256,7 +256,7 @@ class UserForm extends CakeTestModel {
 		'id' => array('type' => 'integer', 'null' => '', 'default' => '', 'length' => '8'),
 		'published' => array('type' => 'date', 'null' => true, 'default' => null, 'length' => null),
 		'other' => array('type' => 'text', 'null' => true, 'default' => null, 'length' => null),
-		'stuff' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 10),
+		'staff' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 10),
 		'something' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 255),
 		'active' => array('type' => 'boolean', 'null' => false, 'default' => false),
 		'created' => array('type' => 'date', 'null' => '1', 'default' => '', 'length' => ''),
@@ -1232,11 +1232,11 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->hidden('UserForm.stuff');
+		$result = $this->Form->hidden('UserForm.staff');
 		$expected = array(
 			'input' => array(
-				'type' => 'hidden', 'name' => 'data[UserForm][stuff]',
-				'id' => 'UserFormStuff'
+				'type' => 'hidden', 'name' => 'data[UserForm][staff]',
+				'id' => 'UserFormStaff'
 		));
 		$this->assertTags($result, $expected);
 
@@ -1267,12 +1267,12 @@ class FormHelperTest extends CakeTestCase {
 
 		$result = $this->Form->fields;
 		$expected = array(
-			'UserForm.published', 'UserForm.other', 'UserForm.stuff' => '',
+			'UserForm.published', 'UserForm.other', 'UserForm.staff' => '',
 			'UserForm.hidden' => '0', 'UserForm.something'
 		);
 		$this->assertEquals($expected, $result);
 
-		$hash = '6014b4e1c4f39eb62389712111dbe6435bec66cb%3AUserForm.hidden%7CUserForm.stuff';
+		$hash = '6014b4e1c4f39eb62389712111dbe6435bec66cb%3AUserForm.hidden%7CUserForm.staff';
 
 		$result = $this->Form->secure($this->Form->fields);
 		$expected = array(
@@ -3173,9 +3173,9 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->inputs(array('legend' => 'Field of Dreams', 'fieldset' => 'classy-stuff'));
+		$result = $this->Form->inputs(array('legend' => 'Field of Dreams', 'fieldset' => 'classy-staff'));
 		$expected = array(
-			'fieldset' => array('class' => 'classy-stuff'),
+			'fieldset' => array('class' => 'classy-staff'),
 			'<legend',
 			'Field of Dreams',
 			'/legend',
@@ -3183,10 +3183,10 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->inputs(null, null, array('legend' => 'Field of Dreams', 'fieldset' => 'classy-stuff'));
+		$result = $this->Form->inputs(null, null, array('legend' => 'Field of Dreams', 'fieldset' => 'classy-staff'));
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->inputs('Field of Dreams', null, array('fieldset' => 'classy-stuff'));
+		$result = $this->Form->inputs('Field of Dreams', null, array('fieldset' => 'classy-staff'));
 		$this->assertTags($result, $expected);
 
 		$this->Form->create('Contact');
@@ -7521,13 +7521,13 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->input('UserForm.stuff', array('type' => 'textarea'));
+		$result = $this->Form->input('UserForm.staff', array('type' => 'textarea'));
 		$expected = array(
 			'div' => array('class' => 'input textarea'),
-				'label' => array('for' => 'UserFormStuff'),
-					'Stuff',
+				'label' => array('for' => 'UserFormStaff'),
+					'Staff',
 				'/label',
-				'textarea' => array('name' => 'data[UserForm][stuff]', 'maxlength' => 10, 'cols' => '30', 'rows' => '6', 'id' => 'UserFormStuff'),
+				'textarea' => array('name' => 'data[UserForm][staff]', 'maxlength' => 10, 'cols' => '30', 'rows' => '6', 'id' => 'UserFormStaff'),
 				'/textarea',
 			'/div'
 		);
@@ -9199,15 +9199,15 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$result = $this->Form->input('UserForm.stuff');
+		$result = $this->Form->input('UserForm.staff');
 		$expected = array(
 			'div' => array('class' => 'input text'),
-			'label' => array('for' => 'UserFormStuff'),
-			'Stuff',
+			'label' => array('for' => 'UserFormStaff'),
+			'Staff',
 			'/label',
 			'input' => array(
-				'type' => 'text', 'name' => 'data[UserForm][stuff]',
-				'id' => 'UserFormStuff', 'maxlength' => 10
+				'type' => 'text', 'name' => 'data[UserForm][staff]',
+				'id' => 'UserFormStaff', 'maxlength' => 10
 			),
 			'/div'
 		);

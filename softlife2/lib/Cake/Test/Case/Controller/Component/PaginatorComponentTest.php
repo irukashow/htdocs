@@ -415,7 +415,7 @@ class PaginatorComponentTest extends CakeTestCase {
 
 		$this->Controller->Post->expects($this->at(1))
 			->method('find')
-			->will($this->returnValue(array('stuff')));
+			->will($this->returnValue(array('staff')));
 
 		$this->Controller->Post->expects($this->at(2))
 			->method('hasMethod')
@@ -798,9 +798,9 @@ class PaginatorComponentTest extends CakeTestCase {
 		$this->request->params['named'] = array(
 			'page' => 10,
 			'limit' => 10,
-			'fields' => array('bad.stuff'),
+			'fields' => array('bad.staff'),
 			'recursive' => 1000,
-			'conditions' => array('bad.stuff'),
+			'conditions' => array('bad.staff'),
 			'contain' => array('bad')
 		);
 		$this->Paginator->settings = array(
@@ -823,9 +823,9 @@ class PaginatorComponentTest extends CakeTestCase {
 		$this->request->params['named'] = array(
 			'page' => 10,
 			'limit' => 10,
-			'fields' => array('bad.stuff'),
+			'fields' => array('bad.staff'),
 			'recursive' => 1000,
-			'conditions' => array('bad.stuff'),
+			'conditions' => array('bad.staff'),
 			'contain' => array('bad')
 		);
 		$this->Paginator->settings = array(
@@ -837,7 +837,7 @@ class PaginatorComponentTest extends CakeTestCase {
 		$this->Paginator->whitelist[] = 'fields';
 		$result = $this->Paginator->mergeOptions('Post');
 		$expected = array(
-			'page' => 10, 'limit' => 10, 'maxLimit' => 100, 'paramType' => 'named', 'fields' => array('bad.stuff')
+			'page' => 10, 'limit' => 10, 'maxLimit' => 100, 'paramType' => 'named', 'fields' => array('bad.staff')
 		);
 		$this->assertEquals($expected, $result);
 	}

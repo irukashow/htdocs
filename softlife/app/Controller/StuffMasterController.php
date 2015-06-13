@@ -9,14 +9,14 @@
 App::uses('AppController', 'Controller');
 
 /**
- * CakePHP StuffMasterController
+ * CakePHP StaffMasterController
  * @author M-YOKOI
  */
-class StuffMasterController extends AppController {
+class StaffMasterController extends AppController {
 //Paginationの設定
 public $paginate = array(
 //モデルの指定
-'StuffMaster' => array(
+'StaffMaster' => array(
 //1ページ表示できるデータ数の設定
 'limit' =>10,
 //データを降順に並べる
@@ -30,7 +30,7 @@ public function index() {
             "copyright by SOFTLIFE. 2015.");
     // 以下がデータベース関係
     $this->set('datas', $this->paginate());
-    //$datas = $this->StuffMaster->find('all');
+    //$datas = $this->StaffMaster->find('all');
     //$this->set('datas',$datas);
   }
   
@@ -44,9 +44,9 @@ public function index() {
       $id = $this->data['id'];
       $status = array(
         'conditions' => 
-            array('StuffMaster.id' => $id)
+            array('StaffMaster.id' => $id)
       );
-      $data = $this->StuffMaster->find('first', $status);
+      $data = $this->StaffMaster->find('first', $status);
     } else {
       $data = null;
     }
@@ -61,7 +61,7 @@ public function index() {
         "copyright by SYODA-Tuyano. 2011.");
     // post時の処理
     if ($this->request->is('post')) {
-      $this->StuffMaster->save($this->request->data);
+      $this->StaffMaster->save($this->request->data);
     }
   }
   
@@ -72,13 +72,13 @@ public function index() {
     $this->set("footer_for_layout", 
         "copyright by SYODA-Tuyano. 2011.");
     // post時の処理
-    $this->StuffMaster->id = $id;
+    $this->StaffMaster->id = $id;
     if ($this->request->is('post') || $this->request->is('put')) {
-      $this->StuffMaster->save($this->request->data);
+      $this->StaffMaster->save($this->request->data);
       $this->redirect(array('action' => 'index'));
     } else {
       $this->request->data = 
-          $this->StuffMaster->read(null, $id);
+          $this->StaffMaster->read(null, $id);
     }
   }
 
@@ -88,14 +88,14 @@ public function index() {
     $this->set("header_for_layout", "Sample Application");
     $this->set("footer_for_layout", 
         "copyright by SYODA-Tuyano. 2011.");
-    $this->StuffMaster->id = $id;
+    $this->StaffMaster->id = $id;
     // post時の処理
     if ($this->request->is('post') || $this->request->is('put')) {
-      $this->StuffMaster->delete($this->request->
-          data('StuffMaster.id'));
+      $this->StaffMaster->delete($this->request->
+          data('StaffMaster.id'));
     } else {
       $this->request->data = 
-          $this->StuffMaster->read(null, $id);
+          $this->StaffMaster->read(null, $id);
     }
   }
   
@@ -108,8 +108,8 @@ public function find2(){
         "copyright by SYODA-Tuyano. 2011.");
     // post時の処理
     if ($this->request->is('post')) {
-      $data = $this->StuffMaster->findByName_sei($this->
-          request->data('StuffMaster.name_sei'));
+      $data = $this->StaffMaster->findByName_sei($this->
+          request->data('StaffMaster.name_sei'));
       $this->set('data',$data);
     }
   }  
@@ -123,14 +123,14 @@ public function find3(){
       "copyright by SYODA-Tuyano. 2011.");
    // post時の処理
    if ($this->request->is('post')) {
-      $name_sei = $this->request->data('StuffMaster.name_sei');
-      $name_mei = $this->request->data('StuffMaster.name_mei');
+      $name_sei = $this->request->data('StaffMaster.name_sei');
+      $name_mei = $this->request->data('StaffMaster.name_mei');
       $opt = array("OR" => array (
-          "StuffMaster.name_sei" => $name_sei,
-          "StuffMaster.name_mei" => $name_mei
+          "StaffMaster.name_sei" => $name_sei,
+          "StaffMaster.name_mei" => $name_mei
         )
       );
-      $data = $this->StuffMaster->
+      $data = $this->StaffMaster->
           find('all',array('conditions' => $opt));
          $this->set('data',$data);
       }
@@ -144,9 +144,9 @@ public function find4(){
         "copyright by SOFTLIFE. 2015.");
     // post時の処理
     if ($this->request->is('post')) {
-      $str = $this->request->data('StuffMaster.name_sei');
-      $data = $this->StuffMaster->query
-        ("select * from stuff_masters where name_sei like '%{$str}%';");
+      $str = $this->request->data('StaffMaster.name_sei');
+      $data = $this->StaffMaster->query
+        ("select * from staff_masters where name_sei like '%{$str}%';");
       $this->set('data',$data);
     }
   }
