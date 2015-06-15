@@ -135,7 +135,6 @@ class UsersController extends AppController {
 
                 // POSTの場合
                 if ($this->request->is('post') || $this->request->is('put')) {
-                    $this->log($this->request, LOG_DEBUG);
                     if ($this->User->validates() == false) {
                         return null;
                     }
@@ -213,12 +212,16 @@ class UsersController extends AppController {
             $this->User->username = $this->Auth->user('username');
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
+                if ($this->request->data['User']['password'] != $this->request->data['User']['password2']) {
+                    $this->Session->setFlash(__('パスワードが一致しません。'));
+                } else {
                     // データを登録する
                     $this->User->save($this->request->data);
                     $this->Session->setFlash(__('パスワードは変更されました。'));
 
                     // indexに移動する
                     $this->redirect(array('action' => 'index'));
+                }
             } else {
                 $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
             }

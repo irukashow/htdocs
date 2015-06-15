@@ -56,13 +56,13 @@ function doSearch1(id) {
     <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target="">登録リスト</a>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
     &nbsp;
-    <b>登録解除リスト</b>
+    <b><font Style="font-size:95%;">登録解除リスト</font></b>
 <?php } else { ?>
-    <b>登録リスト</b>
+    <b><font Style="font-size:95%;">登録リスト</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target="">登録解除リスト</a>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>
@@ -167,9 +167,6 @@ function doSearch1(id) {
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_area', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td></td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
   </tr>
   <?php foreach ($datas as $data): ?>
   <tr>
@@ -177,15 +174,6 @@ function doSearch1(id) {
     <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-                <?php
-                    $after = $data['StaffMaster']['pic_extension'];
-                    if (is_null($after)) {
-                ?>
-            <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
-                <?php } else { ?>
-            <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%05d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px">
-                <?php } ?>
-            <br>
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
         </a>
     </td>
@@ -203,13 +191,6 @@ function doSearch1(id) {
     <td align="left"><?php echo getShokushu2($data['StaffMaster']['shokushu_shoukai']); ?></td>
     <td align="left"><?php echo date('Y-m-d', strtotime($data['StaffMaster']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
-    <td align="left"><?php echo $data['StaffMaster']['address1_2'].'&nbsp;'.$data['StaffMaster']['address2']; ?></td>
-    <td align="left">
-        <?php echo getStation0($data['StaffMaster']['s1_1'], 1); ?>
-        <?php echo getStation0($data['StaffMaster']['s1_2'], 1); ?>
-        <?php echo getStation0($data['StaffMaster']['s1_3'], 0); ?>
-    </td>
-    <td align="center"><?php echo getNenmatsu($data['StaffMaster']['nenmatsu_chousei']); ?></td>
   </tr>
   <?php endforeach; ?>
 </table>

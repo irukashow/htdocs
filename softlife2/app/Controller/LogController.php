@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  */
 class LogController extends AppController {
     var $uses = array('LoginLogs', 'Users', 'Item', 'StaffMaster', 'StaffMasterLogs');
-    public $title_for_layout = "ログイン履歴 - 派遣管理システム";
+    public $title_for_layout = "履歴情報 - 派遣管理システム";
     
     public $paginate = array (
     'LoginLogs' => array (

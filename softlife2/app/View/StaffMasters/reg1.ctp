@@ -36,22 +36,27 @@ function affixZero(int) {
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 10px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （登録情報）'); ?></legend>
+    <fieldset style="border:none;margin-bottom: 5px;">
+        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録<font color=gray> （登録情報）</font>'); ?></legend>
+        <!-- ページ選択 -->
+        <font style="font-size: 110%;">
 <?php if ($staff_id == 0) { ?>
-        <font color=blue>登録情報</font>&nbsp;>>&nbsp;
-        基本情報&nbsp;>>&nbsp;
-        評価関連&nbsp;
+        <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
+            基本情報&nbsp;>>&nbsp;
+            評価関連&nbsp;
 <?php } else { ?>
-        <font color=blue>登録情報</font>&nbsp;>>&nbsp;
-        <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
-        <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+            <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+        </font>
+        
 <?php } ?>
+        <!-- ページ選択 END -->
 <?php echo $this->Form->create('StaffMaster'); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $staff_id)); ?>
         <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;">
             <tr>
                 <th style='background:#99ccff;text-align: center;'>項目</th>
                 <th style='background:#99ccff;text-align: center;' colspan='3'>入力内容</th>
@@ -161,7 +166,7 @@ function affixZero(int) {
                 </td>
             </tr> 
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１</td>
+                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１<br>（ログインID）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:40%;')); ?>
                 </td>
@@ -173,7 +178,21 @@ function affixZero(int) {
                 </td>
             </tr>  
         </table>
-    </fieldset>
+        <!-- ページ選択 -->
+        <font style="font-size: 110%;">
+<?php if ($staff_id == 0) { ?>
+            <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
+            基本情報&nbsp;>>&nbsp;
+            評価関連&nbsp;
+<?php } else { ?>
+            <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+        </font>
+        
+<?php } ?>
+        <!-- ページ選択 END -->
+    </fieldset>  
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;

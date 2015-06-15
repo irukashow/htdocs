@@ -121,8 +121,8 @@ $(function() {
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-                           <li class='<?= $active9 ?>'><a href='<?=ROOTDIR ?>/admin/'>管理者ページ<br><div>Administrator</div></a></li>
-                           <li class='<?= $active10 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+                           <li class='<?= $active9 ?>'><a href='' onclick='alert("制作予定")'>設定<br><div>configuration</div></a></li>
+                           <li class='<?= $active10 ?>'><a href='<?=ROOTDIR ?>/admin/'>管理者ページ<br><div>Administrator</div></a></li>
                         </ul>
                     </div>
                 </td>

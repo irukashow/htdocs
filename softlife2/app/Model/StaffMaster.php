@@ -76,7 +76,16 @@ class StaffMaster extends AppModel {
             'message' => '口座番号は半角数字で入力して下さい。'
         )
     ); 
-    
-
-
+ 
+	/**
+	 * ユーザー情報登録前にパスワードをハッシュ化する。
+	 * @see Model::beforeSave()
+	 */
+	public function beforeSave($options = array()) {
+            if (isset($this->data[$this->alias]['password'])) {
+                    $passwordHasher = new SimplePasswordHasher();
+                    $this->data[$this->alias]['password'] = $passwordHasher->hash($this->data[$this->alias]['password']);
+            }
+            return true;
+	}
 }

@@ -7,36 +7,6 @@ and open the template in the editor.
     Created on : 2015/05/22, 16:12:27
     Author     : M-YOKOI
 */
-/** メッセージ作成ボタン **/
-#button-create {
-  background: #f0ab57;
-  background-image: -webkit-linear-gradient(top, #f0ab57, #de7942);
-  background-image: -moz-linear-gradient(top, #f0ab57, #de7942);
-  background-image: -ms-linear-gradient(top, #f0ab57, #de7942);
-  background-image: -o-linear-gradient(top, #f0ab57, #de7942);
-  background-image: linear-gradient(to bottom, #f0ab57, #de7942);
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  text-shadow: 1px 1px 3px #666666;
-  font-family: Arial;
-  color: #f2f2f2;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 8px 10px 8px 10px;
-  text-decoration: none;
-}
-
-#button-create:hover {
-  background: #f2bc8c;
-  background-image: -webkit-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: -moz-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: -ms-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: -o-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: linear-gradient(to bottom, #f2bc8c, #f5b658);
-  text-decoration: none;
-}
-
 /** 仮登録ボタン **/
 #pre_regist {
   background: #f6ff78;

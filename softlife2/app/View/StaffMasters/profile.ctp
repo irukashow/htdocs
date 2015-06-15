@@ -114,8 +114,11 @@ window.onload = function(){
                             <td style='width:70%;'><?=$data['StaffMaster']['telno2'] ?></td>
                         </tr>
                         <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>メールアドレス１</td>
-                            <td style='width:70%;'><?=$data['StaffMaster']['email1'] ?></td>
+                            <td style='background-color: #e8ffff;width:30%;'>メールアドレス１<br>（ログインID）</td>
+                            <td style='width:70%;'>
+                                <?=$data['StaffMaster']['email1'] ?><br>
+                                →<?php print($this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id'])); ?>
+                            </td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>メールアドレス２</td>

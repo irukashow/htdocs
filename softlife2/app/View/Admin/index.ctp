@@ -15,26 +15,72 @@
     <a href="" target="_blank"></a>
 </div>
 
-<div style="width:30%;height: 1000px; margin-top: 20px;margin-left: 30px;">
+<div style="margin-top: 20px;">
 <?php echo $this->Form->create('User'); ?>
-    <fieldset style="border: none; margin-bottom: 20px;height: 800px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー管理'); ?></legend>
-        <?php echo $this->Html->link('ユーザー一覧', '/users/view'); ?>
-        <br><br>
-        <?php echo $this->Html->link('ユーザー登録（新規）', '/users/add/'); ?>
-        <br><br>
-        <?php echo $this->Html->link('ユーザー登録（更新）', '/users/edit/'); ?>
-        <br><br>
-    
-        <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __('システム管理'); ?></legend>
-        <?php echo $this->Html->link('バージョン情報入力ページ', './version/'); ?>
-        <br><br>
-        <?php echo $this->Html->link('バージョン更新履歴', '/menu/version'); ?>
-        <br><br>
-        <?php echo $this->Html->link('スタッフマスタ更新履歴', '/log/staff_master'); ?>
-        <br><br>
-        <?php echo $this->Html->link('ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
-         <br><br>
+    <fieldset style="border: none; margin-bottom: 20px;height: 300px;">
+        <table id='admin' border="1" width="100%" cellspacing="0" cellpadding="2" bordercolor="#333333" align="center">
+            <tr height="50px">
+                <td colspan="6">
+                    <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー管理'); ?></legend>
+                </td>
+            </tr>
+            <tr>
+                <td width="15%">
+                    <?php echo $this->Html->link('▶ユーザー一覧', '/users/view'); ?>
+                </td>
+                <td width="15%">
+                    <?php echo $this->Html->link('▶ユーザー登録（新規）', '/users/add/'); ?>
+                </td>
+                <td width="15%">
+                    <?php echo $this->Html->link('▶ユーザー登録（更新）', '/users/edit/'); ?>
+                </td>
+                <td width="15%"></td>
+                <td width="15%"></td>
+            </tr>
+            <tr height="15px">
+                <td colspan="6">
+                    <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __('システム管理'); ?></legend>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $this->Html->link('▶バージョン情報入力ページ', './version/'); ?>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master'); ?>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
+                </td>
+                <td></td>
+            </tr>
+            <tr height="15px">
+                <td colspan="6">
+                    <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __('マスタ管理'); ?></legend>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $this->Html->link('▶項目マスタ', '/master/index'); ?>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶スタッフ職種マスタ', '/master/shokushu'); ?>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td></td>
+            </tr>
+            <tr height="15px">
+                <td colspan="6">
+                    <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __(''); ?></legend>
+                </td>
+            </tr>
+        </table>
 
     </fieldset>
     <?php echo $this->Form->end(); ?>

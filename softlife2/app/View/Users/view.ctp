@@ -56,8 +56,8 @@ function mySubmit(username) {
     <th><?php echo $this->Paginator->sort('area','エリア');?></th>
     <th><?php echo $this->Paginator->sort('role','ユーザーの種類');?></th>
     <th><?php echo $this->Paginator->sort('auth','閲覧権限');?></th>
-    <th width="15%"><?php echo $this->Paginator->sort('created','登録日時');?></th>
     <th width="15%"><?php echo $this->Paginator->sort('modified','更新日時');?></th>
+    <th width="15%"><?php echo $this->Paginator->sort('created','登録日時');?></th>
   </tr>
   <?php foreach ($datas as $key => $data): ?>
   <tr>
@@ -88,8 +88,8 @@ function mySubmit(username) {
             echo $auth;
         ?>
     </td>
-    <td><?php echo $data['User']['created']; ?></td>
     <td><?php echo $data['User']['modified']; ?></td>
+    <td><?php echo $data['User']['created']; ?></td>
   </tr>
   <?php endforeach; ?>
 </table>

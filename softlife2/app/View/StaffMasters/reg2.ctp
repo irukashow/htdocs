@@ -29,17 +29,23 @@ $(function() {
 </script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 10px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （基本情報）'); ?></legend>
-        <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
-        <font color="blue">基本情報</font>&nbsp;>>&nbsp;
-        <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+    <fieldset style="border:none;margin-bottom: 5px;">
+        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録<font color=gray> （基本情報）</font>'); ?></legend>
+        <font style="font-size: 110%;">
+            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <font color="blue" style="background-color: yellow;">基本情報</font>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+        </font>
         
 <?php echo $this->Form->create('StaffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $staff_id)); ?>   
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('name_sei', array('type'=>'hidden')); ?>
 <?php echo $this->Form->input('name_mei', array('type'=>'hidden')); ?>
+<?php echo $this->Form->input('pic_extension', array('type'=>'hidden')); ?>
+<?php echo $this->Form->input('pic_extension2', array('type'=>'hidden')); ?>
+<?php echo $this->Form->input('created', array('type'=>'hidden')); ?>
+<?php echo $this->Form->input('modified', array('type'=>'hidden')); ?>
         
         <!-- スタッフ情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
@@ -78,7 +84,7 @@ $(function() {
                     <!-- 証明写真ファイルのリンク -->
                     <?php
                         $after = $data['StaffMaster']['pic_extension'];
-                        if (is_null($after)) {
+                        if (is_null($after) || empty($after)) {
                             echo '';
                         } else {
                             echo '<br>';
@@ -106,7 +112,7 @@ $(function() {
                     <!-- 保存ファイルのリンク -->
                     <?php
                         $after2 = $data['StaffMaster']['pic_extension2'];
-                        if (is_null($after2)) {
+                        if (is_null($after2) || empty($after2)) {
                             echo '';
                         } else {
                             echo '<br>';
@@ -200,7 +206,7 @@ $(function() {
                 </td>
             </tr>
 <?php 
-    $list_shokushu = array('1'=>'受付　', '2'=>'フロア受付　', '3'=>'シッター　', '4'=>'ナレーター　', '5'=>'ＤＨ　', '6'=>'看板持ち　', '7'=>'事務　', '8'=>'誘導案内　', '9'=>'内覧会スタッフ '); 
+    //$list_shokushu = array('1'=>'受付　', '2'=>'フロア受付　', '3'=>'シッター　', '4'=>'ナレーター　', '5'=>'ＤＨ　', '6'=>'看板持ち　', '7'=>'事務　', '8'=>'誘導案内　', '9'=>'内覧会スタッフ '); 
     //$selected = array('1', '3', '7');
     $list_shokugyou = array('1'=>'会社員　', '2'=>'主婦　', '3'=>'学生　', '4'=>'派遣　', '5'=>'アルバイト　', '6'=>'その他');
     $list_workable = array('1'=>'特になし ', '2'=>'平日のみ ', '3'=>'土日のみ ', '4'=>'土日祝のみ ', '5'=>'月 ', '6'=>'火 ', '7'=>'水 ', '8'=>'木 ', '9'=>'金 ', '10'=>'土 ', '11'=>'日 ');
@@ -268,7 +274,7 @@ $(function() {
                 ?>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;'>口座番号</td>
-                <td><?php echo $this->Form->input('bank_kouza_num',array('type'=>'text','div'=>false,'maxlength'=>'10','label'=>false,'style'=>'width:70px;')); ?></td>
+                <td><?php echo $this->Form->input('bank_kouza_num',array('type'=>'text','div'=>false,'maxlength'=>'10','label'=>false,'style'=>'width:90px;')); ?></td>
                 <td style='background-color: #e8ffff;width:20%;'>口座名義</td>
                 <td><?php echo $this->Form->input('bank_kouza_meigi',array('type'=>'text','div'=>false,'maxlength'=>'20','label'=>false,'style'=>'width:150px;')); ?></td>
             </tr>
@@ -305,7 +311,7 @@ $(function() {
         </table>
          
         <!-- その他 -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="6" style='background:#99ccff;text-align: center;'>その他</th>
             </tr>
@@ -360,7 +366,11 @@ $(function() {
                 <td colspan="5"><?php echo $this->Form->input('remarks',array('type'=>'textarea','div'=>false,'maxlength'=>'500','label'=>false,'style'=>'width:90%;height:100px;')); ?></td> 
             </tr>
         </table>
-
+        <font style="font-size: 110%;">
+            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <font color="blue" style="background-color: yellow;">基本情報</font>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+        </font>
 
     </fieldset>
     <div style='margin-left: 10px;'>

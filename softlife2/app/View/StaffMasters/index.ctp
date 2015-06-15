@@ -56,13 +56,13 @@ function doSearch1(id) {
     <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target="">登録リスト</a>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
     &nbsp;
-    <b>登録解除リスト</b>
+    <b><font Style="font-size:95%;">登録解除リスト</font></b>
 <?php } else { ?>
-    <b>登録リスト</b>
+    <b><font Style="font-size:95%;">登録リスト</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target="">登録解除リスト</a>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>

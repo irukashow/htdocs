@@ -29,12 +29,14 @@ $(function() {
 </script>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-    <fieldset style="border:none;margin-bottom: 10px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （評価関連）'); ?></legend>
-        <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
-        <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
-        <font color="blue">評価関連</font>&nbsp;
-        
+    <fieldset style="border:none;margin-bottom: 5px;">
+        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録<font color=gray> （評価関連）</font>'); ?></legend>
+        <font style="font-size: 110%;">
+            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <font color="blue" style="background-color: yellow;">評価関連</font>&nbsp;
+        </font>
+
 <?php echo $this->Form->create('StaffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $staff_id)); ?>  
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
@@ -69,7 +71,7 @@ $(function() {
         </table>
         
         <!-- 評価について -->
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;">
             <tr>
                 <th colspan="2" style='background:#99ccff;text-align: center;'>評価について</th>
             </tr>
@@ -208,7 +210,11 @@ $(function() {
                 <td><?php echo $this->Form->input('hyouka_remarks',array('type'=>'textarea','div'=>false,'maxlength'=>'500','label'=>false,'style'=>'width:90%;height:80px;')); ?></td> 
             </tr>
         </table>
-         
+        <font style="font-size: 110%;">
+            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <font color="blue" style="background-color: yellow;">評価関連</font>&nbsp;
+        </font>
     </fieldset>
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>

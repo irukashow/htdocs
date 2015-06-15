@@ -38,8 +38,8 @@ class AdminController extends AppController {
             $this->set('active6', '');
             $this->set('active7', '');
             $this->set('active8', '');
-            $this->set('active9', 'active');
-            $this->set('active10', '');
+            $this->set('active9', '');
+            $this->set('active10', 'active');
             // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);       
@@ -70,8 +70,8 @@ class AdminController extends AppController {
         $this->set('active6', '');
         $this->set('active7', '');
         $this->set('active8', '');
-        $this->set('active9', 'active');
-        $this->set('active10', '');
+        $this->set('active9', '');
+        $this->set('active10', 'active');
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name); 

@@ -26,6 +26,8 @@ class MenuController extends AppController {
         
         // 初期値設定
         //$this->set('datas', $this->Menu->find('all'));
+        $this->paginate = array('VersionRemarks' => 
+            array('order' => array('id' => 'DESC')));
         $this->set('datas',$this->paginate());
     }
 }

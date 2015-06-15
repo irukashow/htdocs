@@ -516,9 +516,13 @@ class StaffMastersController extends AppController {
         }
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
+        // 職種マスタ配列
+        $conditions2 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions2));
+        $this->set('list_shokushu', $list_shokushu); 
         $this->set('staff_id', $staff_id); 
         // テーブルの設定
-        $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+        $this->StaffMaster->setSource('staff_'.$selected_class);
         // 初期値設定
         $this->set('data', $this->StaffMaster->find('list', 
                 array('fields' => array('*'), 'conditions' => array('id' => $staff_id) )));
@@ -637,6 +641,9 @@ class StaffMastersController extends AppController {
                     $this->Session->setFlash('登録しました。');
                     $this->redirect(array('action' => 'reg2', $staff_id, $koushin_flag));
                 } else {
+                    // 登録していた値をセット
+                    //$this->request->data = $this->StaffMaster->read(null, $staff_id);
+                    $this->set('data', $this->request->data); 
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
             } else {
@@ -712,6 +719,41 @@ class StaffMastersController extends AppController {
         } else {
           // 登録していた値をセット
           $this->request->data = $this->StaffMaster->read(null, $staff_id);
+        }
+    }
+    
+    // パスワード変更ページ
+    public function password($staff_id = null) {
+          // レイアウト関係
+          $this->layout = "sub";
+          $this->set("title_for_layout",$this->title_for_layout);
+          $this->set('staff_id', $staff_id);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+        // 初期値設定
+        $this->set('data', $this->StaffMaster->find('first', 
+                array('fields' => array('*'), 'conditions' => array('id' => $staff_id) )));
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $selected_class = $this->Session->read('selected_class');
+        $class = $this->getClass($selected_class);
+        $this->set('class', $class);
+
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if ($this->request->data['StaffMaster']['password'] != $this->request->data['StaffMaster']['password2']) {
+                $this->Session->setFlash(__('パスワードが一致しません。'));
+            } else {
+                // データを登録する
+                $this->StaffMaster->save($this->request->data);
+                $this->log($this->request->data, LOG_DEBUG);
+                $this->Session->setFlash(__('パスワードは変更されました。'));
+
+                // indexに移動する
+                $this->redirect($this->request->referer());
+            }
+        } else {
+            //$this->request->data = $this->StuffMaster->read(null, $staff_id);    
         }
     }
   
