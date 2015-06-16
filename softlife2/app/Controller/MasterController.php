@@ -27,10 +27,11 @@ class MasterController extends AppController {
         $conditions2 = array('item' => 0);
         $list_item = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions2));
         $this->set('list_item', $list_item); 
-        $this->log($list_item, LOG_DEBUG);
+        //$this->log($list_item, LOG_DEBUG);
         
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
+            //$this->log($this->request, LOG_DEBUG);
             if (isset($this->request->data['insert'])) {
                 // データを登録する
                 $item = $this->request->data['Item']['item'];
@@ -65,6 +66,7 @@ class MasterController extends AppController {
                 $this->Session->write('selected_item', $item);
                 $this->paginate = array('Item' => array(
                     'conditions' => array('item' => $item),
+                    'page' => '1',
                     'limit' => '10'));
                 $this->set('datas', $this->paginate());
                 //$this->redirect('index', array('item' => $item));
@@ -73,6 +75,7 @@ class MasterController extends AppController {
             $item = $this->Session->read('selected_item');
             $this->paginate = array('Item' => array(
                 'conditions' => array('item' => $item),
+                'page' => '1',
                 'limit' => '10'));
             $this->set('datas', $this->paginate());
         }   

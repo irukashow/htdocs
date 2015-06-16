@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('MessageMember');
+        public $uses = array('MessageMember', 'LoginLogs');
 	// Authコンポーネントの利用設定。
 	public $components = array('Auth'=>array('allowedActions'=>array('login')));
         // タイトル
@@ -32,15 +32,13 @@ class UsersController extends AppController {
             //$this->set('sessions', $this->Session);
             // テーブルの設定
             $this->MessageMember->setSource('message_member');
-            // 受信メッセージ一覧の表示
-            $this->paginate = array(
-                'MessageMember' => array(
-                    'conditions' => null,
-                    'limit' =>20,                        //1ページ表示できるデータ数の設定
-                    'order' => array('id' => 'desc'),  //データを降順に並べる
-                )
-            );
-            $this->set('datas', $this->paginate());
+            // 未読メッセージ件数
+            $new_count = $this->MessageMember->find('count', array('conditions' => array('kidoku_flag' => 0)));
+            $this->set('new_count', $new_count);
+            // 最終ログイン時刻
+            $last_login = $this->LoginLogs->find('first', array('fields' => array('created'), 
+                'conditions' => array('username' => $this->Auth->user('username'), 'status' => 'login'), 'order' => array('id' => 'desc')));
+            $this->set('last_login', $last_login['LoginLogs']['created']);
 
             // POSTの場合
             if ($this->request->is('post')) {

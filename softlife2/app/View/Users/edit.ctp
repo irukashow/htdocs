@@ -7,6 +7,13 @@
         <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー情報を更新してください。'); ?></legend>
         <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
             <tr>
+                <th style="width:30%;background-color:#e8ffff;"><div class="required"><label>ユーザーID</label></div></th>
+                <td style="padding-left: 5px;">
+                    <?php echo $this->Form->input('username',array('type' => 'text', 'label' => false, 'div' => false, 'style' => 'width: 100px;')); ?>
+                    ※入力に注意してください。
+                </td>   
+            </tr>
+            <tr>
                 <th style="width:30%;background-color:#e8ffff;"><div class="required"><label>氏名 (姓・名)</label></div></th>
                 <td style="padding-left: 5px;">
                     <?php  echo $this->Form->input('username', 

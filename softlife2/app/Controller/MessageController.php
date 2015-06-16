@@ -47,6 +47,9 @@ class MessageController extends AppController {
             )
         );
         $this->set('datas', $this->paginate());
+        // 未読メッセージ件数
+        $new_count = $this->MessageMember->find('count', array('conditions' => array('kidoku_flag' => 0)));
+        $this->set('new_count', $new_count);
         
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -177,4 +180,5 @@ class MessageController extends AppController {
             
         }
     }
+
 }

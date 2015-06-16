@@ -121,7 +121,7 @@ class StaffMastersController extends AppController {
             $this->set('flag', $flag);
             
             // 最寄り駅での絞り込み
-            if(isset($this->request->data['search'])) {
+            if(isset($this->request->data['search1'])) {
                 // 駅コンボ値セット
                 $line1 = $this->getLine($this->request->data['StaffMaster']['pref1']);
                 $line2 = $this->getLine($this->request->data['StaffMaster']['pref2']);
@@ -150,21 +150,26 @@ class StaffMastersController extends AppController {
                         $array_21, $array_22, $array_23,
                         $array_31, $array_32, $array_33)
                     );
-                // 年齢での絞り込み
-                //$this->Session->setFlash($this->request->data['StaffMaster']['search_age_lower'].'-'.$this->request->data['StaffMaster']['search_age_upper']);
-                $lower = $this->request->data['StaffMaster']['search_age_lower'];
-                $upper = $this->request->data['StaffMaster']['search_age_upper'];
-                if (!empty($lower) && !empty($upper)) {
-                    $conditions2 += array(
-                        array('StaffMaster.age >=' => $this->request->data['StaffMaster']['search_age_lower']), 
-                        array('StaffMaster.age <= ' => $this->request->data['StaffMaster']['search_age_upper']));
-                } elseif (!empty($lower) && empty($upper)) {
-                    $conditions2 += array('StaffMaster.age >=' => $this->request->data['StaffMaster']['search_age_lower']);
-                } elseif (empty($lower) && !empty($upper)) {
-                    $conditions2 += array('StaffMaster.age <= ' => $this->request->data['StaffMaster']['search_age_upper']);
-                } else {
-                    //$this->Session->setFlash('年齢を入力してください。');
-                }
+                /**
+                $conditions2 += array('OR' =>
+                    array(
+                        // 第一候補
+                        array(array('StaffMaster.s1_1 >=' => $this->request->data['StaffMaster']['s1_1']), array('StaffMaster.s1_1 <= ' => $this->request->data['StaffMaster']['s2_1'])),
+                        array(array('StaffMaster.s1_2 >=' => $this->request->data['StaffMaster']['s1_1']), array('StaffMaster.s1_2 <= ' => $this->request->data['StaffMaster']['s2_1'])),
+                        array(array('StaffMaster.s1_3 >=' => $this->request->data['StaffMaster']['s1_1']), array('StaffMaster.s1_3 <= ' => $this->request->data['StaffMaster']['s2_1'])),
+                        // 第二候補
+                        array(array('StaffMaster.s1_1 >=' => $this->request->data['StaffMaster']['s1_2']), array('StaffMaster.s1_1 <= ' => $this->request->data['StaffMaster']['s2_2'])),
+                        array(array('StaffMaster.s1_2 >=' => $this->request->data['StaffMaster']['s1_2']), array('StaffMaster.s1_2 <= ' => $this->request->data['StaffMaster']['s2_2'])),
+                        array(array('StaffMaster.s1_3 >=' => $this->request->data['StaffMaster']['s1_2']), array('StaffMaster.s1_3 <= ' => $this->request->data['StaffMaster']['s2_2'])),
+                        // 第三候補
+                        array(array('StaffMaster.s1_1 >=' => $this->request->data['StaffMaster']['s1_3']), array('StaffMaster.s1_1 <= ' => $this->request->data['StaffMaster']['s2_3'])),
+                        array(array('StaffMaster.s1_2 >=' => $this->request->data['StaffMaster']['s1_3']), array('StaffMaster.s1_2 <= ' => $this->request->data['StaffMaster']['s2_3'])),
+                        array(array('StaffMaster.s1_3 >=' => $this->request->data['StaffMaster']['s1_3']), array('StaffMaster.s1_3 <= ' => $this->request->data['StaffMaster']['s2_3'])),
+                    )
+                );
+                 * 
+                 */
+                //$this->log($conditions2, LOG_DEBUG);
                 
                 // 登録番号で検索
                 if (!empty($this->data['StaffMaster']['search_id'])){
@@ -183,16 +188,31 @@ class StaffMastersController extends AppController {
                     $search_age = $this->data['StaffMaster']['search_age'];
                     $conditions2 += array('StaffMaster.age' => $search_age);
                 }
-                // 担当者で絞り込み
-                if (!empty($this->data['StaffMaster']['search_tantou'])){
-                    $search_tantou = $this->data['StaffMaster']['search_tantou'];
-                    $conditions2 += array('StaffMaster.tantou' => $search_tantou);
-                }
                 // 都道府県
                 if (!empty($this->data['StaffMaster']['search_area'])){
                     $search_area = $this->data['StaffMaster']['search_area'];
                     //$this->log($search_area);
                     $conditions2 += array('CONCAT(StaffMaster.address1_2, StaffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
+                }
+            // 担当者で絞り込み
+            } elseif (!empty($this->data['StaffMaster']['search_tantou'])){
+                $search_tantou = $this->data['StaffMaster']['search_tantou'];
+                $conditions2 += array('StaffMaster.tantou' => $search_tantou);
+            // 年齢での絞り込み
+            } elseif (isset($this->request->data['search2'])) {
+                //$this->Session->setFlash($this->request->data['StaffMaster']['search_age_lower'].'-'.$this->request->data['StaffMaster']['search_age_upper']);
+                $lower = $this->request->data['StaffMaster']['search_age_lower'];
+                $upper = $this->request->data['StaffMaster']['search_age_upper'];
+                if (!empty($lower) && !empty($upper)) {
+                    $conditions2 += array(
+                        array('StaffMaster.age >=' => $this->request->data['StaffMaster']['search_age_lower']), 
+                        array('StaffMaster.age <= ' => $this->request->data['StaffMaster']['search_age_upper']));
+                } elseif (!empty($lower) && empty($upper)) {
+                    $conditions2 += array('StaffMaster.age >=' => $this->request->data['StaffMaster']['search_age_lower']);
+                } elseif (empty($lower) && !empty($upper)) {
+                    $conditions2 += array('StaffMaster.age <= ' => $this->request->data['StaffMaster']['search_age_upper']);
+                } else {
+                    $this->Session->setFlash('年齢を入力してください。');
                 }
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
@@ -224,7 +244,6 @@ class StaffMastersController extends AppController {
             // ページネーションの実行
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StaffMaster', $conditions2));
-            $this->log($conditions2, LOG_DEBUG);
             $this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log($conditions2, LOG_DEBUG);
         } else {
@@ -727,9 +746,7 @@ class StaffMastersController extends AppController {
             } else {
                 // データを登録する
                 $this->StaffMaster->save($this->request->data);
-                //$this->log($this->request->data, LOG_DEBUG);
-                $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
-                            9, 10, $this->request->clientIp()); // パスワードコード:10 
+                $this->log($this->request->data, LOG_DEBUG);
                 $this->Session->setFlash(__('パスワードは変更されました。'));
 
                 // indexに移動する

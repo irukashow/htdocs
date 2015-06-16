@@ -16,14 +16,65 @@
             <td style="width:30%;">
     <!-- メッセージボックス -->
     <div id='message-folder'>
-        <font style="font-size: 120%;color:red;">制作予定</font><br>
+        <font style="font-size: 120%;color:red;">制作中</font><br>
+        <table border="0">
+            <tr>
+                <td width="15px;">
+                    <a href="#" style="text-decoration: none;">
+                        <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
+                    </a>
+                </td>
+                <td>
+                    <a href="#" style="text-decoration: none;">
+                        受信トレイ&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=$new_count ?></span>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td width="15px;">
+                    <a href="#" style="text-decoration: none;">
+                        <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
+                    </a>
+                </td>
+                <td>
+                    <a href="#" style="text-decoration: none;">
+                        送信済み
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td width="15px;">
+                    <a href="#" style="text-decoration: none;">
+                        <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
+                    </a>
+                </td>
+                <td>
+                    <a href="#" style="text-decoration: none;">
+                        下書き&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=1 ?></span>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td width="15px;">
+                    <a href="#" style="text-decoration: none;">
+                        <img src="<?=ROOTDIR ?>/img/dustbox.gif" style="vertical-align: -9px;margin-left: 5px;">
+                    </a>
+                </td>
+                <td>
+                    <a href="#" style="text-decoration: none;">
+                        削除済み
+                    </a>
+                </td>
+            </tr>
+        </table>
+        
     </div>
             </td>
             <td style="width:70%;">
     <!-- メッセージ一覧 -->
     <div id='message-list'>
         <?php echo $this->Form->create('MessageMember', array('name' => 'form')); ?>
-        <font style='font-weight: bold;font-size: 110%;'>[受信箱]</font><br>
+        <font style='font-weight: bold;font-size: 110%;'>[受信トレイ]</font><br>
         <?php echo $this->paginator->numbers (
             array (
                 'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
@@ -53,7 +104,7 @@
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['MessageMember']['name'], 'detail/'.$data['MessageMember']['id'], array('style'=>'')) ?>
                 </td>
-                <td class='message-content'><?=$data['MessageMember']['modified']; ?></td>
+                <td class='message-content'><?=$data['MessageMember']['created']; ?></td>
             </tr>
             <?php } ?>
         </table>

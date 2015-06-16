@@ -28,15 +28,14 @@ body {
 	background: #003d4c;
 	color: #fff;
 	font-family:Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;
-	font-size:90%;
+	font-size:150%;
 	//margin: 0;
-        margin-top: 25px;
+        margin-top: 30px;
 }
 /** 見出し **/
 #headline {
     background-color: #45bcd2 !important;
     color: white !important;
-    font-size: 110%;
     padding: 10px;
     margin-top: -5px;
     margin-bottom: 10px;
@@ -220,6 +219,23 @@ table td.actions a {
 	padding:2px 5px;
 }
 **/
+#wrapper {
+    width:600px;
+    margin:auto;
+}
+
+#wrapper table {
+width:100%;
+table-layout:fixed;
+word-break:break-all;
+word-wrap:break-word;
+display: block; 
+border:0px solid black;
+}
+div.scroll {
+    width:100%;
+    overflow:auto;
+}
 /* SQL log */
 .cake-sql-log {
 	background: #fff;
@@ -369,14 +385,14 @@ label {
 }
 input, textarea {
 	//clear: both;
-	//font-size: 140%;
+	font-size: 100%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
 	//padding: 3px;
 	//width:98%;
 }
 select {
 	//clear: both;
-	//font-size: 120%;
+	font-size: 100%;
 	vertical-align: text-bottom;
         padding: 1px;
 }
@@ -384,7 +400,7 @@ select[multiple=multiple] {
 	width: 100%;
 }
 option {
-	font-size: 120%;
+	font-size: 100%;
 	padding: 0 3px;
 }
 input[type=text] {
@@ -438,7 +454,7 @@ div.checkbox {
     float: left;
 }
 
-/*
+
 input[type=radio] {
 	float:left;
 	width:auto;
@@ -450,7 +466,7 @@ input[type=radio] {
 	margin: 0 0 6px 20px;
 	line-height: 26px;
 }
-*/
+
 
 /**
 input[type=submit] {
@@ -510,7 +526,7 @@ input[type=submit] {
   text-shadow: 1px 1px 3px #666666;
   font-family: Meiryo, メイリオ, sans-serif;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 28px;
   padding: 8px 10px 8px 10px;
   border: solid #094d19 1px;
   text-decoration: none;
@@ -540,42 +556,13 @@ cursor: pointer;
   border-radius: 10px;
   font-family: Meiryo, メイリオ, sans-serif;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 28px;
   padding: 8px 10px 8px 10px;
   text-decoration: none;
 }
 
 #button-delete:hover {
   background: #333333;
-  text-decoration: none;
-}
-/** メッセージ作成ボタン **/
-#button-create {
-  background: #f0ab57;
-  background-image: -webkit-linear-gradient(top, #f0ab57, #de7942);
-  background-image: -moz-linear-gradient(top, #f0ab57, #de7942);
-  background-image: -ms-linear-gradient(top, #f0ab57, #de7942);
-  background-image: -o-linear-gradient(top, #f0ab57, #de7942);
-  background-image: linear-gradient(to bottom, #f0ab57, #de7942);
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  text-shadow: 1px 1px 3px #666666;
-  font-family: Arial;
-  color: #f2f2f2;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 8px 10px 8px 10px;
-  text-decoration: none;
-}
-
-#button-create:hover {
-  background: #f2bc8c;
-  background-image: -webkit-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: -moz-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: -ms-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: -o-linear-gradient(top, #f2bc8c, #f5b658);
-  background-image: linear-gradient(to bottom, #f2bc8c, #f5b658);
   text-decoration: none;
 }
 
@@ -1021,17 +1008,6 @@ padding: 0;
 margin: 0; 
 float: left;
 height:30px;
-}
-
-/** 管理表 **/
-table#admin {
-    border:1px dotted gray;
-}
-table#admin tr{
-    border:1px dotted gray;
-}
-table#admin td{
-    border:1px dotted gray;
 }
 
 

@@ -3,6 +3,13 @@
     //echo $this->Html->image('nicEditorIcons');
     echo $this->Html->css('message');
 ?>
+<?php
+    // 日付から曜日を日本語で割り出す関数
+    function tag_weekday_japanese_convert( $date ){
+        $weekday = array( '日', '月', '火', '水', '木', '金', '土' );
+        return $weekday[date('w', strtotime( $date ) )];
+    }
+?>
 <script type="text/javascript">
 	//bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
@@ -23,6 +30,10 @@
         <tr style="background-color: #ffffea;">
             <td>
                 差出人： <font style="font-size: 110%;"><?=$data['MessageMember']['name'] ?></font>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <?= date('Y-m-d', strtotime($data['MessageMember']['created'])) ?>
+                (<?= tag_weekday_japanese_convert(strtotime($data['MessageMember']['created'])) ?>)
+                <?= date('H:i', strtotime($data['MessageMember']['created'])) ?>
             </td>
         </tr>
         <tr style="background-color: #ffffea;">

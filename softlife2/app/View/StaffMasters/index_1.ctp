@@ -47,9 +47,8 @@ function doSearch1(id) {
 //-->
 </script>    
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
-<?php echo $this->Form->create('StaffMaster', array('name' => 'form')); ?>
 <!-- 見出し -->
-<div id='headline' style="padding:5px 10px 5px 10px;">
+<div id='headline'>
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="javascript:void(0);" onclick="alert('制作予定');" id="pre_regist">仮登録リスト</a>
@@ -68,61 +67,60 @@ function doSearch1(id) {
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>
     &nbsp;
-    <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>" target="" id="clear">検　索</a>
 </div>
-    <!-- 絞り込み検索ボックス -->
-    <div style="float:left;">
-        <!-- 駅検索 -->
+
+<?php echo $this->Form->create('StaffMaster', array('name' => 'form')); ?>
+    
+    <!-- 駅検索 -->
         <FIELDSET class='search'>
             <LEGEND style='font-weight: bold;'>駅検索</LEGEND>         
-            <DIV style="float: left;width:800px;">
+            <DIV style="float: left;width:770px;">
                 <SPAN>路線①</SPAN>
-                <?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-                    'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;',
-                    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)', 'options'=>$line1)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
-                &nbsp;駅&nbsp;～&nbsp;
-                <?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
-                &nbsp;駅<BR>
+<?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+    'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
+&nbsp;→
+<?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;',
+    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)', 'options'=>$line1)); ?>
+&nbsp;→
+<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
+&nbsp;駅&nbsp;～&nbsp;
+<?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
+&nbsp;駅<BR>
 
                 <SPAN>路線②</SPAN>
-                <?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-                    'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-                    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)', 'options'=>$line2)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
-                &nbsp;駅&nbsp;～&nbsp;
-                <?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
-                &nbsp;駅<BR>
+<?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+    'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
+&nbsp;→
+<?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)', 'options'=>$line2)); ?>
+&nbsp;→
+<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
+&nbsp;駅&nbsp;～&nbsp;
+<?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
+&nbsp;駅<BR>
 
                 <SPAN>路線③</SPAN>
-                <?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-                    'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-                    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)', 'options'=>$line3)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
-                &nbsp;駅&nbsp;～&nbsp;
-                <?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
-                &nbsp;駅<BR>
+<?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
+    'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
+&nbsp;→
+<?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
+    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)', 'options'=>$line3)); ?>
+&nbsp;→
+<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
+&nbsp;駅&nbsp;～&nbsp;
+<?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
+&nbsp;駅<BR>
             </DIV>
             <div style='float: left;padding-left: 10px;'>
                 <!--
                 <?php echo $this->Form->submit('検索', array('name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
                 -->
             </div>
-            <div style="clear: both; height: 0px;"></div>
+            <div style="clear: both; height: 5px;"></div>
         </FIELDSET>
-        <!-- 駅検索 END -->
-    </div>
-    <div style="float:left;">
-        <!-- 年齢検索 -->
+    
+    <!-- 年齢検索 -->
         <FIELDSET class='search'>
             <LEGEND style='font-weight: bold;'>年齢検索</LEGEND>         
             <DIV style="float: left;width:300px;">
@@ -137,10 +135,8 @@ function doSearch1(id) {
                 -->
             </div>
         </FIELDSET>
-        <div style="clear: both; height: 0px;"></div>
-    </div>
-    <div style="clear: both; height: 0px;"></div>
-    
+    <p style="clear: both; height: 0px;"></p>
+
 <!-- ページネーション -->
 <div class="pageNav03" style="margin-bottom: 30px;">
 <?php
@@ -188,7 +184,7 @@ function doSearch1(id) {
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_tantou', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:90%;','empty' => array('' => ''), 'options' => $name_arr)); ?>
+                  array('type'=>'select', 'label' => false, 'style' => 'width:90%;','empty' => array('' => ''), 'options' => $name_arr, 'onchange' => 'form.submit();')); ?>
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>

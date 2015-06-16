@@ -2,13 +2,17 @@
     echo $this->Html->css('message');
 ?>
 <!-- 見出し -->
-<div id='headline'>
-    ★ ホーム
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="" target=""></a>
-    <a href="" target=""></a>
-    <a href="" target=""></a>
+<div id='headline' style="height:23px;">
+    <div style="float:left;">
+        ★ ホーム
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="" target=""></a>
+        <a href="" target=""></a>
+        <a href="" target=""></a>
+    </div>
+    <div style="float:right;font-size: 90%;">最終ログイン時刻：<?=$last_login ?></div>
 </div>
+<div style="clear:both;"></div>
 
 <!-- メインペイン -->
 <div id='message-main'>
@@ -25,47 +29,33 @@
                 </div>
             </td>
             <td style="width:70%;">
-                <!-- メッセージ一覧 -->
+                <!-- 新着情報 -->
                 <div id='message-list'>
-                    <font style='font-weight: bold;font-size: 110%;'>[新着メッセージ]</font><br>
-        <?php echo $this->paginator->numbers (
-            array (
-                'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
-                'after' => $this->paginator->hasNext() ? ' | '.$this->paginator->last('>>') : '',
-            )
-        );
-        ?>
+                    <font style='font-weight: bold;font-size: 110%;'>[新着情報]</font><br>
         <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void">
             <tr style='background-color: #459ed2;'>
-                <th style='width:5%;'>&nbsp;</th>
-                <th style='width:50%;'>標題</th>
-                <th style='width:20%;'>差出人</th>
-                <th style='width:25%;'>作成日時</th>
+                <th colspan="2">○&nbsp;メッセージ</th>
             </tr>
-            <?php foreach ($datas as $data) { ?>
-        <?php if ($data['MessageMember']['kidoku_flag'] == 0) { ?>
-            <tr style='background-color: #fff6d7; border:1px solid orange; font-weight: bold;'>
-                <td style="padding-top: 8px;">
-                    <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
+            <tr>
+                <td width="10px">&nbsp;</td>
+                <td>
+<?php if ($new_count == 0) { ?>
+                    新着メッセージはありません。
+<?php } else { ?>
+                    <a href="<?=ROOTDIR ?>/message/index"><font style="color: blue;font-weight: bold;"><?=$new_count ?>&nbsp;通</font>の新着メッセージがあります。</a>
+<?php } ?>
                 </td>
-                <td class='message-content'>
-                    <?php echo $this->Html->link($data['MessageMember']['title'], 'detail/'.$data['MessageMember']['id'], array('style'=>'color: blue;')) ?>
-                </td>
-                <td class='message-content'>
-                    <?php echo $this->Html->link($data['MessageMember']['name'], 'detail/'.$data['MessageMember']['id'], array('style'=>'')) ?>
-                </td>
-                <td class='message-content'><?=$data['MessageMember']['modified']; ?></td>
             </tr>
-            <?php } ?> 
-            <?php } ?>
+            <tr style='background-color: #459ed2;'>
+                <th colspan="2">○&nbsp;管理者からのお知らせ</th>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>特にありません。</td>
+            </tr>
+            
         </table>
-        <?php echo $this->paginator->numbers (
-            array (
-                'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
-                'after' => $this->paginator->hasNext() ? ' | '.$this->paginator->last('>>') : '',
-            )
-        );
-        ?>
+
         <?php echo $this->Form->end(); ?>
                 </div>
                 </td>
