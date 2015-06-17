@@ -90,7 +90,7 @@ $(function() {
                             ?>
                                 <ul>
                                     <li><a href="<?=ROOTDIR ?>/users/passwd">パスワード変更</a></li>
-                                    <li><a href="<?=ROOTDIR ?>/menu/version">バージョン情報</a></li>
+                                    <li><a href="<?=ROOTDIR ?>/menu/version/sort:id/direction:desc">バージョン情報</a></li>
                                     <li><a href="<?=ROOTDIR ?>/users/logout">ログアウト</a></li>
                                 </ul>
                             <?php

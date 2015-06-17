@@ -20,7 +20,7 @@
         <font style="font-size: 150%;color: red;"><?= $headline ?></font>
     </div>
     <div style="float:right;">
-        <a href='<?=ROOTDIR ?>/admin/'>ホームへ戻る</a>
+        <a href='<?=ROOTDIR ?>/admin/'>◀ホームへ戻る</a>
     </div>
     <div style="clear:both;"></div>
     
@@ -44,7 +44,7 @@
     <th><?php echo $this->Paginator->sort('remarks','更新内容');?></th>
     <th><?php echo $this->Paginator->sort('release_date','リリース日');?></th>
   </tr>
-  <?php foreach ($datas as $key => $data): ?>
+  <?php foreach($datas as $data) { ?>
   <tr>
     <td><?php echo $data['Menu']['id'];?></td>
     <td><?php echo $data['Menu']['version_no']; ?></td>
@@ -53,7 +53,7 @@
     <td><?php echo str_replace("\n","<br />",$data['Menu']['remarks']); ?></td>
     <td><?php echo $data['Menu']['release_date']; ?></td>
   </tr>
-  <?php endforeach; ?>
+  <?php } ?>
 </table>
 
 <!-- ページネーション -->
@@ -69,6 +69,6 @@
 
 <?php echo $this->Form->end(); ?>
 <br>
-<a href="<?=ROOTDIR ?>/users/index">ホームへ戻る</a>
+<a href="<?=ROOTDIR ?>/users/index">◀ホームへ戻る</a>
 
 </div>

@@ -12,21 +12,22 @@
 </div>
 
 <div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
-<?php echo $this->Form->create('MessageMember', array('name' => 'form')); ?>
-    <table id="" border="0" width="65%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
+<?php echo $this->Form->create('MessageStaff', array('name' => 'form', 'enctype' => 'multipart/form-data')); ?>
+<?php echo $this->Form->input('class', array('type' => 'hidden', 'label' => false, 'value' => $staff_class)); ?>
+<?php echo $this->Form->input('staff_id', array('type' => 'hidden', 'label' => false, 'value' => $staff_id)); ?> 
+<?php echo $this->Form->input('name', array('type' => 'hidden', 'label' => false, 'value' => $name)); ?> 
+    
+    <table id="" border="0" width="70%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
         <tr>
-            <td width="80px">差出人</td>
+            <td width="10%">差出人</td>
             <td>
-                <font style="font-size: 110%;"><?=$user_name ?></font>
-                <?php echo $this->Form->input('username', array('type' => 'hidden', 'label' => false, 'value' => $username)); ?>
-                <?php echo $this->Form->input('name', array('type' => 'hidden', 'label' => false, 'value' => $user_name)); ?>
-                <?php echo $this->Form->input('class', array('type' => 'hidden', 'label' => false, 'value' => $selected_class)); ?>
+                <font style="font-size: 110%;"><?=$name ?></font>（No.<?=$staff_id ?>＠<?='大阪-人材派遣' ?>）
             </td>
         </tr>
         <tr>
             <td>宛先</td>
             <td>
-                <?php echo $this->Form->input('staff_id', array('type' => 'select', 'label' => false, 'div' => false, 'options' => $selected_class, 'style' => 'float:left;padding: 2px;')); ?>
+                <?php echo $this->Form->input('recipient_member', array('type' => 'select', 'label' => false, 'empty' => array('' => ''), 'options' => $selected_username, 'style' => '')); ?>
             </td>
         </tr>
         <tr>
@@ -46,7 +47,7 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: middle;">添付ファイル<br><span style="font-size: 90%;">※３つまで</span></td>
+            <td>添付ファイル<br>※３つまで可能</td>
             <td>
                 <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]', 'label' => false, 'style' => 'width: 100%;')); ?>
                 <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]','label' => false, 'style' => 'width: 100%;')); ?>

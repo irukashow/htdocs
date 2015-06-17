@@ -169,7 +169,7 @@ function doSearch1(id) {
       <th style="width:10%;"><?php echo $this->Paginator->sort('id','写真<br>登録番号', array('escape' => false));?></th>
       <th style="width:10%;"><?php echo $this->Paginator->sort('name_sei','氏名<br>登録年月日', array('escape' => false));?></th>
       <th style="width:5%;"><?php echo $this->Paginator->sort('age','年齢<br>性別', array('escape' => false));?></th>
-    <th style="width:7%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
+    <th style="width:8%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
     <th style="width:7%;"><?php echo $this->Paginator->sort('ojt_date','OJT実施<br>実施年月日', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('service_count','勤務回数');?></th>
     <th><?php echo $this->Paginator->sort('shokushu_shoukai','紹介可能職種');?></th>
@@ -188,7 +188,7 @@ function doSearch1(id) {
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_tantou', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:90%;','empty' => array('' => ''), 'options' => $name_arr)); ?>
+                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;','empty' => array('' => ''), 'options' => $name_arr)); ?>
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
@@ -240,6 +240,11 @@ function doSearch1(id) {
     <td align="center"><?php echo getNenmatsu($data['StaffMaster']['nenmatsu_chousei']); ?></td>
   </tr>
   <?php endforeach; ?>
+<?php if (count($datas) == 0) { ?>
+<tr>
+    <td colspan="13" align="center">表示するデータはありません。</td>
+</tr>
+<?php } ?>
 </table>
 
 <!-- ページネーション -->

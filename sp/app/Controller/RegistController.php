@@ -25,7 +25,9 @@ class RegistController extends AppController {
         $this->set("title_for_layout","スタッフ仮登録 - 入力１");
         
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => array('item' => '10')));
-        $this->set('pref_arr', $pref_arr);  
+        $this->set('pref_arr', $pref_arr);
+        
+        
     }
     
     public function page2() {

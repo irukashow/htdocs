@@ -13,5 +13,6 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class VersionRemarks extends AppModel {
+    public $useTable = 'version_remarks';
     
 }

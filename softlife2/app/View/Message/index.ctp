@@ -50,7 +50,7 @@
                 </td>
                 <td>
                     <a href="#" style="text-decoration: none;">
-                        下書き&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=1 ?></span>
+                        下書き&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=0 ?></span>
                     </a>
                 </td>
             </tr>
@@ -67,7 +67,7 @@
                 </td>
             </tr>
         </table>
-        
+        <a href="<?=ROOTDIR ?>/message/staff">●テストページ「スタッフからの送信」</a>
     </div>
             </td>
             <td style="width:70%;">
@@ -85,8 +85,9 @@
         <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void">
             <tr style='background-color: #459ed2;'>
                 <th style='width:5%;'>&nbsp;</th>
-                <th style='width:50%;'>標題</th>
-                <th style='width:20%;'>差出人</th>
+                <th style='width:40%;'>標題</th>
+                <th style='width:15%;'>差出人</th>
+                <th style='width:15%;'>宛先</th>
                 <th style='width:25%;'>作成日時</th>
             </tr>
             <?php foreach ($datas as $data) { ?>
@@ -104,7 +105,13 @@
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['MessageMember']['name'], 'detail/'.$data['MessageMember']['id'], array('style'=>'')) ?>
                 </td>
+                <td class='message-content'><?=$data['User']['name_sei'].' '.$data['User']['name_mei']; ?></td>
                 <td class='message-content'><?=$data['MessageMember']['created']; ?></td>
+            </tr>
+            <?php } ?>
+            <?php if (count($datas) == 0) { ?>
+            <tr>
+                <td colspan="5" align="center">表示するメッセージはありません。</td>
             </tr>
             <?php } ?>
         </table>

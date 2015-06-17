@@ -29,11 +29,11 @@ class UsersController extends AppController {
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
             $this->set('name', $name);
-            //$this->set('sessions', $this->Session);
+            $selected_class = $this->Session->read('selected_class');
             // テーブルの設定
-            $this->MessageMember->setSource('message_member');
+            $this->MessageMember->setSource('message_staff');
             // 未読メッセージ件数
-            $new_count = $this->MessageMember->find('count', array('conditions' => array('kidoku_flag' => 0)));
+            $new_count = $this->MessageMember->find('count', array('conditions' => array('class' => $selected_class,'kidoku_flag' => 0)));
             $this->set('new_count', $new_count);
             // 最終ログイン時刻
             $last_login = $this->LoginLogs->find('first', array('fields' => array('created'), 
@@ -47,6 +47,7 @@ class UsersController extends AppController {
                 //$this->Session->setFlash($class);
                 $this->set('selected_class', $class);
                 $this->Session->write('selected_class', $class);
+                $this->redirect('.');
             } else {
                 $this->set('selected_class', $this->Session->read('selected_class'));
             }
