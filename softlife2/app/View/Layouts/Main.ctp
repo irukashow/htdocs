@@ -69,8 +69,8 @@ $(function() {
         <table style="width: 100%;" border="0">
             <tr>
                 <td style="width:300px;">
-                    <a href="<?=ROOTDIR ?>/users/" class="logo">&nbsp;</a>
-                    <font size="3">
+                    <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif"></a>
+                    <font size="3" style="vertical-align: 8px;">
                         <?php echo HEADER; ?>
                     </font>
                 </td>

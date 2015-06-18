@@ -4,7 +4,7 @@
 
 <!-- 見出し -->
 <div id='headline'>
-    ★ メッセージボックス
+    ★ メッセージ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="send" target="" id='button-send'>メッセージを送る</a>
 </div>
@@ -16,7 +16,7 @@
             <td style="width:30%;">
     <!-- メッセージボックス -->
     <div id='message-folder'>
-        <font style="font-size: 120%;color:red;">制作中</font><br>
+        <font style="font-size: 120%;color:red;">メッセージボックス</font><br>
         <table border="0">
             <tr>
                 <td width="15px;">

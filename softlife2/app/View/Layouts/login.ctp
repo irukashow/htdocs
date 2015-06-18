@@ -21,18 +21,19 @@
 <body>
   <div id="container">
     <div id="header">
-        <table style="width: 100%;" border="0">
+        <table style="width: 100%;height: 40px;">
             <tr>
-                <td style="padding-top: 12px;">
-                    <a href="<?=ROOTDIR ?>/users/">&nbsp;</a>
-                    <font size="3">
+                <td style="width:300px;padding-top: 9px;">
+                    <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif" /></a>
+                    <font size="3" style="vertical-align: 9px;">
                         <?php echo HEADER; ?>
                     </font>
                 </td>
-                <td style="">
+                <td style="float: right;">
                 </td>
         </table>
     </div>
+      <div style="clear:none;"></div>
     <div id="content">
       <?php echo $this->Session->flash(); ?>
       <?php echo $content_for_layout; ?>

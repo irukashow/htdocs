@@ -47,28 +47,49 @@ function doSearch1(id) {
 //-->
 </script>    
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
-<!-- 見出し -->
-<div id='headline'>
+<!-- 見出し１ -->
+<div id='headline' style="padding:10px 10px 10px 10px;">
     ★ 案件管理
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="alert('制作予定');" id="pre_regist">仮登録リスト</a>
+    &nbsp;&nbsp;
+    <b><font Style="font-size:95%;color: yellow;">案件一覧</font></b>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/customer" target=""><font Style="font-size:95%;">取引先一覧</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/shokushu" target=""><font Style="font-size:95%;">職種マスタ</font></a>
+</div>
+<!-- 見出し１ END -->
+<!-- 見出し２ -->
+<div id='headline' style="padding:5px 10px 5px 10px;">
     &nbsp;
     <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
-<?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
-    &nbsp;
-    <b><font Style="font-size:95%;">登録解除リスト</font></b>
-<?php } else { ?>
+<?php if ($flag == 0 || empty($flag)) { ?>
     <b><font Style="font-size:95%;">登録リスト</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
+    <a href="<?=ROOTDIR ?>/case_management/index/1" target=""><font Style="font-size:95%;">削除済リスト</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/index/2" target=""><font Style="font-size:95%;">クローズ一覧</font></a>
+<?php } elseif ($flag == 1) { ?>
+    <a href="<?=ROOTDIR ?>/case_management/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
+    &nbsp;
+    <b><font Style="font-size:95%;">削除済リスト</font></b>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/index/2" target=""><font Style="font-size:95%;">クローズ一覧</font></a>
+<?php } elseif ($flag == 2) { ?>
+    <a href="<?=ROOTDIR ?>/case_management/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/index/1" target=""><font Style="font-size:95%;">削除済リスト</font></a>
+    &nbsp;
+    <b><font Style="font-size:95%;">クローズ一覧</font></b>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>
+    <a href="<?=ROOTDIR ?>/case_management/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>
+    &nbsp;
+    <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
 </div>
+<!-- 見出し２ END -->
 
-<?php echo $this->Form->create('StaffMaster', array('name' => 'form')); ?>
+<?php echo $this->Form->create('CaseManagement', array('name' => 'form')); ?>
     
     <!-- 駅検索 -->
         <FIELDSET class='search'>
@@ -110,9 +131,6 @@ function doSearch1(id) {
 <?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
 &nbsp;駅<BR>
             </DIV>
-            <div style='float: left;padding-left: 10px;'>
-                <?php echo $this->Form->submit('検索', array('name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
-            </div>
             <div style="clear: both; height: 5px;"></div>
         </FIELDSET>
 

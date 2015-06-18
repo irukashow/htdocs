@@ -18,61 +18,67 @@
 <div style="margin-top: 20px;">
 <?php echo $this->Form->create('User'); ?>
     <fieldset style="border: none; margin-bottom: 20px;height: 300px;">
-        <table id='admin' border="1" width="100%" cellspacing="0" cellpadding="2" bordercolor="#333333" align="center" style="background-color: white;">
-            <tr height="50px">
-                <td colspan="6">
-                    <legend style="font-size: 150%;color: red;"><?php echo __('ユーザー管理'); ?></legend>
-                </td>
-            </tr>
-            <tr>
-                <td width="15%">
-                    <?php echo $this->Html->link('▶ユーザー一覧', '/users/view'); ?>
-                </td>
-                <td width="15%">
-                    <?php echo $this->Html->link('▶ユーザー登録（新規）', '/users/add/'); ?>
-                </td>
-                <td width="15%">
-                    <?php echo $this->Html->link('▶ユーザー登録（更新）', '/users/edit/'); ?>
-                </td>
-                <td width="15%"></td>
-                <td width="15%"></td>
-            </tr>
-            <tr height="15px">
-                <td colspan="6">
-                    <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __('システム管理'); ?></legend>
-                </td>
+        <table id='admin' border="0" width="100%" cellspacing="0" cellpadding="1" bordercolor="#333333" align="center" style="background-color: white;">
+            <tr style="height: 40px;">
+                <th width="20%">
+                    <legend style=""><?php echo __('ユーザー管理'); ?></legend>
+                </th>
+                <th width="20%">
+                    <legend style=""><?php echo __('システム管理'); ?></legend>
+                </th>
+                <th width="20%">
+                    <legend style=""><?php echo __('マスタ管理'); ?></legend>
+                </th>
+                <th width="20%"></th>
+                <th width="20%"></th>
             </tr>
             <tr>
                 <td>
-                    <?php echo $this->Html->link('▶バージョン情報入力ページ', './version/'); ?>
+                    <?php echo $this->Html->link('▶ユーザー一覧', '/users/view'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master'); ?>
-                </td>
-                <td>
-                    <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
+                    <?php echo $this->Html->link('▶項目マスタ', '/master/index'); ?>
                 </td>
                 <td></td>
-            </tr>
-            <tr height="15px">
-                <td colspan="6">
-                    <legend style="font-size: 150%;color: red;margin-top: 5px;margin-bottom: 5px;"><?php echo __('マスタ管理'); ?></legend>
-                </td>
+                <td></td>
             </tr>
             <tr>
                 <td>
-                    <?php echo $this->Html->link('▶項目マスタ', '/master/index'); ?>
+                    <?php echo $this->Html->link('▶ユーザー登録（新規）', '/users/add/'); ?>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶バージョン情報入力ページ', './version/'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶スタッフ職種マスタ', '/master/shokushu'); ?>
                 </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td width="15%">
+                    <?php echo $this->Html->link('▶ユーザー登録（更新）', '/users/edit/'); ?>
+                </td>
                 <td>
+                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master'); ?>
                 </td>
                 <td>
                 </td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
+                </td>
+                <td>
+                </td>
+                <td></td>
                 <td></td>
             </tr>
         </table>

@@ -2,7 +2,7 @@
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
 define("HEADER","スタッフ専用サイト");
-define("FOOTER","Version 0.0.6 20150610 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
+define("FOOTER","Version 0.0.1 20150619 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
 define("ROOTDIR","/sp");
  
 //配列

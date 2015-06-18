@@ -1025,13 +1025,21 @@ height:30px;
 
 /** 管理表 **/
 table#admin {
-    border:1px dotted gray;
+    border:1px solid gray;
 }
 table#admin tr{
-    border:1px dotted gray;
+    border:1px solid gray;
+    height:30px;
+}
+table#admin th{
+    border:1px solid gray;
+    background-color: #e9ffff;
+    color: red;
+    font-size: 130%;
+    font-weight: normal;
 }
 table#admin td{
-    border:1px dotted gray;
+    border:1px solid gray;
 }
 
 

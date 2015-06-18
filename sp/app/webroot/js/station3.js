@@ -152,12 +152,12 @@ function setMenuItem3(type,code){
 		}
 	}else{
 		for ( i=0 ; i <= optionIndex1 ; i++ ){
-			document.getElementById('StuffMasterS13').options[0]=null;
-			document.getElementById('StuffMasterS23').options[0]=null;
+			document.getElementById('StaffMasterS13').options[0]=null;
+			document.getElementById('StaffMasterS23').options[0]=null;
 		}	//駅削除
 		if (code == 0){
-			document.getElementById('StuffMasterS13').options[0] = new Option("----",0);	//駅OPTIONを空に
-			document.getElementById('StuffMasterS23').options[0] = new Option("----",0);	//駅OPTIONを空に
+			document.getElementById('StaffMasterS13').options[0] = new Option("----",0);	//駅OPTIONを空に
+			document.getElementById('StaffMasterS23').options[0] = new Option("----",0);	//駅OPTIONを空に
 		}else{
 			s.src = "http://www.ekidata.jp/api/l/" + code + ".json";	//駅JSONデータURL
 		}
@@ -167,23 +167,23 @@ function setMenuItem3(type,code){
 		var line = data["line"];
 		var station_l = data["station_l"];
 		if(line != null){
-			document.getElementById('StuffMasterS03').options[0] = new Option("----",0);	//OPTION1番目はNull
+			document.getElementById('StaffMasterS03').options[0] = new Option("----",0);	//OPTION1番目はNull
 			for( i=0; i<line.length; i++){
 				ii = i + 1	//OPTIONは2番目から表示
 				var op_line_name = line[i].line_name;
 				var op_line_cd = line[i].line_cd;
-				document.getElementById('StuffMasterS03').options[ii] = new Option(op_line_name,op_line_cd);
+				document.getElementById('StaffMasterS03').options[ii] = new Option(op_line_name,op_line_cd);
 			}
 		}
 		if(station_l != null){
-			document.getElementById('StuffMasterS13').options[0] = new Option("----",0);	//OPTION1番目はNull
-			document.getElementById('StuffMasterS23').options[0] = new Option("----",0);	//OPTION1番目はNull
+			document.getElementById('StaffMasterS13').options[0] = new Option("----",0);	//OPTION1番目はNull
+			document.getElementById('StaffMasterS23').options[0] = new Option("----",0);	//OPTION1番目はNull
 			for( i=0; i<station_l.length; i++){
 				ii = i + 1	//OPTIONは2番目から表示
 				var op_station_name = station_l[i].station_name;
 				var op_station_cd = station_l[i].station_cd;
-				document.getElementById('StuffMasterS13').options[ii] = new Option(op_station_name,op_station_cd);
-				document.getElementById('StuffMasterS23').options[ii] = new Option(op_station_name,op_station_cd);	//***
+				document.getElementById('StaffMasterS13').options[ii] = new Option(op_station_name,op_station_cd);
+				document.getElementById('StaffMasterS23').options[ii] = new Option(op_station_name,op_station_cd);	//***
 			}
 		}
 	}

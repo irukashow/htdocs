@@ -1,8 +1,9 @@
 <?php 
     // 所属カンマ区切りを配列に
-    $value = explode(',', $result['User']['auth']);
+    //$value = explode(',', $result['User']['auth']);
     //$this->log($value);
     // 所属コンボセット
+    /**
     foreach($value as $val) {
         if ($val == '11') {
             $class['11'] = '大阪-人材派遣';
@@ -23,6 +24,8 @@
             $class['32'] = '名古屋-住宅営業';
         }   
     } 
+     * 
+     */
 ?>
 <?php
   $ua=$_SERVER['HTTP_USER_AGENT'];
@@ -71,7 +74,6 @@ $(function() {
         <table style="width: 100%;" border="0">
             <tr>
                 <td style="width:300px;">
-                    <a href="<?=ROOTDIR ?>/users/" class="logo">&nbsp;</a>
                     <font size="4">
                         <?php echo HEADER; ?>
                     </font>

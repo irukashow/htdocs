@@ -30,7 +30,7 @@ body {
 	font-family:Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:150%;
 	//margin: 0;
-        margin-top: 30px;
+        margin-top: 20px;
 }
 /** 見出し **/
 #headline {
@@ -104,7 +104,7 @@ p {
 }
 a.logo {
 	//line-height:20px;
-	background: #003d4c url('/softlife2/img/logo.gif') no-repeat left;
+	//background: #003d4c url('/softlife2/img/logo.gif') no-repeat left;
 	color: #fff;
 	padding: 0px 30px;
 }
@@ -418,6 +418,12 @@ input[type=text]:hover {
         font-size: 100%;
         background-color: #ffffcc;
 }
+input[type=password] {
+    
+}
+input[type=password]:hover {
+    background-color: #ffffcc;
+}
 input[type=textarea] {
 	clear: left;
 	//float: left;
@@ -456,15 +462,17 @@ div.checkbox {
 
 
 input[type=radio] {
-	float:left;
+	//float:left;
 	width:auto;
 	margin: 6px 0;
 	padding: 0;
 	line-height: 26px;
+        vertical-align: middle;
 }
 .radio label {
 	margin: 0 0 6px 20px;
 	line-height: 26px;
+        vertical-align: middle;
 }
 
 
