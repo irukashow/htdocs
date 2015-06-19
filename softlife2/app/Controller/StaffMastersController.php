@@ -282,6 +282,11 @@ class StaffMastersController extends AppController {
         //$this->log('staff_'.$this->Session->read('selected_class'), LOG_DEBUG);
         //$this->log($this->StaffMaster->useTable);
         $this->StaffMemo->setSource('staff_memos');
+        // 職種マスタ配列
+        $conditions1 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
+        $this->set('list_shokushu', $list_shokushu); 
+        //$this->log($list_shokushu, LOG_DEBUG);
         // 登録していた値をセット
         $this->set('memo_datas', $this->StaffMemo->find('all', array('conditions' => array('class' => $selected_class, 'staff_id' => $staff_id), 'order' => array('id' => 'desc')))); 
         //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG);
@@ -303,7 +308,7 @@ class StaffMastersController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             // 登録編集
             if (isset($this->request->data['submit'])) {
-                $this->redirect(array('action' => 'reg1', $staff_id, 1));
+                $this->redirect(array('action' => 'reg1', $this->request->data['StaffMaster']['staff_id'], 1));
             // 登録解除
             } elseif (isset($this->request->data['release'])) {
                 $sql = '';
@@ -428,14 +433,6 @@ class StaffMastersController extends AppController {
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->StaffMaster->validates($this->request->data)) {
-                // バリデーションOKの場合の処理
-                $this->log('OK!', LOG_DEBUG);
-            } else {
-                // バリデーションNGの場合の処理
-                $this->log( $this->StaffMaster->validationErrors, LOG_DEBUG);
-                exit();
-            }
             if (isset($this->request->data['submit'])) {
                 // 都道府県の名称のセット
                 if (!empty($this->request->data['StaffMaster']['address1'])) {
@@ -829,7 +826,7 @@ class StaffMastersController extends AppController {
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
         $result = $this->User->find('list', array('fields' => array('username', 'name')));
         $result = $result + array('', '');
-        
+
         return $result;
     } 
     

@@ -38,18 +38,25 @@ class StaffMaster extends AppModel {
             'allowEmpty' => true,
             'message' => '郵便番号は半角数字で入力して下さい。'
         ),
+        'email1' =>  array(
+                'rule' => 'notEmpty',
+                'message' => 'メールアドレスを入力してください。'
+        ),
+        /**
         'email1' => array(
             'rule' => array('email', false),
             'required' => false,
             'allowEmpty' => false,
-            'message' => 'メールアドレスの形式で必ず入力して下さい'
+            'message' => 'メールアドレスの形式で入力して下さい'
         ),
         'email2' => array(
             'rule' => array('email', false),
             'required' => false,
             'allowEmpty' => true,
-            'message' => 'メールアドレスの形式で必ず入力して下さい'
+            'message' => 'メールアドレスの形式で入力して下さい'
         ),
+         * 
+         */
         // 登録２
         'height' =>  array(
             'rule' => 'numeric',

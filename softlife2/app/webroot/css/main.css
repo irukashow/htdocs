@@ -1032,14 +1032,14 @@ table#admin tr{
     height:30px;
 }
 table#admin th{
-    border:1px solid gray;
-    background-color: #e9ffff;
-    color: red;
+    //border:1px solid gray;
+    background-color: #459ed2;
+    color: white;
     font-size: 130%;
     font-weight: normal;
 }
 table#admin td{
-    border:1px solid gray;
+    //border:1px solid gray;
 }
 
 

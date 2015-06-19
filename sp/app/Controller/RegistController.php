@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class RegistController extends AppController {
-    public $uses = array('StaffPreregist', 'User', 'Item', 'StaffMasterLog');
+    public $uses = array('StaffPreregist', 'User', 'Item', 'StaffPreregistLog');
 
     public function index() {
         $this->redirect('page1');
@@ -37,7 +37,7 @@ class RegistController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
             if ($this->StaffPreregist->validates() == false) {
-                exit();
+                return;
             }
             // パスワードの同一性チェック
             if ($this->request->data['StaffPreregist']['password'] != $this->request->data['StaffPreregist']['password2']) {
@@ -184,26 +184,26 @@ class RegistController extends AppController {
                 $this->request->data['StaffPreregist']['regist_trigger'] = $val6;
                 // 駅を未入力ならばNULLをセットする
                 if (empty($this->request->data['StaffPreregist']['s1_1'])) {
-                    //$this->request->data['StaffMaster']['pref1'] = null;
-                    //$this->request->data['StaffMaster']['s0_1'] = null;
+                    //$this->request->data['StaffPreregist']['pref1'] = null;
+                    //$this->request->data['StaffPreregist']['s0_1'] = null;
                     $this->request->data['StaffPreregist']['s1_1'] = null;
                 }
                 if (empty($this->request->data['StaffPreregist']['s1_2'])) {
-                    //$this->request->data['StaffMaster']['pref2'] = null;
-                    //$this->request->data['StaffMaster']['s0_2'] = null;
+                    //$this->request->data['StaffPreregist']['pref2'] = null;
+                    //$this->request->data['StaffPreregist']['s0_2'] = null;
                     $this->request->data['StaffPreregist']['s1_2'] = null;
                 }
                 if (empty($this->request->data['StaffPreregist']['s1_3'])) {
-                    //$this->request->data['StaffMaster']['pref3'] = null;
-                    //$this->request->data['StaffMaster']['s0_3'] = null;
+                    //$this->request->data['StaffPreregist']['pref3'] = null;
+                    //$this->request->data['StaffPreregist']['s0_3'] = null;
                     $this->request->data['StaffPreregist']['s1_3'] = null;
                 }
                 // モデルの状態をリセットする
-                //$this->StaffMaster->create();
+                //$this->StaffPreregist->create();
                 // データを登録する
                 if ($this->StaffPreregist->save($this->request->data)) {
                     // 登録したIDを取得
-                    //$id = $this->StaffMaster->getLastInsertID();
+                    //$id = $this->StaffPreregist->getLastInsertID();
                     // ログ書き込み
                     $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffPreregist']['name_sei'].' '.$this->request->data['StaffPreregist']['name_mei'], 
                         9, 32, $this->request->clientIp()); // 仮登録２コード:32
@@ -286,7 +286,7 @@ class RegistController extends AppController {
         $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$staff_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
         
         // sqlの実行
-        $ret = $this->StaffMasterLog->query($sql);
+        $ret = $this->StaffPreregistLog->query($sql);
         
         return $ret;
     }

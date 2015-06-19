@@ -224,7 +224,13 @@ function doSearch1(id) {
 	<?=date('Y-m-d', strtotime($data['StaffMaster']['created'])); ?>
     </td>
     <td align="center"><?php echo $data['StaffMaster']['age'].'歳'."<br>".getGender($data['StaffMaster']['gender']);?></td>
-    <?php $tantou_user = $data['StaffMaster']['tantou']; ?>
+    <?php
+	if (!empty($data['StaffMaster']['tantou'])) {
+            $tantou_user = $data['StaffMaster']['tantou'];
+	} else {
+            $tantou_user = 0;
+	}
+    ?>
     <td align="center"><?php echo $getTantou[$tantou_user]; ?></td>
     <td align="center"><?php echo getOjt($data['StaffMaster']['ojt']).'<br>'.$data['StaffMaster']['ojt_date']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>

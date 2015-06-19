@@ -9,7 +9,62 @@
     echo $this->Html->css('lightbox');
 ?>
 <?php require('profile_element.ctp'); ?>
-
+<?php
+    // 職種
+    function getShokushu($value) {
+        $ret = $list_shokushu[$value];
+        print_r($list_shokushu);
+        /**
+        if ($value == 1) {
+            $ret = '受付';
+        } elseif ($value == 2) {
+            $ret = 'フロア受付';
+        } elseif ($value == 3) {
+            $ret = 'シッター';
+        } elseif ($value == 4) {
+            $ret = 'ナレーター';  
+        } elseif ($value == 5) {
+            $ret = 'ＤＨ';
+        } elseif ($value == 6) {
+            $ret = '看板持ち';
+        } elseif ($value == 7) {
+            $ret = '事務';
+        } elseif ($value == 8) {
+            $ret = '誘導案内';
+        } elseif ($value == 9) {
+            $ret = '内覧会スタッフ';
+        } else {
+            $ret = '';
+        }
+         * 
+         */
+        return $ret;
+    }
+    function getShokushu2($array) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if ($key <= 1) {
+                $ret = getShokushu($value);
+            } else {
+                $ret = $ret.', '.getShokushu($value);
+            }  
+        }
+        return $ret;
+    }
+     function getShokushu3($array) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if ($key <= 1) {
+                $ret = getShokushu($value);
+            } else {
+                $ret = $ret.'<br>'.getShokushu($value);
+            }  
+        }
+        return $ret;
+    }
+?>
 <style>
 #loading{
     position:absolute;
