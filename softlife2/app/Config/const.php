@@ -10,10 +10,19 @@ define("ROOTDIR","/softlife2");
 $config['fuga'] = array("a","b","c");
  
 //連想配列
-//呼び出し方:    $hoge = Configure::read("hoge");
-$config['hoge'] = array(
-  "A"=>"あ",
-  "B"=>"い",
-  "C"=>"う",
+//呼び出し方:    $list_shokushu = Configure::read("shokushu");
+$config['shokushu'] = array(
+  "1"=>"内覧会受付",
+  "2"=>"受付",
+  "3"=>"内覧会スタッフ",
+  "4"=>"ナレーター",
+  "5"=>"MC",
+  "6"=>"説明",
+  "7"=>"事務",
+  "8"=>"誘導案内",
+  "9"=>"保育",
+  "10"=>"イベント",
+  "11"=>"DH",
+  "12"=>"看板持ち",
 );
 

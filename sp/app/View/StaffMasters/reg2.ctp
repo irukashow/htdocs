@@ -82,7 +82,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%05d', $staff_id).'/'.$staff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
+                            echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
                                     . '【保存している証明写真】</a>';
                         }
                     ?>
@@ -110,7 +110,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%05d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
                         }
                     ?>
                 </td>

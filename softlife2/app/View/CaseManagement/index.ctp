@@ -203,7 +203,7 @@ function doSearch1(id) {
     </td>
     <td align="center"><?php echo $data['StaffMaster']['age'].'歳'."<br>".getGender($data['StaffMaster']['gender']);?></td>
     <?php $tantou_user = $data['StaffMaster']['tantou']; ?>
-    <td align="center"><?php echo $getTantou[$tantou_user]; ?></td>
+    <td align="center"><?php echo $tantou_user; ?></td>
     <td align="center"><?php echo getOjt($data['StaffMaster']['ojt']).'<br>'.$data['StaffMaster']['ojt_date']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo getShokushu2($data['StaffMaster']['shokushu_shoukai']); ?></td>

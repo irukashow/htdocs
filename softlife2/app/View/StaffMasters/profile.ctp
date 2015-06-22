@@ -9,62 +9,7 @@
     echo $this->Html->css('lightbox');
 ?>
 <?php require('profile_element.ctp'); ?>
-<?php
-    // 職種
-    function getShokushu($value) {
-        $ret = $list_shokushu[$value];
-        print_r($list_shokushu);
-        /**
-        if ($value == 1) {
-            $ret = '受付';
-        } elseif ($value == 2) {
-            $ret = 'フロア受付';
-        } elseif ($value == 3) {
-            $ret = 'シッター';
-        } elseif ($value == 4) {
-            $ret = 'ナレーター';  
-        } elseif ($value == 5) {
-            $ret = 'ＤＨ';
-        } elseif ($value == 6) {
-            $ret = '看板持ち';
-        } elseif ($value == 7) {
-            $ret = '事務';
-        } elseif ($value == 8) {
-            $ret = '誘導案内';
-        } elseif ($value == 9) {
-            $ret = '内覧会スタッフ';
-        } else {
-            $ret = '';
-        }
-         * 
-         */
-        return $ret;
-    }
-    function getShokushu2($array) {
-        $ret = "";
-        $_array = explode(',', $array);
-        foreach ($_array as $key => $value) {
-            if ($key <= 1) {
-                $ret = getShokushu($value);
-            } else {
-                $ret = $ret.', '.getShokushu($value);
-            }  
-        }
-        return $ret;
-    }
-     function getShokushu3($array) {
-        $ret = "";
-        $_array = explode(',', $array);
-        foreach ($_array as $key => $value) {
-            if ($key <= 1) {
-                $ret = getShokushu($value);
-            } else {
-                $ret = $ret.'<br>'.getShokushu($value);
-            }  
-        }
-        return $ret;
-    }
-?>
+<?php require('common.ctp'); ?>
 <style>
 #loading{
     position:absolute;
@@ -100,7 +45,15 @@ window.onload = function(){
             <div style="color: whitesmoke;background-color: #45bcd2;text-shadow: 1px 1px 3px #666666;border:1px solid #0099cc;padding:5px;vertical-align: middle;padding-right: 5px;">
                 <font style="font-size: 150%;">■登録者情報</font>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <font style="font-size: 100%;">登録年月日：<?=date('Y-m-d', strtotime($data['StaffMaster']['created'])); ?>&nbsp;&nbsp;登録番号：<?=$data['StaffMaster']['id'] ?></font>
+                <font style="font-size: 100%;">登録年月日：
+<?php
+    if (is_null($data['StaffMaster']['created'])) {
+        echo '＜不明＞';
+    } else {
+        echo date('Y-m-d', strtotime($data['StaffMaster']['created'])); 
+    }
+?>
+                &nbsp;&nbsp;登録番号：<?=$data['StaffMaster']['id'] ?></font>
             </div>
             
                     <!-- プロフィール -->
@@ -120,12 +73,12 @@ window.onload = function(){
                             <td style='width:50%;text-align: center;' rowspan="5">
                     <?php
                         $after = $data['StaffMaster']['pic_extension'];
-                        if (is_null($after)) {
+                        if (empty($after)) {
                     ?>
                                 <img src='<?=ROOTDIR ?>/img/noimage.jpg ?>' style='border:1px black solid; width:150px;'>
                     <?php } else { ?>
-                                <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%05d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
-                                    <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%05d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
+                                <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
+                                    <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
                                 </a>
                     <?php } ?>
                             </td>
@@ -141,7 +94,7 @@ window.onload = function(){
                         </tr>
                         <tr>
                             <td style=''>
-                                <font style='font-size:130%;'><?=getShokushu3($data['StaffMaster']['shokushu_shoukai']) ?></font><br>
+                                <font style='font-size:140%;'><?=getShokushu2($data['StaffMaster']['shokushu_shoukai']) ?></font><br>
                             </td>
                         </tr>
                     </table>
@@ -385,21 +338,19 @@ window.onload = function(){
                     <td style='background-color: #e8ffff;width:70%;'>案件名</td>
                 </tr>
                 <tr>
-                    <td style='width:30%;'></td>
-                    <td style='width:70%;'></td>
+                    <td colspan="2" align="center">表示するデータはありません。</td>
                 </tr>
             </table>
             
             <!-- メールボックス -->
-            <font style="font-size: 120%;">メールボックス</font>
+            <font style="font-size: 120%;">メッセージボックス</font>
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>日付</td>
                     <td style='background-color: #e8ffff;width:70%;'>タイトル</td>
                 </tr>
                 <tr>
-                    <td style='width:30%;'></td>
-                    <td style='width:70%;'></td>
+                    <td colspan="2" align="center">表示するデータはありません。</td>
                 </tr>
             </table>
             

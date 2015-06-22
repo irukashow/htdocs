@@ -2,8 +2,8 @@
     echo $this->Html->css('staffmaster');
     echo $this->Html->script('station3');
 ?>
-
 <?php require('index_element.ctp'); ?>
+<?php require('common.ctp'); ?>
 <style>
 #loading{
     position:absolute;
@@ -192,7 +192,10 @@ function doSearch1(id) {
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;">
+          <?php echo $this->Form->input('search_shokushu', 
+                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;display:none;','empty' => array('' => ''), 'options' => $list_shokushu)); ?>
+      </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_area', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td></td>
@@ -207,11 +210,11 @@ function doSearch1(id) {
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
                 <?php
                     $after = $data['StaffMaster']['pic_extension'];
-                    if (is_null($after)) {
+                    if (empty($after)) {
                 ?>
             <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
                 <?php } else { ?>
-            <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%05d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px">
+            <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%07d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px">
                 <?php } ?>
             <br>
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
@@ -221,7 +224,13 @@ function doSearch1(id) {
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?><br>
         </a>
-	<?=date('Y-m-d', strtotime($data['StaffMaster']['created'])); ?>
+	<?php
+            if (is_null($data['StaffMaster']['created'])) {
+                echo '＜？＞';
+            } else {
+                echo date('Y-m-d', strtotime($data['StaffMaster']['created'])); 
+            }
+        ?>
     </td>
     <td align="center"><?php echo $data['StaffMaster']['age'].'歳'."<br>".getGender($data['StaffMaster']['gender']);?></td>
     <?php
@@ -235,7 +244,16 @@ function doSearch1(id) {
     <td align="center"><?php echo getOjt($data['StaffMaster']['ojt']).'<br>'.$data['StaffMaster']['ojt_date']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo getShokushu2($data['StaffMaster']['shokushu_shoukai']); ?></td>
-    <td align="left"><?php echo date('Y-m-d', strtotime($data['StaffMaster']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
+    <td align="center">
+	<?php
+            if (is_null($data['StaffMaster']['modified'])) {
+                echo '＜？＞';
+            } else {
+                echo date('Y-m-d', strtotime($data['StaffMaster']['modified'])); 
+            }
+        ?>
+        <?php echo '<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?>
+    </td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo $data['StaffMaster']['address1_2'].'&nbsp;'.$data['StaffMaster']['address2']; ?></td>
     <td align="left">
@@ -266,4 +284,3 @@ function doSearch1(id) {
 <!--- スタッフマスタ本体 END --->
 
 <?php echo $this->Form->end(); ?>
-

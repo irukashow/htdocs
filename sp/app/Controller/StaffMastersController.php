@@ -525,7 +525,7 @@ class StaffMastersController extends AppController {
 
         // ファイルアップロード処理の初期セット
         $ds = DIRECTORY_SEPARATOR;  //1
-        $storeFolder = 'files/staff_reg'.$ds.$this->Session->read('selected_class').$ds.sprintf('%05d', $staff_id).$ds;   //2
+        $storeFolder = 'files/staff_reg'.$ds.$this->Session->read('selected_class').$ds.sprintf('%07d', $staff_id).$ds;   //2
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {

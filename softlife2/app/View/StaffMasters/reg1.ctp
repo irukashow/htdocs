@@ -115,7 +115,8 @@ function affixZero(int) {
                 <td style='background-color: #e8ffff;width:20%;'>郵便番号</td>
                 <td>
                     <?php echo $this->Form->input('zipcode1',
-                            array('label'=>false,'div'=>false,'maxlength'=>'3','style'=>'width:6%;')); ?>-
+                            array('label'=>false,'div'=>false,'maxlength'=>'3','style'=>'width:6%;',
+                                'onKeyUp'=>"AjaxZip3.zip2addr(this,'data[StaffMaster][zipcode2]','data[StaffMaster][address1]','data[StaffMaster][address2]','data[StaffMaster][address3]','data[StaffMaster][address4]');")); ?>-
                     <?php echo $this->Form->input('zipcode2',
                             array('label'=>false,'div'=>false,'maxlength'=>'4','style'=>'width:8%;',
                                 'onKeyUp'=>"AjaxZip3.zip2addr('data[StaffMaster][zipcode1]',this,'data[StaffMaster][address1]','data[StaffMaster][address2]','data[StaffMaster][address3]','data[StaffMaster][address4]');")); ?>
@@ -168,13 +169,13 @@ function affixZero(int) {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>メールアドレス１<br>（ログインID）</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:40%;')); ?>
+                    <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>メールアドレス２</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:40%;')); ?>
+                    <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>
             </tr>  
         </table>

@@ -69,8 +69,8 @@ window.onload = function(){
                     ?>
                                 <img src='<?=ROOTDIR ?>/img/noimage.jpg ?>' style='border:1px black solid; width:150px;'>
                     <?php } else { ?>
-                                <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%05d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
-                                    <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%05d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
+                                <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
+                                    <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
                                 </a>
                     <?php } ?>
                             </td>

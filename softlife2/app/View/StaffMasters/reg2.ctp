@@ -88,7 +88,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%05d', $staff_id).'/'.$staff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
+                            echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
                                     . '【保存している証明写真】</a>';
                         }
                     ?>
@@ -116,7 +116,7 @@ $(function() {
                             echo '';
                         } else {
                             echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%05d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
                         }
                     ?>
                 </td>
@@ -188,6 +188,12 @@ $(function() {
                     </select> 
                 </td>
             </tr>
+            <tr style="">
+                <td style='background-color: #e8ffff;'colspan="2">最寄駅（インポートデータより）</td>
+                <td colspan="5">
+                    <?php echo $this->Form->input('para1',array('type'=>'text','div'=>false,'label'=>false, 'style'=>'width:70%;text-align: left;')); ?>
+                </td>
+            </tr>
         </table>
         
         <!-- 勤務について -->
@@ -226,9 +232,17 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>希望勤務回数</td>
-                <td colspan="3">週<?php echo $this->Form->input('per_week',array('type'=>'text','div'=>false,'maxlength'=>'1','label'=>false,'style'=>'width:50px;')); ?>回
+                <td>週<?php echo $this->Form->input('per_week',array('type'=>'text','div'=>false,'maxlength'=>'1','label'=>false,'style'=>'width:50px;')); ?>回
                     &nbsp;／&nbsp;
                     月<?php echo $this->Form->input('per_month',array('type'=>'text','div'=>false,'maxlength'=>'2','label'=>false,'style'=>'width:50px;')); ?>回</td>
+                <td style='background-color: #e8ffff;width:20%;'>役割</td>
+                <td>
+                <?php
+                    $list_role = array('1' => 'メイン　', '2' => 'サブ　', '0' => 'その他　');
+                    echo $this->Form->input( 'role', array('legend' => false, 'type' => 'radio','div'=>'radio',
+                        'options' => $list_role));
+                ?>
+                </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>希望エリア</td>

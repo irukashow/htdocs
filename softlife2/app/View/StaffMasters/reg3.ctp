@@ -7,8 +7,16 @@
 ?>
 <?php
     // 初期値セット
-    $created = date('Y/m/d', strtotime($datas['StaffMaster']['created']));
-    $modified = date('Y/m/d', strtotime($datas['StaffMaster']['modified']));
+    if (is_null($datas['StaffMaster']['created'])) {
+        $created = '＜不明＞';
+    } else {
+        $created = date('Y-m-d', strtotime($datas['StaffMaster']['created'])); 
+    }
+    if (is_null($datas['StaffMaster']['modified'])) {
+        $modified = '＜不明＞';
+    } else {
+        $modified = date('Y-m-d', strtotime($datas['StaffMaster']['modified'])); 
+    }
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"

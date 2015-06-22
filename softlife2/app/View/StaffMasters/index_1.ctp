@@ -207,7 +207,7 @@ function doSearch1(id) {
                 ?>
             <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
                 <?php } else { ?>
-            <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%05d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px">
+            <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%07d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px">
                 <?php } ?>
             <br>
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>

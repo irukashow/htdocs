@@ -1,7 +1,15 @@
 <?php
     // 初期値セット
-    $created = date('Y-m-d', strtotime($data['StaffMaster']['created']));
-    $modified = date('Y-m-d', strtotime($data['StaffMaster']['modified']));
+    if (is_null($data['StaffMaster']['created'])) {
+        $created = '＜不明＞';
+    } else {
+        $created = date('Y-m-d', strtotime($data['StaffMaster']['created'])); 
+    }
+    if (is_null($data['StaffMaster']['modified'])) {
+        $modified = '＜不明＞';
+    } else {
+        $modified = date('Y-m-d', strtotime($data['StaffMaster']['modified'])); 
+    }
     $selected1 = explode(',',$data['StaffMaster']['shokushu_shoukai']);
     $selected2 = explode(',',$data['StaffMaster']['shokushu_kibou']);
     $selected3 = explode(',',$data['StaffMaster']['shokushu_keiken']);

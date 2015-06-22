@@ -99,6 +99,10 @@ class StaffMastersController extends AppController {
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
         $this->set('name_arr', $name_arr); 
+        // 職種マスタ配列
+        $conditions0 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
         // 表示件数の初期値
         $this->set('limit', $limit);
         $conditions1 = null;$conditions2 = null;$conditions3 = null;
@@ -108,9 +112,10 @@ class StaffMastersController extends AppController {
         $array_21 = null;$array_22 = null;$array_23 = null;
         $array_31 = null;$array_32 = null;$array_33 = null;
         
-        $this->log($this->request, LOG_DEBUG);
+        //$this->log($this->request, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
+        //if ($this->request->is('post') || $this->request->is('put')) {
             // 初期表示
             if ($flag == 1) {
                 $conditions2 = array('kaijo_flag' => 1);
@@ -188,6 +193,11 @@ class StaffMastersController extends AppController {
                     $search_tantou = $this->data['StaffMaster']['search_tantou'];
                     $conditions2 += array('StaffMaster.tantou' => $search_tantou);
                 }
+                // 職種で絞り込み
+                if (!empty($this->data['StaffMaster']['search_shokushu'])){
+                    $search_tantou = $this->data['StaffMaster']['search_shokushu'];
+                    $conditions2 += array('StaffMaster.shokushu_shoukai LIKE ' => '%'.$search_tantou.'%');
+                } 
                 // 都道府県
                 if (!empty($this->data['StaffMaster']['search_area'])){
                     $search_area = $this->data['StaffMaster']['search_area'];
@@ -225,8 +235,9 @@ class StaffMastersController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StaffMaster', $conditions2));
             $this->log($conditions2, LOG_DEBUG);
-            $this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+            //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log($conditions2, LOG_DEBUG);
+            $this->log('中を通ってます', LOG_DEBUG);
         } else {
             // 所属の取得とセット
             //$this->selected_class = $this->Session->read('selected_class');
@@ -246,7 +257,7 @@ class StaffMastersController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StaffMaster', $conditions3));
             //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
-            //$this->log('そと通ってる', LOG_DEBUG);
+            $this->log('そと通ってる', LOG_DEBUG);
         }
         $this->set('selected_class', $this->Session->read('selected_class'));
         
@@ -512,7 +523,7 @@ class StaffMastersController extends AppController {
 
         // ファイルアップロード処理の初期セット
         $ds = DIRECTORY_SEPARATOR;  //1
-        $storeFolder = 'files/staff_reg'.$ds.$this->Session->read('selected_class').$ds.sprintf('%05d', $staff_id).$ds;   //2
+        $storeFolder = 'files/staff_reg'.$ds.$this->Session->read('selected_class').$ds.sprintf('%07d', $staff_id).$ds;   //2
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -805,7 +816,7 @@ class StaffMastersController extends AppController {
             }
         }
         return $ret;
-    }
+    }    
   
     /*** 所属の検索 ***/
     public function getClass($val){
