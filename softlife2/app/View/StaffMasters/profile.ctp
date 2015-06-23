@@ -122,15 +122,30 @@ window.onload = function(){
                             <td style='width:70%;'><?=$data['StaffMaster']['telno2'] ?></td>
                         </tr>
                         <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>メールアドレス１<br>（ログインID）</td>
+                            <td style='background-color: #e8ffff;width:30%;'>メールアドレス１</td>
                             <td style='width:70%;'>
-                                <?=$data['StaffMaster']['email1'] ?><br>
-                                →<?php print($this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id'])); ?>
+                                <?=$data['StaffMaster']['email1'] ?>
+                                <br>
+                                →<?=$this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id']); ?>
                             </td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>メールアドレス２</td>
                             <td style='width:70%;'><?=$data['StaffMaster']['email2'] ?></td>
+                        </tr>
+                        <tr>
+                            <td style='background-color: #e8ffff;width:30%;'>ログインアカウント</td>
+                            <td style='width:70%;'>
+                    <?php
+                        if (is_null($data['StaffMaster']['account'])) {
+                            echo '未設定';
+                        } else {
+                            echo $data['StaffMaster']['account'];
+                            echo '<br>';
+                            echo '→'.$this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id']);
+                        }
+                    ?>
+                            </td>
                         </tr>
                     </table>
                     
@@ -186,6 +201,11 @@ window.onload = function(){
                     
                     <!-- 左項目６ -->
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
+                        <tr>
+                            <td style='background-color: #e8ffff;width:30%;'>役割</td>
+                            <?php $list_role = array('0'=>'その他', '1'=>'メイン', '2'=>'サブ'); ?>
+                            <td style='width:70%;'><?=$list_role[$data['StaffMaster']['role']] ?></td>
+                        </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望職種</td>
                             <td style='width:70%;'><?=getShokushu2($data['StaffMaster']['shokushu_kibou']) ?></td>

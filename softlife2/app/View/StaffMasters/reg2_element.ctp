@@ -16,6 +16,7 @@
     $selected4 = explode(',',$data['StaffMaster']['extra_job']);
     $selected5 = explode(',',$data['StaffMaster']['workable_day']);
     $selected6 = explode(',',$data['StaffMaster']['regist_trigger']);
+    $name = $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'];
     
     // 路線のコンボセット
     function getLine($code) {

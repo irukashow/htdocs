@@ -112,10 +112,10 @@ class StaffMastersController extends AppController {
         $array_21 = null;$array_22 = null;$array_23 = null;
         $array_31 = null;$array_32 = null;$array_33 = null;
         
-        //$this->log($this->request, LOG_DEBUG);
+        $this->log($this->request, LOG_DEBUG);
         // POSTの場合
-        if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
-        //if ($this->request->is('post') || $this->request->is('put')) {
+        //if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
             // 初期表示
             if ($flag == 1) {
                 $conditions2 = array('kaijo_flag' => 1);
@@ -204,6 +204,12 @@ class StaffMastersController extends AppController {
                     //$this->log($search_area);
                     $conditions2 += array('CONCAT(StaffMaster.address1_2, StaffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
                 }
+            // 絞り込みクリア処理
+            } elseif (isset($this->request->data['clear'])) {
+                // 絞り込みセッションを消去
+                $this->Session->delete('filter');
+                //$this->request->params['named']['page'] = 1;
+                $this->redirect(array('action' => 'index', $flag)); 
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
                 $this->selected_class = $this->request->data['class'];
@@ -218,8 +224,22 @@ class StaffMastersController extends AppController {
                 $limit = $this->request->data['limit'];
                 $this->set('limit', $limit);
                 $this->redirect(array('limit' => $limit));
+            }
+
+            // 年齢の計算
+            $this->setAge($this->Session->read('selected_class'));
+            // 絞り込み条件の保持
+            $this->Session->write('filter', $conditions2);
+            // ページネーションの実行
+            $this->request->params['named']['page'] = 1;
+            $this->set('datas', $this->paginate('StaffMaster', $conditions2));
+            $this->log($conditions2, LOG_DEBUG);
+            //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+            //$this->log($conditions2, LOG_DEBUG);
+            $this->log('中を通ってます', LOG_DEBUG);
+        } elseif ($this->request->is('get')) {
             // プロフィールページへ
-            } elseif (isset($profile)) {
+            if (isset($profile)) {
                 // ページ数（レコード番号）を取得
                 $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $staff_id);
                 $page = $this->StaffMaster->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
@@ -228,16 +248,32 @@ class StaffMastersController extends AppController {
                 $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => $page));
                 exit();
             }
-
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
             // 年齢の計算
             $this->setAge($this->Session->read('selected_class'));
-            // ページネーションの実行
+            // 初期表示
+            if ($flag == 1) {
+                $conditions3 = array('kaijo_flag' => 1);
+            } else {
+                $flag = 0;
+                $conditions3 = array('kaijo_flag' => 0);
+            }
+            $this->set('flag', $flag);
+            // 絞り込み条件の適応
+            if($this->Session->check('filter')) {
+                $filter = $this->Session->read('filter');
+                if ($filter == '0') {
+                    $conditions3 = $conditions3;
+                } else {
+                    $conditions3 = $conditions3 + $filter;
+                }
+            } else {
+                $conditions3 = $conditions3;
+            }
             //$this->request->params['named']['page'] = 1;
-            $this->set('datas', $this->paginate('StaffMaster', $conditions2));
-            $this->log($conditions2, LOG_DEBUG);
-            //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
-            //$this->log($conditions2, LOG_DEBUG);
-            $this->log('中を通ってます', LOG_DEBUG);
+            $this->set('datas', $this->paginate('StaffMaster', $conditions3)); 
+            $this->log($this->request->param('pass'), LOG_DEBUG);
         } else {
             // 所属の取得とセット
             //$this->selected_class = $this->Session->read('selected_class');
@@ -670,7 +706,7 @@ class StaffMastersController extends AppController {
         $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
         // 初期値設定
         $this->set('datas', $this->StaffMaster->find('first', 
-                array('fields' => array('created', 'modified'), 'conditions' => array('id' => $staff_id) )));
+                array('fields' => array('*'), 'conditions' => array('id' => $staff_id) )));
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
         $selected_class = $this->Session->read('selected_class');

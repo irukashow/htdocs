@@ -17,6 +17,7 @@
     } else {
         $modified = date('Y-m-d', strtotime($datas['StaffMaster']['modified'])); 
     }
+    $name = $datas['StaffMaster']['name_sei'].' '.$datas['StaffMaster']['name_mei'];
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -58,7 +59,7 @@ $(function() {
             </tr>
             <tr>
                 <td colspan="2">
-                    登録番号：<?=$staff_id ?>&nbsp;&nbsp;
+                    登録番号：<?=$staff_id ?>&nbsp;&nbsp;氏名：<?=$name ?>&nbsp;&nbsp;
                     作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
                 </td>
             </tr>

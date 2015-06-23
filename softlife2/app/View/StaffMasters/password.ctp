@@ -19,8 +19,12 @@
                 <td><?='('.$staff_id.') ' ?><?php echo $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?></td>
             </tr>
             <tr>
-                <td>ログインID</td>
+                <td>メールアドレス１</td>
                 <td><?php echo $data['StaffMaster']['email1']; ?></td>
+            </tr>
+            <tr>
+                <td>ログインアカウント</td>
+                <td><?php echo $data['StaffMaster']['account']; ?></td>
             </tr>
             <tr>
                 <td>パスワード</td>
@@ -32,7 +36,7 @@
             </tr>
         </table>
         <div style="margin-top: 10px;">
-            <?php echo $this->Form->submit('変更する', array('name' => 'submit','div' => false)); ?>
+            <?php echo $this->Form->submit('設定する', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
             <?php print($this->Html->link('戻　る', 'index', array('id'=>'button-delete', 'onclick' => 'javascript:window.history.back(-1);return false;'))); ?>
                 &nbsp;&nbsp;

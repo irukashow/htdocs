@@ -155,7 +155,7 @@ function affixZero(int) {
             </tr>
             <!-- 住所 End -->
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>電話番号１</td>
+                <td style='background-color: #e8ffff;width:20%;'>電話番号１（携帯）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('telno1',array('label'=>false,'div'=>false,'style'=>'width:20%;')); ?>
                 </td>
@@ -167,7 +167,7 @@ function affixZero(int) {
                 </td>
             </tr> 
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１<br>（ログインID）</td>
+                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１（必須）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>
@@ -177,7 +177,24 @@ function affixZero(int) {
                 <td colspan="2">
                     <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>
-            </tr>  
+            </tr>
+            <tr style="display:none;">
+                <td style='background-color: #e8ffff;width:20%;' rowspan="2">ログイン設定<br><span style="font-size: 80%;">スタッフ専用サイト用</span></td>
+                <td style='background-color: #e8ffff;width:20%;'>アカウント</td>
+                <td>
+                    <?php echo $this->Form->input('account',array('label'=>false,'div'=>false,'maxlength'=>'10', 'style'=>'width:40%;')); ?>
+                    <span>※10文字以内</span>
+                </td>
+            </tr>
+            <tr style="display:none;">
+                <td style='background-color: #e8ffff;width:20%;'>パスワード<br>（2回入力）</td>
+                <td>
+                    <?php echo $this->Form->input('password',array('type'=>'password','label'=>false,'div'=>false,'maxlength'=>'15','value'=>'','style'=>'width:40%;margin-bottom:5px;')); ?>
+                    <span>※4～15文字以内</span>
+                    <br>
+                    <?php echo $this->Form->input('password2',array('type'=>'password','label'=>false,'div'=>false,'maxlength'=>'15','value'=>'','style'=>'width:40%;')); ?>
+                </td>
+            </tr>
         </table>
         <!-- ページ選択 -->
         <font style="font-size: 110%;">

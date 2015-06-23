@@ -65,10 +65,10 @@ function doSearch1(id) {
     &nbsp;
     <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
 <?php } ?>    
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>
-    &nbsp;
+    &nbsp;&nbsp;&nbsp;
     <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
+    &nbsp;
+    <?php echo $this->Form->submit('検索条件クリア', array('name' => 'clear', 'div' => false, 'id' => 'clear', 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
 </div>
     <!-- 絞り込み検索ボックス -->
     <div style="float:left;">
@@ -151,7 +151,12 @@ function doSearch1(id) {
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
     <div style="float:right;">
-        <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
+        ページ数：
+        <?php
+            echo $this->paginator->counter(array('format' => '<b>%page%</b> / <b>%pages%</b>'));
+        ?>
+        &nbsp;&nbsp;&nbsp;
+        <?php echo $this->Paginator->counter(array('format' => __('総件数：  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
         表示件数：
         <?php
