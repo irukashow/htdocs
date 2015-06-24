@@ -37,12 +37,12 @@
 <!--- スタッフマスタ本体 START --->
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr class="col">
-      <th><?php echo $this->Paginator->sort('id',"No.");?></th>
-      <th><?php echo $this->Paginator->sort('version_no','バージョン番号');?></th>
-      <th><?php echo $this->Paginator->sort('status','ステータス');?></th>
-      <th><?php echo $this->Paginator->sort('title','更新タイトル');?></th>
-    <th><?php echo $this->Paginator->sort('remarks','更新内容');?></th>
-    <th><?php echo $this->Paginator->sort('release_date','リリース日');?></th>
+    <th width="5%"><?php echo $this->Paginator->sort('id',"No.");?></th>
+    <th width="5%"><?php echo $this->Paginator->sort('version_no','バージョン番号');?></th>
+    <th width="10%"><?php echo $this->Paginator->sort('status','ステータス');?></th>
+    <th width="20%"><?php echo $this->Paginator->sort('title','更新タイトル');?></th>
+    <th width="50%"><?php echo $this->Paginator->sort('remarks','更新内容');?></th>
+    <th width="15%"><?php echo $this->Paginator->sort('release_date','リリース日');?></th>
   </tr>
   <?php foreach($datas as $data) { ?>
   <tr>

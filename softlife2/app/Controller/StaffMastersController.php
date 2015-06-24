@@ -212,6 +212,8 @@ class StaffMastersController extends AppController {
                 $this->redirect(array('action' => 'index', $flag)); 
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
+                // 絞り込みセッションを消去
+                $this->Session->delete('filter');
                 $this->selected_class = $this->request->data['class'];
                 //$this->Session->setFlash($class);
                 $this->set('selected_class', $this->selected_class);
@@ -235,8 +237,7 @@ class StaffMastersController extends AppController {
             $this->set('datas', $this->paginate('StaffMaster', $conditions2));
             $this->log($conditions2, LOG_DEBUG);
             //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
-            //$this->log($conditions2, LOG_DEBUG);
-            $this->log('中を通ってます', LOG_DEBUG);
+            //$this->log('中を通ってます', LOG_DEBUG);
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
             if (isset($profile)) {
@@ -293,7 +294,7 @@ class StaffMastersController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StaffMaster', $conditions3));
             //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
-            $this->log('そと通ってる', LOG_DEBUG);
+            //$this->log('そと通ってる', LOG_DEBUG);
         }
         $this->set('selected_class', $this->Session->read('selected_class'));
         

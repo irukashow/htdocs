@@ -1042,4 +1042,18 @@ table#admin td{
     //border:1px solid gray;
 }
 
+/**  **/
+table#calender {
+    width: 90%;
+}
+table#calender th {
+    background: #EEEEEE;
+}
+table#calender th,
+table#calender td {
+    border: 1px solid #CCCCCC;
+    text-align: center;
+    padding: 5px;
+}
+
 

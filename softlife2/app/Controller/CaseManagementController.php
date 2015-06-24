@@ -67,6 +67,8 @@ class CaseManagementController extends AppController {
         $this->set('active8', '');
         $this->set('active9', '');
         $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);

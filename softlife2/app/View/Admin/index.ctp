@@ -18,7 +18,7 @@
 <div style="margin-top: 20px;">
 <?php echo $this->Form->create('User'); ?>
     <fieldset style="border: none; margin-bottom: 20px;height: 300px;">
-        <table id='admin' border="0" width="100%" cellspacing="0" cellpadding="1" bordercolor="#459ed2" align="center" style="background-color: white;">
+        <table id='admin' border="0" width="100%" cellspacing="0" cellpadding="5" bordercolor="#459ed2" align="center" style="background-color: white;">
             <tr style="height: 40px;">
                 <th width="20%">
                     <legend style=""><?php echo __('ユーザー管理'); ?></legend>
@@ -27,9 +27,11 @@
                     <legend style=""><?php echo __('システム管理'); ?></legend>
                 </th>
                 <th width="20%">
+                    <legend style=""><?php echo __('システム履歴情報'); ?></legend>
+                </th>
+                <th width="20%">
                     <legend style=""><?php echo __('マスタ管理'); ?></legend>
                 </th>
-                <th width="20%"></th>
                 <th width="20%"></th>
             </tr>
             <tr>
@@ -37,12 +39,14 @@
                     <?php echo $this->Html->link('▶ユーザー一覧', '/users/view'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>
+                    <?php echo $this->Html->link('▶管理者からのお知らせ入力ページ', './admin_info'); ?>
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶項目マスタ', '/master/index'); ?>
                 </td>
-                <td></td>
                 <td></td>
             </tr>
             <tr>
@@ -53,9 +57,11 @@
                     <?php echo $this->Html->link('▶バージョン情報入力ページ', './version/'); ?>
                 </td>
                 <td>
+                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master'); ?>
+                </td>
+                <td>
                     <?php echo $this->Html->link('▶スタッフ職種マスタ', '/master/shokushu'); ?>
                 </td>
-                <td></td>
                 <td></td>
             </tr>
             <tr>
@@ -63,22 +69,21 @@
                     <?php echo $this->Html->link('▶ユーザー登録（更新）', '/users/edit/'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master'); ?>
+                    
                 </td>
                 <td>
+                    <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>
                 </td>
-                <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
+                    
                 </td>
                 <td>
                 </td>
-                <td></td>
                 <td></td>
             </tr>
         </table>

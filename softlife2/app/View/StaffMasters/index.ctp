@@ -137,10 +137,18 @@ function doSearch1(id) {
                 -->
             </div>
         </FIELDSET>
+    <div style="float:left;margin-left: 10px;">
+<?php
+    if( isset( $_SESSION["filter"] ) ) {
+        echo '<font color=blue>※現在、検索条件が有効になっています。※</font>';
+    }
+?>   
+    </div>
         <div style="clear: both; height: 0px;"></div>
     </div>
+
     <div style="clear: both; height: 0px;"></div>
-    
+
 <!-- ページネーション -->
 <div class="pageNav03" style="margin-bottom: 30px;">
 <?php

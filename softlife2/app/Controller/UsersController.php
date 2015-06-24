@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('MessageMember', 'LoginLogs');
+        public $uses = array('MessageMember', 'LoginLogs', 'AdminInfo');
 	// Authコンポーネントの利用設定。
 	public $components = array('Auth'=>array('allowedActions'=>array('login')));
         // タイトル
@@ -25,13 +25,18 @@ class UsersController extends AppController {
             $this->set('active8', '');
             $this->set('active9', '');
             $this->set('active10', '');
+            // 絞り込みセッションを消去
+            $this->Session->delete('filter');
             // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
             $this->set('name', $name);
+            $username = $this->Auth->user('username');
+            $this->set('username', $username);
             $selected_class = $this->Session->read('selected_class');
             // テーブルの設定
             $this->MessageMember->setSource('message_staff');
+            //$this->AdminInfo->setSource('admin_info');
             // 未読メッセージ件数
             $new_count = $this->MessageMember->find('count', array('conditions' => array('class' => $selected_class,'kidoku_flag' => 0)));
             $this->set('new_count', $new_count);
@@ -39,6 +44,16 @@ class UsersController extends AppController {
             $last_login = $this->LoginLogs->find('first', array('fields' => array('created'), 
                 'conditions' => array('username' => $this->Auth->user('username'), 'status' => 'login'), 'order' => array('id' => 'desc')));
             $this->set('last_login', $last_login['LoginLogs']['created']);
+            // 受信メッセージ一覧の表示
+            $this->paginate = array(
+                'AdminInfo' => array(
+                    'fields' => '*',
+                    'limit' =>5,                        //1ページ表示できるデータ数の設定
+                    'order' => array('id' => 'desc')  //データを降順に並べる
+                )
+            );
+            $this->set('datas', $this->paginate('AdminInfo'));
+            //$this->log($this->MessageMember->getDataSource()->getLog(), LOG_DEBUG);
 
             // POSTの場合
             if ($this->request->is('post')) {
@@ -53,6 +68,83 @@ class UsersController extends AppController {
             }
 
 	}
+        
+    /** メッセージの詳細を表示 **/
+    public function detail($id = null) {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout","メッセージ内容 - 派遣管理システム");
+        // タブの状態
+        $this->set('active1', 'active');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // ユーザー名前
+        $username = $this->Auth->user('username');
+        $this->set('username', $username);
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $this->set('selected_class', $this->Session->read('selected_class'));
+        // テーブルの設定
+        $this->AdminInfo->setSource('admin_info');
+        // 既読フラグ: ユーザーIDのカンマ区切り
+        // 既読ユーザーを読み込む
+        $result = $this->AdminInfo->find('first', array('fields' => 'kidoku_user', 'conditions' => array('id' => $id)));
+        $kidoku_user = $result['AdminInfo']['kidoku_user'];
+        if (empty($kidoku_user)) {
+            $user = $username;
+        } else {
+            $sql = "SELECT id FROM admin_info WHERE FIND_IN_SET('".$username."', kidoku_user)";
+            $result = $this->AdminInfo->query($sql);
+            if (empty($result[0]['admin_info']['id'])) {
+                $user = $kidoku_user.','.$username;
+            } else {
+                $user = $username;
+            }
+        }
+        $this->log('ここまでOK5', LOG_DEBUG);
+        // 更新する内容を設定
+        $data = array('AdminInfo' => array('id' => $id, 'kidoku_user' => $user));
+        // 更新する項目（フィールド指定）
+        $fields = array('kidoku_user');
+        // 更新
+        $this->AdminInfo->save($data, false, $fields);
+        // 受信メッセージの内容表示
+        $datas = $this->AdminInfo->find('first', array('conditions' => array('id' => $id)));
+        //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
+        $this->set('data', $datas);
+        // 宛先名の取得
+        //$username = $datas['AdminInfo']['recipient_member'];
+        //$result = $this->User->find('first', array('conditions' => array('User.username' => $username))); 
+        //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
+        //$name_member = $result['User']['name_sei'].' '.$result['User']['name_mei'];
+        //$this->set('name_member', $name_member);
+
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            //$this->log($this->request->data, LOG_DEBUG);
+            if ($this->MessageMember->validates() == false) {
+                exit();
+            }
+            // 属性の変更
+            if (isset($this->request->data['class'])) {
+                $class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $class);
+                $this->Session->write('selected_class', $class);
+            } else {
+                
+            }
+        } else {
+            
+        }
+    }
 	
 	/**
 	 * ユーザ登録。

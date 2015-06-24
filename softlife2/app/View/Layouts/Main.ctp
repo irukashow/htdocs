@@ -79,8 +79,8 @@ $(function() {
                     <ul  id="menu">
                         <li>リンク <font style='font-size:50%;vertical-align: 2px;'>▼</font>
                             <ul>
-                                <li><a href="http://www.softlife.co.jp/">会社ホームページ</a></li>
-                                <li><a href="http://softlife.co.jp/cb9/ag.cgi?">サイボウズ</a></li>
+                                <li><a href="http://www.softlife.co.jp/" target="_blank">会社ホームページ</a></li>
+                                <li><a href="http://softlife.co.jp/cb9/ag.cgi?" target="_blank">サイボウズ</a></li>
                             </ul>
                         </li>
                         <li style="width:130px;">
