@@ -68,7 +68,7 @@ $(function() {
     <div id="header">
         <table style="width: 100%;" border="0">
             <tr>
-                <td style="width:300px;">
+                <td style="width:350px;">
                     <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif"></a>
                     <font size="3" style="vertical-align: 8px;">
                         <?php echo HEADER; ?>
@@ -114,14 +114,14 @@ $(function() {
                     <div id='cssmenu'>
                         <ul>
                             <li class='<?= $active1 ?>'><a href='<?=ROOTDIR ?>/users/'>ホーム<br><div>Home</div></a></li>
-                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/'>メッセージ<br><div>Message</div></a></li>
+                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/' onclick='alert("制作予定");return false;'>メッセージ<br><div>Message</div></a></li>
                            <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/staff_masters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
-                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/'>案件管理<br><div>Case Management</div></a></li>
+                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/' onclick='alert("制作予定");return false;'>案件管理<br><div>Case Management</div></a></li>
                            <li class='<?= $active5 ?>'><a href='' onclick='alert("制作予定")'>シフト管理<br><div>Shift Management</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
-                           <li class='<?= $active9 ?>'><a href='' onclick='alert("制作予定")'>設定<br><div>configuration</div></a></li>
+                           <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active10 ?>'><a href='<?=ROOTDIR ?>/admin/'>管理者ページ<br><div>Administrator</div></a></li>
                         </ul>
                     </div>

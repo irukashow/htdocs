@@ -25,7 +25,7 @@
             名前<br>
             <!-- 名前コンボの値セット START -->
             <?php
-                echo $this->Form->input( 'username', array('label' => false,'type' => 'select','style'=>'width: 100%;font-size:120%;', 
+                echo $this->Form->input( 'username', array('label' => false,'type' => 'select', 'style'=>'width: 100%;font-size:120%;', 
                     'options' => $datas, 'empty' => '(あなたのお名前)'));
             ?>
             <!-- 名前コンボの値セット END -->
@@ -47,6 +47,16 @@
         <td>&nbsp;</td>
         <td style="text-align: center;">
             <?=$this->Form->end(array('label' => 'ログイン','div' => false));?>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td align="left">
+            <span style="font-size: 90%;">
+                ※推奨ブラウザ：Chrome, Firefox<br>
+                Internet Explorerでも使用可能
+            </span>
+        </td>
         <td>&nbsp;</td>
     </tr>
     <tr><td nowrap>&nbsp;</td></tr>

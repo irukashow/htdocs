@@ -275,6 +275,21 @@ class UsersController extends AppController {
         $this->set('getValue', $this->getValue());      // 項目テーブル
 
         $this->set('datas', $this->paginate('User'));
+        
+        // POSTの場合
+        //if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            // 削除処理
+            if(isset($this->request->data['delete'])) {
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                $sql = '';
+                $sql = $sql.' DELETE FROM users';
+                $sql = $sql.' WHERE username = '.$id;
+                $this->User->query($sql);
+                $this->redirect(array('action' => 'view')); 
+            }
+        }
     }
 
 	/**
@@ -317,6 +332,31 @@ class UsersController extends AppController {
                 $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
             }
         }
+        
+	/**
+	 * パスワードの変更
+	 */
+	public function passwd2($username = null){
+            // レイアウト関係
+            $this->layout = "sub";
+            $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
+            
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                if ($this->request->data['User']['password'] != $this->request->data['User']['password2']) {
+                    $this->Session->setFlash(__('パスワードが一致しません。'));
+                } else {
+                    // データを登録する
+                    $this->User->save($this->request->data);
+                    $this->Session->setFlash(__('パスワードは変更されました。'));
+
+                    // indexに移動する
+                    //$this->redirect(array('action' => 'view'));
+                }
+            } else {
+                $this->request->data = $this->User->read(null, $username);    
+            }
+        }
     
     /**
      * ログイン処理を行う。
@@ -334,7 +374,17 @@ class UsersController extends AppController {
         
         // 初期値設定
         $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
-        $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
+        $option = array();
+        $option['recursive'] = -1; 
+        $option['fields'] = array('User.username','User.full_name', 'Item.value'); 
+        $option['joins'][] = array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'item',
+            'alias' => 'Item',    //下でPost.user_idと書くために
+            'conditions' => '`User`.`area`=`Item`.`id`',
+        );
+        $option['conditions'] = array('Item.item' => 1);
+        $this->set('datas', $this->User->find('list', $option));
             
         // ログイン認証
     	if ($this->request->is('post') || $this->request->is('put')) { 

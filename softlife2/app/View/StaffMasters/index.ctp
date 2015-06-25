@@ -4,6 +4,7 @@
 ?>
 <?php require('index_element.ctp'); ?>
 <?php require('common.ctp'); ?>
+
 <style>
 #loading{
     position:absolute;
@@ -41,6 +42,14 @@ function doSearch1(id) {
 	elm.setAttribute("value", id);
 	form.appendChild(elm);
 	form.submit();
+        return false;
+    }
+}
+// 入力を半角しか受け付けない
+function chkHankaku(textbox) {
+    if (textbox.value.match(/[^A-Z\d\-]/)) {
+        alert("半角しか入力できません");
+        textbox.focus();
         return false;
     }
 }
@@ -127,9 +136,11 @@ function doSearch1(id) {
             <LEGEND style='font-weight: bold;'>年齢検索</LEGEND>         
             <DIV style="float: left;width:300px;">
                 <SPAN>年齢</SPAN>
-                <?php echo $this->Form->input('search_age_lower', array('type'=>'text', 'label' => false,'div' => false, 'placeholder'=>'下限年齢', 'style' => 'width:90px;')); ?>歳
+                <?php echo $this->Form->input('search_age_lower', array('type'=>'text', 'label' => false,'div' => false, 
+                    'placeholder'=>'下限年齢', 'style' => 'width:90px;ime-mode:disabled', 'onchange' => 'chkHankaku(this);')); ?>歳
                 &nbsp;～&nbsp;
-                <?php echo $this->Form->input('search_age_upper', array('type'=>'text', 'label' => false,'div' => false, 'placeholder'=>'上限年齢', 'style' => 'width:90px;')); ?>歳 
+                <?php echo $this->Form->input('search_age_upper', array('type'=>'text', 'label' => false,'div' => false, 
+                    'placeholder'=>'上限年齢', 'style' => 'width:90px;ime-mode:disabled', 'onchange' => 'chkHankaku(this);')); ?>歳 
             </DIV>
             <div style="float:left; margin-top: -15px;">
                 <!--
@@ -140,7 +151,7 @@ function doSearch1(id) {
     <div style="float:left;margin-left: 10px;">
 <?php
     if( isset( $_SESSION["filter"] ) ) {
-        echo '<font color=blue>※現在、検索条件が有効になっています。※</font>';
+        echo '<div style="background-color:yellow;"><font color=blue>※現在、検索条件が有効になっています。※</font></div>';
     }
 ?>   
     </div>
@@ -158,7 +169,17 @@ function doSearch1(id) {
 	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
-    <div style="float:right;">
+    <div style="float:left;margin:5px 0px 0px 15px;">
+        【写真】
+        <?php if ($pic_staff == 0) { ?>
+            <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>/pic:1">表示する</a>
+            &nbsp;|&nbsp;<b>非表示</b>
+        <?php } else { ?>
+            <b>表示</b>&nbsp;|&nbsp;
+            <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>/pic:0">非表示にする</a>
+        <?php } ?>
+    </div>
+    <div style="float:right;margin-top: 5px;">
         ページ数：
         <?php
             echo $this->paginator->counter(array('format' => '<b>%page%</b> / <b>%pages%</b>'));
@@ -195,7 +216,7 @@ function doSearch1(id) {
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">
-          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'style' => 'width:90%;', 'onkeydown' => 'doSearch1(this.value);')); ?>
+          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'style' => 'width:90%;', 'onchange' => 'chkHankaku(this);')); ?>
       </td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
@@ -221,15 +242,19 @@ function doSearch1(id) {
     <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-                <?php
+            <div>
+            <?php
+                if ($pic_staff == 1) {
                     $after = $data['StaffMaster']['pic_extension'];
                     if (empty($after)) {
-                ?>
-            <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px">
-                <?php } else { ?>
-            <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%07d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px">
-                <?php } ?>
-            <br>
+            ?>
+                <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px"><br>
+            <?php } else { ?>
+                <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%07d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px"><br>
+            <?php   } ?>
+            <?php } ?>
+                
+            </div>
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
         </a>
     </td>

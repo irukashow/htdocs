@@ -9,9 +9,9 @@
             <tr>
                 <td>氏名</td>
                 <td>
-                    <?php echo $this->Form->input('name_sei',array('label' => false, 'div' => false, 'disabled' => 'disabled', 'style' => 'width:70px;')); ?>
+                    <?php echo $this->Form->input('name_sei',array('label' => false, 'div' => false, 'style' => 'width:70px;')); ?>
                     &nbsp;
-                    <?php echo $this->Form->input('name_mei',array('label' => false, 'div' => false, 'disabled' => 'disabled', 'style' => 'width:70px;')); ?>
+                    <?php echo $this->Form->input('name_mei',array('label' => false, 'div' => false, 'style' => 'width:70px;')); ?>
                 </td>
             </tr>
             <tr>
@@ -26,7 +26,7 @@
         <div style="text-align: left;margin-top: 10px;">
             <?php echo $this->Form->submit('変更する', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
-            <?php print($this->Html->link('キャンセル', 'index', array('id'=>'button-delete'))); ?>
+            <?php print($this->Html->link('キャンセル', 'view', array('id'=>'button-delete'))); ?>
 
         </div>
     </fieldset>

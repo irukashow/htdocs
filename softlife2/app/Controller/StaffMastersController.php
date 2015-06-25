@@ -88,12 +88,24 @@ class StaffMastersController extends AppController {
         $this->set('getTantou', $this->getTantou());
         // テーブルの設定
         $this->StaffMaster->setSource('staff_'.$selected_class);
-        // 引数の受け取り
+        // 引数の受け取り（件数）
         if (isset($this->params['named']['limit'])) {
             $limit = $this->params['named']['limit'];
         } else {
             $limit = '10';
         }
+        // 引数の受け取り（写真表示）
+        $pic = 1;
+        if (isset($this->params['named']['pic'])) {
+            if ($this->params['named']['pic'] == 0) {
+                $pic = 0;
+                //$this->Session->write('pic_staff', 0);
+            } else {
+                $pic = 1;
+                //$this->Session->write('pic_staff', 1);
+            }
+        }
+        $this->set('pic_staff', $pic);
         // 登録担当者
         $conditions = array('area' => substr($selected_class, 0, 1));
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
@@ -209,7 +221,7 @@ class StaffMastersController extends AppController {
                 // 絞り込みセッションを消去
                 $this->Session->delete('filter');
                 //$this->request->params['named']['page'] = 1;
-                $this->redirect(array('action' => 'index', $flag)); 
+                $this->redirect(array('action' => 'index', $flag, 'pic'=>$pic)); 
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
                 // 絞り込みセッションを消去
@@ -220,12 +232,12 @@ class StaffMastersController extends AppController {
                 $this->Session->write('selected_class', $this->selected_class);
                 // テーブル変更
                 $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
-                $this->redirect(array('page' => 1));  
+                $this->redirect(array('page' => 1, 'pic' => $pic));  
             // 表示件数の変更
             } elseif (isset($this->request->data['limit'])) {
                 $limit = $this->request->data['limit'];
                 $this->set('limit', $limit);
-                $this->redirect(array('limit' => $limit));
+                $this->redirect(array('limit' => $limit, 'pic' => $pic));
             }
 
             // 年齢の計算
@@ -238,6 +250,7 @@ class StaffMastersController extends AppController {
             $this->log($conditions2, LOG_DEBUG);
             //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log('中を通ってます', LOG_DEBUG);
+        // GETの処理
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
             if (isset($profile)) {
@@ -274,7 +287,7 @@ class StaffMastersController extends AppController {
             }
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('StaffMaster', $conditions3)); 
-            $this->log($this->request->param('pass'), LOG_DEBUG);
+            //$this->log('GET', LOG_DEBUG);
         } else {
             // 所属の取得とセット
             //$this->selected_class = $this->Session->read('selected_class');

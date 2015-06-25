@@ -18,7 +18,7 @@
 <div style="margin-top: 20px;">
 <?php echo $this->Form->create('User'); ?>
     <fieldset style="border: none; margin-bottom: 20px;height: 300px;">
-        <table id='admin' border="0" width="100%" cellspacing="0" cellpadding="5" bordercolor="#459ed2" align="center" style="background-color: white;">
+        <table id='admin' border="0" width="100%" cellspacing="2" cellpadding="10" bordercolor="#459ed2" align="center" style="background-color: white;">
             <tr style="height: 40px;">
                 <th width="20%">
                     <legend style=""><?php echo __('ユーザー管理'); ?></legend>

@@ -31,6 +31,7 @@ function mySubmit(username) {
 // -->
 </script>
 
+<?php echo $this->Form->create('User', array('name' => 'form', 'onsubmit'=>'return confirm("本当に削除しますか？");')); ?>
 <div style="padding: 15px;">
     <div style="float:left;">
         <font style="font-size: 150%;color: red;"><?= $headline ?></font>
@@ -47,12 +48,20 @@ function mySubmit(username) {
             )
         );
 ?>
-
+<div style="float:right;">
+    ページ数：
+    <?php
+        echo $this->paginator->counter(array('format' => '<b>%page%</b> / <b>%pages%</b>'));
+    ?>
+    &nbsp;&nbsp;&nbsp;
+    <?php echo $this->Paginator->counter(array('format' => __('総件数：  <b>{:count}</b> 件')));?>
+</div>
 <!--- ユーザー一覧 START --->
 <table border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr class="col">
     <th width="7%"><?php echo $this->Paginator->sort('username',"ユーザーID");?></th>
     <th width="13%"><?php echo $this->Paginator->sort('name','氏名');?></th>
+    <th width="13%"><font style="color: white;font-weight: normal;">変更</font></th>
     <th><?php echo $this->Paginator->sort('area','エリア');?></th>
     <th><?php echo $this->Paginator->sort('role','ユーザーの種類');?></th>
     <th><?php echo $this->Paginator->sort('auth','閲覧権限');?></th>
@@ -61,8 +70,16 @@ function mySubmit(username) {
   </tr>
   <?php foreach ($datas as $key => $data): ?>
   <tr>
-    <td align="center"><?php echo '<a href="#" onclick="mySubmit('.$data['User']['username'].')">'.$data['User']['username']."</a>"; ?></td>
-    <td><?php echo '<a href="#" onclick="mySubmit('.$data['User']['username'].')">'.$data['User']['name_sei'].' '.$data['User']['name_mei']."</a>"; ?></td>
+    <td align="center">
+        <?php echo '<a href="#" onclick="mySubmit('.$data['User']['username'].')">'.$data['User']['username']."</a>"; ?>
+    </td>
+    <td>
+        <?php echo '<a href="#" onclick="mySubmit('.$data['User']['username'].')">'.$data['User']['name_sei'].' '.$data['User']['name_mei']."</a>"; ?>
+    </td>
+    <td align="center">
+        <?php echo $this->Html->link('ﾊﾟｽﾜｰﾄﾞ','passwd2/'.$data['User']['username'], array('target'=>'', 'id'=>'button-create')); ?>
+        <?php echo $this->Form->submit('削除', array('name' => 'delete['.$data['User']['username'].']', 'div' => false, 'style' => 'margin:0px; padding:5px 15px 5px 15px;')); ?>
+    </td>
     <?php $area = $data['User']['area']; ?>
     <td><?php echo $getValue[1][$area]; ?></td>
     <td><?php echo getRole($data['User']['role']); ?></td>
@@ -107,5 +124,4 @@ function mySubmit(username) {
 <a href='<?=ROOTDIR ?>/admin/'>◀管理者ページへ戻る</a>
 
 </div>
-
-<?php $this->log($auth_array, LOG_DEBUG); ?>
+<?php echo $this->Form->end(); ?>

@@ -21,10 +21,12 @@
                                 'style'=>'width:70%;font-size:110%;', 'options' => $datas, 'onchange' => 'form.submit();')); ?>
                 </td>   
             </tr>
+            <!--
             <tr>
                 <th style="width:30%;background-color:#e8ffff;"><div class="required"><label>パスワード</label></div></th>
                 <td style="padding-left: 5px;"><?php echo $this->Form->input('password',array('label' => false, 'div' => false, 'value' => '')); ?></td>   
             </tr>
+            -->
             <tr>
                 <th style="width:30%;background-color:#e8ffff;"><div class=""><label>エリア</label></div></th>
                 <td><?php echo $this->Form->input('area',array('label' => false, 'type' => 'select', 'options' => $list1)); ?></td>   
@@ -55,7 +57,7 @@
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('更新する', array('name' => 'regist','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('戻　る', '/admin/index', array('id' => 'button-delete'))); ?>
+<?php print($this->Html->link('戻　る', '/users/view', array('id' => 'button-delete'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Html->link('クリア', './edit', array('class'=>'button-rink'))); ?>
     </div>
