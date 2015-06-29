@@ -12,7 +12,7 @@ App::uses('AppModel', 'Model');
  * CakePHP Regist
  * @author M-YOKOI
  */
-class Regist extends AppModel {
+class Register extends AppModel {
     public $useTable = 'staff_preregists';
     //public $useTable = false;
     

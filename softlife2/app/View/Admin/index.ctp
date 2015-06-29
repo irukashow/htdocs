@@ -47,7 +47,7 @@
                 <td>
                     <?php echo $this->Html->link('▶項目マスタ', '/master/index'); ?>
                 </td>
-                <td></td>
+                <td>元サイト：<a href="http://softlife.xsrv.jp/" target="_blank">http://softlife.xsrv.jp/</a></td>
             </tr>
             <tr>
                 <td>
@@ -69,7 +69,7 @@
                     <?php echo $this->Html->link('▶ユーザー登録（更新）', '/users/edit/'); ?>
                 </td>
                 <td>
-                    
+
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>

@@ -77,7 +77,7 @@ function mySubmit(username) {
         <?php echo '<a href="#" onclick="mySubmit('.$data['User']['username'].')">'.$data['User']['name_sei'].' '.$data['User']['name_mei']."</a>"; ?>
     </td>
     <td align="center">
-        <?php echo $this->Html->link('ﾊﾟｽﾜｰﾄﾞ','passwd2/'.$data['User']['username'], array('target'=>'', 'id'=>'button-create')); ?>
+        <?php echo $this->Html->link('氏名/ﾊﾟｽ','passwd2/'.$data['User']['username'], array('target'=>'', 'id'=>'button-create')); ?>
         <?php echo $this->Form->submit('削除', array('name' => 'delete['.$data['User']['username'].']', 'div' => false, 'style' => 'margin:0px; padding:5px 15px 5px 15px;')); ?>
     </td>
     <?php $area = $data['User']['area']; ?>
@@ -121,7 +121,9 @@ function mySubmit(username) {
         );
 ?>
 <br>
-<a href='<?=ROOTDIR ?>/admin/'>◀管理者ページへ戻る</a>
+<div style="margin-top: 5px;">
+    <a href='<?=ROOTDIR ?>/admin/'>◀管理者ページへ戻る</a>
+</div>
 
 </div>
 <?php echo $this->Form->end(); ?>

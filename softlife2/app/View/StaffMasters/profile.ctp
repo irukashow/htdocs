@@ -7,6 +7,7 @@
     echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
     echo $this->Html->css('staffmaster');
     echo $this->Html->css('lightbox');
+    echo $this->Html->css(array('print'),'stylesheet',array('media' => 'print'));
 ?>
 <?php require('profile_element.ctp'); ?>
 <?php require('common.ctp'); ?>
@@ -75,7 +76,7 @@ window.onload = function(){
                         $after = $data['StaffMaster']['pic_extension'];
                         if (empty($after)) {
                     ?>
-                                <img src='<?=ROOTDIR ?>/img/noimage.jpg ?>' style='border:1px black solid; width:150px;'>
+                                <img src='<?=ROOTDIR ?>/img/noimage.jpg' style='border:1px black solid; width:150px;'>
                     <?php } else { ?>
                                 <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
                                     <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
@@ -203,7 +204,7 @@ window.onload = function(){
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>役割</td>
-                            <?php $list_role = array('0'=>'その他', '1'=>'メイン', '2'=>'サブ'); ?>
+                            <?php $list_role = array('0'=>'', '1'=>'メイン', '2'=>'サブ'); ?>
                             <td style='width:70%;'><?=$list_role[$data['StaffMaster']['role']] ?></td>
                         </tr>
                         <tr>
@@ -304,7 +305,7 @@ window.onload = function(){
                 <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
                 <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'javascript:window.close();'))); ?>
+                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
                 &nbsp;&nbsp;
@@ -319,11 +320,11 @@ window.onload = function(){
             <!-- 登録者メモ -->
             <font style="font-size: 120%;">登録者メモ</font>
             <br>
-            <iframe width="100%" height="200px" src="<?=ROOTDIR ?>/staff_masters/memo/<?=$data['StaffMaster']['id'] ?>" frameborder='0' scrolling="yes" style="margin-bottom: 10px;"></iframe>
-            <br>
             <!--
+            <iframe width="100%" height="200px" src="<?=ROOTDIR ?>/staff_masters/memo/<?=$data['StaffMaster']['id'] ?>" id="memo" frameborder='0' scrolling="yes" style="margin-bottom: 10px;"></iframe>
+            <br>
+            -->
             <div style="overflow-y:scroll;height:200px;margin-bottom: 10px;">
-            <?php echo $this->Form->create('StaffMemo'); ?>
             <table border='1' cellspacing="0" cellpadding="2" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td colspan="2" style='background-color: #e8ffff;'>メモ一覧</td>
@@ -347,9 +348,7 @@ window.onload = function(){
                 <?php } ?>
                 
             </table>
-            <?php echo $this->Form->end(); ?>
             </div>
-            -->
             <!-- 勤務実績一覧 -->
             <font style="font-size: 120%;">勤務実績一覧</font>
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
@@ -364,7 +363,7 @@ window.onload = function(){
             
             <!-- メールボックス -->
             <font style="font-size: 120%;">メッセージボックス</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
+            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;" id="messagebox">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;'>日付</td>
                     <td style='background-color: #e8ffff;width:70%;'>タイトル</td>

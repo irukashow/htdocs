@@ -60,7 +60,7 @@ $(function() {
             <tr>
                 <td colspan="2">
                     登録番号：<?=$staff_id ?>&nbsp;&nbsp;氏名：<?=$name ?>&nbsp;&nbsp;
-                    作成日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
+                    登録日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
                 </td>
             </tr>
         </table>

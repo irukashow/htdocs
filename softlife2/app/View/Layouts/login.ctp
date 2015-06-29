@@ -2,6 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<?php include_once("analyticstracking.php") ?>
   <?php echo $this->Html->charset(); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1"> 
   <title>

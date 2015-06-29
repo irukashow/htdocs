@@ -347,23 +347,25 @@ class StaffMastersController extends AppController {
         $conditions1 = array('item' => 16);
         $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
         $this->set('list_shokushu', $list_shokushu); 
-        //$this->log($list_shokushu, LOG_DEBUG);
-        // 登録していた値をセット
-        $this->set('memo_datas', $this->StaffMemo->find('all', array('conditions' => array('class' => $selected_class, 'staff_id' => $staff_id), 'order' => array('id' => 'desc')))); 
-        //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG);
-        
+        //$this->log($list_shokushu, LOG_DEBUG);        
         // ページネーション
         //$conditions2 = array('id' => $staff_id, 'kaijo_flag' => $flag);
         $conditions2 = array('kaijo_flag' => $flag);
         //$conditions2 = null;
-        $this->paginate = array(
+        $this->paginate = array('StaffMaster' => array(
             'fields' => '*' ,
             'limit' =>  '1',
             //'page' => $page,
             'order' => 'id',
             'conditions' => $conditions2
-        );
-        $this->set('datas', $this->paginate('StaffMaster'));
+        ));
+        $datas = $this->paginate();
+        $this->set('datas', $datas);
+        $_id = $datas[0]['StaffMaster']['id'];
+        //$this->log($datas[0]['StaffMaster']['id'], LOG_DEBUG);
+        // 登録していた値をセット
+        $this->set('memo_datas', $this->StaffMemo->find('all', array('conditions' => array('class' => $selected_class, 'staff_id' => $_id), 'order' => array('id' => 'desc')))); 
+        //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG); 
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -373,26 +375,30 @@ class StaffMastersController extends AppController {
             // 登録解除
             } elseif (isset($this->request->data['release'])) {
                 $sql = '';
-                $sql = $sql.' UPDATE softlife.staff_'.$selected_class; 
-                $sql = $sql.' SET id = '.$this->request->data['StaffMaster']['staff_id'].', kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
-                $sql = $sql.' WHERE softlife.staff_'.$selected_class.'.id = '.$this->request->data['StaffMaster']['staff_id'];
-                //$this->log($sql, LOG_DEBUG);
+                $sql = $sql.' UPDATE staff_'.$selected_class; 
+                $sql = $sql.' SET kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
+                $sql = $sql.' WHERE id = '.$this->request->data['StaffMaster']['staff_id'];
+                $this->log($sql, LOG_DEBUG);
                 $this->StaffMaster->query($sql);
                 // ログ書き込み
-                $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['staff_name'], $flag, 9, $this->request->clientIp()); // 登録解除コード:9
+                $this->setSMLog($username, $selected_class, $this->request->data['StaffMaster']['staff_id'], $this->request->data['StaffMaster']['staff_name'], $flag, 9, $this->request->clientIp()); // 登録解除コード:9
                 $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => 1));
                 //$this->StaffMaster->save($this->request->data);
                 //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
                 $this->Session->setFlash('登録解除しました。');
-                /**
             // メモ追加
             } elseif (isset($this->request->data['comment'])) {
                 $sql = '';
-                $sql = $sql.' INSERT INTO softlife.staff_memos (memo, class, username, staff_id, created)';
-                $sql = $sql.' VALUES ("'.$this->request->data['StaffMemo']['memo'].'", '.$selected_class.', '
-                    .$this->request->data['StaffMemo']['username'].','.$staff_id.', CURRENT_TIMESTAMP())';
+                $sql = $sql.' INSERT INTO staff_memos (memo, class, username, staff_id, created)';
+                $sql = $sql.' VALUES ("'.$this->request->data['StaffMaster']['memo'].'", '.$selected_class.', '
+                    .$this->request->data['StaffMaster']['username'].','.$this->request->data['StaffMaster']['staff_id'].', CURRENT_TIMESTAMP())';
                 $this->StaffMemo->query($sql);
-                $this->redirect(array('action' => 'profile', $flag, $staff_id));
+                if (!empty($this->params['named']['page'])) {
+                    $page = $this->params['named']['page'];
+                } else {
+                    $page = 1;
+                }
+                $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => $page));
                 //$this->StaffMemo->save($this->request->data);
                 //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG);
                 //$this->redirect($this->referer());
@@ -405,9 +411,12 @@ class StaffMastersController extends AppController {
                 $sql = $sql.' DELETE FROM staff_memos';
                 $sql = $sql.' WHERE id = '.$id;
                 $this->StaffMemo->query($sql);
-                $this->redirect(array('action' => 'profile', $flag, $staff_id));
-                 * 
-                 */
+                if (!empty($this->params['named']['page'])) {
+                    $page = $this->params['named']['page'];
+                } else {
+                    $page = 1;
+                }
+                $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => $page));
             } 
         } else {
             
@@ -430,7 +439,7 @@ class StaffMastersController extends AppController {
             // メモ追加
             if (isset($this->request->data['comment'])) {
                 $sql = '';
-                $sql = $sql.' INSERT INTO softlife.staff_memos (memo, class, username, staff_id, created)';
+                $sql = $sql.' INSERT INTO staff_memos (memo, class, username, staff_id, created)';
                 $sql = $sql.' VALUES ("'.$this->request->data['StaffMemo']['memo'].'", '.$selected_class.', '
                     .$this->request->data['StaffMemo']['username'].','.$staff_id.', CURRENT_TIMESTAMP())';
                 $this->StaffMemo->query($sql);

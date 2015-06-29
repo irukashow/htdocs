@@ -13,38 +13,19 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-
-    public $uses = array('StaffMaster', 'User', 'Item', 'StaffMemo', 'StaffMasterLog');
-    // Paginationの設定（スタッフマスタ）
-    public $paginate = array(
-    //モデルの指定
-    'StaffMaster' => array(
-    //1ページ表示できるデータ数の設定
-    'limit' =>10,
-    'fields' => array('StaffMaster.*', 'User.name_sei AS koushin_name_sei', 'User.name_mei AS koushin_name_mei'),
-    //データを降順に並べる
-    'order' => array('id' => 'asc'),
-    'joins' => array (
-            array (
-                'type' => 'LEFT',
-                'table' => 'users',
-                'alias' => 'User',
-                'conditions' => 'StaffMaster.username = User.username' 
-            ))
-    )); 
-    // Paginationの設定（スタッフ詳細） 
-    public $paginate2 = array (
-    //モデルの指定
-    'StaffMaster' => array(
-    //1ページ表示できるデータ数の設定
-    'limit' =>1,
-    //データを降順に並べる
-    'order' => array('id' => 'asc'),
-    )); 
+    public $uses = array('Item', 'StaffMaster', 'User');
     
     static public $selected_class;
+    public $title_for_layout = "案件管理 - 案件管理システム";
     
-    public $title_for_layout = "スタッフマスタ - 案件管理システム";
+    public $paginate = array (
+    'Item' => array (
+        'limit' => 10,
+        'order' => 'id',
+        'fields' => '*'
+        ), 
+        "Role" => array() 
+    );
 
     public function index($flag = null, $staff_id = null, $profile = null) {
         // 所属が選択されていなければ元の画面に戻す
@@ -55,7 +36,7 @@ class CaseManagementController extends AppController {
         }
         // レイアウト関係
         $this->layout = "main";
-        $this->set("title_for_layout","案件管理 - 派遣管理システム");
+        $this->set("title_for_layout", "案件管理 - 派遣管理システム");
         // タブの状態
         $this->set('active1', '');
         $this->set('active2', '');
@@ -110,8 +91,25 @@ class CaseManagementController extends AppController {
         $array_11 = null;$array_12 = null;$array_13 = null;
         $array_21 = null;$array_22 = null;$array_23 = null;
         $array_31 = null;$array_32 = null;$array_33 = null;
+        // Paginationの設定
+        $this->paginate = array(
+        //モデルの指定
+        'StaffMaster' => array(
+        //1ページ表示できるデータ数の設定
+        'limit' =>10,
+        'fields' => array('StaffMaster.*', 'User.name_sei AS koushin_name_sei', 'User.name_mei AS koushin_name_mei'),
+        //データを降順に並べる
+        'order' => array('id' => 'asc'),
+        'joins' => array (
+                array (
+                    'type' => 'LEFT',
+                    'table' => 'users',
+                    'alias' => 'User',
+                    'conditions' => 'StaffMaster.username = User.username' 
+                ))
+        )); 
         
-        $this->log($this->request, LOG_DEBUG);
+        //$this->log($this->request, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
             // 初期表示
@@ -280,6 +278,101 @@ class CaseManagementController extends AppController {
         $this->set('station2', $station2);
         $this->set('station3', $station3);        
       }
+      
+    /** 職種マスタ管理 **/
+    public function shokushu($_id = null, $_sequence = null, $direction = null) {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", '職種マスタ');
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', 'active');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // テーブルの設定
+        $this->Item->setSource('item');
+        
+        $this->paginate = array('Item' => array(
+            'conditions' => array('item' => '16'),
+            'limit' => '15','order' => array('sequence' => 'asc', 'id' => 'asc')));
+        $this->log($this->paginate(), LOG_DEBUG);
+        $this->set('datas', $this->paginate());
+        
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            if (isset($this->request->data['insert'])) {
+                // データを登録する
+                $id = $this->request->data['Item']['id'];
+                $value = $this->request->data['Item']['value'];
+                $sequence = $this->request->data['Item']['sequence'];
+                // 削除
+                $sql = '';
+                $sql = $sql.' DELETE FROM item';
+                $sql = $sql.' WHERE item = 16 AND id = '.$id;
+                $this->log($this->Item->query($sql));
+                // 追加
+                $sql = "";
+                $sql = $sql." INSERT INTO item (item, id, value, sequence, created)";
+                $sql = $sql." VALUES (16, ".$id.", '".$value."', ".$sequence.", now())";
+                $this->log($this->Item->query($sql));
+                $this->redirect('shokushu');
+                $this->Session->setFlash('ID='.$id.', 値='.$value.'を追加しました。');
+            } elseif (isset($this->request->data['delete'])) {
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                $sql = '';
+                $sql = $sql.' DELETE FROM item';
+                $sql = $sql.' WHERE item = 16 AND id = '.$id;
+                $this->Item->query($sql);
+                $this->redirect('shokushu');
+                $this->Session->setFlash('ID='.$id.'を削除しました。');
+            } else { 
+            }
+        } elseif ($this->request->is('get')) {
+            if (!empty($_id) && !empty($_sequence) && !empty($direction)) {
+                // 順序のアップデート
+                if ($direction == 'up' && $_sequence != 1) {
+                    $sql1 = '';
+                    $sql1 = $sql1.' UPDATE item SET sequence = '.$_sequence;
+                    $sql1 = $sql1.' WHERE item = 16 AND sequence = '.($_sequence-1).';';
+                    $sql2 = '';
+                    $sql2 = $sql2.' UPDATE item SET sequence = '.($_sequence-1);
+                    $sql2 = $sql2.' WHERE item = 16 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
+                } elseif ($direction == 'down') {
+                    $sql1 = '';
+                    $sql1 = $sql1.' UPDATE item SET sequence = '.$_sequence;
+                    $sql1 = $sql1.' WHERE item = 16 AND sequence = '.($_sequence+1).';';
+                    $sql2 = '';
+                    $sql2 = $sql2.' UPDATE item SET sequence = '.($_sequence+1);
+                    $sql2 = $sql2.' WHERE item = 16 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
+                } else {
+                    // 無処理
+                    $this->redirect('shokushu');
+                    return;
+                }
+                $this->Item->query($sql1);
+                $this->Item->query($sql2);
+                $this->redirect('shokushu');
+            } 
+        } else {
+            //$this->request->data = $this->User->read(null, $this->Auth->user('username'));    
+        }
+    }
     
     /*** 職種をカンマ区切りに ***/
     static public function setShokushu($val){

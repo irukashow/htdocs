@@ -29,6 +29,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<?php include_once("analyticstracking.php") ?>
   <?php echo $this->Html->charset(); ?>
   <title>
     <?php echo $title_for_layout; ?>
@@ -114,9 +115,9 @@ $(function() {
                     <div id='cssmenu'>
                         <ul>
                             <li class='<?= $active1 ?>'><a href='<?=ROOTDIR ?>/users/'>ホーム<br><div>Home</div></a></li>
-                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/' onclick='alert("制作予定");return false;'>メッセージ<br><div>Message</div></a></li>
+                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/' onclick='alert("制作中");return false;'>メッセージ<br><div>Message</div></a></li>
                            <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/staff_masters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
-                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/' onclick='alert("制作予定");return false;'>案件管理<br><div>Case Management</div></a></li>
+                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/' onclick='alert("制作中");'>案件管理<br><div>Case Management</div></a></li>
                            <li class='<?= $active5 ?>'><a href='' onclick='alert("制作予定")'>シフト管理<br><div>Shift Management</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>

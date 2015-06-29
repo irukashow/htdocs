@@ -82,7 +82,7 @@ class MasterController extends AppController {
     }
     
     /** 職種マスタ管理 **/
-    public function shokushu() {
+    public function shokushu($_id = null, $_sequence = null, $direction = null) {
         // レイアウト関係
         $this->layout = "log";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -90,7 +90,8 @@ class MasterController extends AppController {
         
         $this->paginate = array('Item' => array(
             'conditions' => array('item' => '16'),
-            'limit' => '10'));
+            'limit' => '15','order' => array('sequence' => 'asc', 'id' => 'asc')));
+        $this->log($this->paginate(), LOG_DEBUG);
         $this->set('datas', $this->paginate());
         
         // POSTの場合
@@ -100,6 +101,7 @@ class MasterController extends AppController {
                 // データを登録する
                 $id = $this->request->data['Item']['id'];
                 $value = $this->request->data['Item']['value'];
+                $sequence = $this->request->data['Item']['sequence'];
                 // 削除
                 $sql = '';
                 $sql = $sql.' DELETE FROM item';
@@ -107,8 +109,8 @@ class MasterController extends AppController {
                 $this->log($this->Item->query($sql));
                 // 追加
                 $sql = "";
-                $sql = $sql." INSERT INTO item (item, id, value, created)";
-                $sql = $sql." VALUES (16, ".$id.", '".$value."', now())";
+                $sql = $sql." INSERT INTO item (item, id, value, sequence, created)";
+                $sql = $sql." VALUES (16, ".$id.", '".$value."', ".$sequence.", now())";
                 $this->log($this->Item->query($sql));
                 $this->redirect('shokushu');
                 $this->Session->setFlash('ID='.$id.', 値='.$value.'を追加しました。');
@@ -121,9 +123,35 @@ class MasterController extends AppController {
                 $this->Item->query($sql);
                 $this->redirect('shokushu');
                 $this->Session->setFlash('ID='.$id.'を削除しました。');
-            } else {
-                
+            } else { 
             }
+        } elseif ($this->request->is('get')) {
+            if (!empty($_id) && !empty($_sequence) && !empty($direction)) {
+                // 順序のアップデート
+                if ($direction == 'up' && $_sequence != 1) {
+                    $sql1 = '';
+                    $sql1 = $sql1.' UPDATE item SET sequence = '.$_sequence;
+                    $sql1 = $sql1.' WHERE item = 16 AND sequence = '.($_sequence-1).';';
+                    $sql2 = '';
+                    $sql2 = $sql2.' UPDATE item SET sequence = '.($_sequence-1);
+                    $sql2 = $sql2.' WHERE item = 16 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
+                } elseif ($direction == 'down') {
+                    $sql1 = '';
+                    $sql1 = $sql1.' UPDATE item SET sequence = '.$_sequence;
+                    $sql1 = $sql1.' WHERE item = 16 AND sequence = '.($_sequence+1).';';
+                    $sql2 = '';
+                    $sql2 = $sql2.' UPDATE item SET sequence = '.($_sequence+1);
+                    $sql2 = $sql2.' WHERE item = 16 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
+                } else {
+                    // 無処理
+                    $this->redirect('shokushu');
+                    return;
+                }
+                //$this->log($sql1.'/'.$sql2, LOG_DEBUG);
+                //$this->log($this->Item->query($sql1), LOG_DEBUG);
+                //$this->log($this->Item->query($sql2), LOG_DEBUG);
+                $this->redirect('shokushu');
+            } 
         } else {
             //$this->request->data = $this->User->read(null, $this->Auth->user('username'));    
         }

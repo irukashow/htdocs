@@ -30,6 +30,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<?php include_once("analyticstracking.php") ?>
   <?php echo $this->Html->charset(); ?>
   <title>
     <?php echo $title_for_layout; ?>

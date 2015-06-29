@@ -5,7 +5,7 @@
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 10px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （その１）'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __('仮登録 （１／２）'); ?></legend>
         <div style="font-size: 110%;">
             <font color=blue>登録情報</font>&nbsp;>>&nbsp;基本情報
         </div>
@@ -17,7 +17,13 @@
                 <th style='background:#99ccff;text-align: center;' colspan='3'>入力内容</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:30%;' colspan="2">メールアドレス<font color="red">*</font><br>※ログインIDとして使用します。</td>
+                <td style='background-color: #e8ffff;width:30%;' colspan="2">ログインアカウント<font color="red">*</font><br>※ログインに使用します。</td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('account',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:30%;' colspan="2">メールアドレス（携帯）<font color="red">*</font><br>※ログインIDに使用します。</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
                 </td>
@@ -30,7 +36,7 @@
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;' colspan="2">その他のメールアドレス（任意）</td>
+                <td style='background-color: #e8ffff;width:20%;' colspan="2">メールアドレス（その他）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
                 </td>
@@ -128,7 +134,7 @@
             </tr>
             <!-- 住所 End -->
             <tr>
-                <td style='background-color: #e8ffff;width:20%;' colspan="2">電話番号（メイン）<font color="red">*</font></td>
+                <td style='background-color: #e8ffff;width:20%;' colspan="2">電話番号（携帯）<font color="red">*</font></td>
                 <td colspan="2">
                     <?php echo $this->Form->input('telno1',array('label'=>false,'div'=>false,'style'=>'width:30%;')); ?>
                 </td>

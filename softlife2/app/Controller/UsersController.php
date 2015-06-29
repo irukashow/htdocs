@@ -43,7 +43,11 @@ class UsersController extends AppController {
             // 最終ログイン時刻
             $last_login = $this->LoginLogs->find('first', array('fields' => array('created'), 
                 'conditions' => array('username' => $this->Auth->user('username'), 'status' => 'login'), 'order' => array('id' => 'desc')));
-            $this->set('last_login', $last_login['LoginLogs']['created']);
+            if (!is_null($last_login['LoginLogs']['created'])) {
+                $this->set('last_login', $last_login['LoginLogs']['created']);
+            } else {
+                $this->set('last_login', '');
+            }
             // 受信メッセージ一覧の表示
             $this->paginate = array(
                 'AdminInfo' => array(

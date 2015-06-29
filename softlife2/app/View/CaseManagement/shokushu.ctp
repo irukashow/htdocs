@@ -1,13 +1,20 @@
-<div style="padding: 15px;height: 900px;">
+<?php
+    echo $this->Html->css('log');
+?>
+<!-- 見出し１ -->
+<div id='headline' style="padding:10px 10px 10px 10px;">
+    ★ 案件管理
+    &nbsp;&nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/index" target=""><font Style="font-size:95%;">案件一覧</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/case_management/customer" target="" onclick='alert("制作中");return false;'><font Style="font-size:95%;">取引先一覧</font></a>
+    &nbsp;
+    <b><font Style="font-size:95%;color: yellow;">職種マスタ</font></b>
+</div>
+<!-- 見出し１ END -->
+
+<div style="height: 900px;">
 <?php echo $this->Form->create('Item'); ?>
-    
-    <div style="float:left;">
-        <font style="font-size: 150%;color: red;"><?= $headline ?></font>
-    </div>
-    <div style="float:right;">
-        <a href='<?=ROOTDIR ?>/admin/'>◀管理者ページへ戻る</a>
-    </div>
-    <div style="clear:both;"></div>
 <?php
     echo $this->Paginator->numbers (
         array (
@@ -18,11 +25,11 @@
 ?>
 <div style="clear:both;"></div>
 <!--- 職種マスタ管理 START --->
-<table border="1" width="50%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="left">
+<table border="1" width="60%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="left">
   <tr class="col">
-    <th width="25%"><font style="color:white;font-weight: normal;">表示順</font></th>
+    <th width="20%"><font style="color:white;font-weight: normal;">表示順</font></th>
     <th width="10%"><?php echo $this->Paginator->sort('id',"ID");?></th>
-    <th width="60%"><?php echo $this->Paginator->sort('value','値');?></th>
+    <th width="70%"><?php echo $this->Paginator->sort('value','値');?></th>
     <th width="10%"> </th>
   </tr>
   <tr>
@@ -65,8 +72,5 @@
             )
         );
 ?>
-    <div style="margin-top: 10px;">
-        <a href='<?=ROOTDIR ?>/admin/'>◀管理者ページへ戻る</a>
-    </div>
 <?php echo $this->Form->end(); ?>
 </div>

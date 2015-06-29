@@ -53,7 +53,7 @@ function doSearch1(id) {
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">案件一覧</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/customer" target=""><font Style="font-size:95%;">取引先一覧</font></a>
+    <a href="<?=ROOTDIR ?>/case_management/customer" target="" onclick='alert("制作中");return false;'><font Style="font-size:95%;">取引先一覧</font></a>
     &nbsp;
     <a href="<?=ROOTDIR ?>/case_management/shokushu" target=""><font Style="font-size:95%;">職種マスタ</font></a>
 </div>
@@ -211,6 +211,11 @@ function doSearch1(id) {
     <td align="center"><?php echo '＜？＞'; ?></td>
   </tr>
   <?php endforeach; ?>
+<?php if (count($datas) == 0) { ?>
+<tr>
+    <td colspan="13" align="center">表示するデータはありません。</td>
+</tr>
+<?php } ?>
 </table>
 
 <!-- ページネーション -->

@@ -228,7 +228,7 @@ function chkHankaku(textbox) {
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_shokushu', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;display:none;','empty' => array('' => ''), 'options' => $list_shokushu)); ?>
+                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;display: none;','empty' => array('' => ''), 'options' => $list_shokushu)); ?>
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>

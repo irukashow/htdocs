@@ -31,7 +31,7 @@ $(function() {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 10px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録 （その２）'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __('仮登録 （２／２）'); ?></legend>
         <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>">登録情報</a>&nbsp;>>&nbsp;
         <font color="blue">基本情報</font>
         

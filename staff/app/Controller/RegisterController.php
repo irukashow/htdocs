@@ -12,7 +12,7 @@ App::uses('AppController', 'Controller');
  * CakePHP RegistController
  * @author M-YOKOI
  */
-class RegistController extends AppController {
+class RegisterController extends AppController {
     public $uses = array('StaffPreregist', 'User', 'Item', 'StaffPreregistLog');
 
     public function index() {
