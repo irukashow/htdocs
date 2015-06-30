@@ -167,7 +167,7 @@ function affixZero(int) {
                 </td>
             </tr> 
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１（必須）</td>
+                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１（携帯：必須）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>
