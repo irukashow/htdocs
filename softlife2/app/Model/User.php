@@ -30,7 +30,9 @@ class User extends AppModel {
                     'rule' => 'notEmpty',
                     'message' => '地域を選択してください。'
             ),
-            'auth11' =>  array(
+            'auth' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => '権限を少なくとも一つは選択してください。'
             ),
 
             'role' =>  array(

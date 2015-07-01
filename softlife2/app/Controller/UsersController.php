@@ -410,8 +410,13 @@ class UsersController extends AppController {
                 $username = $this->Auth->user('username');
                 $conditions = array('username' => $username);
                 $result = $this->User->find('first', array('conditions' => $conditions));
-                $first_class = explode(',', $result['User']['auth']);
-                $this->Session->write('selected_class', $first_class[1]);
+                if (!empty($result['User']['auth'])) {
+                    $first_class = explode(',', $result['User']['auth']);
+                    $this->Session->write('selected_class', $first_class[1]);
+                } else {
+                    $this->Session->setFlash('権限がありません。');
+                    $this->redirect($this->Auth->logout());
+                }
                 //$this->log($first_class[1]);
     
                 $this->redirect($this->Auth->redirect());

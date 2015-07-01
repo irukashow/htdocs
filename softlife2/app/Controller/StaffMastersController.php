@@ -473,6 +473,7 @@ class StaffMastersController extends AppController {
         mb_http_output("utf-8");
         $selected_class = $this->Session->read('selected_class');
         // 都道府県のセット
+        //$conditions = array('item' => 10);      // 全国を選択可能に
         if (substr($selected_class, 0 ,1) == 1) {
             // 大阪（関西地方）
             $conditions = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
