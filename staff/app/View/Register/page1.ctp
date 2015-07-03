@@ -5,7 +5,7 @@
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 10px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('仮登録 （１／２）'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __('仮登録ページ （１／２）'); ?></legend>
         <div style="font-size: 110%;">
             <font color=blue>登録情報</font>&nbsp;>>&nbsp;基本情報
         </div>
@@ -17,28 +17,17 @@
                 <th style='background:#99ccff;text-align: center;' colspan='3'>入力内容</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:30%;' colspan="2">ログインアカウント<font color="red">*</font><br>※ログインに使用します。</td>
+                <td style='background-color: #e8ffff;width:10%;' rowspan="2">ログイン<font color="red">*</font></td>
+                <td style='background-color: #e8ffff;width:20%;'>アカウント（5～15文字）<font color="red">*</font></td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('account',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
+                    <?php echo $this->Form->input('account',array('label'=>false,'div'=>false,'MaxLength'=>'5', 'MaxLength'=>'15', 'style'=>'width:50%;')); ?>
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:30%;' colspan="2">メールアドレス（携帯）<font color="red">*</font><br>※ログインIDに使用します。</td>
-                <td colspan="2">
-                    <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;' colspan="2">パスワード<font color="red">*</font><br>※２回入力</td>
+                <td style='background-color: #e8ffff;width:20%;'>パスワード（8～15文字）<font color="red">*</font><br>※２回入力</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('password',array('type' => 'password', 'label'=>false,'div'=>false, 'value' => '', 'style'=>'width:60%;margin-bottom:5px;')); ?><br>
                     <?php echo $this->Form->input('password2',array('type' => 'password', 'label'=>false,'div'=>false, 'value' => '', 'style'=>'width:60%;')); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;' colspan="2">メールアドレス（その他）</td>
-                <td colspan="2">
-                    <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
                 </td>
             </tr>
             <tr>
@@ -133,6 +122,18 @@
                 </td>
             </tr>
             <!-- 住所 End -->
+            <tr>
+                <td style='background-color: #e8ffff;width:30%;' colspan="2">メールアドレス（携帯）<font color="red">*</font><br>※ログインIDに使用します。</td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;' colspan="2">メールアドレス（その他）</td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('email2',array('label'=>false,'div'=>false,'style'=>'width:80%;')); ?>
+                </td>
+            </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;' colspan="2">電話番号（携帯）<font color="red">*</font></td>
                 <td colspan="2">

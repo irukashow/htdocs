@@ -205,6 +205,15 @@ text-decoration: none;
 color: blue;
 }
 
-
+/** プロフィールのヘッダ **/
+#header_profile {
+color: whitesmoke;
+background-color: #45bcd2;
+text-shadow: 1px 1px 3px #666666;
+border:1px solid #0099cc;
+padding:5px;
+vertical-align: middle;
+padding-right: 5px;    
+}
 
 

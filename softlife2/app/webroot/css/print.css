@@ -1026,8 +1026,28 @@ float: left;
 height:30px;
 }
 
+/** ヘッダ **/
+#header_profile {
+color: black;
+background-color: white;
+}
+#name {
+font-size: 14pt;
+font-weight: bold;
+}
+#shokushu_shoukai {
+font-size: 14pt;
+font-weight: bold;    
+}
+
 /** 非表示 **/
+#title_messagebox,
 #messagebox {
 display: none;     
 }
+
+#editbox {
+display: none;
+}
+
 

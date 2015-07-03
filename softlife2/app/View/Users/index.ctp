@@ -57,36 +57,87 @@
                         <span style="font-family: 'HG創英角ﾎﾟｯﾌﾟ体';">「ホームのイメージ募集中！」</span>
                     </div>
                     
-                    <div style="margin-top: 35px;">
+                    <div style="margin-top: 30px;">
                         <!-- カレンダー -->
-                        <center><?php echo $year; ?>年<?php echo $month; ?>月</center>
-                        <table id='calender' border="0" cellspacing="0" cellpadding="5" bordercolor="#459ed2" align="center" style="background-color: white;">
-                            <tr>
-                                <th>日</th>
-                                <th>月</th>
-                                <th>火</th>
-                                <th>水</th>
-                                <th>木</th>
-                                <th>金</th>
-                                <th>土</th>
+                        <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
+                                <tr align="center">
+                                        <td><a href="./?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
+                                        <td><?php echo $y ?>年<?php echo $m ?>月</td>
+                                        <td><a href="./?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                                </tr>
+                        </table>
+
+                        <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+                            <tr align="center" style="background-color: #cccccc;">
+                                    <th>日</th>
+                                    <th>月</th>
+                                    <th>火</th>
+                                    <th>水</th>
+                                    <th>木</th>
+                                    <th>金</th>
+                                    <th>土</th>
                             </tr>
+                            <tr align="center">
+                        <?php
+                                // 1日の曜日を取得
+                                $wd1 = date("w", mktime(0, 0, 0, $m, 1, $y));
 
-                            <tr>
-                            <?php $cnt = 0; ?>
-                            <?php foreach ($calendar as $key => $value): ?>
+                                // その数だけ空のセルを作成
+                                for ($i = 1; $i <= $wd1; $i++) {
+                                        echo "<td> </td>";
+                                }
 
-                                <td>
-                                <?php $cnt++; ?>
-                                <?php echo $value['day']; ?>
-                                </td>
+                                $d = 1;
+                                while (checkdate($m, $d, $y)) {
+                                        // 日付出力（土日祝には色付け）
+                                        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0)
+                                        {
+                                                $style = 'color:red;';
+                                        }
+                                        elseif(date("w", mktime(0, 0, 0, $m, $d, $y)) == 6)
+                                        {
+                                                $style = 'color:blue;';
+                                        }
+                                        elseif(!empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))]))  
+                                        {
+                                                $style = 'color:red;';
+                                        }
+                                        else
+                                        {
+                                                $style = '';
+                                        }
+                                        
+                                        // 本日
+                                        if ($m == date("n") && $d == date("j") && $y == date("Y")) {
+                                            $style = $style.'font-weight: bold;background-color: #ffffcc;';
+                                        }
+                                        
+                                        // 出力
+                                        echo "<td style='".$style."'>$d</td>";
 
-                            <?php if ($cnt == 7): ?>
-                            </tr>
-                            <tr>
-                            <?php $cnt = 0; ?>
-                            <?php endif; ?>
+                                        // 週の始まりと終わりでタグを出力
+                                        if (date("w", mktime(0, 0, 0, $m, $d, $y)) == 6)
+                                        {
+                                            // 週を終了
+                                            echo "</tr>";
 
-                            <?php endforeach; ?>
+                                                // 次の週がある場合は新たな行を準備
+                                            if (checkdate($m, $d + 1, $y)) {
+                                                echo '<tr align=\'center\'>';
+                                            }
+                                        }
+
+                                    $d++;
+                                }
+
+                                // 最後の週の土曜日まで空のセルを作成
+                                $wdx = date("w", mktime(0, 0, 0, $m + 1, 0, $y));
+
+                                for ($i = 1; $i < 7 - $wdx; $i++)
+                                {
+                                        echo "<td>　</td>";
+                                }
+                        ?>
                             </tr>
                         </table>
                         <!-- カレンダー END-->
@@ -177,4 +228,3 @@
         </tr>
     </table>
 </div>
-

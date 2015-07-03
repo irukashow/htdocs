@@ -58,107 +58,27 @@ function chkHankaku(textbox) {
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <?php echo $this->Form->create('StaffMaster', array('name' => 'form')); ?>
 <!-- 見出し -->
-<div id='headline' style="padding:5px 10px 5px 10px;">
+<div id='headline' style="padding:10px 10px 10px 10px;">
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/provisional/0" onclick="alert('制作中');" id="pre_regist">仮登録リスト</a>
-    &nbsp;
-    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='button-create'>新規登録</a>
+    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='pre_regist'>仮登録ページ</a>
     &nbsp;
 <?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">仮登録リスト</font></a>
     &nbsp;
-    <b><font Style="font-size:95%;">登録解除リスト</font></b>
+    <b><font Style="font-size:95%;">登録見送リスト</font></b>
 <?php } else { ?>
-    <b><font Style="font-size:95%;">登録リスト</font></b>
+    <b><font Style="font-size:95%;">仮登録リスト</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
+    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録見送リスト</font></a>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;
+    <!--
     <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
     &nbsp;
     <?php echo $this->Form->submit('検索条件クリア', array('name' => 'clear', 'div' => false, 'id' => 'clear', 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
+    -->
 </div>
-    <!-- 絞り込み検索ボックス -->
-    <div style="float:left;">
-        <!-- 駅検索 -->
-        <FIELDSET class='search'>
-            <LEGEND style='font-weight: bold;'>駅検索</LEGEND>         
-            <DIV style="float: left;width:800px;">
-                <SPAN>路線①</SPAN>
-                <?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-                    'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;',
-                    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)', 'options'=>$line1)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
-                &nbsp;駅&nbsp;～&nbsp;
-                <?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
-                &nbsp;駅<BR>
-
-                <SPAN>路線②</SPAN>
-                <?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-                    'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-                    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)', 'options'=>$line2)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
-                &nbsp;駅&nbsp;～&nbsp;
-                <?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
-                &nbsp;駅<BR>
-
-                <SPAN>路線③</SPAN>
-                <?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-                    'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-                    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)', 'options'=>$line3)); ?>
-                &nbsp;→
-                <?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
-                &nbsp;駅&nbsp;～&nbsp;
-                <?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
-                &nbsp;駅<BR>
-            </DIV>
-            <div style='float: left;padding-left: 10px;'>
-                <!--
-                <?php echo $this->Form->submit('検索', array('name' => 'search1', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
-                -->
-            </div>
-            <div style="clear: both; height: 0px;"></div>
-        </FIELDSET>
-        <!-- 駅検索 END -->
-    </div>
-    <div style="float:left;">
-        <!-- 年齢検索 -->
-        <FIELDSET class='search'>
-            <LEGEND style='font-weight: bold;'>年齢検索</LEGEND>         
-            <DIV style="float: left;width:300px;">
-                <SPAN>年齢</SPAN>
-                <?php echo $this->Form->input('search_age_lower', array('type'=>'text', 'label' => false,'div' => false, 
-                    'placeholder'=>'下限年齢', 'style' => 'width:90px;ime-mode:disabled', 'onchange' => 'chkHankaku(this);')); ?>歳
-                &nbsp;～&nbsp;
-                <?php echo $this->Form->input('search_age_upper', array('type'=>'text', 'label' => false,'div' => false, 
-                    'placeholder'=>'上限年齢', 'style' => 'width:90px;ime-mode:disabled', 'onchange' => 'chkHankaku(this);')); ?>歳 
-            </DIV>
-            <div style="float:left; margin-top: -15px;">
-                <!--
-                <?php echo $this->Form->submit('検索', array('name' => 'search2', 'style' => 'font-size:100%; padding:5px 15px 5px 15px;')); ?>
-                -->
-            </div>
-        </FIELDSET>
-    <div style="float:left;margin-left: 10px;">
-<?php
-    if( isset( $_SESSION["filter"] ) ) {
-        echo '<div style="background-color:yellow;"><font color=blue>※現在、検索条件が有効になっています。※</font></div>';
-    }
-?>   
-    </div>
-        <div style="clear: both; height: 0px;"></div>
-    </div>
-
-    <div style="clear: both; height: 0px;"></div>
 
 <!-- ページネーション -->
 <div class="pageNav03" style="margin-bottom: 30px;">
@@ -172,11 +92,11 @@ function chkHankaku(textbox) {
     <div style="float:left;margin:5px 0px 0px 15px;">
         【写真】
         <?php if ($pic_staff == 0) { ?>
-            <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>/pic:1">表示する</a>
+            <a href="<?=ROOTDIR ?>/staff_masters/provisional/<?=$flag ?>/pic:1">表示する</a>
             &nbsp;|&nbsp;<b>非表示</b>
         <?php } else { ?>
             <b>表示</b>&nbsp;|&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>/pic:0">非表示にする</a>
+            <a href="<?=ROOTDIR ?>/staff_masters/provisional/<?=$flag ?>/pic:0">非表示にする</a>
         <?php } ?>
     </div>
     <div style="float:right;margin-top: 5px;">
@@ -241,7 +161,7 @@ function chkHankaku(textbox) {
     <td align="right">&nbsp;</td>
     <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/profile_provisional/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
             <div>
             <?php
                 if ($pic_staff == 1) {
@@ -250,7 +170,7 @@ function chkHankaku(textbox) {
             ?>
                 <img src="<?=ROOTDIR ?>/img/noimage.jpg" width="80px"><br>
             <?php } else { ?>
-                <img src="<?=ROOTDIR ?>/files/staff_reg/<?=$selected_class ?>/<?=sprintf('%07d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px"><br>
+                <img src="<?=IMGURL ?>/files/staff_prereg/<?=sprintf('%010d', $staff_id) ?>/<?=$staff_id ?>.<?=$after ?>" width="80px"><br>
             <?php   } ?>
             <?php } ?>
                 
@@ -259,7 +179,7 @@ function chkHankaku(textbox) {
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/profile_provisional/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
             <?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?><br>
         </a>
 	<?php

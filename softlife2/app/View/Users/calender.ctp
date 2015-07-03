@@ -1,53 +1,55 @@
 <?php
+	// 初期値
+	$y = date('Y');
+	$m = date('n');
+		
+	// 日付の指定がある場合
+	if(!empty($_GET['date']))
+	{
+		$arr_date = explode('-', $_GET['date']);
+		
+		if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
+		{
+			$y = (int)$arr_date[0];
+			$m = (int)$arr_date[1];
+		}
+	}
  
-// 現在の年月を取得
-$year = date('Y');
-$month = date('n');
- 
-// 月末日を取得
-$last_day = date('j', mktime(0, 0, 0, $month + 1, 0, $year));
- 
-$calendar = array();
-$j = 0;
- 
-// 月末日までループ
-for ($i = 1; $i < $last_day + 1; $i++) {
- 
-    // 曜日を取得
-    $week = date('w', mktime(0, 0, 0, $month, $i, $year));
- 
-    // 1日の場合
-    if ($i == 1) {
- 
-        // 1日目の曜日までをループ
-        for ($s = 1; $s <= $week; $s++) {
- 
-            // 前半に空文字をセット
-            $calendar[$j]['day'] = '';
-            $j++;
- 
-        }
- 
-    }
- 
-    // 配列に日付をセット
-    $calendar[$j]['day'] = $i;
-    $j++;
- 
-    // 月末日の場合
-    if ($i == $last_day) {
- 
-        // 月末日から残りをループ
-        for ($e = 1; $e <= 6 - $week; $e++) {
- 
-            // 後半に空文字をセット
-            $calendar[$j]['day'] = '';
-            $j++;
- 
-        }
- 
-    }
- 
-}
- 
+	// 祝日の取得の関数
+	function japan_holiday($y = '')
+	{
+	    // カレンダーID
+	    $calendar_id = urlencode('japanese__ja@holiday.calendar.google.com');
+	
+	    // 取得期間
+	    $start  = date("$y-01-01\T00:00:00\Z");
+	    $end = date("$y-12-31\T00:00:00\Z");
+	
+	    $url = "https://www.google.com/calendar/feeds/{$calendar_id}/public/basic?start-min={$start}&start-max={$end}&max-results=30&alt=json";
+	
+	    $ch = curl_init();
+	    curl_setopt($ch, CURLOPT_URL, $url);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ;
+	    $result = curl_exec($ch);
+	    curl_close($ch);
+	
+	    if (!empty($result)) {
+	        $json = json_decode($result, true);
+	        if (!empty($json['feed']['entry'])) {
+	            $datas = array();
+	            foreach ($json['feed']['entry'] as $val) {
+	                $date = preg_replace('#\A.*?(2\d{7})[^/]*\z#i', '$1', $val['id']['$t']);
+	                $datas[$date] = array(
+	                    'date' => preg_replace('/\A(\d{4})(\d{2})(\d{2})/', '$1/$2/$3', $date),
+	                    'title' => $val['title']['$t'],
+	                );
+	            }
+	            ksort($datas);
+	            return $datas;
+	        }
+	    }
+	}
+	
+	// 祝日取得
+	$national_holiday = japan_holiday($y);
 ?>

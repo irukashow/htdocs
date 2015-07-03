@@ -2,8 +2,9 @@
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
 define("HEADER","派遣管理システム <font color=#ffff99>SLNext 0.1.1</font>");
-define("FOOTER","SLNext Version 0.1.1 20150629 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
+define("FOOTER","SLNext Version 0.1.1 20150703 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
 define("ROOTDIR","/softlife2");
+define("IMGURL","http://localhost/staff");
  
 //配列
 //呼び出し方:    $fuga = Configure::read("fuga");

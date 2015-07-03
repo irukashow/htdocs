@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class StaffMastersController extends AppController {
-    public $uses = array('StaffMaster', 'User', 'Item', 'StaffMemo', 'StaffMasterLog');
+    public $uses = array('StaffMaster', 'User', 'Item', 'StaffMemo', 'StaffMasterLog', 'StaffPreregist');
     // Paginationの設定（スタッフマスタ）
     public $paginate = array(
     //モデルの指定
@@ -107,9 +107,10 @@ class StaffMastersController extends AppController {
         }
         $this->set('pic_staff', $pic);
         // 登録担当者
-        $conditions = array('area' => substr($selected_class, 0, 1));
+        $conditions = array("FIND_IN_SET($selected_class, User.auth)");
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
+        $this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
         $conditions0 = array('item' => 16);
@@ -422,7 +423,7 @@ class StaffMastersController extends AppController {
             
         }
     }
-    
+    /**
     // メモ組み込みページ
     public function memo($staff_id = null) {
         $this->layout = false;
@@ -460,6 +461,8 @@ class StaffMastersController extends AppController {
             }   
         }
     }
+     * 
+     */
     
     // 登録ページ（その１）
     public function reg1($staff_id = null, $koushin_flag = null) {
@@ -808,49 +811,360 @@ class StaffMastersController extends AppController {
         }
     }
   
-  /*
-   * アップロード処理
-   */
-   public function uptest($msg = null){
-        $this->set('msg', '');
-       
-   }
-   
-  public function upload(){
-        $this->autoRender = false;
-        
-        $ds          = DIRECTORY_SEPARATOR;  //1
-        $storeFolder = 'files';   //2
-        if(!empty($_FILES)){
-                $tempFile = $_FILES['upfile']['tmp_name'];//3
-                $info = new SplFileInfo($_FILES['upfile']['name']);
-                $after = $info->getExtension();
-                
-                $targetPath = $storeFolder . $ds;  //4
-                //$targetFile =  $targetPath. $_FILES['upfile']['name'];  //5
-                $targetFile =  $targetPath. '34567.'.$after;  //5
-                move_uploaded_file($tempFile,$targetFile); //6
-                
-                $this->redirect($this->referer());
+    // 仮登録 
+    public function provisional($flag = null) {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', 'active');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $this->set('flag', $flag);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // 登録担当者配列
+        //$this->log($this->getTantou(), LOG_DEBUG);
+        $this->set('getTantou', $this->getTantou());
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_preregists');
+        // 引数の受け取り（件数）
+        if (isset($this->params['named']['limit'])) {
+            $limit = $this->params['named']['limit'];
+        } else {
+            $limit = '10';
         }
-        /*
-        if (is_uploaded_file($_FILES["upfile"]["tmp_name"])) {
-            if (move_uploaded_file($_FILES["upfile"]["tmp_name"], "files/" . $_FILES["upfile"]["name"])) {
-              chmod("files/" . $_FILES["upfile"]["name"], 0644);
-              //$this->Session->setFlash( $_FILES["upfile"]["name"] . "をアップロードしました。");
-              $this->redirect($this->referer());
+        // 引数の受け取り（写真表示）
+        $pic = 1;
+        if (isset($this->params['named']['pic'])) {
+            if ($this->params['named']['pic'] == 0) {
+                $pic = 0;
+                //$this->Session->write('pic_staff', 0);
             } else {
-              $this->Session->setFlash( $_FILES["upfile"]["name"] . "ファイルをアップロードできません。");
-              $this->redirect($this->referer());
+                $pic = 1;
+                //$this->Session->write('pic_staff', 1);
             }
+        }
+        $this->set('pic_staff', $pic);
+        // 登録担当者
+        $conditions = array("FIND_IN_SET($selected_class, User.auth)");
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
+        $this->set('name_arr', $name_arr); 
+        // 職種マスタ配列
+        $conditions0 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
+        // 表示件数の初期値
+        $this->set('limit', $limit);
+        $conditions1 = null;$conditions2 = null;$conditions3 = null;
+        $line1 = null;$line2 = null;$line3 = null;
+        $station1 = null;$station2 = null;$station3 = null;
+        $array_11 = null;$array_12 = null;$array_13 = null;
+        $array_21 = null;$array_22 = null;$array_23 = null;
+        $array_31 = null;$array_32 = null;$array_33 = null; 
+        
+        $this->log($this->request, LOG_DEBUG);
+        // POSTの場合
+        //if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
+            // 初期表示
+            if ($flag == 1) {
+                $conditions2 = array('kaijo_flag' => 1);
             } else {
-              $this->Session->setFlash( $_FILES["upfile"]["name"] . "ファイルが選択されていません。");
-              $this->redirect($this->referer());
-        } 
-         * 
-         */   
-  }
-  
+                $flag = 0;
+                $conditions2 = array('kaijo_flag' => 0);
+            }
+            $this->set('flag', $flag);
+            
+            // 最寄り駅での絞り込み
+            if(isset($this->request->data['search'])) {
+                // 駅コンボ値セット
+                $line1 = $this->getLine($this->request->data['StaffMaster']['pref1']);
+                $line2 = $this->getLine($this->request->data['StaffMaster']['pref2']);
+                $line3 = $this->getLine($this->request->data['StaffMaster']['pref3']);
+                $station1 = $this->getStation($this->request->data['StaffMaster']['s0_1']);
+                $station2 = $this->getStation($this->request->data['StaffMaster']['s0_2']);
+                $station3 = $this->getStation($this->request->data['StaffMaster']['s0_3']);
+                
+                if (!empty($this->request->data['StaffMaster']['s1_1']) && !empty($this->request->data['StaffMaster']['s2_1'])) {
+                    $array_11 = array(array('StaffMaster.s1_1 >=' => $this->request->data['StaffMaster']['s1_1']), array('StaffMaster.s1_1 <= ' => $this->request->data['StaffMaster']['s2_1']));
+                    $array_12 = array(array('StaffMaster.s1_2 >=' => $this->request->data['StaffMaster']['s1_1']), array('StaffMaster.s1_2 <= ' => $this->request->data['StaffMaster']['s2_1']));
+                    $array_13 = array(array('StaffMaster.s1_3 >=' => $this->request->data['StaffMaster']['s1_1']), array('StaffMaster.s1_3 <= ' => $this->request->data['StaffMaster']['s2_1']));
+                }
+                if (!empty($this->request->data['StaffMaster']['s1_1']) && !empty($this->request->data['StaffMaster']['s2_1'])) {
+                    $array_21 = array(array('StaffMaster.s1_1 >=' => $this->request->data['StaffMaster']['s1_2']), array('StaffMaster.s1_1 <= ' => $this->request->data['StaffMaster']['s2_2']));
+                    $array_22 = array(array('StaffMaster.s1_2 >=' => $this->request->data['StaffMaster']['s1_2']), array('StaffMaster.s1_2 <= ' => $this->request->data['StaffMaster']['s2_2']));
+                    $array_23 = array(array('StaffMaster.s1_3 >=' => $this->request->data['StaffMaster']['s1_2']), array('StaffMaster.s1_3 <= ' => $this->request->data['StaffMaster']['s2_2']));
+                }
+                if (!empty($this->request->data['StaffMaster']['s1_1']) && !empty($this->request->data['StaffMaster']['s2_1'])) {
+                    $array_31 = array(array('StaffMaster.s1_1 >=' => $this->request->data['StaffMaster']['s1_3']), array('StaffMaster.s1_1 <= ' => $this->request->data['StaffMaster']['s2_3']));
+                    $array_32 = array(array('StaffMaster.s1_2 >=' => $this->request->data['StaffMaster']['s1_3']), array('StaffMaster.s1_2 <= ' => $this->request->data['StaffMaster']['s2_3']));
+                    $array_33 = array(array('StaffMaster.s1_3 >=' => $this->request->data['StaffMaster']['s1_3']), array('StaffMaster.s1_3 <= ' => $this->request->data['StaffMaster']['s2_3']));
+                }
+                $conditions2 += array('OR' =>
+                    array($array_11, $array_12, $array_13,
+                        $array_21, $array_22, $array_23,
+                        $array_31, $array_32, $array_33)
+                    );
+                // 年齢での絞り込み
+                //$this->Session->setFlash($this->request->data['StaffMaster']['search_age_lower'].'-'.$this->request->data['StaffMaster']['search_age_upper']);
+                $lower = $this->request->data['StaffMaster']['search_age_lower'];
+                $upper = $this->request->data['StaffMaster']['search_age_upper'];
+                if (!empty($lower) && !empty($upper)) {
+                    $conditions2 += array(
+                        array('StaffMaster.age >=' => $this->request->data['StaffMaster']['search_age_lower']), 
+                        array('StaffMaster.age <= ' => $this->request->data['StaffMaster']['search_age_upper']));
+                } elseif (!empty($lower) && empty($upper)) {
+                    $conditions2 += array('StaffMaster.age >=' => $this->request->data['StaffMaster']['search_age_lower']);
+                } elseif (empty($lower) && !empty($upper)) {
+                    $conditions2 += array('StaffMaster.age <= ' => $this->request->data['StaffMaster']['search_age_upper']);
+                } else {
+                    //$this->Session->setFlash('年齢を入力してください。');
+                }
+                
+                // 登録番号で検索
+                if (!empty($this->data['StaffMaster']['search_id'])){
+                    $search_id = $this->data['StaffMaster']['search_id'];
+                    $conditions2 += array('id' => $search_id);
+                }
+                // 氏名で検索
+                if (!empty($this->data['StaffMaster']['search_name'])){
+                    $search_name = $this->data['StaffMaster']['search_name'];
+                    //$conditions2 += array( 'OR' => array(array('StaffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StaffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
+                    $conditions2 += array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
+                    //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+                }
+                // 年齢で検索
+                if (!empty($this->data['StaffMaster']['search_age'])){
+                    $search_age = $this->data['StaffMaster']['search_age'];
+                    $conditions2 += array('StaffMaster.age' => $search_age);
+                }
+                // 担当者で絞り込み
+                if (!empty($this->data['StaffMaster']['search_tantou'])){
+                    $search_tantou = $this->data['StaffMaster']['search_tantou'];
+                    $conditions2 += array('StaffMaster.tantou' => $search_tantou);
+                }
+                // 職種で絞り込み
+                if (!empty($this->data['StaffMaster']['search_shokushu'])){
+                    $search_tantou = $this->data['StaffMaster']['search_shokushu'];
+                    $conditions2 += array('StaffMaster.shokushu_shoukai LIKE ' => '%'.$search_tantou.'%');
+                } 
+                // 都道府県
+                if (!empty($this->data['StaffMaster']['search_area'])){
+                    $search_area = $this->data['StaffMaster']['search_area'];
+                    //$this->log($search_area);
+                    $conditions2 += array('CONCAT(StaffMaster.address1_2, StaffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
+                }
+            // 絞り込みクリア処理
+            } elseif (isset($this->request->data['clear'])) {
+                // 絞り込みセッションを消去
+                $this->Session->delete('filter');
+                //$this->request->params['named']['page'] = 1;
+                $this->redirect(array('action' => 'index', $flag, 'pic'=>$pic)); 
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                // 絞り込みセッションを消去
+                $this->Session->delete('filter');
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1, 'pic' => $pic));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit, 'pic' => $pic));
+            }
+
+            // 年齢の計算
+            $this->setAge($this->Session->read('selected_class'));
+            // 絞り込み条件の保持
+            $this->Session->write('filter', $conditions2);
+            // ページネーションの実行
+            $this->request->params['named']['page'] = 1;
+            $this->set('datas', $this->paginate('StaffMaster', $conditions2));
+            $this->log($conditions2, LOG_DEBUG);
+            //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+            //$this->log('中を通ってます', LOG_DEBUG);
+        // GETの処理
+        } elseif ($this->request->is('get')) {
+            // プロフィールページへ
+            if (isset($profile)) {
+                // ページ数（レコード番号）を取得
+                $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $staff_id);
+                $page = $this->StaffMaster->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
+                //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                //$this->log($page, LOG_DEBUG);
+                $this->redirect(array('action' => 'profile_provisional', $flag, $staff_id, 'page' => $page));
+                exit();
+            }
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_preregists');
+            // 年齢の計算
+            $this->setAge($this->Session->read('selected_class'));
+            // 初期表示
+            if ($flag == 1) {
+                $conditions3 = array('kaijo_flag' => 1);
+            } else {
+                $flag = 0;
+                $conditions3 = array('kaijo_flag' => 0);
+            }
+            $this->set('flag', $flag);
+            // 絞り込み条件の適応
+            if($this->Session->check('filter')) {
+                $filter = $this->Session->read('filter');
+                if ($filter == '0') {
+                    $conditions3 = $conditions3;
+                } else {
+                    $conditions3 = $conditions3 + $filter;
+                }
+            } else {
+                $conditions3 = $conditions3;
+            }
+            //$this->request->params['named']['page'] = 1;
+            $this->set('datas', $this->paginate('StaffMaster', $conditions3)); 
+            //$this->log('GET', LOG_DEBUG);
+        } else {
+            // 所属の取得とセット
+            //$this->selected_class = $this->Session->read('selected_class');
+            //$this->set('selected_class', $this->selected_class);
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_preregists');
+            // 年齢の計算
+            $this->setAge($this->Session->read('selected_class'));
+            // 初期表示
+            if ($flag == 1) {
+                $conditions3 = array('kaijo_flag' => 1);
+            } else {
+                $flag = 0;
+                $conditions3 = array('kaijo_flag' => 0);
+            }
+            $this->set('flag', $flag);
+            //$this->request->params['named']['page'] = 1;
+            $this->set('datas', $this->paginate('StaffMaster', $conditions3));
+            //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+            //$this->log('そと通ってる', LOG_DEBUG);
+        }
+        
+    }
+    
+    // プロフィールページ
+    public function profile_provisional($flag = null, $staff_id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout",$this->title_for_layout);
+        // 都道府県のセット
+        mb_language("uni");
+        mb_internal_encoding("utf-8"); //内部文字コードを変更
+        mb_http_input("auto");
+        mb_http_output("utf-8");
+        $conditions = array('item' => 10);
+        $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+        $this->set('pref_arr', $pref_arr); 
+        $this->set('id', $staff_id); 
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        // テーブルの設定
+        $selected_class = $this->Session->read('selected_class');
+        $this->StaffMaster->setSource('staff_preregists');
+        $this->set('class', $selected_class);
+        //$this->log('staff_'.$this->Session->read('selected_class'), LOG_DEBUG);
+        //$this->log($this->StaffMaster->useTable);
+        $this->StaffMemo->setSource('staff_memos');
+        // 職種マスタ配列
+        $conditions1 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
+        $this->set('list_shokushu', $list_shokushu); 
+        //$this->log($list_shokushu, LOG_DEBUG);        
+        // ページネーション
+        //$conditions2 = array('id' => $staff_id, 'kaijo_flag' => $flag);
+        $conditions2 = array('kaijo_flag' => $flag);
+        //$conditions2 = null;
+        $this->paginate = array('StaffMaster' => array(
+            'fields' => '*' ,
+            'limit' =>  '1',
+            //'page' => $page,
+            'order' => 'id',
+            'conditions' => $conditions2
+        ));
+        $datas = $this->paginate();
+        $this->set('datas', $datas);
+        $_id = $datas[0]['StaffMaster']['id'];
+        //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG); 
+
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            // 登録編集
+            if (isset($this->request->data['submit'])) {
+                $this->redirect(array('action' => 'reg1', $this->request->data['StaffMaster']['staff_id'], 1));
+            // 登録解除
+            } elseif (isset($this->request->data['release'])) {
+                $sql = '';
+                $sql = $sql.' UPDATE staff_'.$selected_class; 
+                $sql = $sql.' SET kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
+                $sql = $sql.' WHERE id = '.$this->request->data['StaffMaster']['staff_id'];
+                $this->log($sql, LOG_DEBUG);
+                $this->StaffMaster->query($sql);
+                // ログ書き込み
+                $this->setSMLog($username, $selected_class, $this->request->data['StaffMaster']['staff_id'], $this->request->data['StaffMaster']['staff_name'], $flag, 9, $this->request->clientIp()); // 登録解除コード:9
+                $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => 1));
+                //$this->StaffMaster->save($this->request->data);
+                //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                $this->Session->setFlash('登録解除しました。');
+                /**
+            // メモ追加
+            } elseif (isset($this->request->data['comment'])) {
+                $sql = '';
+                $sql = $sql.' INSERT INTO staff_memos (memo, class, username, staff_id, created)';
+                $sql = $sql.' VALUES ("'.$this->request->data['StaffMaster']['memo'].'", '.$selected_class.', '
+                    .$this->request->data['StaffMaster']['username'].','.$this->request->data['StaffMaster']['staff_id'].', CURRENT_TIMESTAMP())';
+                $this->StaffMemo->query($sql);
+                if (!empty($this->params['named']['page'])) {
+                    $page = $this->params['named']['page'];
+                } else {
+                    $page = 1;
+                }
+                $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => $page));
+                //$this->StaffMemo->save($this->request->data);
+                //$this->log($this->StaffMemo->getDataSource()->getLog(), LOG_DEBUG);
+                //$this->redirect($this->referer());
+                //$this->Session->setFlash('メモを追加しました。');
+            // メモ削除
+            } elseif (isset($this->request->data['delete'])) {
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                $sql = '';
+                $sql = $sql.' DELETE FROM staff_memos';
+                $sql = $sql.' WHERE id = '.$id;
+                $this->StaffMemo->query($sql);
+                if (!empty($this->params['named']['page'])) {
+                    $page = $this->params['named']['page'];
+                } else {
+                    $page = 1;
+                }
+                $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => $page));
+                 * 
+                 */
+            } 
+        } else {
+            
+        }
+    }
+
   /*** ディレクトリの存在をチェック ***/
   static public function chkDirectory($dirpath,$create_flg = true){
     $return = false;
