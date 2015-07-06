@@ -35,17 +35,24 @@ class RegisterController extends AppController {
         $this->set('pref_arr', $pref_arr);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            $this->log($this->request->data, LOG_DEBUG);
-            if ($this->StaffPreregist->validates() == false) {
-                return;
+            // 都道府県の名称のセット
+            if (!empty($this->request->data['StaffPreregist']['address1'])) {
+                $conditions = array('item' => 10, 'id' => $this->request->data['StaffPreregist']['address1']);
+                $result = $this->Item->find('first', array('conditions' => $conditions));
+                $this->request->data['StaffPreregist']['address1_2'] = $result['Item']['value'];
             }
             // パスワードの同一性チェック
             if ($this->request->data['StaffPreregist']['password'] != $this->request->data['StaffPreregist']['password2']) {
                 $this->Session->setFlash('パスワードが一致しません。');
                 return;
             }
+            // アカウントの重複チェック
+            if (is_null($staff_id) && $this->StaffPreregist->find('count', array('conditions' => array('account' => $this->request->data['StaffPreregist']['account']))) > 0) {
+                $this->Session->setFlash('すでにアカウントが使われています。別のアカウントを入力してください。');
+                return;
+            }
             // 値のセット
-            $selected_class = $this->request->data['StaffPreregist']['area'].'1';     // 人材派遣に限る
+            $selected_class = $this->request->data['StaffPreregist']['area'].'1';     // 人材派遣に限る（当面）
             $this->request->data['StaffPreregist']['class'] =$selected_class;
             // データを登録する
             if ($this->StaffPreregist->save($this->request->data)) {
@@ -282,9 +289,12 @@ class RegisterController extends AppController {
     /** マスタ更新ログ書き込み **/
     public function setSMLog($username, $class, $staff_id, $staff_name, $kaijo_flag, $status, $ip_address) {
         $sql = '';
-        $sql = $sql. ' INSERT INTO staff_master_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, created)';
+        $sql = $sql. ' INSERT INTO staff_preregist_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, created)';
         $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$staff_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
+        $this->log($sql, LOG_DEBUG);
         
+        // テーブルの設定
+        //$this->StaffPreregistLog->setSource('staff_preregist_logs');
         // sqlの実行
         $ret = $this->StaffPreregistLog->query($sql);
         
@@ -296,6 +306,6 @@ class RegisterController extends AppController {
 
         //未ログインでアクセスできるアクションを指定
         //これ以外のアクションへのアクセスはloginにリダイレクトされる規約になっている
-        $this->Auth->allow('page1', 'page2');
+        $this->Auth->allow('index', 'page1', 'page2');
     }
 }

@@ -6,17 +6,12 @@
  * and open the template in the editor.
  */
 
-App::uses('AppController', 'Controller');
+App::uses('AppModel', 'Model');
 
 /**
- * CakePHP Pref
+ * CakePHP StaffPreregistLog
  * @author M-YOKOI
  */
-class Pref extends AppController {
-    var $uses = array('Pref');
-
-    public function index() {
-
-    }
-
+class StaffPreregistLog extends AppModel {
+    public $useTable = 'staff_preregist_logs';
 }

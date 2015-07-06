@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class StaffMastersController extends AppController {
-    public $uses = array('StaffMaster', 'User', 'Item', 'StaffMemo', 'StaffMasterLog', 'StaffPreregist');
+    public $uses = array('StaffMaster', 'User', 'Item', 'StaffMemo', 'StaffMasterLog', 'StaffPreregist', 'StaffPreregistLog');
     // Paginationの設定（スタッフマスタ）
     public $paginate = array(
     //モデルの指定
@@ -193,8 +193,14 @@ class StaffMastersController extends AppController {
                 if (!empty($this->data['StaffMaster']['search_name'])){
                     $search_name = $this->data['StaffMaster']['search_name'];
                     //$conditions2 += array( 'OR' => array(array('StaffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StaffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
-                    $conditions2 += array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
+                    //$conditions2 += array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
                     //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    }
                 }
                 // 年齢で検索
                 if (!empty($this->data['StaffMaster']['search_age'])){
@@ -215,7 +221,13 @@ class StaffMastersController extends AppController {
                 if (!empty($this->data['StaffMaster']['search_area'])){
                     $search_area = $this->data['StaffMaster']['search_area'];
                     //$this->log($search_area);
-                    $conditions2 += array('CONCAT(StaffMaster.address1_2, StaffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
+                    //$conditions2 += array('CONCAT(StaffMaster.address1_2, StaffMaster.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
+                    $keyword = mb_convert_kana($search_area, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.address1_2, StaffMaster.address2) LIKE ' => '%'.$val.'%');
+                    }
                 }
             // 絞り込みクリア処理
             } elseif (isset($this->request->data['clear'])) {
@@ -503,7 +515,11 @@ class StaffMastersController extends AppController {
 
         //$this->StaffMaster->id = $staff_id;
         // テーブルの設定
-        $this->StaffMaster->setSource('staff_'.$selected_class);
+        if ($koushin_flag != 2) {
+            $this->StaffMaster->setSource('staff_'.$selected_class);
+        } else {
+            $this->StaffMaster->setSource('staff_preregists');
+        }
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -518,15 +534,20 @@ class StaffMastersController extends AppController {
                 //$this->StaffMaster->create();
                 // データを登録する
                 if ($this->StaffMaster->save($this->request->data)) {
-                    if ($staff_id == 0) {
+                    if ($koushin_flag == 0 || is_null($koushin_flag)) {
                         // 新規登録したIDを取得
                         $id = $this->StaffMaster->getLastInsertID();
                         // ログ書き込み
                         $this->setSMLog($username, $selected_class, $id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 9, 1, $this->request->clientIp()); // 新規登録１コード:1
-                    } else {
+                    } elseif ($koushin_flag == 1) {
                         $id = $staff_id;
                         // ログ書き込み
                         $this->setSMLog($username, $selected_class, $id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 9, 11, $this->request->clientIp()); // 更新登録１コード:11
+                    } elseif ($koushin_flag == 2) {
+                        $id = $staff_id;
+                        // ログ書き込み
+                        $this->setSMLog2($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
+                            9, 41, $this->request->clientIp()); // 仮登録１（更新）コード:41 
                     }
                     
                     // 登録２にリダイレクト
@@ -574,7 +595,11 @@ class StaffMastersController extends AppController {
         $this->set('list_shokushu', $list_shokushu); 
         $this->set('staff_id', $staff_id); 
         // テーブルの設定
-        $this->StaffMaster->setSource('staff_'.$selected_class);
+        if ($koushin_flag != 2) {
+            $this->StaffMaster->setSource('staff_'.$selected_class);
+        } else {
+            $this->StaffMaster->setSource('staff_preregists');
+        }
         // 初期値設定
         $this->set('data', $this->StaffMaster->find('list', 
                 array('fields' => array('*'), 'conditions' => array('id' => $staff_id) )));
@@ -632,6 +657,8 @@ class StaffMastersController extends AppController {
                         }
                     }
                 }
+                // ファイルのアップロード END
+                
                 // 写真ファイルの拡張子セット
                 if (is_null($_after) == false) {
                     $this->request->data['StaffMaster']['pic_extension'] = $_after;
@@ -640,6 +667,25 @@ class StaffMastersController extends AppController {
                 if (is_null($_after2) == false) {
                     $this->request->data['StaffMaster']['pic_extension2'] = $_after2;
                 }
+                // アップロードファイルの無効化処理
+                if ($this->request->data['StaffMaster']['delete_1'] == 1) {
+                    // ファイル削除
+                    if (unlink($storeFolder.$staff_id.'.'.$this->request->data['StaffMaster']['pic_extension'] )) {
+                        $this->request->data['StaffMaster']['pic_extension'] = '';
+                    } else {
+                        $this->Session->setFlash('【エラー】ファイルの削除に失敗しました。');
+                    }
+                    
+                }
+                if ($this->request->data['StaffMaster']['delete_2'] == 1) {
+                    // ファイル削除
+                    if (unlink($storeFolder.$staff_id.'.'.$this->request->data['StaffMaster']['pic_extension2'] )) {
+                        $this->request->data['StaffMaster']['pic_extension2'] = '';
+                    } else {
+                        $this->Session->setFlash('【エラー】ファイルの削除に失敗しました。');
+                    }
+                }
+                
                 // 職種のセット
                 $val1 = $this->setShokushu($this->request->data['StaffMaster']['shokushu_shoukai']);
                 $val2 = $this->setShokushu($this->request->data['StaffMaster']['shokushu_kibou']);
@@ -657,6 +703,8 @@ class StaffMastersController extends AppController {
                 $this->request->data['StaffMaster']['extra_job'] = $val4;
                 $this->request->data['StaffMaster']['workable_day'] = $val5;
                 $this->request->data['StaffMaster']['regist_trigger'] = $val6;
+                // 更新日付をリセット
+                $this->request->data['StaffMaster']['modified'] = null; 
                 // 駅を未入力ならばNULLをセットする
                 if (empty($this->request->data['StaffMaster']['s1_1'])) {
                     //$this->request->data['StaffMaster']['pref1'] = null;
@@ -686,6 +734,9 @@ class StaffMastersController extends AppController {
                     } elseif ($koushin_flag == 1) {
                         $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
                             9, 12, $this->request->clientIp()); // 更新登録２コード:12 
+                    } elseif ($koushin_flag == 2) {
+                        $this->setSMLog2($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
+                            9, 42, $this->request->clientIp()); // 仮登録２（更新）コード:42 
                     }
                     // 登録２にリダイレクト
                     //$this->redirect(array('action' => 'reg3', $staff_id, $koushin_flag));
@@ -729,8 +780,13 @@ class StaffMastersController extends AppController {
           $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
           $this->set('pref_arr', $pref_arr); 
           $this->set('staff_id', $staff_id);
+          $selected_class = $this->Session->read('selected_class');
         // テーブルの設定
-        $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+        if ($koushin_flag != 2) {
+            $this->StaffMaster->setSource('staff_'.$selected_class);
+        } else {
+            $this->StaffMaster->setSource('staff_preregists');
+        }
         // 初期値設定
         $this->set('datas', $this->StaffMaster->find('first', 
                 array('fields' => array('*'), 'conditions' => array('id' => $staff_id) )));
@@ -758,6 +814,9 @@ class StaffMastersController extends AppController {
                     } elseif ($koushin_flag == 1) {
                         $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
                             9, 13, $this->request->clientIp()); // 更新登録３コード:13 
+                    } elseif ($koushin_flag == 2) {
+                        $this->setSMLog2($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
+                            9, 43, $this->request->clientIp()); // 仮登録３（更新）コード:43 
                     }
                     // 登録したIDを取得
                     //$id = $this->StaffMaster->getLastInsertID();
@@ -881,9 +940,11 @@ class StaffMastersController extends AppController {
             // 初期表示
             if ($flag == 1) {
                 $conditions2 = array('kaijo_flag' => 1);
+                $conditions2 += array('class' => $selected_class);
             } else {
                 $flag = 0;
                 $conditions2 = array('kaijo_flag' => 0);
+                $conditions2 += array('class' => $selected_class);
             }
             $this->set('flag', $flag);
             
@@ -991,7 +1052,7 @@ class StaffMastersController extends AppController {
             }
 
             // 年齢の計算
-            $this->setAge($this->Session->read('selected_class'));
+            $this->setAge2($this->Session->read('selected_class'));
             // 絞り込み条件の保持
             $this->Session->write('filter', $conditions2);
             // ページネーションの実行
@@ -1015,13 +1076,15 @@ class StaffMastersController extends AppController {
             // テーブル変更
             $this->StaffMaster->setSource('staff_preregists');
             // 年齢の計算
-            $this->setAge($this->Session->read('selected_class'));
+            $this->setAge2($this->Session->read('selected_class'));
             // 初期表示
             if ($flag == 1) {
                 $conditions3 = array('kaijo_flag' => 1);
+                $conditions3 += array('class' => $selected_class);
             } else {
                 $flag = 0;
                 $conditions3 = array('kaijo_flag' => 0);
+                $conditions3 += array('class' => $selected_class);
             }
             $this->set('flag', $flag);
             // 絞り込み条件の適応
@@ -1045,13 +1108,15 @@ class StaffMastersController extends AppController {
             // テーブル変更
             $this->StaffMaster->setSource('staff_preregists');
             // 年齢の計算
-            $this->setAge($this->Session->read('selected_class'));
+            $this->setAge2($this->Session->read('selected_class'));
             // 初期表示
             if ($flag == 1) {
                 $conditions3 = array('kaijo_flag' => 1);
+                $conditions3 += array('class' => $selected_class);
             } else {
                 $flag = 0;
                 $conditions3 = array('kaijo_flag' => 0);
+                $conditions3 += array('class' => $selected_class);
             }
             $this->set('flag', $flag);
             //$this->request->params['named']['page'] = 1;
@@ -1110,8 +1175,8 @@ class StaffMastersController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             // 登録編集
             if (isset($this->request->data['submit'])) {
-                $this->redirect(array('action' => 'reg1', $this->request->data['StaffMaster']['staff_id'], 1));
-            // 登録解除
+                $this->redirect(array('action' => 'reg1', $this->request->data['StaffMaster']['staff_id'], 2));     // スタッフ仮登録
+            // 本登録
             } elseif (isset($this->request->data['release'])) {
                 $sql = '';
                 $sql = $sql.' UPDATE staff_'.$selected_class; 
@@ -1166,7 +1231,7 @@ class StaffMastersController extends AppController {
     }
 
   /*** ディレクトリの存在をチェック ***/
-  static public function chkDirectory($dirpath,$create_flg = true){
+  public function chkDirectory($dirpath,$create_flg = true){
     $return = false;
     if(file_exists($dirpath)){
       $return = true;
@@ -1239,6 +1304,20 @@ class StaffMastersController extends AppController {
         
         return $ret;
     }
+    // 年齢換算
+    public function setAge2($class) {
+        $sql = '';
+        $sql = $sql. ' UPDATE staff_preregists';
+        $sql = $sql. ' SET age = (YEAR(CURDATE())-YEAR(birthday)) - (RIGHT(CURDATE(),5)<RIGHT(birthday,5));';
+     
+        // テーブル変更
+        $this->StaffMaster->setSource('staff_preregists');
+        // sqlの実行
+        $ret = $this->StaffMaster->query($sql);
+        $this->log($this->StaffMaster->useTable, LOG_DEBUG);
+        
+        return $ret;
+    }
     
     // 路線のコンボセット
     function getLine($code) {
@@ -1307,6 +1386,21 @@ class StaffMastersController extends AppController {
         
         // sqlの実行
         $ret = $this->StaffMasterLog->query($sql);
+        
+        return $ret;
+    }
+
+    /** マスタ更新ログ書き込み **/
+    public function setSMLog2($username, $class, $staff_id, $staff_name, $kaijo_flag, $status, $ip_address) {
+        $sql = '';
+        $sql = $sql. ' INSERT INTO staff_preregist_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, created)';
+        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$staff_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
+        $this->log($sql, LOG_DEBUG);
+        
+        // テーブルの設定
+        //$this->StaffPreregistLog->setSource('staff_preregist_logs');
+        // sqlの実行
+        $ret = $this->StaffPreregistLog->query($sql);
         
         return $ret;
     }

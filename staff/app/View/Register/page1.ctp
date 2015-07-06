@@ -17,20 +17,6 @@
                 <th style='background:#99ccff;text-align: center;' colspan='3'>入力内容</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:10%;' rowspan="2">ログイン<font color="red">*</font></td>
-                <td style='background-color: #e8ffff;width:20%;'>アカウント（5～15文字）<font color="red">*</font></td>
-                <td colspan="2">
-                    <?php echo $this->Form->input('account',array('label'=>false,'div'=>false,'MaxLength'=>'5', 'MaxLength'=>'15', 'style'=>'width:50%;')); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;'>パスワード（8～15文字）<font color="red">*</font><br>※２回入力</td>
-                <td colspan="2">
-                    <?php echo $this->Form->input('password',array('type' => 'password', 'label'=>false,'div'=>false, 'value' => '', 'style'=>'width:60%;margin-bottom:5px;')); ?><br>
-                    <?php echo $this->Form->input('password2',array('type' => 'password', 'label'=>false,'div'=>false, 'value' => '', 'style'=>'width:60%;')); ?>
-                </td>
-            </tr>
-            <tr>
                 <td style='background-color: #e8ffff;width:20%;' colspan="2">登録場所<font color="red">*</font></td>
                 <td colspan="2">
                     <?php  
@@ -45,7 +31,7 @@
                 <td colspan="2">
                     <?php  
                         $select2=array(''=>'','1'=>'正社員','2'=>'契約社員','3'=>'人材派遣スタッフ');
-                        echo $this->Form->input( 'employment_status', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false,'style' => 'float:none;', 'options' => $select2));
+                        echo $this->Form->input( 'employment_status', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false, 'value'=>'3', 'style' => 'float:none;', 'options' => $select2));
                     ?>
                 </td>
             </tr>
@@ -145,7 +131,21 @@
                 <td colspan="2">
                     <?php echo $this->Form->input('telno2',array('label'=>false,'div'=>false,'style'=>'width:30%;')); ?>
                 </td>
-            </tr>   
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:10%;' rowspan="2">ログイン時に必要となります</td>
+                <td style='background-color: #e8ffff;width:20%;'>アカウント（小文字英数字 4～15文字）<font color="red">*</font></td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('account',array('label'=>false,'div'=>false,'MaxLength'=>'4', 'MaxLength'=>'15', 'style'=>'width:50%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>パスワード（小文字英数字 8～15文字）<font color="red">*</font><br>※２回入力</td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('password',array('type' => 'password', 'label'=>false,'div'=>false, 'value' => '', 'style'=>'width:60%;margin-bottom:5px;')); ?><br>
+                    <?php echo $this->Form->input('password2',array('type' => 'password', 'label'=>false,'div'=>false, 'value' => '', 'style'=>'width:60%;')); ?>
+                </td>
+            </tr>
         </table>
     </fieldset>
     <div style='margin-left: 10px;'>

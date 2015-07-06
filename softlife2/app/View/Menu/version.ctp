@@ -20,7 +20,7 @@
         <font style="font-size: 150%;color: red;"><?= $headline ?></font>
     </div>
     <div style="float:right;">
-        <a href='<?=ROOTDIR ?>/admin/'>◀ホームへ戻る</a>
+        <a href='<?=ROOTDIR ?>/users/'>◀ホームへ戻る</a>
     </div>
     <div style="clear:both;"></div>
     
@@ -69,6 +69,6 @@
 
 <?php echo $this->Form->end(); ?>
 <br>
-<a href="<?=ROOTDIR ?>/users/index">◀ホームへ戻る</a>
+<a href="<?=ROOTDIR ?>/users/">◀ホームへ戻る</a>
 
 </div>

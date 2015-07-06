@@ -61,9 +61,9 @@
                         <!-- カレンダー -->
                         <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
                                 <tr align="center">
-                                        <td><a href="./?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
+                                        <td><a href="<?=ROOTDIR ?>/users/?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                                         <td><?php echo $y ?>年<?php echo $m ?>月</td>
-                                        <td><a href="./?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                                        <td><a href="<?=ROOTDIR ?>/users/?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
                                 </tr>
                         </table>
 

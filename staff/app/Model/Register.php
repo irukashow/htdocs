@@ -38,6 +38,10 @@ class Register extends AppModel {
             'allowEmpty' => true,
             'message' => 'メールアドレスの形式で必ず入力して下さい'
         ),
+        'account' =>  array(
+                'rule' => 'notEmpty',
+                'message' => 'アカウントを入力してください。'
+        ),
         // 登録２
         'height' =>  array(
             'rule' => 'numeric',

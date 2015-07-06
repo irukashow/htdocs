@@ -5,6 +5,15 @@
     function getAge($str) {
         return floor ((date('Ymd') - $str)/10000).'歳';
     }
+    
+    // スタッフ仮登録
+    function setKari($val) {
+        $ret = '';
+        if ($val == 2) {
+            $ret = '【仮】';
+        }
+        return $ret;
+    }
 ?>
 <script type="text/javascript">
 onload = function() {
@@ -37,7 +46,7 @@ function affixZero(int) {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録<font color=gray> （登録情報）</font>'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __(setKari($koushin_flag).'スタッフ登録<font color=gray> （登録情報）</font>'); ?></legend>
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
 <?php if ($staff_id == 0) { ?>

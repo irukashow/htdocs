@@ -7,7 +7,16 @@
     echo $this->Html->script('station3');
     echo $this->Html->css('lightbox');
 ?>
-
+<?php
+    // スタッフ仮登録
+    function setKari($val) {
+        $ret = '';
+        if ($val == 2) {
+            $ret = '【仮】';
+        }
+        return $ret;
+    }
+?>
 <?php require('reg2_element.ctp'); ?>
 
 <!-- for Datepicker -->
@@ -30,7 +39,7 @@ $(function() {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録<font color=gray> （基本情報）</font>'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __(setKari($koushin_flag).'スタッフ登録<font color=gray> （基本情報）</font>'); ?></legend>
         <font style="font-size: 110%;">
             <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
             <font color="blue" style="background-color: yellow;">基本情報</font>&nbsp;>>&nbsp;
@@ -66,7 +75,7 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:100px;'>証明写真</td>
-                <td colspan="4">
+                <td colspan="4" style='width:550px;'>
                     <!-- 証明写真ドラッグ＆ドロップ -->
                     <input type="file" name="upfile[]" size="30" onchange=""  style="
                         border: 2px dotted #000000;
@@ -86,10 +95,14 @@ $(function() {
                         $after = $data['StaffMaster']['pic_extension'];
                         if (is_null($after) || empty($after)) {
                             echo '';
+                            echo $this->Form->input( 'delete_1', array('type' => 'hidden','value'=>'0'));
                         } else {
                             echo '<br>';
+                            echo '<div style="float: left;">';
                             echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
                                     . '【保存している証明写真】</a>';
+                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+                            echo $this->Form->input( 'delete_1', array('legend' => false, 'type' => 'checkbox','label'=>'保存ファイルの削除', 'div'=>false));
                         }
                     ?>
                 </td>
@@ -114,9 +127,13 @@ $(function() {
                         $after2 = $data['StaffMaster']['pic_extension2'];
                         if (is_null($after2) || empty($after2)) {
                             echo '';
+                            echo $this->Form->input( 'delete_2', array('type' => 'hidden','value'=>'0'));
                         } else {
                             echo '<br>';
+                            echo '<div style="float: left;">';
                             echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+                            echo $this->Form->input( 'delete_2', array('legend' => false, 'type' => 'checkbox','label'=>'保存ファイルの削除', 'div'=>false));
                         }
                     ?>
                 </td>

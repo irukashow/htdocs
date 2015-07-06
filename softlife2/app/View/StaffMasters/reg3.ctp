@@ -19,6 +19,16 @@
     }
     $name = $datas['StaffMaster']['name_sei'].' '.$datas['StaffMaster']['name_mei'];
 ?>
+<?php
+    // スタッフ仮登録
+    function setKari($val) {
+        $ret = '';
+        if ($val == 2) {
+            $ret = '【仮】';
+        }
+        return $ret;
+    }
+?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
   href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
@@ -39,7 +49,7 @@ $(function() {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ登録<font color=gray> （評価関連）</font>'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __(setKari($koushin_flag).'スタッフ登録<font color=gray> （評価関連）</font>'); ?></legend>
         <font style="font-size: 110%;">
             <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
             <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;

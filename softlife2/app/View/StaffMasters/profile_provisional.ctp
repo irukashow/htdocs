@@ -44,7 +44,7 @@ window.onload = function(){
     <tr>
         <td style="width:50%;vertical-align: top;">
             <div id="header_profile" style="">
-                <font style="font-size: 150%;">■（仮）登録者情報</font>
+                <font style="font-size: 150%;">■【仮】登録者情報</font>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <font style="font-size: 100%;">入力日付：
 <?php
@@ -126,8 +126,6 @@ window.onload = function(){
                             <td style='background-color: #e8ffff;width:30%;'>メールアドレス<br>（携帯）</td>
                             <td style='width:70%;'>
                                 <?=$data['StaffMaster']['email1'] ?>
-                                <br>
-                                →<?=$this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id']); ?>
                             </td>
                         </tr>
                         <tr>
@@ -142,8 +140,6 @@ window.onload = function(){
                             echo '未設定';
                         } else {
                             echo $data['StaffMaster']['account'];
-                            echo '<br>';
-                            echo '→'.$this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id']);
                         }
                     ?>
                             </td>
@@ -207,15 +203,17 @@ window.onload = function(){
             <div id="editbox" style="color: black;background-color: #ffff99;border:1px solid orange;padding:5px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
                 <?php echo $this->Form->submit('編　集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
-                <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
-                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
+                <?php $comment = __('本登録してよろしいですか？', true); ?>
+                <?php echo $this->Form->submit('本登録', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
+                &nbsp;&nbsp;
+                <?php $comment = __('本当に登録見送りしてよろしいですか？', true); ?>
+                <?php echo $this->Form->submit('登録見送り', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
-                &nbsp;&nbsp;
+                <?php print($this->Html->link('印　刷', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
+                &nbsp;
                 <?php echo $this->Paginator->prev('◀前へ', array(), null, array('class' => 'prev disabled')); ?>
-                &nbsp;&nbsp;
                 <?php echo $this->Paginator->next('次へ▶', array(), null, array('class' => 'next disabled')); ?>
                 <?php echo $this->Form->input('staff_id', array('type'=>'hidden', 'value' => $data['StaffMaster']['id'])); ?>
                 <?php echo $this->Form->input('staff_name', array('type'=>'hidden', 'value' => $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'])); ?>

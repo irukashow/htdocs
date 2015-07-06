@@ -104,15 +104,18 @@ class UsersController extends AppController {
         if (empty($kidoku_user)) {
             $user = $username;
         } else {
-            $sql = "SELECT id FROM admin_info WHERE FIND_IN_SET('".$username."', kidoku_user)";
-            $result = $this->AdminInfo->query($sql);
-            if (empty($result[0]['admin_info']['id'])) {
+            //$sql = "SELECT id FROM admin_info WHERE FIND_IN_SET('".$username."', kidoku_user) AND id = ".$id;
+            $count = $this->AdminInfo->find('count', array('conditions' => array(array('id' => $id), array('FIND_IN_SET('.$username.', kidoku_user)'))));
+            //$count = $this->AdminInfo->query($sql);
+            if ($count == 0) {
                 $user = $kidoku_user.','.$username;
             } else {
-                $user = $username;
+                $user = $kidoku_user;
             }
         }
-        $this->log('ここまでOK5', LOG_DEBUG);
+        //$this->log('$kidoku_user='.$kidoku_user, LOG_DEBUG);
+        //$this->log('$username='.$username, LOG_DEBUG);
+        //$this->log('$user='.$user, LOG_DEBUG);
         // 更新する内容を設定
         $data = array('AdminInfo' => array('id' => $id, 'kidoku_user' => $user));
         // 更新する項目（フィールド指定）

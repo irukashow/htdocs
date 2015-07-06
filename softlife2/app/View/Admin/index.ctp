@@ -72,6 +72,17 @@
 
                 </td>
                 <td>
+                    <?php echo $this->Html->link('▶スタッフ仮登録履歴', '/log/staff_preregist'); ?>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    
+                </td>
+                <td>
                     <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>
                 </td>
                 <td></td>

@@ -18,13 +18,20 @@ class StaffPreregist extends AppModel {
     
     public $validate = array(
         // 登録１
+        'account' =>  array(
+            'rule' => array( 'between', 4, 15),
+            'message' => '4文字以上、15文字以下で入力して下さい。',
+            'allowEmpty' => false
+        ),
         'password' =>  array(
-                'rule' => 'notEmpty',
-                'message' => 'パスワードを入力してください。'
+            'rule' => array( 'between', 8, 15),
+            'message' => '8文字以上、15文字以下で入力して下さい。',
+            'allowEmpty' => false
         ),
         'password2' =>  array(
-                'rule' => 'notEmpty',
-                'message' => 'パスワード（２回目）を入力してください。'
+            'rule' => array( 'between', 8, 15),
+            'message' => '8文字以上、15文字以下で入力して下さい。',
+            'allowEmpty' => false
         ),
         'name_sei' =>  array(
                 'rule' => 'notEmpty',
@@ -45,6 +52,10 @@ class StaffPreregist extends AppModel {
         'area' =>  array(
                 'rule' => 'notEmpty',
                 'message' => '登録場所を入力してください。'
+        ),
+        'gender' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '性別を選択してください。'
         ),
         'email1' => array(
             'rule' => array('email', false),
