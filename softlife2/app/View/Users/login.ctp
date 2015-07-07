@@ -53,8 +53,8 @@
         <td>&nbsp;</td>
         <td align="left">
             <span style="font-size: 90%;">
-                ※推奨ブラウザ：Chrome, Firefox<br>
-                Internet Explorerでも使用可能
+                ※推奨ブラウザ：<a href="https://www.google.co.jp/chrome/browser/desktop/index.html" title="最も推奨" id="browser" target="_blank"><b>Chrome</b></a>, Firefox<br>
+                <font title="一部で不具合を確認しています。">Internet Explorerは非推奨</font>
             </span>
         </td>
         <td>&nbsp;</td>

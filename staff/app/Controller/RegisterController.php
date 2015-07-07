@@ -47,7 +47,7 @@ class RegisterController extends AppController {
                 return;
             }
             // アカウントの重複チェック
-            if (is_null($staff_id) && $this->StaffPreregist->find('count', array('conditions' => array('account' => $this->request->data['StaffPreregist']['account']))) > 0) {
+            if (is_null($staff_id) && ($this->StaffPreregist->find('count', array('conditions' => array('account' => $this->request->data['StaffPreregist']['account']))) > 0)) {
                 $this->Session->setFlash('すでにアカウントが使われています。別のアカウントを入力してください。');
                 return;
             }
@@ -68,7 +68,7 @@ class RegisterController extends AppController {
                 // 登録２にリダイレクト
                 $this->redirect(array('action' => 'page2', $id));
             } else {
-                $this->Session->setFlash('登録時にエラーが発生しました。');
+                $this->Session->setFlash('【エラー】入力項目に誤りがあります。');
             }
         } else {
             // 登録していた値をセット
@@ -289,8 +289,8 @@ class RegisterController extends AppController {
     /** マスタ更新ログ書き込み **/
     public function setSMLog($username, $class, $staff_id, $staff_name, $kaijo_flag, $status, $ip_address) {
         $sql = '';
-        $sql = $sql. ' INSERT INTO staff_preregist_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, created)';
-        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$staff_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
+        $sql = $sql. ' INSERT INTO staff_preregist_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, user_agent, created)';
+        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$staff_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", "'.$_SERVER['HTTP_USER_AGENT'].'", now())';
         $this->log($sql, LOG_DEBUG);
         
         // テーブルの設定

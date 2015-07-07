@@ -39,7 +39,7 @@
                     <?php echo $this->Html->link('▶ユーザー一覧', '/users/view'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶管理者からのお知らせ入力ページ', './admin_info'); ?>
+                    <?php echo $this->Html->link('▶管理者からのお知らせ', './admin_info_list'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>

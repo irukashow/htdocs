@@ -204,7 +204,7 @@ window.onload = function(){
                 <?php echo $this->Form->submit('編　集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
                 <?php $comment = __('本登録してよろしいですか？', true); ?>
-                <?php echo $this->Form->submit('本登録', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
+                <?php echo $this->Form->submit('本登録', array('name' => 'register', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
                 <?php $comment = __('本当に登録見送りしてよろしいですか？', true); ?>
                 <?php echo $this->Form->submit('登録見送り', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>

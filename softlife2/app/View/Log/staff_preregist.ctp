@@ -19,13 +19,14 @@
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr class="col">
     <th width="5%"><?php echo $this->Paginator->sort('id',"ID");?></th>
-    <th width="10%"><?php echo $this->Paginator->sort('username','更新ユーザーID');?></th>
+    <th width="5%"><?php echo $this->Paginator->sort('username','更新ユーザーID');?></th>
     <th><?php echo $this->Paginator->sort('name_sei','更新者');?></th>
-    <th><?php echo $this->Paginator->sort('class','所属');?></th>
-    <th><?php echo $this->Paginator->sort('staff_id','スタッフID');?></th>
-    <th><?php echo $this->Paginator->sort('staff_name','スタッフ氏名');?></th>
-    <th><?php echo $this->Paginator->sort('status','ステータス');?></th>
+    <th width="10%"><?php echo $this->Paginator->sort('class','所属');?></th>
+    <th width="5%"><?php echo $this->Paginator->sort('staff_id','仮スタッフID');?></th>
+    <th><?php echo $this->Paginator->sort('staff_name','仮スタッフ氏名');?></th>
+    <th width="15%"><?php echo $this->Paginator->sort('status','ステータス');?></th>
     <th><?php echo $this->Paginator->sort('ip_address','IPアドレス');?></th>
+    <th width="25%"><?php echo $this->Paginator->sort('user_agent','User Agent');?></th>
     <th><?php echo $this->Paginator->sort('created','記録日時');?></th>
   </tr>
   <?php foreach ($datas as $key => $data): ?>
@@ -40,6 +41,7 @@
     <?php $status = $data['LoginLogs']['status']; ?>
     <td><?php echo $data_item[20][$status]; ?></td>
     <td><?php echo $data['LoginLogs']['ip_address']; ?></td>
+    <td><font style="font-size: 50%;"><?php echo $data['LoginLogs']['user_agent']; ?></font></td>
     <td><?php echo $data['LoginLogs']['created']; ?></td>
   </tr>
   <?php endforeach; ?>

@@ -4,7 +4,23 @@
 ?>
 <?php require('index_element.ctp'); ?>
 <?php require('common.ctp'); ?>
-
+<?php
+    function setID($val) {
+        $ret = '';
+        if (!empty($val)) {
+            $ret = '('.$val.')';
+        }
+        return $ret;
+    }
+    // 
+    function setKID($val) {
+        $ret = '';
+        if ($val == 1) {
+            $ret = '<br>（本登録番号）';
+        }
+        return $ret;
+    }
+?>
 <style>
 #loading{
     position:absolute;
@@ -61,16 +77,26 @@ function chkHankaku(textbox) {
 <div id='headline' style="padding:10px 10px 10px 10px;">
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='pre_regist'>仮登録ページ</a>
+    <a href="javascript:void(0);" onclick="window.open('https://softlife-biz.ssl-xserver.jp/staff/register/page1','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='pre_regist'>仮登録ページ</a>
     &nbsp;
-<?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">仮登録リスト</font></a>
-    &nbsp;
-    <b><font Style="font-size:95%;">登録見送リスト</font></b>
-<?php } else { ?>
+<?php if ($flag == 0) { ?>
     <b><font Style="font-size:95%;">仮登録リスト</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録見送リスト</font></a>
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/1" target=""><font Style="font-size:95%;">[本登録済みリスト]</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/2" target=""><font Style="font-size:95%;">[登録見送みリスト]</font></a>
+<?php } elseif ($flag == 1) { ?>
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/0" target=""><font Style="font-size:95%;">[仮登録リスト]</font></a>
+    &nbsp;
+    <b><font Style="font-size:95%;">本登録済みリスト</font></b>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/2" target=""><font Style="font-size:95%;">[登録見送みリスト]</font></a>
+<?php } elseif ($flag == 2) { ?>
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/0" target=""><font Style="font-size:95%;">[仮登録リスト]</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/1" target=""><font Style="font-size:95%;">[本登録済みリスト]</font></a>
+    &nbsp;
+    <b><font Style="font-size:95%;">登録見送みリスト</font></b>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;
     <!--
@@ -120,8 +146,8 @@ function chkHankaku(textbox) {
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;">
       <th><?php echo $this->Paginator->sort('',"");?></th>
-      <th style="width:10%;"><?php echo $this->Paginator->sort('id','写真<br>登録番号', array('escape' => false));?></th>
-      <th style="width:10%;"><?php echo $this->Paginator->sort('name_sei','氏名<br>登録年月日', array('escape' => false));?></th>
+      <th style="width:10%;"><?php echo $this->Paginator->sort('id','写真<br>仮登録番号'.setKID($flag), array('escape' => false));?></th>
+      <th style="width:10%;"><?php echo $this->Paginator->sort('name_sei','氏名<br>仮登録年月日', array('escape' => false));?></th>
       <th style="width:5%;"><?php echo $this->Paginator->sort('age','年齢<br>性別', array('escape' => false));?></th>
     <th style="width:8%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
     <th style="width:7%;"><?php echo $this->Paginator->sort('ojt_date','OJT実施<br>実施年月日', array('escape' => false));?></th>
@@ -161,7 +187,7 @@ function chkHankaku(textbox) {
     <td align="right">&nbsp;</td>
     <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/profile_provisional/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/provisional/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile_provisional','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
             <div>
             <?php
                 if ($pic_staff == 1) {
@@ -177,9 +203,13 @@ function chkHankaku(textbox) {
             </div>
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
         </a>
+        <br>
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/0/<?php echo $data['StaffMaster']['preregist_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+            <?php echo setID($data['StaffMaster']['preregist_id']); ?>
+        </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/profile_provisional/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/provisional/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile_provisional','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
             <?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?><br>
         </a>
 	<?php

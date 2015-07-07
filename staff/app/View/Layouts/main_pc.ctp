@@ -47,14 +47,15 @@
     echo $this->Html->meta('favicon.ico','/favicon.ico',array('type' => 'icon'));
     //echo $this->Html->css('main');
     echo $this->Html->css('menu-styles');
+    // 端末によってCSSを切り替える
+    if($browser == 'sp'){
+        echo $this->Html->css('main_mobile');
+    }else{
+        echo $this->Html->css('main_pc');
+    }
     
     echo $scripts_for_layout;
   ?>
-<?php if($browser == 'sp'){ ?>
-    <link rel="stylesheet" type="text/css" href="<?=ROOTDIR ?>/css/main_mobile.css"/>
-<?php }else{ ?>
-    <link rel="stylesheet" type="text/css" href="<?=ROOTDIR ?>/css/main_pc.css" />
-<?php } ?>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">google.load("jquery", "1.7");</script>
 <script type="text/javascript">

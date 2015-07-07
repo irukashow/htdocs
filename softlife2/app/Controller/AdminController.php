@@ -13,6 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class AdminController extends AppController {
+    public $uses = array('AdminInfo', 'User', 'Item');
 
     public function index() {
         /* 管理権限がある場合 */
@@ -57,30 +58,23 @@ class AdminController extends AppController {
             $this->set('selected_class', $this->Session->read('selected_class'));
         }
     }
-    
+
     // 管理者のお知らせ入力ページ
-    public function admin_info() {
+    public function admin_info_list() {
         // レイアウト関係
-        $this->layout = "sub";
-        $this->set("title_for_layout","管理者のお知らせ入力 - 派遣管理システム");
-        // タブの状態
-        $this->set('active1', '');
-        $this->set('active2', '');
-        $this->set('active3', '');
-        $this->set('active4', '');
-        $this->set('active5', '');
-        $this->set('active6', '');
-        $this->set('active7', '');
-        $this->set('active8', '');
-        $this->set('active9', '');
-        $this->set('active10', 'active');
+        $this->layout = "log";
+        $this->set("title_for_layout","管理者のお知らせ一覧 - 派遣管理システム");
+        $this->set("headline", '管理者のお知らせ一覧');
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name); 
+        // データのセット
+        $this->set('datas', $this->paginate('AdminInfo'));
         
     	// POSTの場合
         if ($this->request->is('post')) {
             if (isset($this->request->data['submit'])) {
+                /**
                 // テーブルの設定
                 $this->Admin->setSource('admin_info');
                 // モデルの状態をリセットする
@@ -92,9 +86,41 @@ class AdminController extends AppController {
 
                 // indexに移動する
                 //$this->redirect(array('action' => 'index'));
+                 * 
+                 */
             }
         }
         
+    }
+    
+    // 管理者のお知らせ入力ページ
+    public function admin_info($id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout","管理者のお知らせ入力 - 派遣管理システム");
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name); 
+        $this->set('id', $id); 
+        // テーブルの設定
+        $this->AdminInfo->setSource('admin_info');
+        
+    	// POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (isset($this->request->data['submit'])) {
+                // モデルの状態をリセットする
+                //$this->AdminInfo->create();
+                // データを登録する
+                $this->AdminInfo->save($this->request->data);
+                // 登録完了
+                $this->Session->setFlash('登録を完了しました。');
+                // 一覧に移動する
+                $this->redirect(array('action' => 'admin_info_list'));
+            }
+        } else {
+            // 登録していた値をセット
+            $this->request->data = $this->AdminInfo->read(null, $id);
+        }
     }
     
     // バージョン情報入力ページ
@@ -118,7 +144,7 @@ class AdminController extends AppController {
         $this->set('user_name', $name); 
         
     	// POSTの場合
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') || $this->request->is('put')) {
             if ($this->Admin->validates() == false) {
                 exit();
             }

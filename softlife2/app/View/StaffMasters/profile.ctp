@@ -204,7 +204,7 @@ window.onload = function(){
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>役割</td>
-                            <?php $list_role = array('0'=>'', '1'=>'メイン', '2'=>'サブ'); ?>
+                            <?php $list_role = array(''=>'', '0'=>'', '1'=>'メイン', '2'=>'サブ'); ?>
                             <td style='width:70%;'><?=$list_role[$data['StaffMaster']['role']] ?></td>
                         </tr>
                         <tr>

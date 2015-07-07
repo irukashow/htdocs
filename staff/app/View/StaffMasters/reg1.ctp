@@ -60,7 +60,6 @@ function affixZero(int) {
                 <td style='background-color: #e8ffff;width:20%;'>登録担当者</td>
                 <td colspan="2">
                     <?php  
-                        //$select1=array(''=>'','1'=>'担当者A','2'=>'担当者B','3'=>'担当者C');
                         echo $this->Form->input( 'tantou', array( 'label'=>false,'type' => 'select', 'div'=>false,'legend'=>false, 'empty' => array('0' => '選択してください'), 'style' => 'float:none;', 'options' => $name_arr));
                     ?>
                 </td>

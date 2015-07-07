@@ -1042,7 +1042,7 @@ table#admin td{
     //border:1px solid gray;
 }
 
-/**  **/
+/** カレンダー **/
 table#calender {
     width: 90%;
 }
@@ -1054,4 +1054,12 @@ table#calender td {
     border: 1px solid #CCCCCC;
     text-align: center;
     padding: 5px;
+}
+
+/**  **/
+a#browser {
+    text-decoration: none;
+}
+a#browser :hover{
+    text-decoration: underline;
 }

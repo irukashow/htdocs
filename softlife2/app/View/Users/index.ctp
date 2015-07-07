@@ -109,7 +109,7 @@
                                         
                                         // 本日
                                         if ($m == date("n") && $d == date("j") && $y == date("Y")) {
-                                            $style = $style.'font-weight: bold;background-color: #ffffcc;';
+                                            $style = $style.'font-weight: bold;background-color: #ffffcc;color:green;';
                                         }
                                         
                                         // 出力

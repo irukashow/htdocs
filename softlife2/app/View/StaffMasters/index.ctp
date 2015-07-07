@@ -61,7 +61,7 @@ function chkHankaku(textbox) {
 <div id='headline' style="padding:5px 10px 5px 10px;">
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/provisional/0" onclick="alert('制作中');return false;" id="pre_regist">仮登録リスト</a>
+    <a href="<?=ROOTDIR ?>/staff_masters/provisional/0" onclick="" id="pre_regist">仮登録リスト</a>     <!-- alert('制作中');return false; -->
     &nbsp;
     <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;

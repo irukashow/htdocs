@@ -2,7 +2,7 @@
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
 define("HEADER","派遣管理システム <font color=#ffff99>SLNext 0.1.3</font>");
-define("FOOTER","SLNext Version 0.1.3 20150706 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
+define("FOOTER","SLNext Version 0.1.3 20150706 Copyright (C) 2015 SOFTLIFE Co., Ltd.<br>Powered by CakePHP");
 define("ROOTDIR","/softlife2");
 define("IMGURL","http://localhost/staff");
  

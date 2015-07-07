@@ -28,6 +28,13 @@
         }
         return $ret;
     }
+    function setKari2($val) {
+        $ret = '';
+        if ($val == 2) {
+            $ret = '仮';
+        }
+        return $ret;
+    }
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -69,8 +76,8 @@ $(function() {
             </tr>
             <tr>
                 <td colspan="2">
-                    登録番号：<?=$staff_id ?>&nbsp;&nbsp;氏名：<?=$name ?>&nbsp;&nbsp;
-                    登録日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
+                    <?=setKari2($koushin_flag) ?>登録番号：<?=$staff_id ?>&nbsp;&nbsp;氏名：<?=$name ?>&nbsp;&nbsp;
+                    <?=setKari2($koushin_flag) ?>登録日：<?=$created ?>&nbsp;&nbsp;更新日：<?=$modified ?>&nbsp;&nbsp;所属：<?=$class ?>
                 </td>
             </tr>
         </table>
