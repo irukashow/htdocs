@@ -1,6 +1,5 @@
 <?php
     echo $this->Html->css('staffmaster');
-    echo $this->Html->script('station3');
 ?>
 
 <?php require('index_element.ctp'); ?>
@@ -51,9 +50,9 @@ function doSearch1(id) {
 <div id='headline' style="padding:10px 10px 10px 10px;">
     ★ 案件管理
     &nbsp;&nbsp;
-    <b><font Style="font-size:95%;color: yellow;">案件一覧</font></b>
+    <b><font Style="font-size:95%;color: yellow;">[案件一覧]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/customer" target="" onclick='alert("制作中");return false;'><font Style="font-size:95%;">取引先一覧</font></a>
+    <a href="<?=ROOTDIR ?>/case_management/customer/0" target="" onclick=''><font Style="font-size:95%;">取引先一覧</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <a href="<?=ROOTDIR ?>/case_management/shokushu" target=""><font Style="font-size:95%;">職種マスタ</font></a>
 </div>
@@ -64,7 +63,7 @@ function doSearch1(id) {
     <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 0 || empty($flag)) { ?>
-    <b><font Style="font-size:95%;">登録リスト</font></b>
+    <b><font Style="font-size:95%;">[登録リスト]</font></b>
     &nbsp;
     <a href="<?=ROOTDIR ?>/case_management/index/1" target=""><font Style="font-size:95%;">削除済リスト</font></a>
     &nbsp;
@@ -72,7 +71,7 @@ function doSearch1(id) {
 <?php } elseif ($flag == 1) { ?>
     <a href="<?=ROOTDIR ?>/case_management/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
     &nbsp;
-    <b><font Style="font-size:95%;">削除済リスト</font></b>
+    <b><font Style="font-size:95%;">[削除済リスト]</font></b>
     &nbsp;
     <a href="<?=ROOTDIR ?>/case_management/index/2" target=""><font Style="font-size:95%;">クローズ一覧</font></a>
 <?php } elseif ($flag == 2) { ?>
@@ -80,7 +79,7 @@ function doSearch1(id) {
     &nbsp;
     <a href="<?=ROOTDIR ?>/case_management/index/1" target=""><font Style="font-size:95%;">削除済リスト</font></a>
     &nbsp;
-    <b><font Style="font-size:95%;">クローズ一覧</font></b>
+    <b><font Style="font-size:95%;">[クローズ一覧]</font></b>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/case_management/index/<?=$flag ?>" target="" id="clear">検索条件クリア</a>
@@ -90,52 +89,8 @@ function doSearch1(id) {
 <!-- 見出し２ END -->
 
 <?php echo $this->Form->create('CaseManagement', array('name' => 'form')); ?>
-    
-    <!-- 駅検索 -->
-        <FIELDSET class='search'>
-            <LEGEND style='font-weight: bold;'>駅検索</LEGEND>         
-            <DIV style="float: left;width:770px;">
-                <SPAN>路線①</SPAN>
-<?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-    'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-&nbsp;→
-<?php echo $this->Form->input('s0_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;',
-    'onChange'=>'setMenuItem1(1,this[this.selectedIndex].value)', 'options'=>$line1)); ?>
-&nbsp;→
-<?php echo $this->Form->input('s1_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
-&nbsp;駅&nbsp;～&nbsp;
-<?php echo $this->Form->input('s2_1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station1)); ?>
-&nbsp;駅<BR>
-
-                <SPAN>路線②</SPAN>
-<?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-    'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-&nbsp;→
-<?php echo $this->Form->input('s0_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem2(1,this[this.selectedIndex].value)', 'options'=>$line2)); ?>
-&nbsp;→
-<?php echo $this->Form->input('s1_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
-&nbsp;駅&nbsp;～&nbsp;
-<?php echo $this->Form->input('s2_2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station2)); ?>
-&nbsp;駅<BR>
-
-                <SPAN>路線③</SPAN>
-<?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
-    'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
-&nbsp;→
-<?php echo $this->Form->input('s0_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'路線を選択してください', 'style' => 'width: 200px;', 
-    'onChange'=>'setMenuItem3(1,this[this.selectedIndex].value)', 'options'=>$line3)); ?>
-&nbsp;→
-<?php echo $this->Form->input('s1_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
-&nbsp;駅&nbsp;～&nbsp;
-<?php echo $this->Form->input('s2_3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'駅を選択してください', 'style' => 'width: 150px;', 'options'=>$station3)); ?>
-&nbsp;駅<BR>
-            </DIV>
-            <div style="clear: both; height: 5px;"></div>
-        </FIELDSET>
-
 <!-- ページネーション -->
-<div class="pageNav03" style="margin-bottom: 30px;">
+<div class="pageNav03" style="margin-top:-20px; margin-bottom: 30px;">
 <?php
 	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
 	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
@@ -143,7 +98,7 @@ function doSearch1(id) {
 	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
-    <div style="float:right;">
+    <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
         表示件数：
@@ -154,7 +109,7 @@ function doSearch1(id) {
         ?>
     </div>
  </div>
-
+<a onclick="window.open('<?=ROOTDIR ?>/case_management/profile/0/1','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">profile</a>
 <!--- スタッフマスタ本体 START --->
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;">
@@ -191,12 +146,12 @@ function doSearch1(id) {
     <td align="right">&nbsp;</td>
     <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?><br>
         </a>
 	<?=date('Y-m-d', strtotime($data['StaffMaster']['created'])); ?>

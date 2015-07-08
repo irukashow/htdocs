@@ -7,9 +7,9 @@
     &nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/case_management/index" target=""><font Style="font-size:95%;">案件一覧</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/customer" target="" onclick='alert("制作中");return false;'><font Style="font-size:95%;">取引先一覧</font></a>
+    <a href="<?=ROOTDIR ?>/case_management/customer" target="" onclick=''><font Style="font-size:95%;">取引先一覧</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <b><font Style="font-size:95%;color: yellow;">職種マスタ</font></b>
+    <b><font Style="font-size:95%;color: yellow;">[職種マスタ]</font></b>
 </div>
 <!-- 見出し１ END -->
 
@@ -25,7 +25,7 @@
 ?>
 <div style="clear:both;"></div>
 <!--- 職種マスタ管理 START --->
-<table border="1" width="60%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="left">
+<table border="1" width="60%" cellspacing="0" cellpadding="2" bordercolor="#333333" align="left">
   <tr class="col">
     <th width="20%"><font style="color:white;font-weight: normal;">表示順</font></th>
     <th width="10%"><?php echo $this->Paginator->sort('id',"ID");?></th>

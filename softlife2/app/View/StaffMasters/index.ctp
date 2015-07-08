@@ -68,9 +68,9 @@ function chkHankaku(textbox) {
 <?php if ($flag == 1) { ?>
     <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
     &nbsp;
-    <b><font Style="font-size:95%;">登録解除リスト</font></b>
+    <b><font Style="font-size:95%;">[登録解除リスト]</font></b>
 <?php } else { ?>
-    <b><font Style="font-size:95%;">登録リスト</font></b>
+    <b><font Style="font-size:95%;">[登録リスト]</font></b>
     &nbsp;
     <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
 <?php } ?>    
