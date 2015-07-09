@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class CaseManagement extends AppModel {
-    public $useTable = 'item';
+    //public $useTable = 'case_management';
     /** 主キー(省略時は「id」になるので省略も可) */
-    public $primaryKey = array('id');
+    //public $primaryKey = array('id');
 }

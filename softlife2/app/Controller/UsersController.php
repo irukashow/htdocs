@@ -182,12 +182,13 @@ class UsersController extends AppController {
             // ユーザー名前
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name); 
-        
+            // 部署名称のセット
+            $condition1 = array('item' => 5);
+            $busho_arr = $this->Item->find('list', array('fields' => array('id','value'), 'conditions' => $condition1));
+            $this->set('busho_arr', $busho_arr);
+            
     	// POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->User->validates() == false) {
-                return null;
-            }
             if (isset($this->request->data['submit'])) {
                 // 閲覧権限の配列をカンマ区切りに
                 $val = $this->setAuth($this->request->data['User']['auth']);
@@ -219,35 +220,43 @@ class UsersController extends AppController {
                 $this->redirect($this->referer());
             }
 
-                // レイアウト関係
-                $this->layout = "sub";
-                $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
-                // ユーザー名前
-                $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-                $this->set('user_name', $name);
+            // レイアウト関係
+            $this->layout = "sub";
+            $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
+            // ユーザー名前
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('user_name', $name);
 
-                // 初期値設定
-                $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
-                $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
-                $this->set('value', '');
+            // 初期値設定
+            $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
+            $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
+            $this->set('value', '');
+            $this->set('value2', '');
+            // 部署名称のセット
+            $condition1 = array('item' => 5);
+            $busho_arr = $this->Item->find('list', array('fields' => array('id','value'), 'conditions' => $condition1));
+            $this->set('busho_arr', $busho_arr);
 
                 // POSTの場合
                 if ($this->request->is('post') || $this->request->is('put')) {
-                    if ($this->User->validates() == false) {
-                        return null;
-                    }
                     if (isset($this->request->data['regist'])) {
+                        // 部署の配列をカンマ区切りに
+                        $val = $this->setAuth($this->request->data['User']['busho_id']);
+                        $this->request->data['User']['busho_id'] = $val;
                         // 閲覧権限の配列をカンマ区切りに
-                        $val = $this->setAuth($this->request->data['User']['auth']);
-                        $this->request->data['User']['auth'] = $val;
+                        $val2 = $this->setAuth($this->request->data['User']['auth']);
+                        $this->request->data['User']['auth'] = $val2;
 
                         // モデルの状態をリセットする
                         //$this->User->create();
                         // データを登録する
                         if ($this->User->save($this->request->data)) {
-                            // 表示データの保持（権限）
+                            $this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
+                            // 表示データの保持（権限、部署）
                             $value = explode(',', $this->request->data['User']['auth']);
                             $this->set('value', $value);
+                            $value2 = explode(',', $this->request->data['User']['busho_id']);
+                            $this->set('value2', $value2);
                             // 登録完了
                             $this->Session->setFlash('ユーザー情報を更新しました。');
                         }
@@ -257,11 +266,14 @@ class UsersController extends AppController {
                             $this->request->data = $this->User->read(null, $this->request->data['User']['username']);
                             $value = explode(',', $this->request->data['User']['auth']);
                             $this->set('value', $value);
-                            //$this->log($this->request->data);
+                            $value2 = explode(',', $this->request->data['User']['busho_id']);
+                            $this->set('value2', $value2);
                         } else {
                             $this->request->data = $this->User->read(null, $this->request->data['username']);
                             $value = explode(',', $this->request->data['User']['auth']);
                             $this->set('value', $value);
+                            $value2 = explode(',', $this->request->data['User']['busho_id']);
+                            $this->set('value2', $value2);
                         }
                     }
                 } else {
@@ -280,7 +292,6 @@ class UsersController extends AppController {
         $this->set("title_for_layout", $this->title_for_layout);
         $this->set("headline", 'ユーザー一覧');
         $this->set('getValue', $this->getValue());      // 項目テーブル
-
         $this->set('datas', $this->paginate('User'));
         
         // POSTの場合

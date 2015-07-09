@@ -78,10 +78,22 @@ window.onload = function(){
                     ?>
                                 <img src='<?=ROOTDIR ?>/img/noimage.jpg' style='border:1px black solid; width:150px;'>
                     <?php } else { ?>
-                                <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
-                                    <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $id) ?>/<?=$id ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
+                                <a href="<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $data['StaffMaster']['id']) ?>/<?=$data['StaffMaster']['id'] ?>.<?=$data['StaffMaster']['pic_extension'] ?>" rel="lightbox">
+                                    <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $data['StaffMaster']['id']) ?>/<?=$data['StaffMaster']['id'] ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
                                 </a>
                     <?php } ?>
+                                
+                    <!-- 保存した履歴書ファイルのリンク -->
+                    <?php
+                        $after2 = $data['StaffMaster']['pic_extension2'];
+                        if (is_null($after2) || empty($after2)) {
+                            echo '';
+                            echo $this->Form->input( 'delete_2', array('type' => 'hidden','value'=>'0'));
+                        } else {
+                            echo '<br>';
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $data['StaffMaster']['id']).'/'.$data['StaffMaster']['id'].'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【履歴書などの書類】</a>';
+                        }
+                    ?>
                             </td>
                         </tr>
                         <tr>

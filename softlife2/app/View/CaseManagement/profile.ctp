@@ -38,50 +38,142 @@ window.onload = function(){
 </script>
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <?php foreach ($datas as $data){ ?>
-<?php echo $this->Form->create('StaffMaster'); ?>
+<?php echo $this->Form->create('CaseManagement'); ?>
 <table id='profile' border="0" style="margin:10px;width:98%;">
     <tr>
         <td style="width:50%;vertical-align: top;">
             <div id="header_profile" style="margin-bottom: 10px;">
-                <font style="font-size: 150%;">■&nbsp;案件情報</font>
+                <font style="font-size: 150%;">●&nbsp;案件情報</font>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <font style="font-size: 100%;margin-top: -5px;">登録日：
 <?php
-    if (is_null($data['StaffMaster']['created'])) {
+    if (is_null($data['CaseManagement']['created'])) {
         echo '＜不明＞';
     } else {
-        echo date('Y-m-d', strtotime($data['StaffMaster']['created'])); 
+        echo date('Y-m-d', strtotime($data['CaseManagement']['created'])); 
     }
 ?>
                 </font>
                 &nbsp;&nbsp;
                 <font style="font-size: 100%;">更新日：
 <?php
-    if (is_null($data['StaffMaster']['modified'])) {
+    if (is_null($data['CaseManagement']['modified'])) {
         echo '＜不明＞';
     } else {
-        echo date('Y-m-d', strtotime($data['StaffMaster']['modified'])); 
+        echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); 
     }
 ?>
                 </font>
             </div>
                     
             <!-- 左項目 -->
-            <font style="font-size: 120%;">●基本情報</font>
+            <font style="font-size: 120%;">■基本情報</font>
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;border-spacing: 0px;">
                 <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>案件名称</td>
-                    <td style='width:70%;'><?=$data['StaffMaster']['job_startdate_kibou'] ?></td>
+                    <td style='background-color: #e8ffff;width:30%;' colspan="2">案件名称</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['case_name'] ?></td>
                 </tr>
                 <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>担当者（所属 氏名）</td>
-                    <td style='width:70%;'><?=$data['StaffMaster']['training_date_kibou'] ?></td>
+                    <td style='background-color: #e8ffff;width:30%;' colspan="2">担当者（所属 氏名）</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['username'] ?></td>
                 </tr>
                 <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>契約形態</td>
-                    <td style='width:70%;'><?=$data['StaffMaster']['training_date_kibou'] ?></td>
+                    <td style='background-color: #e8ffff;width:30%;' colspan="2">契約形態</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
                 </tr>
-                
+                <!-- 依頼主 -->
+                <tr>
+                    <td style='background-color: #e8ffff;width:10%;' rowspan="5">依頼主</td>
+                    <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>郵便番号<br>住所</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>TEL</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>FAX</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>ﾒｰﾙｱﾄﾞﾚｽ</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <!-- 依頼主 END -->
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;' colspan="2">事業主</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;' colspan="2">開始日</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <!-- 就業場所 -->
+                <tr>
+                    <td style='background-color: #e8ffff;width:10%;' rowspan="8">就業場所</td>
+                    <td style='background-color: #e8ffff;width:20%;'>名称</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>部署</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>住所</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>TEL</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>FAX</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>指揮命令者・役職</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>最寄駅</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>現場長<br>携帯<br>ﾒｰﾙｱﾄﾞﾚｽ</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <!-- 就業場所 END -->
+                <!-- 請求先① -->
+                <tr>
+                    <td style='background-color: #e8ffff;width:10%;' rowspan="6">請求先①</td>
+                    <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>郵便番号<br>住所</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>TEL</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>FAX</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>ﾒｰﾙｱﾄﾞﾚｽ</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:20%;'>振込口座情報</td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                </tr>
+                <!-- 請求先① END -->
             </table>
         </td>
         <td style="width:50%;vertical-align: top;padding-left: 5px;">
@@ -98,8 +190,8 @@ window.onload = function(){
                 <?php echo $this->Paginator->prev('◀前へ', array(), null, array('class' => 'prev disabled')); ?>
                 &nbsp;&nbsp;
                 <?php echo $this->Paginator->next('次へ▶', array(), null, array('class' => 'next disabled')); ?>
-                <?php echo $this->Form->input('staff_id', array('type'=>'hidden', 'value' => $data['StaffMaster']['id'])); ?>
-                <?php echo $this->Form->input('staff_name', array('type'=>'hidden', 'value' => $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'])); ?>
+                <?php echo $this->Form->input('case_id', array('type'=>'hidden', 'value' => $data['CaseManagement']['id'])); ?>
+                <?php echo $this->Form->input('case_name', array('type'=>'hidden', 'value' => $data['CaseManagement']['name_sei'].' '.$data['CaseManagement']['name_mei'])); ?>
                 <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?> 
             </div>
 
@@ -131,14 +223,18 @@ window.onload = function(){
             <font style="font-size: 120%;">■契約書</font>
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>日付</td>
-                    <td style='background-color: #e8ffff;width:70%;'>案件名</td>
+                    <td align="center" style='background-color: #e8ffff;'>履歴</td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center">表示するデータはありません。</td>
+                    <td align="center">表示するデータはありません。</td>
                 </tr>
             </table>
-                  
+ 
+            <!-- シフト表 -->
+            <font id="title_messagebox" style="font-size: 120%;">■シフト表</font>
+            <br>
+            <!-- 売上・給与 -->
+            <font id="title_messagebox" style="font-size: 120%;">■売上・給与</font>
         </td>
     </tr>
 </table>

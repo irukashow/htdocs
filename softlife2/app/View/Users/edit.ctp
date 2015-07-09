@@ -1,4 +1,4 @@
-<div style="width:35%;margin-top: 20px;margin-left: auto; margin-right: auto;">
+<div style="width:40%;margin-top: 20px;margin-left: auto; margin-right: auto;">
 <?php echo $this->Form->create('User', array('type' => 'post', 'name' => 'form')); ?>
 <?php $list1 = array(''=>'', '1'=>'大阪', '2'=>'東京', '3'=>'名古屋', '99'=>'すべて'); ?>
 <?php $list2 = array('11'=>'大阪-人材派遣　', '12'=>'大阪-住宅営業　', '21'=>'東京-人材派遣　', '22'=>'東京-住宅営業　', '31'=>'名古屋-人材派遣　', '32'=>'名古屋-住宅営業　'); ?>
@@ -30,6 +30,17 @@
             <tr>
                 <th style="width:30%;background-color:#e8ffff;"><div class=""><label>エリア</label></div></th>
                 <td><?php echo $this->Form->input('area',array('label' => false, 'type' => 'select', 'options' => $list1)); ?></td>   
+            </tr>
+            <tr>
+                <th style="width:30%;background-color:#e8ffff;"><div class=""><label>所属部署</label></div></th>
+                <td>
+                    <?php echo $this->Form->input('busho_id',array('type'=>'select','multiple' => 'checkbox', 'label' => false,'style' => 'display:inline-block', 'value' => $value2, 'options' => $busho_arr)); ?>
+                    <?php echo $this->Form->input('busho_name',array('label' => false, 'type' => 'text', 'style' => 'width: 90%;')); ?>
+                </td>   
+            </tr>
+            <tr>
+                <th style="width:30%;background-color:#e8ffff;"><div class=""><label>役職</label></div></th>
+                <td><?php echo $this->Form->input('position',array('label' => false, 'type' => 'text', 'style' => 'width: 90%;')); ?></td>   
             </tr>
             <tr>
                 <th style="width:30%;background-color:#e8ffff;"><div class="required"><label>閲覧権限</label></div></th>

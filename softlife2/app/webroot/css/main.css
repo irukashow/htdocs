@@ -28,7 +28,7 @@ body {
 	background: #003d4c;
 	color: #fff;
 	font-family:Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;
-	font-size:90%;
+	//font-size:100%;
 	//margin: 0;
         margin-top: 25px;
 }
@@ -89,6 +89,7 @@ p {
 /** Layout **/
 #container {
 	text-align: left;
+        //font-size:90%;
 }
 
 #header{
@@ -138,6 +139,7 @@ a.logo {
         padding-left: 10px;
         padding-right: 10px;
 	//overflow: auto;
+        font-size:90%;
 }
 #footer {
 	clear: both;
@@ -146,6 +148,7 @@ a.logo {
         background-color: #003d4c;
         height: 50px;
         text-align: center;
+        //font-size:90%;
 }
 #header a, #footer a {
 	color: #fff;

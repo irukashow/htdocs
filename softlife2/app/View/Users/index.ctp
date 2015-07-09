@@ -46,7 +46,7 @@
             <td style="width:30%;">
                 <!-- 左ペイン -->
                 <div id='message-folder'>
-                    <font style="font-size:110%;font-weight: bold;color:#006699;">ようこそ！ <?=$user_name ?>さん</font><br>
+                    <font style="font-size:110%;font-weight: bold;color:#006699;">ようこそ！ <?=$user_name ?>&nbsp;さん</font><br>
                     <div style="height: 10px;"></div>
                     <?php echo $this->Html->link('パスワード変更', '/users/passwd/'); ?>
                     <br>

@@ -60,7 +60,7 @@ function doSearch1(id) {
 <!-- 見出し２ -->
 <div id='headline' style="padding:5px 10px 5px 10px;">
     &nbsp;
-    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
+    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/reg1/0/0','案件登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 0 || empty($flag)) { ?>
     <b><font Style="font-size:95%;">[登録リスト]</font></b>
@@ -109,7 +109,7 @@ function doSearch1(id) {
         ?>
     </div>
  </div>
-<a onclick="window.open('<?=ROOTDIR ?>/case_management/profile/0/1','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">profile</a>
+
 <!--- スタッフマスタ本体 START --->
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;">
@@ -143,26 +143,28 @@ function doSearch1(id) {
   </tr>
   <?php foreach ($datas as $data): ?>
   <tr>
-    <td align="right">&nbsp;</td>
-    <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-            <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
+        <?php $case_id = $data['CaseManagement']['id']; ?>
+        <?php echo $case_id; ?>
+    </td>
+    <td align="center" width="20%">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            <font style="font-weight: bold;color: #006699;"><?php echo $data['CaseManagement']['case_name']; ?></font>
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-            <?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?><br>
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            <?php echo $data['CaseManagement']['id'];?><br>
         </a>
-	<?=date('Y-m-d', strtotime($data['StaffMaster']['created'])); ?>
+	<?=date('Y-m-d', strtotime($data['CaseManagement']['id'])); ?>
     </td>
-    <td align="center"><?php echo $data['StaffMaster']['age'].'歳'."<br>".getGender($data['StaffMaster']['gender']);?></td>
-    <?php $tantou_user = $data['StaffMaster']['tantou']; ?>
+    <td align="center"><?php echo $data['CaseManagement']['id'].'歳'."<br>".getGender($data['CaseManagement']['id']);?></td>
+    <?php $tantou_user = $data['CaseManagement']['username']; ?>
     <td align="center"><?php echo $tantou_user; ?></td>
-    <td align="center"><?php echo getOjt($data['StaffMaster']['ojt']).'<br>'.$data['StaffMaster']['ojt_date']; ?></td>
+    <td align="center"><?php echo ($data['CaseManagement']['id']).'<br>'.$data['CaseManagement']['id']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
-    <td align="left"><?php echo getShokushu2($data['StaffMaster']['shokushu_shoukai']); ?></td>
-    <td align="left"><?php echo date('Y-m-d', strtotime($data['StaffMaster']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
+    <td align="left"><?php echo ($data['CaseManagement']['id']); ?></td>
+    <td align="left"><?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
   </tr>
   <?php endforeach; ?>

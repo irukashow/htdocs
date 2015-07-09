@@ -8,6 +8,7 @@
         }
         return $ret;
     }
+    
 ?>
 <script type="text/javascript">
 <!--
@@ -63,10 +64,10 @@ function mySubmit(username) {
     <th width="13%"><?php echo $this->Paginator->sort('name','氏名');?></th>
     <th width="13%"><font style="color: white;font-weight: normal;">変更</font></th>
     <th><?php echo $this->Paginator->sort('area','エリア');?></th>
+    <th width="15%"><?php echo $this->Paginator->sort('busho_id','部署');?></th>
     <th><?php echo $this->Paginator->sort('role','ユーザーの種類');?></th>
     <th><?php echo $this->Paginator->sort('auth','閲覧権限');?></th>
-    <th width="15%"><?php echo $this->Paginator->sort('modified','更新日時');?></th>
-    <th width="15%"><?php echo $this->Paginator->sort('created','登録日時');?></th>
+    <th width="15%"><?php echo $this->Paginator->sort('modified','登録日時<br>更新日時', array('escape' => false));?></th>
   </tr>
   <?php foreach ($datas as $key => $data): ?>
   <tr>
@@ -82,6 +83,32 @@ function mySubmit(username) {
     </td>
     <?php $area = $data['User']['area']; ?>
     <td><?php echo $getValue[1][$area]; ?></td>
+    <td>
+        <?php echo $data['User']['busho_name']; ?>
+        <?php
+        /**
+            $busho_array = explode(',', $data['User']['busho_id']);
+            $busho_name = '';
+            $i = 0;
+            foreach ($busho_array as $val) {
+                if (!empty($val)) {
+                    if (empty($busho_name)) {
+                        $busho_name = $getValue[5][$val];
+                    } else {
+                        if ($i%2 == 0) {
+                            $busho_name = $busho_name.', '.$getValue[5][$val];
+                        } else {
+                            $busho_name = $busho_name.'<br>'.$getValue[5][$val];
+                        }
+                    }
+                }
+                $i += 1;
+            }
+            echo $busho_name;
+         * 
+         */
+        ?>
+    </td>
     <td><?php echo getRole($data['User']['role']); ?></td>
     <?php $auth_array = explode(',', $data['User']['auth']); ?>
     <td>
@@ -105,8 +132,10 @@ function mySubmit(username) {
             echo $auth;
         ?>
     </td>
-    <td><?php echo $data['User']['modified']; ?></td>
-    <td><?php echo $data['User']['created']; ?></td>
+    <td>
+        <?php echo $data['User']['created']; ?><br>
+        <?php echo $data['User']['modified']; ?>
+    </td>
   </tr>
   <?php endforeach; ?>
 </table>
