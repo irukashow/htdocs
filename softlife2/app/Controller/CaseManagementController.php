@@ -97,7 +97,7 @@ class CaseManagementController extends AppController {
         'CaseManagement' => array(
         //1ページ表示できるデータ数の設定
         'limit' =>10,
-        'fields' => array('CaseManagement.*', 'User.name_sei AS koushin_name_sei', 'User.name_mei AS koushin_name_mei'),
+        'fields' => array('CaseManagement.*', 'User.*'),
         //データを降順に並べる
         'order' => array('id' => 'asc'),
         'joins' => array (
@@ -181,11 +181,11 @@ class CaseManagementController extends AppController {
                 $this->set('limit', $limit);
                 $this->redirect(array('limit' => $limit));
             }
+            $conditions2 += array('class'=>$selected_class);
             // ページネーションの実行
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('CaseManagement', $conditions2));
             $this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
-            
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
             if (isset($profile)) {
@@ -220,8 +220,10 @@ class CaseManagementController extends AppController {
             } else {
                 $conditions3 = $conditions3;
             }
+            $conditions3 += array('class'=>$selected_class);
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('CaseManagement', $conditions3)); 
+            $this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log('GET', LOG_DEBUG);
         } else {
             // 所属の取得とセット
@@ -236,6 +238,7 @@ class CaseManagementController extends AppController {
                 $flag = 0;
                 $conditions3 = array('kaijo_flag' => 0);
             }
+            $conditions3 += array('class'=>$selected_class);
             $this->set('flag', $flag);
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('CaseManagement', $conditions3));
@@ -264,7 +267,7 @@ class CaseManagementController extends AppController {
         mb_http_input("auto");
         mb_http_output("utf-8");
         $conditions = array('item' => 10);
-        $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
+        $pref_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
         $this->set('id', $case_id); 
         $username = $this->Auth->user('username');
@@ -273,6 +276,7 @@ class CaseManagementController extends AppController {
         $selected_class = $this->Session->read('selected_class');
         //$this->CaseManagement->setSource('staff_'.$selected_class);
         $this->set('class', $selected_class);
+        $this->set('flag', $flag);
                 
         // ページネーション
         //$conditions2 = array('id' => $case_id, 'kaijo_flag' => $flag);
@@ -287,8 +291,44 @@ class CaseManagementController extends AppController {
         ));
         $datas = $this->paginate('CaseManagement');
         $this->set('datas', $datas);
+        $this->log($datas, LOG_DEBUG);
+        // 担当者
+        $condition0 = array('username' => $datas[0]['CaseManagement']['username']);
+        $data = $this->User->find('first', array('conditions' => $condition0));
+        $this->set('contact', $data['User']['name_sei'].' '.$data['User']['name_mei']);
+        // 依頼主データ
+        $condition1 = array('id' => $datas[0]['CaseManagement']['client']);
+        $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+        $this->set('data_client', $data_client);
+        // 請求先データ
+        $condition2 = array('id' => $datas[0]['CaseManagement']['billing_destination']);
+        $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+        $this->set('data_billing', $data_billing);   
+        // 事業主
+        $condition3 = array('id' => $datas[0]['CaseManagement']['entrepreneur1']);
+        $data1 = $this->Customer->find('first', array('conditions' => $condition3));
+        if (!empty($data1)) {
+            $entrepreneur1 = $data1['Customer']['corp_name'];
+        } else {
+            $entrepreneur1 = '';
+        }
+        $condition4 = array('id' => $datas[0]['CaseManagement']['entrepreneur2']);
+        $data2 = $this->Customer->find('first', array('conditions' => $condition4));
+        if (!empty($data2)) {
+            $entrepreneur2 = $data2['Customer']['corp_name'];
+        } else {
+            $entrepreneur2 = '';
+        }
+        $condition5 = array('id' => $datas[0]['CaseManagement']['entrepreneur3']);
+        $data3 = $this->Customer->find('first', array('conditions' => $condition5));
+        if (!empty($data3)) {
+            $entrepreneur3 = $data3['Customer']['corp_name'];
+        } else {
+            $entrepreneur3 = '';
+        }
+        $this->set('entrepreneur', $entrepreneur1.'<br>'.$entrepreneur2.'<br>'.$entrepreneur3);
         
-        $this->log($this->request->data, LOG_DEBUG);
+        //$this->log($this->request->data, LOG_DEBUG);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             // 登録編集
@@ -357,11 +397,15 @@ class CaseManagementController extends AppController {
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
         $this->set('koushin_flag', $koushin_flag);
-
-        //$this->CaseManagement->id = $case_id;
-        // テーブルの設定
-        //$this->Customer->setSource('customer');
-        //$this->CaseManagement->setSource('case_management');
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class); 
+        // 初期セット
+        $this->set('line1', '');
+        $this->set('station1', '');
+        $this->set('line2', '');
+        $this->set('station2', '');
+        $this->set('line3', '');
+        $this->set('station3', '');
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -370,16 +414,44 @@ class CaseManagementController extends AppController {
                 //$this->CaseManagement->create();
                 // データを登録する
                 if ($this->CaseManagement->save($this->request->data)) {
+                    // 依頼主
+                    $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
+                    $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+                    $this->set('data_client', $data_client);
+                    // 請求先
+                    $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination']);
+                    $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+                    $this->set('data_billing', $data_billing);
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録しました。');
-                    //$this->redirect(array('action' => 'reg1', $id, $koushin_flag));
+
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
+            //} elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
+            } else {
+                // 依頼主
+                $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
+                $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+                $this->set('data_client', $data_client);
+                // 請求先
+                $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination']);
+                $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+                $this->set('data_billing', $data_billing);
             }    
         } else {
             // 登録していた値をセット
             $this->request->data = $this->CaseManagement->read(null, $case_id);
+            if (!empty($this->request->data)) {
+                // 依頼主
+                $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
+                $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+                $this->set('data_client', $data_client);
+                // 請求先
+                $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination']);
+                $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+                $this->set('data_billing', $data_billing);
+            }
         }
     }
       
@@ -658,13 +730,14 @@ class CaseManagementController extends AppController {
         $selected_class = $this->Session->read('selected_class');
         $this->set('selected_class', $selected_class);
         // テーブルの設定
-        $this->Item->setSource('item');
+        $this->CaseManagement->setSource('item');
         
-        $this->paginate = array('Item' => array(
+        $option = array(
             'conditions' => array('item' => '16'),
-            'limit' => '15','order' => array('sequence' => 'asc', 'id' => 'asc')));
-        $this->log($this->paginate(), LOG_DEBUG);
-        $this->set('datas', $this->paginate());
+            'limit' => '15',
+            'order' => array('sequence' => 'asc', 'id' => 'asc'));
+        $this->paginate = $option;
+        $this->set('datas', $this->paginate('Item'));
         
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {

@@ -61,7 +61,7 @@ function doSearch1(id) {
 <!-- 見出し２ -->
 <div id='headline' style="padding:5px 10px 5px 10px;">
     &nbsp;
-    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer','新規登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
+    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 0 || empty($flag)) { ?>
     <b><font Style="font-size:95%;">[登録リスト]</font></b>
@@ -104,20 +104,16 @@ function doSearch1(id) {
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;">
       <th style="width:5%;"><?php echo $this->Paginator->sort('id',"No.");?></th>
-      <th style="width:15%;"><?php echo $this->Paginator->sort('client','依頼主', array('escape' => false));?></th>
-      <th style="width:15%;"><?php echo $this->Paginator->sort('entrepreneur','事業主', array('escape' => false));?></th>
-      <th style="width:15%;"><?php echo $this->Paginator->sort('billing_destination','請求先', array('escape' => false));?></th>
     <th style="width:15%;"><?php echo $this->Paginator->sort('corp_name','企業名');?></th>
+    <th style="width:15%;"><?php echo $this->Paginator->sort('busho','部署<br>担当者', array('escape' => false));?></th>
     <th style="width:10%;"><?php echo $this->Paginator->sort('telno','電話番号', array('escape' => false));?></th>
-    <th style="width:15%;"><?php echo $this->Paginator->sort('email','メールアドレス', array('escape' => false));?></th>
+    <th style="width:15%;"><?php echo $this->Paginator->sort('email','メールアドレス');?></th>
     <th style="width:10%;"><?php echo $this->Paginator->sort('modified','作成日<br>更新日', array('escape' => false));?></th>
   </tr>
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_corp_name', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_tantou', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_telno', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_email', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
@@ -130,12 +126,14 @@ function doSearch1(id) {
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
         </a>
     </td>
-    <td align="left"><?php echo $data['Customer']['client']; ?></td>
-    <td align="left"><?php echo $data['Customer']['entrepreneur']; ?></td>
-    <td align="left"><?php echo $data['Customer']['billing_destination']; ?></td>
     <td align="left">
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['Customer']['corp_name']; ?>
+        </a>
+    </td>
+    <td align="left">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            <?php echo $data['Customer']['busho'].'<br>'.$data['Customer']['tantou']; ?>
         </a>
     </td>
     <td align="left"><?php echo $data['Customer']['telno']; ?></td>

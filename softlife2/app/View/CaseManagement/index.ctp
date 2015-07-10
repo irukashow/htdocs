@@ -116,9 +116,9 @@ function doSearch1(id) {
       <th><?php echo $this->Paginator->sort('no',"No.");?></th>
       <th style="width:10%;"><?php echo $this->Paginator->sort('id','案件名<br>依頼主<br>事業主', array('escape' => false));?></th>
       <th style="width:10%;"><?php echo $this->Paginator->sort('name_sei','契約形態', array('escape' => false));?></th>
-      <th style="width:5%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
+      <th style="width:10%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
     <th style="width:7%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
-    <th style="width:7%;"><?php echo $this->Paginator->sort('ojt_date','就業場所<br>住所<br>電話番号<br>担当者', array('escape' => false));?></th>
+    <th style="width:15%;"><?php echo $this->Paginator->sort('ojt_date','就業場所<br>住所<br>電話番号<br>担当者', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('service_count','今月のオーダー内容／来月のオーダー内容<br>職種・勤務時間・受注金額・人数', array('escape' => false));?></th>
     <th><?php echo $this->Paginator->sort('shokushu_shoukai','オーダー入力<br>更新日<br>入力済チェック', array('escape' => false));?></th>
     <th style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','シフト入力<br>更新日<br>作成済チェック', array('escape' => false));?></th>
@@ -147,24 +147,27 @@ function doSearch1(id) {
         <?php $case_id = $data['CaseManagement']['id']; ?>
         <?php echo $case_id; ?>
     </td>
-    <td align="center" width="20%">
+    <td align="left" width="20%">
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-weight: bold;color: #006699;"><?php echo $data['CaseManagement']['case_name']; ?></font>
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-            <?php echo $data['CaseManagement']['id'];?><br>
-        </a>
-	<?=date('Y-m-d', strtotime($data['CaseManagement']['id'])); ?>
+	<?=setCType($data['CaseManagement']['contract_type']); ?>
     </td>
-    <td align="center"><?php echo $data['CaseManagement']['id'].'歳'."<br>".getGender($data['CaseManagement']['id']);?></td>
-    <?php $tantou_user = $data['CaseManagement']['username']; ?>
+    <td align="center"><?php echo $data['CaseManagement']['start_date'];?></td>
+    <?php $tantou_user = $data['User']['name_sei'].' '.$data['User']['name_mei']; ?>
     <td align="center"><?php echo $tantou_user; ?></td>
-    <td align="center"><?php echo ($data['CaseManagement']['id']).'<br>'.$data['CaseManagement']['id']; ?></td>
+    <td align="left">
+        <?php 
+            echo $data['CaseManagement']['address'].'<br>'; 
+            echo $data['CaseManagement']['telno'].'<br>'; 
+            echo $data['CaseManagement']['leader']; 
+        ?>
+    </td>
     <td align="center"><?php echo '＜？＞'; ?></td>
     <td align="left"><?php echo ($data['CaseManagement']['id']); ?></td>
-    <td align="left"><?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])).'<br>'.$data['User']['koushin_name_sei'].' '.$data['User']['koushin_name_mei']; ?></td>
+    <td align="left"><?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])).'<br>'.$data['CaseManagement']['update_user']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
   </tr>
   <?php endforeach; ?>

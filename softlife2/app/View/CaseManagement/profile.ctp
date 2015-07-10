@@ -75,103 +75,201 @@ window.onload = function(){
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;' colspan="2">担当者（所属 氏名）</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['username'] ?></td>
+                    <td style='width:70%;'><?=$contact ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;' colspan="2">契約形態</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                        <?php
+                            if ($data['CaseManagement']['contract_type'] == 1) {
+                                echo '派遣契約';
+                            } elseif ($data['CaseManagement']['contract_type'] == 2) {
+                                echo '請負契約';
+                            } else {
+                                echo '';
+                            }
+                        ?>
+                    </td>
                 </tr>
                 <!-- 依頼主 -->
                 <tr>
                     <td style='background-color: #e8ffff;width:10%;' rowspan="5">依頼主</td>
                     <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_client)) {
+                            echo $data_client['Customer']['corp_name'].'<br>';
+                            echo $data_client['Customer']['busho'].'　'.$data_client['Customer']['tantou'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>郵便番号<br>住所</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_client)) {
+                            echo '〒'.$data_client['Customer']['zipcode1'].'-'.$data_client['Customer']['zipcode2'].'<br>';
+                            echo $data_client['Customer']['address1_2'].$data_client['Customer']['address2'].$data_client['Customer']['address3']
+                                    .$data_client['Customer']['address4'].' '.$data_client['Customer']['address5'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>TEL</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_client)) {
+                            echo $data_client['Customer']['telno'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>FAX</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_client)) {
+                            echo $data_client['Customer']['faxno'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>ﾒｰﾙｱﾄﾞﾚｽ</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_client)) {
+                            echo $data_client['Customer']['email'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <!-- 依頼主 END -->
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;' colspan="2">事業主</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                            <?php echo $entrepreneur; ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;' colspan="2">開始日</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['start_date'] ?></td>
                 </tr>
                 <!-- 就業場所 -->
                 <tr>
                     <td style='background-color: #e8ffff;width:10%;' rowspan="8">就業場所</td>
                     <td style='background-color: #e8ffff;width:20%;'>名称</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'><?=nl2br($data['CaseManagement']['work_place']); ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>部署</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['busho'] ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>住所</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                        〒<?=$data['CaseManagement']['zipcode1'] ?>-<?=$data['CaseManagement']['zipcode2'] ?><br>
+                            <?=$data['CaseManagement']['address'] ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>TEL</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['telno'] ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>FAX</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'><?=$data['CaseManagement']['faxno'] ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>指揮命令者・役職</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                            <?=$data['CaseManagement']['director'] ?>　<?=$data['CaseManagement']['position'] ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>最寄駅</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                        <?=getStation($data['CaseManagement']['s1_1']) ?><br>
+                        <?=getStation($data['CaseManagement']['s1_2']) ?><br>
+                        <?=getStation($data['CaseManagement']['s1_3']) ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>現場長<br>携帯<br>ﾒｰﾙｱﾄﾞﾚｽ</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                            <?=$data['CaseManagement']['leader'] ?><br>
+                            <?=$data['CaseManagement']['mobile'] ?>　<?=$data['CaseManagement']['email'] ?>
+                    </td>
                 </tr>
                 <!-- 就業場所 END -->
                 <!-- 請求先① -->
                 <tr>
                     <td style='background-color: #e8ffff;width:10%;' rowspan="6">請求先①</td>
                     <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_billing)) {
+                            echo $data_billing['Customer']['corp_name'].'<br>';
+                            echo $data_billing['Customer']['busho'].' '.$data_billing['Customer']['tantou'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>郵便番号<br>住所</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_billing)) {
+                            echo '〒'.$data_billing['Customer']['zipcode1'].'-'.$data_billing['Customer']['zipcode2'].'<br>';
+                            echo $data_billing['Customer']['address1_2'].$data_billing['Customer']['address2'].$data_billing['Customer']['address3']
+                                    .$data_billing['Customer']['address4'].' '.$data_billing['Customer']['address5'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>TEL</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_billing)) {
+                            echo $data_billing['Customer']['telno'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>FAX</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_billing)) {
+                            echo $data_billing['Customer']['faxno'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>ﾒｰﾙｱﾄﾞﾚｽ</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_billing)) {
+                            echo $data_billing['Customer']['email'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>振込口座情報</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['training_date_kibou'] ?></td>
+                    <td style='width:70%;'>
+                    <?php
+                        if (!empty($data_billing)) {
+                            echo $data_billing['Customer']['kouza_bank'].'　'.$data_billing['Customer']['kouza_shiten'].'<br>';
+                            echo '締日：'.$data_billing['Customer']['bill_cutoff'].'　'.'請求書到着日：'.$data_billing['Customer']['bill_arrival'].'<br>';
+                            echo '備考：'.$data_billing['Customer']['remarks'];
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <!-- 請求先① END -->
             </table>
@@ -191,8 +289,7 @@ window.onload = function(){
                 &nbsp;&nbsp;
                 <?php echo $this->Paginator->next('次へ▶', array(), null, array('class' => 'next disabled')); ?>
                 <?php echo $this->Form->input('case_id', array('type'=>'hidden', 'value' => $data['CaseManagement']['id'])); ?>
-                <?php echo $this->Form->input('case_name', array('type'=>'hidden', 'value' => $data['CaseManagement']['name_sei'].' '.$data['CaseManagement']['name_mei'])); ?>
-                <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => 1)); ?> 
+                <?php echo $this->Form->input('kaijo_flag', array('type'=>'hidden', 'value' => $flag)); ?> 
             </div>
 
             <!-- メールボックス -->

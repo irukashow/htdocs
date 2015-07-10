@@ -116,7 +116,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>弊社担当者</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('contact',array('type'=>'select', 'label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:20%;', 'options'=>$name_arr)); ?>
+                    <?php echo $this->Form->input('contact',array('type'=>'select', 'label'=>false,'div'=>false,'empty'=>'','style'=>'width:20%;', 'options'=>$name_arr)); ?>
                 </td>
             </tr>
             
@@ -126,19 +126,49 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>請求書の締日</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('bill_cutoff',array('type'=>'text', 'label'=>false,'div'=>false, 'class'=>'date', 'style'=>'width:20%;')); ?>
+                    <?php echo $this->Form->input('bill_cutoff',array('type'=>'text', 'label'=>false,'div'=>false, 'style'=>'width:50%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>請求書の到着期限</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('bill_arrival',array('type'=>'text', 'label'=>false,'div'=>false, 'class'=>'date','style'=>'width:20%;')); ?>
+                    <?php echo $this->Form->input('bill_arrival',array('type'=>'text', 'label'=>false,'div'=>false,'style'=>'width:50%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>請求書の送付先</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('bill_destination',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:90%;')); ?>
+                    <?php echo $this->Form->input('bill_destination',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:95%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;' rowspan="3">振込口座情報</td>
+                <td style='background-color: #e8ffff;width:20%;'>銀行名・支店</td>
+                <td>
+                    <?php echo $this->Form->input('kouza_bank',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:60%;')); ?>&nbsp;
+                    <?php echo $this->Form->input('kouza_shiten',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:35%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>口座番号</td>
+                <td>
+                    <?php
+                        $list = array('1'=>'普通', '2'=>'当座');
+                        echo $this->Form->input('kouza_type',array('type'=>'radio', 'legend'=>false,'div'=>false,'options'=>$list));
+                    ?>&nbsp;&nbsp;
+                    <?php echo $this->Form->input('kouza_num',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:30%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>口座名義</td>
+                <td>
+                    <?php echo $this->Form->input('kouza_meigi',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:60%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>備考</td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('remarks',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:95%;')); ?>
                 </td>
             </tr>
         </table>

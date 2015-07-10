@@ -205,4 +205,14 @@
     $station3 = getStation($data['StaffMaster']['s0_3']);
      * 
      */
+    // 契約形態
+    function setCType($val) {
+        $ret = '';
+        if ($val == 1) {
+            $ret = '派遣契約';
+        } elseif ($val == 2) {
+            $ret = '請負契約';
+        }
+        return $ret;
+    }
 ?>
