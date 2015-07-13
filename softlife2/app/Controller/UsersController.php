@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('MessageMember', 'LoginLogs', 'AdminInfo');
+        public $uses = array('Message2Member', 'LoginLogs', 'AdminInfo');
 	// Authコンポーネントの利用設定。
 	public $components = array('Auth'=>array('allowedActions'=>array('login')));
         // タイトル
@@ -35,10 +35,10 @@ class UsersController extends AppController {
             $this->set('username', $username);
             $selected_class = $this->Session->read('selected_class');
             // テーブルの設定
-            $this->MessageMember->setSource('message_staff');
+            $this->Message2Member->setSource('message2member');
             //$this->AdminInfo->setSource('admin_info');
             // 未読メッセージ件数
-            $new_count = $this->MessageMember->find('count', array('conditions' => array('class' => $selected_class,'kidoku_flag' => 0)));
+            $new_count = $this->Message2Member->find('count', array('conditions' => array('class' => $selected_class, 'kidoku_flag' => 0)));
             $this->set('new_count', $new_count);
             // 最終ログイン時刻
             $last_login = $this->LoginLogs->find('first', array('fields' => array('created'), 

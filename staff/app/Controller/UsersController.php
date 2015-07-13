@@ -1,11 +1,28 @@
 <?php
 
 class UsersController extends AppController {
-
-	// Authコンポーネントの利用設定。
-	//public $components = array('Auth'=>array('allowedActions'=>array('login')));
+        public $uses = array('StaffMaster', 'User');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
+        /****認証周り*****/
+        public $components = array(
+            'Auth' => array( //ログイン機能を利用する
+                    'authenticate' => array(
+                            'Form' => array(
+                                    'userModel' => 'StaffMaster',
+                                    'fields' => array('username' => 'account', 'password' => 'password')
+                            )
+                    ),
+                    //ログイン後の移動先
+                    'loginRedirect' => array('controller' => 'users', 'action' => 'index'),
+                    //ログアウト後の移動先
+                    'logoutRedirect' => array('controller' => 'users', 'action' => 'login'),
+                    //ログインページのパス
+                    'loginAction' => array('controller' => 'users', 'action' => 'login'),
+                    //未ログイン時のメッセージ
+                    'authError' => 'あなたのお名前とパスワードを入力して下さい。',
+            )
+        );
         
 	/**
 	 * index
@@ -23,12 +40,9 @@ class UsersController extends AppController {
             // POSTの場合
             if ($this->request->is('post')) {
                 // 属性の変更
-                $class = $this->request->data['class'];
-                //$this->Session->setFlash($class);
-                $this->set('selected_class', $class);
-                $this->Session->write('selected_class', $class);
+
             } else {
-                $this->set('selected_class', $this->Session->read('selected_class'));
+                $this->set('class', $this->Session->read('class'));
             }
 
 	}
@@ -158,9 +172,9 @@ class UsersController extends AppController {
                 }
 	}
 
-	/**
-	 * ユーザ一覧。
-	 */
+    /**
+     * ユーザ一覧。
+     */
     public function view() {
         // レイアウト関係
         $this->layout = "log";
@@ -171,42 +185,42 @@ class UsersController extends AppController {
         $this->set('datas', $this->paginate('User'));
     }
 
-	/**
-	 * パスワードの変更
-	 */
-	public function passwd(){
-            // レイアウト関係
-            $this->layout = "sub";
-            $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
-            // タブの状態
-            $this->set('active1', 'active');
-            $this->set('active2', '');
-            $this->set('active3', '');
-            $this->set('active4', '');
-            $this->set('active5', '');
-            $this->set('active6', '');
-            $this->set('active7', '');
-            $this->set('active8', '');
-            $this->set('active9', '');
-            $this->set('active10', '');
-            // ユーザー名前
-            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-            $this->set('user_name', $name);
-            $this->set('name', $name);
-            
-            $this->User->username = $this->Auth->user('username');
-            // POSTの場合
-            if ($this->request->is('post') || $this->request->is('put')) {
-                    // データを登録する
-                    $this->User->save($this->request->data);
-                    $this->Session->setFlash(__('パスワードは変更されました。'));
+    /**
+     * パスワードの変更
+     */
+    public function passwd(){
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
+        // タブの状態
+        $this->set('active1', 'active');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $this->set('name', $name);
 
-                    // indexに移動する
-                    $this->redirect(array('action' => 'index'));
-            } else {
-                $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
-            }
+        $this->User->username = $this->Auth->user('username');
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+                // データを登録する
+                $this->User->save($this->request->data);
+                $this->Session->setFlash(__('パスワードは変更されました。'));
+
+                // indexに移動する
+                $this->redirect(array('action' => 'index'));
+        } else {
+            $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
         }
+    }
     
     /**
      * ログイン処理を行う。
@@ -221,39 +235,56 @@ class UsersController extends AppController {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout","スタッフ専用サイト");
+        // 所属の配列
+        $class = array('11', '12', '21', '22', '31', '32');
         
         // 初期値設定
-        $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
-        $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
+        //$this->StaffMaster->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
+        //$this->set('datas', $this->StaffMaster->find('list', array('fields' => array('username', 'full_name'))));
+        $flag = false;
         
+        $this->log($this->request->data, LOG_DEBUG);
         // ログイン認証
-    	if ($this->request->is('post') || $this->request->is('put')) { 
-            //$username = $this->request->data['User']['username'];
+    	if ($this->request->is('post') || $this->request->is('put')) {
+            foreach ($class as $cls) {
+                // テーブルの設定
+                $this->StaffMaster->setSource('staff_'.$cls);
+                // ユーザー名に「＠」を使用できないという前提でusernameに「＠」を含んでいる場合はemail認証
+                if (strstr( $this->request->data['StaffMaster']['account'], '@' ) ) {
+                    $this->request->data['StaffMaster']['email1'] = $this->request->data['StaffMaster']['account'];
+                    $this->Auth->authenticate['Form']['fields']['email1'] = 'email1';
+                    $this->log('ここを通っている', LOG_DEBUG);
+                } else {
+                    $this->Auth->authenticate['Form']['fields']['email1'] = 'account';
+                }
+                // Authコンポーネントのログイン処理を呼び出す。
+                if($this->Auth->login()){
+                    // ログイン処理成功
+                    $this->Session->setFlash('認証に成功しました。');
+                    $this->log('認証に成功しました。', LOG_DEBUG);
+                    $flag = true;
+                    // 所属をセッションに
+                    $this->Session->write('class', $cls);
+                    // ログイン履歴
+                    /**
+                    $this->loadModel("LoginLog");  // ログイン履歴テーブル
+                    $this->LoginLog->create();
+                    $log = array('username' => $this->Auth->user('username'),
+                        'status' => $this->LoginLog->status = 'login','ip_address' =>$this->request->clientIp(false));
+                    $this->LoginLog->save($log);
+                     * 
+                     */
+                    
+                    $this->redirect($this->Auth->redirect());
+                    return;
+                }else{
 
-            // Authコンポーネントのログイン処理を呼び出す。
-            if($this->Auth->login()){
-                // ログイン処理成功
-		//$this->Session->setFlash('認証に成功しました。');
-                //$this->redirect(array('action' => 'index'));
-            //$this->Session->setFlash('$username='.$username);
-                // ログイン履歴
-                $this->loadModel("LoginLog");  // ログイン履歴テーブル
-                $this->LoginLog->create();
-                $log = array('username' => $this->Auth->user('username'),
-                    'status' => $this->LoginLog->status = 'login','ip_address' =>$this->request->clientIp(false));
-                $this->LoginLog->save($log);
-                // 所属のセット
-                $username = $this->Auth->user('username');
-                $conditions = array('username' => $username);
-                $result = $this->User->find('first', array('conditions' => $conditions));
-                $first_class = explode(',', $result['User']['auth']);
-                $this->Session->write('selected_class', $first_class[1]);
-                //$this->log($first_class[1]);
-    
-                $this->redirect($this->Auth->redirect());
-            }else{
+                }
+            }
+            if ($flag == false) {
                 // ログイン処理失敗
-                $this->Session->setFlash('認証に失敗しました。');
+                $this->Session->setFlash('アカウントもしくはパスワードに誤りがあります。');
+                $this->log('認証に失敗しました。', LOG_DEBUG);
             }
         }
     }

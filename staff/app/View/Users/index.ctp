@@ -1,6 +1,6 @@
 <div data-role="page" id="home">
 	<div data-role="header">
-		<h1>ホーム</h1>
+		<h1>ホーム</h1><?= $name ?>
 	</div>
 	<div role="main" class="ui-content">
 		<div data-role="navbar" data-iconpos="top">
@@ -13,6 +13,7 @@
 		<p>シフトの確認</p>
                 <p>勤怠入力</p>
                 <p>給与情報</p>
+                <p><a href="<?=ROOTDIR ?>/users/logout">ログアウト</a></p>
 	</div>
 	<div data-role="footer">
 		<h2>&copy; 2015 SOFTLIFE Co., Ltd.</h2>
@@ -50,7 +51,7 @@
 				<li><a href="#" data-icon="mail" class="ui-btn-active ui-state-persist">メッセージ</a></li>
 			</ul>
 		</div>
-		<p>メッセージの閲覧・送信</p>
+                <p><a href="<?=ROOTDIR ?>/message/index">メッセージの閲覧・送信</a></p>
 	</div>
 	<div data-role="footer">
 		<h2>&copy; 2015 SOFTLIFE Co., Ltd.</h2>

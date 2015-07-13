@@ -395,3 +395,8 @@ Cache::config('_cake_model_', array(
 	'serialize' => ($engine === 'File'),
 	'duration' => $duration
 ));
+
+/**
+ * セキュリティレベルの設定
+ */
+Configure::write('Security.level', 'low');

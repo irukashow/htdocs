@@ -1,6 +1,7 @@
 <?php
     echo $this->Html->script('nicEdit');
     //echo $this->Html->image('nicEditorIcons');
+    echo $this->Html->css('message');
 ?>
 <script type="text/javascript">
 	//bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
@@ -10,28 +11,53 @@
     ★ メッセージの送信
 </div>
 
-<div id="">
-<?php echo $this->Form->create(FALSE, array('name' => 'form')); ?>
-    <table id="" border="0" width="40%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
+<div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
+<?php echo $this->Form->create('Message2Member', array('name' => 'form')); ?>
+    <table id="" border="0" width="65%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
+        <tr>
+            <td width="80px">差出人</td>
+            <td>
+                <font style="font-size: 110%;"><?=$user_name ?></font>
+                <?php echo $this->Form->input('name', array('type' => 'hidden', 'label' => false, 'value' => $user_name)); ?>
+                <?php echo $this->Form->input('staff_id', array('type' => 'hidden', 'label' => false, 'value' => $staff_id)); ?>
+                <?php echo $this->Form->input('class', array('type' => 'hidden', 'label' => false, 'value' => $class)); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>宛先スタッフ</td>
+            <td>
+                <?php echo $this->Form->input('recipient_member', array('type' => 'select', 'label' => false, 'div' => false, 'options' => $member_array, 'style' => 'float:left;padding: 2px;width:200px;')); ?>
+            </td>
+        </tr>
         <tr>
             <td>標題</td>
             <td>
-                <?php echo $this->Form->input('title', array('type' => 'textbox', 'label' => false,  'div' => '', 'style' => 'width: 100%;')); ?>
+                <?php echo $this->Form->input('title', array('label' => false, 'style' => 'width: 100%;')); ?>
             </td>  
             <td align="left">
-                <?php echo $this->Form->input('editor', array('type' => 'checkbox', 'label' => 'エディタ',  'div' => '', 'onclick' => "toggleHtmlEditor(this.checked,'myArea3','full');")); ?>
             </td>
         </tr>
         <tr>
             <td style="vertical-align: -10px;">本文</td>
             <td align="left" colspan="2">
-                <?php echo $this->Form->input('content', array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 500px; height: 200px;margin-left:0px;')); ?>
+                <?php echo $this->Form->input('body', 
+                        array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'cols' => '30', 'rows' => '10', 'style' => 'width: 700px; height: 200px;margin-left:0px;')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: middle;">添付ファイル<br><span style="font-size: 90%;">※３つまで</span></td>
+            <td>
+                <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]', 'label' => false, 'style' => 'width: 100%;')); ?>
+                <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]','label' => false, 'style' => 'width: 100%;')); ?>
+                <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]','label' => false, 'style' => 'width: 100%;')); ?>
             </td>
         </tr>
         <tr>
             <td></td>
             <td align="left" colspan="2">
-                <?php echo $this->Form->submit('送　信', array('name' => 'send', 'style' => 'font-size:100%; padding:10px 15px 10px 15px;')); ?>
+                <?php echo $this->Form->submit('送信する', array('name' => 'send', 'div' => false, 'id' => 'button-send', 'style' => 'font-size:110%; padding:10px 15px 10px 15px;')); ?>
+                &nbsp;&nbsp;
+                <a href='<?=ROOTDIR ?>/message/index' id='button-delete'>キャンセル</a>
             </td>
         </tr>
     </table>

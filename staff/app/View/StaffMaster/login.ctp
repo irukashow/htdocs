@@ -3,8 +3,7 @@
     <div style="text-align: center;">ログイン</div>
 
     <?php echo $this->Form->create('StaffMaster'); ?>
-    <?=$this->Form->input('account', array('type' => 'text', 'label' => 'アカウントID', 'style'=>'width: 95%;',))?>
-    <?=$this->Form->input('email1', array('type' => 'hidden'))?>
+    <?=$this->Form->input('account', array('type' => 'text', 'label' => 'アカウント or Eメールアドレス','type' => 'textbox','style'=>'width: 95%;',))?>
 
     <?=$this->Form->input('password', array('label' => 'パスワード','type' => 'password','style'=>'width: 95%;',))?>
 

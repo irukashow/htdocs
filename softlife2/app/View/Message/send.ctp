@@ -12,7 +12,7 @@
 </div>
 
 <div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
-<?php echo $this->Form->create('MessageMember', array('name' => 'form')); ?>
+<?php echo $this->Form->create('Message2Staff', array('name' => 'form')); ?>
     <table id="" border="0" width="65%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
         <tr>
             <td width="80px">差出人</td>
@@ -21,12 +21,6 @@
                 <?php echo $this->Form->input('username', array('type' => 'hidden', 'label' => false, 'value' => $username)); ?>
                 <?php echo $this->Form->input('name', array('type' => 'hidden', 'label' => false, 'value' => $user_name)); ?>
                 <?php echo $this->Form->input('class', array('type' => 'hidden', 'label' => false, 'value' => $selected_class)); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>宛先</td>
-            <td>
-                <?php echo $this->Form->input('staff_id', array('type' => 'select', 'label' => false, 'div' => false, 'options' => $selected_class, 'style' => 'float:left;padding: 2px;')); ?>
             </td>
         </tr>
         <tr>
@@ -42,7 +36,7 @@
             <td style="vertical-align: -10px;">本文</td>
             <td align="left" colspan="2">
                 <?php echo $this->Form->input('body', 
-                        array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 700px; height: 200px;margin-left:0px;', 'required' => 'required')); ?>
+                        array('type' => 'textarea', 'label' => false, 'div' => 'float:left;', 'id' => 'myArea3', 'style' => 'width: 700px; height: 200px;margin-left:0px;')); ?>
             </td>
         </tr>
         <tr>
@@ -51,6 +45,28 @@
                 <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]', 'label' => false, 'style' => 'width: 100%;')); ?>
                 <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]','label' => false, 'style' => 'width: 100%;')); ?>
                 <?php echo $this->Form->input(false, array('type' => 'file', 'name' => 'attachment[]','label' => false, 'style' => 'width: 100%;')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>宛先スタッフ</td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                    <?php echo $this->Form->input('recipient_staff', array('type' => 'select', 'multiple' => true, 'size' => 5, 'label' => false, 'div' => false, 'options' => null, 'style' => 'float:left;padding: 2px;width:200px;')); ?>
+                        </td>
+                        <td width="50px">
+                    <?php echo $this->Form->submit('←追加', array('name' => 'search', 'div' => false, 'id' => '', 'style' => 'float: left; font-size:110%; padding:0px 15px 0px 15px;')); ?>
+                    <br><br>
+                        <?php echo $this->Form->submit('削除→', array('name' => 'search', 'div' => false, 'id' => '', 'style' => 'float: left; font-size:110%; padding:0px 15px 0px 15px;')); ?>
+                        </td>
+                        <td>
+                    <?php echo $this->Form->input('search_staff_name', array('label' => false, 'div' => false, 'placeholder'=>'検索する氏名を入力してください', 'style' => 'width: 130px;')); ?>
+                    <?php echo $this->Form->submit('検索', array('name' => 'search', 'div' => false, 'id' => 'button-delete', 'style' => 'font-size:110%; padding:0px 15px 0px 15px;')); ?><br>
+                    <?php echo $this->Form->input('recipient_staff', array('type' => 'select', 'multiple' => true, 'label' => false, 'div' => false, 'options' => $staff_array, 'style' => 'float:left;padding: 2px;font-size:90%;width:200px;')); ?>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
         <tr>

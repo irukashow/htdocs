@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class Message extends AppModel {
-    //public $useTable = 'message2member';
+    public $useTable = 'message2staff';
     
     public $validate = array(
         // メッセージ送信

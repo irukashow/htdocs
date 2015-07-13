@@ -4,13 +4,13 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 
 class User extends AppModel {
-    public $name = 'User';
-    public $useTable = 'users';
+    //public $name = 'StaffMaster';
+    //public $useTable = 'staff_masters';
     /** 主キー(省略時は「id」になるので省略も可) */
-    public $primaryKey = 'username';
+    //public $primaryKey = 'id';
  
     public $validate = array(
-            'username' =>  array(
+            'account' =>  array(
                     'rule' => 'notEmpty',
                     'message' => '名前を選択してください。'
             ),
