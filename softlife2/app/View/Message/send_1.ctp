@@ -4,17 +4,49 @@
     //echo $this->Html->image('nicEditorIcons');
     echo $this->Html->css('message');
 ?>
-
 <script type="text/javascript">
 	//bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
 </script>
+<script type="text/javascript">
+function addSelectItem() {
+    //選択された項目番号
+    index = document.getElementById('Message2StaffRecipientStaffList').selectedIndex;
+    itemVal = document.getElementById('Message2StaffRecipientStaffList').value;
+    itemStr = document.getElementById('Message2StaffRecipientStaffList').options[index].text;
+    document.getElementById('Message2StaffRecipientStaffList').removeChild(document.getElementById('Message2StaffRecipientStaffList').options[index]);
+
+    len = document.getElementById('Message2StaffRecipientStaff').options.length;
+    document.getElementById('Message2StaffRecipientStaff').options[len] = new Option(itemStr, itemVal);
+    return false;
+}
+function removeSelectItem() {
+    //選択された項目番号
+    index = document.getElementById('Message2StaffRecipientStaff').selectedIndex;
+    itemVal = document.getElementById('Message2StaffRecipientStaff').value;
+    itemStr = document.getElementById('Message2StaffRecipientStaff').options[index].text;
+    document.getElementById('Message2StaffRecipientStaff').removeChild(document.getElementById('Message2StaffRecipientStaff').options[index]);
+
+    len = document.getElementById('Message2StaffRecipientStaffList').options.length;
+    document.getElementById('Message2StaffRecipientStaffList').options[len] = new Option(itemStr, itemVal);
+    return false;
+}
+function selectAll() {
+    var select = document.getElementById('Message2StaffRecipientStaff');
+    var o = select.options;
+    var i, L;
+    for (i = 0, L = o.length; i < L; ++i) {
+        select.options[i].selected = true;
+    }
+}
+</script>
+
 <!-- 見出し -->
 <div id='headline'>
     ★ メッセージの送信
 </div>
 
 <div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
-<?php echo $this->Form->create('Message2Staff', array('id' => 'form', 'onsubmit' => "selectAll();selectAll2();")); ?>
+<?php echo $this->Form->create('Message2Staff', array('name' => 'form', 'onsubmit' => "selectAll();")); ?>
     <table id="" border="0" width="65%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
         <tr>
             <td width="80px">差出人</td>
@@ -51,31 +83,22 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: middle;">宛先スタッフ</td>
+            <td>宛先スタッフ</td>
             <td>
                 <table>
                     <tr>
                         <td>
-                    <?php echo $this->Form->input('recipient_staff', 
-                            array('type' => 'select', 'multiple' => true, 'size' => 5, 'id' => 'cart', 'label' => false, 'div' => false, 'options' => $recipient_staff, 'style' => 'float:left;padding: 2px;font-size:90%;width:200px;')); ?>
+                    <?php echo $this->Form->input('recipient_staff', array('type' => 'select', 'multiple' => true, 'size' => 5, 'label' => false, 'div' => false, 'options' => null, 'style' => 'float:left;padding: 2px;font-size:90%;width:200px;')); ?>
                         </td>
                         <td align='center' width="100px">
-                            <div>
-                                <input type="button" id="move_left" value="←追　加">
-                            </div>
-                            <div style='margin-top: 10px;'>
-                                <input type="button" id="move_right" value="削　除→">
-                            </div>
+                    <?php echo $this->Html->link('←追加', '#', array('name' => 'left', 'id' => 'button-create', 'onclick' => 'addSelectItem()', 'style' => 'font-size:110%; padding:5px 15px 5px 15px;')); ?>
+                    <br><br>
+                        <?php echo $this->Html->link('削除→', '#', array('name' => 'right', 'id' => 'button-create', 'onclick' => 'removeSelectItem()', 'style' => 'font-size:110%; padding:5px 15px 5px 15px;')); ?>
                         </td>
-                        <td width='250px'>
-                            <?php echo $this->Form->input('search_staff_name', array('label' => false, 'div' => false, 'placeholder'=>'検索する氏名を入力してください', 'style' => 'width: 150px;')); ?>
-                        <?php echo $this->Form->submit('検索', 
-                                array('name' => 'search', 'div' => false, 'id' => 'button-delete', 'style' => 'font-size:110%; padding:0px 15px 0px 15px;')); ?><br>
-                    <!--
-                            <input type="button" id="search" value="検索">
-                    -->
-                        <?php echo $this->Form->input('recipient_staff_list', 
-                                array('type' => 'select', 'multiple' => true, 'id' => 'showcase', 'label' => false, 'div' => false, 'options' => $staff_array, 'style' => 'margin-top:5px;padding: 2px;font-size:90%;width:200px;')); ?>
+                        <td>
+                    <?php echo $this->Form->input('search_staff_name', array('label' => false, 'div' => false, 'placeholder'=>'検索する氏名を入力してください', 'style' => 'width: 130px;')); ?>
+                    <?php echo $this->Form->submit('検索', array('name' => 'search', 'div' => false, 'id' => 'button-delete', 'style' => 'font-size:110%; padding:0px 15px 0px 15px;')); ?><br>
+                    <?php echo $this->Form->input('recipient_staff_list', array('type' => 'select', 'multiple' => true, 'label' => false, 'div' => false, 'options' => $staff_array, 'style' => 'float:left;padding: 2px;font-size:90%;width:200px;')); ?>
                         </td>
                     </tr>
                 </table>
@@ -105,16 +128,15 @@ jQuery(function ($) {
 		});
 	}
 
-	// 「←追加」ボタンのクリック時
-	$("#move_left").on("click", {from: "showcase", to: "cart"}, moveOption);
+	// 「カートへ→」ボタンのクリック時
+	$("#move_right").on("click", {from: "showcase", to: "cart"}, moveOption);
 
-	// 「削除→」ボタンのクリック時
-	$("#move_right").on("click", {from: "cart", to: "showcase"}, moveOption);
+	// 「←棚へ戻す」ボタンのクリック時
+	$("#move_left").on("click", {from: "cart", to: "showcase"}, moveOption);
 
 	// 送信時は、「カート」側のオプションを選択状態にする
-	$("#form").on("submit", function (event) {
+	$("#form1").on("submit", function (event) {
 		$("#cart").children().prop("selected", true);
-                $("#showcase").children().prop("selected", true);
 	});
 });
 </script>

@@ -12,7 +12,7 @@
 </div>
 
 <div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
-<?php echo $this->Form->create('Message2Staff', array('name' => 'form', 'enctype' => 'multipart/form-data')); ?>
+<?php echo $this->Form->create('Message2Member', array('name' => 'form', 'enctype' => 'multipart/form-data')); ?>
 <?php echo $this->Form->input('class', array('type' => 'hidden', 'label' => false, 'value' => $staff_class)); ?>
 <?php echo $this->Form->input('staff_id', array('type' => 'hidden', 'label' => false, 'value' => $staff_id)); ?> 
 <?php echo $this->Form->input('name', array('type' => 'hidden', 'label' => false, 'value' => $name)); ?> 

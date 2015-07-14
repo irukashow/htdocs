@@ -1,11 +1,30 @@
 <?php
     echo $this->Html->css('message');
 ?>
+<?php
+    // 現在選択中のボックスの背景色を変える
+    $style1 = '';$style2 = '';$style3 = '';$style4 = '';
+    if (empty($type)) {
+        $style1 = 'padding: 2px;color:white;background-color:#45bcd2;';
+    } elseif ($type == 'send') {
+        $style2 = 'padding: 2px;color:white;background-color:#45bcd2;';
+    } elseif ($type == 'draft') {
+        $style3 = 'padding: 2px;color:white;background-color:#45bcd2;';
+    } elseif ($type == 'trashbox') {
+        $style4 = 'padding: 2px;color:white;background-color:#45bcd2;';
+    }
+    // 受信メッセージの新着があればその件数を表示
+    $new_message = '';
+    if ($new_count > 0) {
+        $new_message = '<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;">'.$new_count.'</span>';
+    }
+?>
+
 <!-- 見出し -->
 <div id='headline' style="">
     ★ メッセージ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="send" target="" id='button-send'>メッセージを送る</a>
+    <a href="<?=ROOTDIR ?>/message/send" target="" id='button-send'>メッセージを送る</a>
 </div>
 
 <!-- メインペイン -->
@@ -25,7 +44,7 @@
                 </td>
                 <td>
                     <a href="<?=ROOTDIR ?>/message/index" style="text-decoration: none;">
-                        受信トレイ&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=$new_count ?></span>
+                        <span style="<?=$style1 ?>">受信トレイ</span>&nbsp;<?=$new_message ?>
                     </a>
                 </td>
             </tr>
@@ -37,31 +56,31 @@
                 </td>
                 <td>
                     <a href="<?=ROOTDIR ?>/message/index/send" style="text-decoration: none;">
-                        送信済み
+                        <span style="<?=$style2 ?>">送信済み</span>
                     </a>
                 </td>
             </tr>
             <tr>
                 <td width="15px;">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index/draft" style="text-decoration: none;">
                         <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
                     </a>
                 </td>
                 <td>
-                    <a href="#" style="text-decoration: none;">
-                        下書き&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=0 ?></span>
+                    <a href="<?=ROOTDIR ?>/message/index/draft" style="text-decoration: none;">
+                        <span style="<?=$style3 ?>">下書き</span>&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=$draft_count ?></span>
                     </a>
                 </td>
             </tr>
             <tr>
                 <td width="15px;">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index/trashbox" style="text-decoration: none;">
                         <img src="<?=ROOTDIR ?>/img/dustbox.gif" style="vertical-align: -9px;margin-left: 5px;">
                     </a>
                 </td>
                 <td>
-                    <a href="#" style="text-decoration: none;">
-                        削除済み
+                    <a href="<?=ROOTDIR ?>/message/index/trashbox" style="text-decoration: none;">
+                        <span style="<?=$style4 ?>">削除済み</span>
                     </a>
                 </td>
             </tr>
@@ -71,10 +90,26 @@
             </td>
             <td style="width:70%;">
     <!-- メッセージ一覧（受信トレイ） -->
-    <?php if (empty($type)) { ?>
+    <?php if (empty($type) || $type == 'trashbox') { ?>
     <div id='message-list'>
         <?php echo $this->Form->create('Message2Member', array('name' => 'form')); ?>
-        <font style='font-weight: bold;font-size: 110%;'>[受信トレイ]</font><br>
+        <font style='font-weight: bold;font-size: 110%;'>
+        <?php
+            if (empty($type)) {
+                echo '[受信トレイ]';
+            } else {
+                echo '[ゴミ箱]';
+            }
+        ?>
+        </font>
+        &nbsp;&nbsp;&nbsp;
+        <?php if (empty($type)) { ?>
+        <input type='submit' name='2trashbox' value='ゴミ箱へ' style='padding: 5px 10px 5px 10px;font-size: 90%;'>
+        <?php } else { ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type='submit' name='delete' value='完全削除' style='padding: 5px 10px 5px 10px;font-size: 90%;'>
+        <?php } ?>
+        <br>
         <?php echo $this->paginator->numbers (
             array (
                 'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
@@ -97,7 +132,7 @@
             <tr>    
         <?php } ?>   
                 <td style="padding-top: 8px;">
-                    <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
+                    <?php echo $this->Form->input('check', array('name'=>'check['.$data['Message2Member']['id'].']', 'type'=>'checkbox','label'=>false)); ?>
                 </td>
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['Message2Member']['title'], 'detail/'.$data['Message2Member']['id'], array('style'=>'color: blue;')) ?>
@@ -125,11 +160,21 @@
         <?php echo $this->Form->end(); ?>
     </div>
     <!-- メッセージ一覧（受信トレイ）END -->
-    <?php } elseif ($type == 'send') { ?>
+    <?php } elseif ($type == 'send' || $type == 'draft') { ?>
     <!-- メッセージ一覧（送信済み） -->
     <div id='message-list'>
         <?php echo $this->Form->create('Message2Staff', array('name' => 'form')); ?>
-        <font style='font-weight: bold;font-size: 110%;'>[送信済み]</font><br>
+        <font style='font-weight: bold;font-size: 110%;'>
+        <?php
+            if ($type == 'send') {
+                echo '[送信済み]';
+                $dir = 'detail2';
+            } elseif ($type == 'draft') {
+                echo '[下書き]';
+                $dir = 'send';
+            }
+        ?>
+        </font><br>
         <?php echo $this->paginator->numbers (
             array (
                 'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
@@ -151,11 +196,11 @@
                     <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
                 </td>
                 <td class='message-content'>
-                    <?php echo $this->Html->link($data['Message2Staff']['title'], 'detail2/'.$data['Message2Staff']['id'], array('style'=>'color: blue;')) ?>
+                    <?php echo $this->Html->link($data['Message2Staff']['title'], $dir.'/'.$data['Message2Staff']['id'], array('style'=>'color: blue;')) ?>
                 </td>
                 <td class='message-content'><?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?></td>
                 <td class='message-content'>
-                    <?php echo $this->Html->link($data['Message2Staff']['name'], 'detail2/'.$data['Message2Staff']['id'], array('style'=>'')) ?>
+                    <?php echo $this->Html->link($data['Message2Staff']['name'], $dir.'/'.$data['Message2Staff']['id'], array('style'=>'')) ?>
                 </td>
                 <td class='message-content'><?=$data['Message2Staff']['created']; ?></td>
             </tr>

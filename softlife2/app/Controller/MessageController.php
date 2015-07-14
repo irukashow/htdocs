@@ -41,11 +41,16 @@ class MessageController extends AppController {
         $this->Message2Member->setSource('message2member');
         $this->Message2Staff->setSource('message2staff');
 
-        if (empty($type)) {
+        if (empty($type) || $type == 'trashbox') {
+            if (empty($type)) {
+                $flag = 0;
+            } else {
+                $flag = 1;
+            }
             // 受信メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Member' => array(
-                    'conditions' => array('Message2Member.class' => $selected_class),
+                    'conditions' => array('Message2Member.class' => $selected_class, 'delete_flag' => $flag),
                     'fields' => 'Message2Member.*, User.*',
                     'limit' =>20,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
@@ -61,11 +66,17 @@ class MessageController extends AppController {
             );
             $this->set('datas', $this->paginate());
         //$this->log($this->Message2Member->getDataSource()->getLog(), LOG_DEBUG);
-        } elseif ($type == 'send') {
-            // 受信メッセージ一覧の表示
+        } elseif ($type == 'send' || $type == 'draft') {
+            // 送信済みか下書きか
+            if ($type == 'send') {
+                $flag = 1;
+            } elseif ($type == 'draft') {
+                $flag = 0;
+            }
+            // メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Staff' => array(
-                    'conditions' => array('Message2Staff.class' => $selected_class),
+                    'conditions' => array('Message2Staff.class' => $selected_class, 'Message2Staff.sent_flag' => $flag),
                     'fields' => 'Message2Staff.*, StaffMaster.*',
                     'limit' =>20,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
@@ -86,21 +97,51 @@ class MessageController extends AppController {
         $this->Message2Member->setSource('message2member');
         $new_count = $this->Message2Member->find('count', array('conditions' => array('class' => $selected_class, 'kidoku_flag' => 0)));
         $this->set('new_count', $new_count);
+        // 下書きメッセージ件数
+        $this->Message2Staff->setSource('message2staff');
+        $draft_count = $this->Message2Staff->find('count', array('conditions' => array('class' => $selected_class, 'sent_flag' => 0)));
+        $this->set('draft_count', $draft_count);
         
+        //$this->log($this->request->data, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            // 属性の変更
-            $class = $this->request->data['class'];
-            $this->set('selected_class', $class);
-            $this->Session->write('selected_class', $class);
-            //$this->log($class, LOG_DEBUG);
-            $this->redirect('.');
+            if (isset($this->request->data['2trashbox'])) {
+                $result = $this->request->data['check'];
+                foreach ($result as $key => $val) {
+                    //$this->log($key.'=>'.$val, LOG_DEBUG);
+                    if ($val == 1) {
+                        // ゴミ箱行き処理($keyを消す)
+                        $data = array('Message2Member' => array('id' => $key, 'delete_flag' => 1));
+                        $fields = array('delete_flag');
+                        // 更新
+                        $this->Message2Member->save($data, false, $fields);
+                    }
+                }
+                $this->redirect('.');
+            } elseif (isset($this->request->data['delete'])) {
+                $result = $this->request->data['check'];
+                foreach ($result as $key => $val) {
+                    //$this->log($key.'=>'.$val, LOG_DEBUG);
+                    if ($val == 1) {
+                        // 削除
+                        $this->Message2Member->delete($key);
+                    }
+                }
+                $this->redirect('index/trashbox');
+            } else {
+                // 属性の変更
+                $class = $this->request->data['class'];
+                $this->set('selected_class', $class);
+                $this->Session->write('selected_class', $class);
+                //$this->log($class, LOG_DEBUG);
+                $this->redirect('.');
+            }
         } else {
             $this->set('selected_class', $selected_class);
         }
     }
     /** メッセージを送信 **/
-    public function send() {
+    public function send($id = null) {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout","メッセージ作成 - 派遣管理システム");
@@ -129,11 +170,14 @@ class MessageController extends AppController {
         $this->StaffMaster->virtualFields['name'] = 'CONCAT(id, "： ", name_sei, " ", name_mei)';
         $staff_array = $this->StaffMaster->find('list', array('fields' => array('id', 'name')));
         $this->set('staff_array', $staff_array);
-        
+        $this->set('recipient_staff', null);
+        $recipient_staff = null;
+        $recipient_staff_list = null;
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
+            
             // 属性の変更
             if (isset($this->request->data['class'])) {
                 $class = $this->request->data['class'];
@@ -151,16 +195,49 @@ class MessageController extends AppController {
                     // 検索条件を設定するコードをここに書く
                     $conditions2[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
                 }
-                // スタッフの配列
-                $this->StaffMaster->virtualFields['name'] = 'CONCAT(id, "： ", name_sei, " ", name_mei)';
-                $staff_array = $this->StaffMaster->find('list', array('fields' => array('id', 'name'), 'conditions' => $conditions2));
-                $this->set('staff_array', $staff_array);
+
+                // 宛先を戻す
+                $staff_ids = $this->request->data['Message2Staff']['recipient_staff'];
+                if (!empty($staff_ids)) {
+                    foreach($staff_ids as $id) {
+                        $recipient_staff[$id] = $staff_array[$id];
+                    }
+                    $this->set('recipient_staff', $recipient_staff);
+                }
+                // スタッフリスト
+                $staff_lists = $this->request->data['Message2Staff']['recipient_staff_list'];
+                if (empty($staff_lists)) {
+                    // スタッフの配列
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(id, "： ", name_sei, " ", name_mei)';
+                    $staff_array = $this->StaffMaster->find('list', array('fields' => array('id', 'name'), 'conditions' => $conditions2));
+                    $this->set('staff_array', $staff_array);
+                } else {
+                    foreach($staff_lists as $val) {
+                        $recipient_staff_list[$val] = $staff_array[$val];
+                    }
+                    $this->set('staff_array', $recipient_staff_list);
+                }
+            // 下書き
+            } elseif (isset($this->request->data['draft'])) {
+                // 宛先の配列をカンマ区切りに
+                $this->request->data['Message2Staff']['recipient_staff'] = implode(',', $this->request->data['Message2Staff']['recipient_staff']);
+                // 送信済みフラグ：0
+                $this->request->data['Message2Staff']['sent_flag'] = 0;
+                // データを登録する
+                if ($this->Message2Staff->save($this->request->data)) {
+                    $this->Session->setFlash('下書き保存しました。');
+                    $this->redirect('index');
+                }    
             // 送信
             } elseif (isset($this->request->data['send'])) {
+                // 宛先の配列をカンマ区切りに
+                $this->request->data['Message2Staff']['recipient_staff'] = implode(',', $this->request->data['Message2Staff']['recipient_staff']);
+                // 送信済みフラグ：１
+                $this->request->data['Message2Staff']['sent_flag'] = 1;
                 // データを登録する
                 //$this->Message->create();
                 if ($this->Message2Staff->save($this->request->data)) {
-                    //$this->Session->setFlash('送信処理を完了しました。');
+                    $this->Session->setFlash('送信を完了しました。');
                     $this->redirect('index');
                 }                
             // キャンセル
@@ -168,6 +245,18 @@ class MessageController extends AppController {
                 $this->redirect('index');
             }
         } else {
+            // 登録していた値をセット
+            $this->request->data = $this->Message2Staff->read(null, $id);
+            // 宛先のカンマ区切りを配列に
+            $this->request->data['Message2Staff']['recipient_staff'] = explode(',', $this->request->data['Message2Staff']['recipient_staff']);
+            // 宛先を戻す
+            $staff_ids = $this->request->data['Message2Staff']['recipient_staff'];
+            if (!empty($staff_ids)) {
+                foreach($staff_ids as $id) {
+                    $recipient_staff[$id] = $staff_array[$id];
+                }
+                $this->set('recipient_staff', $recipient_staff);
+            }
             
         }
     }
@@ -307,7 +396,7 @@ class MessageController extends AppController {
                 array('fields' => array('username', 'name'), 'conditions' => array('OR' => array(array('area' => substr($class, 0, 1)), array('area' => 99)))));
         $this->set('selected_username', $selected_username);
         // テーブルの設定
-        $this->Message2Staff->setSource('message2staff');
+        $this->Message2Member->setSource('message2member');
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -321,11 +410,11 @@ class MessageController extends AppController {
                 }
                 $this->request->data['Message2Staff']['attachment'] = $val;
                 // データを登録する
-                if ($this->Message2Staff->save($this->request->data)) {
+                if ($this->Message2Member->save($this->request->data)) {
                     //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
                     //$this->log($this->request->params['form']['attachment'], LOG_DEBUG);
                     // insertしたIDを取得
-                    $id0 = $this->Message2Staff->getLastInsertID();
+                    $id0 = $this->Message2Member->getLastInsertID();
                     $id = sprintf("%010d", $id0);
                     //$this->log($id, LOG_DEBUG);
                     // ファイルアップロード処理の初期セット

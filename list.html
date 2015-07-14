@@ -1,0 +1,62 @@
+
+<html>
+<head>
+<title>選択項目を追加する</title>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="robots" content="nofollow">
+
+<title>セレクトボックス間（multiple）でのデータの移動 - jQuery 入門サンプル</title>
+<link type="text/css" rel="stylesheet" href="css/codemirror.css" />
+<link type="text/css" rel="stylesheet" href="css/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+</head>
+<body>
+<form id="form1">
+
+<select id="showcase" multiple="multiple" size="5">
+	<option value="太郎">太郎</option>
+	<option value="次郎">次郎</option>
+	<option value="三郎">三郎</option>
+</select>
+
+<input type="button" id="move_right" value="カートへ→">
+<input type="button" id="move_left" value="←棚へ戻す">
+
+<select id="cart" name="cart" multiple="multiple" size="5">
+	<option value="のび太">のび太</option>
+	<option value="スネ夫">スネ夫</option>
+	<option value="ジャイアン">ジャイアン</option>
+</select>
+
+<p>
+<input type="submit" value="送信する" />
+</p>
+
+</form>
+
+<script>
+jQuery(function ($) {
+	// 要素を移動する関数（まだ仮） */
+	function moveOption(event) {
+		$("#" + event.data.from + " option:selected").each(function () {
+			$(this).appendTo($("#" + event.data.to));
+			$(this).prop("selected", false);// 選択状態の解除
+		});
+	}
+
+	// 「カートへ→」ボタンのクリック時
+	$("#move_right").on("click", {from: "showcase", to: "cart"}, moveOption);
+
+	// 「←棚へ戻す」ボタンのクリック時
+	$("#move_left").on("click", {from: "cart", to: "showcase"}, moveOption);
+
+	// 送信時は、「カート」側のオプションを選択状態にする
+	$("#form1").on("submit", function (event) {
+		$("#cart").children().prop("selected", true);
+	});
+});
+</script>
+</body>
+</html>
