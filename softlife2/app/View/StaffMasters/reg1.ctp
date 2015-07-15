@@ -55,8 +55,8 @@ function affixZero(int) {
             評価関連&nbsp;
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
         </font>
         
 <?php } ?>
@@ -213,8 +213,8 @@ function affixZero(int) {
             評価関連&nbsp;
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
         </font>
         
 <?php } ?>

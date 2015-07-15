@@ -40,6 +40,7 @@ class MessageController extends AppController {
         // テーブルの設定
         $this->Message2Member->setSource('message2member');
         $this->Message2Staff->setSource('message2staff');
+        $this->StaffMaster->setSource('staff_'.$selected_class);
 
         if (empty($type) || $type == 'trashbox') {
             if (empty($type)) {
@@ -90,7 +91,9 @@ class MessageController extends AppController {
                     )  
                 )
             );
-            $this->set('datas', $this->paginate('Message2Staff'));
+            $datas = $this->paginate('Message2Staff');
+            $this->set('datas', $datas);
+            //$this->log($this->Message2Staff->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log($this->paginate(), LOG_DEBUG);
         }
         // 未読メッセージ件数
@@ -124,10 +127,20 @@ class MessageController extends AppController {
                     //$this->log($key.'=>'.$val, LOG_DEBUG);
                     if ($val == 1) {
                         // 削除
-                        $this->Message2Member->delete($key);
+                        if ($type == 'send' || $type == 'draft') {
+                            $this->Message2Staff->delete($key);
+                        } elseif ($type == 'trashbox') {
+                            $this->Message2Member->delete($key);
+                        }
                     }
                 }
-                $this->redirect('index/trashbox');
+                if ($type == 'draft') {
+                    $this->redirect('index/draft');
+                } elseif ($type == 'send') {
+                    $this->redirect('index/send');
+                } elseif ($type == 'trashbox') {
+                    $this->redirect('index/trashbox');
+                }
             } else {
                 // 属性の変更
                 $class = $this->request->data['class'];
@@ -176,8 +189,7 @@ class MessageController extends AppController {
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            $this->log($this->request->data, LOG_DEBUG);
-            
+            //$this->log($this->request->data, LOG_DEBUG);
             // 属性の変更
             if (isset($this->request->data['class'])) {
                 $class = $this->request->data['class'];
@@ -247,15 +259,17 @@ class MessageController extends AppController {
         } else {
             // 登録していた値をセット
             $this->request->data = $this->Message2Staff->read(null, $id);
-            // 宛先のカンマ区切りを配列に
-            $this->request->data['Message2Staff']['recipient_staff'] = explode(',', $this->request->data['Message2Staff']['recipient_staff']);
-            // 宛先を戻す
-            $staff_ids = $this->request->data['Message2Staff']['recipient_staff'];
-            if (!empty($staff_ids)) {
-                foreach($staff_ids as $id) {
-                    $recipient_staff[$id] = $staff_array[$id];
+            if (!empty($this->request->data)) {
+                // 宛先のカンマ区切りを配列に
+                $this->request->data['Message2Staff']['recipient_staff'] = explode(',', $this->request->data['Message2Staff']['recipient_staff']);
+                // 宛先を戻す
+                $staff_ids = $this->request->data['Message2Staff']['recipient_staff'];
+                if (!empty($staff_ids)) {
+                    foreach($staff_ids as $id) {
+                        $recipient_staff[$id] = $staff_array[$id];
+                    }
+                    $this->set('recipient_staff', $recipient_staff);
                 }
-                $this->set('recipient_staff', $recipient_staff);
             }
             
         }
@@ -355,14 +369,21 @@ class MessageController extends AppController {
         $datas = $this->Message2Staff->find('first', array('conditions' => array('id' => $id)));
         //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
         $this->set('data', $datas);
-        // 宛先名の取得
-        $staff_id = $datas['Message2Staff']['recipient_staff'];
+        // 宛先の取得
+        $staff_id = explode(',', $datas['Message2Staff']['recipient_staff']);
         $this->StaffMaster->setSource('staff_'.$selected_class);
-        $result = $this->StaffMaster->find('first', array('conditions' => array('StaffMaster.id' => $staff_id))); 
-        //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
-        $staff_name = $result['StaffMaster']['name_sei'].' '.$result['StaffMaster']['name_mei'];
+        $staff_name = '';
+        foreach ($staff_id as $id) {
+            $result = $this->StaffMaster->find('first', array('conditions' => array('StaffMaster.id' => $id))); 
+            //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
+            if (empty($staff_name)) {
+                $staff_name = '<font style="font-size: 110%;">'.$result['StaffMaster']['name_sei'].' '.$result['StaffMaster']['name_mei'].'</font> ('.$id.')';
+            } else {
+                $staff_name = $staff_name.', <font style="font-size: 110%;">'.$result['StaffMaster']['name_sei'].' '.$result['StaffMaster']['name_mei'].'</font> ('.$id.')';
+            }
+        }
         $this->set('staff_name', $staff_name);
-
+        
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
             // 属性の変更

@@ -38,7 +38,7 @@
         </tr>
         <tr style="background-color: #ffffea;">
             <td>
-                宛先： <?php echo $staff_name; ?>（No.<?=$data['Message2Staff']['recipient_staff'] ?>）
+                宛先： <?php echo $staff_name; ?>
             </td>
         </tr>
         <tr style="background-color: #ffffff; ">

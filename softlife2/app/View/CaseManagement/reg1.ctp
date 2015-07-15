@@ -34,8 +34,8 @@ $(function() {
             契約書情報&nbsp;
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/case_management/reg2/<?=$case_id ?>/<?=$koushin_flag ?>">オーダー情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/case_management/reg3/<?=$case_id ?>/<?=$koushin_flag ?>">契約書情報</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>">オーダー情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>">契約書情報</a>&nbsp;
         </font>
         
 <?php } ?>
@@ -367,8 +367,8 @@ $(function() {
             契約書情報&nbsp;
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/case_management/reg2/<?=$case_id ?>/<?=$koushin_flag ?>">オーダー情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/case_management/reg3/<?=$case_id ?>/<?=$koushin_flag ?>">契約書情報</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>">オーダー情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>">契約書情報</a>&nbsp;
         </font>
         
 <?php } ?>

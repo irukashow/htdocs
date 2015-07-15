@@ -333,7 +333,7 @@ window.onload = function(){
             <font style="font-size: 120%;">登録者メモ</font>
             <br>
             <!--
-            <iframe width="100%" height="200px" src="<?=ROOTDIR ?>/staff_masters/memo/<?=$data['StaffMaster']['id'] ?>" id="memo" frameborder='0' scrolling="yes" style="margin-bottom: 10px;"></iframe>
+            <iframe width="100%" height="200px" src="<?=ROOTDIR ?>/StaffMasters/memo/<?=$data['StaffMaster']['id'] ?>" id="memo" frameborder='0' scrolling="yes" style="margin-bottom: 10px;"></iframe>
             <br>
             -->
             <div style="overflow-y:scroll;height:200px;margin-bottom: 10px;">

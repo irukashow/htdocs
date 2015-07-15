@@ -30,7 +30,7 @@
         <tr style="background-color: #ffffea;">
             <td>
                 差出人： <font style="font-size: 110%;"><?=$data['Message2Member']['name'] ?></font>
-                (<?=$data['Message2Member']['staff_id'] ?>)
+                （No.<?=$data['Message2Member']['staff_id'] ?>）
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <?= date('Y-m-d', strtotime($data['Message2Member']['created'])) ?>
                 (<?= tag_weekday_japanese_convert(strtotime($data['Message2Member']['created'])) ?>)
@@ -76,4 +76,4 @@
 <?php echo $this->Form->end(); ?>
 </div>
 <br>
-<?php echo $this->Html->link('◀メッセージボックスに戻る', 'index', array('style'=>'text-decoration: none;')) ?>
+<?php echo $this->Html->link('◀送信済みボックスに戻る', 'index/sent', array('style'=>'text-decoration: none;')) ?>

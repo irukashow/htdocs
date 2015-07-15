@@ -5,9 +5,9 @@
 <div id='headline' style="padding:10px 10px 10px 10px;">
     ★ 案件管理
     &nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/index" target=""><font Style="font-size:95%;">案件一覧</font></a>
+    <a href="<?=ROOTDIR ?>/CaseManagement/index" target=""><font Style="font-size:95%;">案件一覧</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/customer" target="" onclick=''><font Style="font-size:95%;">取引先一覧</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/CaseManagement/customer" target="" onclick=''><font Style="font-size:95%;">取引先一覧</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[職種マスタ]</font></b>
 </div>

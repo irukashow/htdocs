@@ -1,0 +1,233 @@
+
+<!doctype html>
+<html><!-- InstanceBegin template="/Templates/article.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="utf-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Dialog 概要 ～ jQuery UI の使い方～</title>
+<!-- InstanceEndEditable -->
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+<link rel="stylesheet" type="text/css" href="/js/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
+<link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+
+<link type="text/css" rel="stylesheet" href="/css/codemirror.css">
+<script src="/js/codemirror-compressed.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+</head>
+
+<body>
+<!-- 機能紹介 -->
+<script type="text/javascript">
+$(function() {
+  // 2ダイアログ機能を適用
+  $('#msg').dialog();
+});
+</script>
+<div id="msg" title="メッセージ機能の紹介" style="display: none">
+<p>この機能を使って、スタッフの方とメッセージをやりとりすることが可能です。<br />※ただし、スタッフ専用サイトが開設されるまでは使用できません。</p>
+</div>
+
+    <div id="header">
+        <img src="/img/title_header.jpg" width="1147" height="96">
+    </div>
+    
+	<div class="yui3-g" id="layout">
+	    <nav class="yui3-u">
+	    	<div class="content">
+	    		<div class="cont_title">
+	    			メニュー
+	    		</div>
+				<ul class="easyui-tree" id="menu_tree" url="/menu.json" method="get" animate="true">
+ 			    </ul>
+	    	</div>
+	    </nav>
+        <div class="yui3-u" id="main">
+        <article><!-- InstanceBeginEditable name="本文" -->
+  <h1>Dialog 概要</h1>
+  <p>画面上にダイアログボックスを表示します。タイトルや本文又はボタンを配置することができます。</p>
+  <p>基本的な使い方は、ダイアログにしたいjQueryオブジェクト（通常、div）に対して、.dialog()メソッドを呼ぶことによりダイアログに変換します。また、それと同時に表示します（disabledに設定されている時は除く）。<br>
+  </p>
+
+<!-- ▼▼▼【コード始まり】▼▼▼ -->
+<form><textarea class="js">
+$(".selector").dialog();
+</textarea></form>
+<!-- ▲▲▲【コード終わり】▲▲▲ -->
+
+
+
+    <p>また、引数に文字列を渡すことにより、ダイアログ機能を変化させることができます。通常であれば、dialogDisable()などの個別のメソッドが存在しそうですが、jQuery UIでは、そのような個別なメソッドは作らず、.dialog()の引数にメソッド代わりの文字列を指定します。そうすることで、余計なメソッドを増やさないようにしています。</p>
+    <p>
+      <textarea class="js">
+$(".selector").dialog('disable');
+    </textarea>
+    </p>
+    <h2>サンプル</h2>
+    <p>オプションについては、次ページで詳しく見ていきます。</p>
+    
+
+
+
+<!-- ▼▼▼【コード始まり】▼▼▼ -->
+<form>
+
+    <textarea class="mixed">
+<div class="box1" style="display: none">
+  .box1クラスです
+</div>
+
+<script>
+$("#bntBox1").on("click", function () {
+	$(".box1").dialog({
+		title: 'タイトルです',
+		modal: true,
+		buttons: {
+			'閉じる': function () {
+				// thisは、ダイアログボックス
+				$(this).dialog("close");
+			}
+		}
+	});
+});
+</script>
+  </textarea>
+
+    <input name="ボタン" type="button" id="bntBox1" value="ボタン">
+
+</form>
+<!-- ▲▲▲【コード終わり】▲▲▲ -->
+
+<script>
+$("#bntBox1").on("click", function () {
+	$(".box1").dialog({
+		title: 'タイトルです',
+		modal: true,
+		buttons: {
+			'閉じる': function () {
+				// thisは、ダイアログボックス
+				$(this).dialog("close");
+			}
+		}
+	});
+});
+</script>
+
+
+
+
+
+
+<div class="box1" style="display: none">
+  <p>.box1クラスです</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- ▲▲▲【コード終わり】▲▲▲ -->
+  
+  </p>
+<!-- InstanceEndEditable --></article>
+	    </div>
+
+	    <div class="yui3-u" id="extra">
+	    	<div class="content">
+	    		<div class="cont_title">
+	    			スポンサー
+	    		</div>
+<!-- 東側 -->
+
+<div style="margin-bottom:15px;">
+</div>
+
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-6648721895279973";
+/* ワイド スカイスクレイパー（160×600） */
+google_ad_slot = "0350772545";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+<div style="margin-bottom:15px;">
+</div>
+
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-6648721895279973";
+/* Small Square (200 x 200) */
+google_ad_slot = "9103815397";
+google_ad_width = 200;
+google_ad_height = 200;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+<div style="margin-bottom:15px;">
+</div>
+
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-6648721895279973";
+/* Small Square (200 x 200) */
+google_ad_slot = "9103815397";
+google_ad_width = 200;
+google_ad_height = 200;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+
+	    	</div>
+	    </div>
+	</div>
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+<!--
+<script src="/js/easyui/jquery.easyui.min.js"></script>
+全部読み込むと、ダイアログが正常に表示されなくなるため
+-->
+<script src="/js/easyui/jquery.parser.js"></script>
+<script src="/js/easyui/jquery.draggable.js"></script>
+<script src="/js/easyui/jquery.droppable.js"></script>
+<script src="/js/easyui/plugins/jquery.tree.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6224903-18']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+<!-- InstanceEnd --></html>

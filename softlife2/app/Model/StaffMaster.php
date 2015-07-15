@@ -13,7 +13,7 @@ App::uses('AppModel', 'Model');
  * @author M-YOKOI
  */
 class StaffMaster extends AppModel {
-    //public $useTable = 'staff_masters';
+    //public $useTable = 'StaffMasters';
     //public $useTable = false;
     
     public $validate = array(

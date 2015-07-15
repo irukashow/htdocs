@@ -5,7 +5,7 @@
 <div id='headline' style="">
     ★ メッセージ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="send" target="" id='button-send'>メッセージを送る</a>
+    <a href="<?=ROOTDIR ?>/message/send" target="" id='button-send'>メッセージを送る</a>
 </div>
 
 <!-- メインペイン -->
@@ -19,58 +19,34 @@
         <table border="0">
             <tr>
                 <td width="15px;">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index" style="text-decoration: none;">
                         <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
                     </a>
                 </td>
                 <td>
-                    <a href="#" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index" style="text-decoration: none;">
                         受信トレイ&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=$new_count ?></span>
                     </a>
                 </td>
             </tr>
             <tr>
                 <td width="15px;">
-                    <a href="#" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index/sent" style="text-decoration: none;">
                         <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
                     </a>
                 </td>
                 <td>
-                    <a href="#" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index/sent" style="text-decoration: none;">
                         送信済み
                     </a>
                 </td>
             </tr>
-            <tr>
-                <td width="15px;">
-                    <a href="#" style="text-decoration: none;">
-                        <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
-                    </a>
-                </td>
-                <td>
-                    <a href="#" style="text-decoration: none;">
-                        下書き&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=0 ?></span>
-                    </a>
-                </td>
-            </tr>
-            <tr>
-                <td width="15px;">
-                    <a href="#" style="text-decoration: none;">
-                        <img src="<?=ROOTDIR ?>/img/dustbox.gif" style="vertical-align: -9px;margin-left: 5px;">
-                    </a>
-                </td>
-                <td>
-                    <a href="#" style="text-decoration: none;">
-                        削除済み
-                    </a>
-                </td>
-            </tr>
         </table>
-        <a href="<?=ROOTDIR ?>/message/staff">●テストページ「スタッフからの送信」</a>
     </div>
             </td>
             <td style="width:70%;">
     <!-- メッセージ一覧 -->
+<?php if (empty($type)) { ?>
     <div id='message-list'>
         <?php echo $this->Form->create('Message2Staff', array('name' => 'form')); ?>
         <font style='font-weight: bold;font-size: 110%;'>[受信トレイ]</font><br>
@@ -119,6 +95,52 @@
         ?>
         <?php echo $this->Form->end(); ?>
     </div>
+<?php } elseif ($type == 'sent') { ?>
+    <div id='message-list'>
+        <?php echo $this->Form->create('Message2Member', array('name' => 'form')); ?>
+        <font style='font-weight: bold;font-size: 110%;'>[送信済み]</font><br>
+        <?php echo $this->paginator->numbers (
+            array (
+                'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
+                'after' => $this->paginator->hasNext() ? ' | '.$this->paginator->last('>>') : '',
+            )
+        );
+        ?>
+        <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void">
+            <tr style='background-color: #459ed2;'>
+                <th style='width:40%;'>標題</th>
+                <th style='width:15%;'>宛先</th>
+                <th style='width:15%;'>差出人</th>
+                <th style='width:25%;'>送信日時</th>
+            </tr>
+            <?php foreach ($datas as $data) { ?>
+            <tr>    
+                <td class='message-content'>
+                    <?php echo $this->Html->link($data['Message2Member']['title'], 'detail2/'.$data['Message2Member']['id'], array('style'=>'color: blue;')) ?>
+                </td>
+                <td class='message-content'><?=$data['User']['name_sei'].' '.$data['User']['name_mei']; ?></td>
+                <td class='message-content'>
+                    <?php echo $this->Html->link($data['Message2Member']['name'], 'detail2/'.$data['Message2Member']['id'], array('style'=>'')) ?>
+                </td>
+                <td class='message-content'><?=$data['Message2Member']['created']; ?></td>
+            </tr>
+            <?php } ?>
+            <?php if (count($datas) == 0) { ?>
+            <tr>
+                <td colspan="5" align="center">表示するメッセージはありません。</td>
+            </tr>
+            <?php } ?>
+        </table>
+        <?php echo $this->paginator->numbers (
+            array (
+                'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
+                'after' => $this->paginator->hasNext() ? ' | '.$this->paginator->last('>>') : '',
+            )
+        );
+        ?>
+        <?php echo $this->Form->end(); ?>
+    </div>
+<?php } ?> 
                 </td>
         </tr>
     </table>

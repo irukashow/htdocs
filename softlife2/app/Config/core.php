@@ -400,3 +400,10 @@ Cache::config('_cake_model_', array(
  * セキュリティレベルの設定
  */
 Configure::write('Security.level', 'low');
+
+/**
+ * IEにてセッションが頻繁に切れる問題への解決
+ */
+Configure::write('Security.cookie', 'cakephpfdebackend');
+Configure::write('Session.cookieTimeout', 0);
+Configure::write('Session.checkAgent', false);

@@ -15,7 +15,7 @@ App::uses('AppController', 'Controller');
 class MessageController extends AppController {
     public $uses = array('Message2Staff', 'Message2Member', 'StaffMaster', 'User');
 
-    public function index() {
+    public function index($type = null) {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout","メッセージ一覧 - 派遣管理システム");
@@ -36,28 +36,53 @@ class MessageController extends AppController {
         $this->set('user_name', $name);
         $this->Message2Staff->setSource('message2staff');
         $class = $this->Session->read('class');
-        //$this->log($class ,LOG_DEBUG);
-        // 受信メッセージ一覧の表示
-        $this->paginate = array(
-            'Message2Staff' => array(
-                'conditions' => array('StaffMaster.id' => $staff_id),
-                'fields' => 'Message2Staff.*, StaffMaster.*',
-                'limit' =>20,                        //1ページ表示できるデータ数の設定
-                'order' => array('id' => 'desc'),  //データを降順に並べる
-                'joins' => array (
-                    array (
-                        'type' => 'LEFT',
-                        'table' => 'staff_'.$class,
-                        'alias' => 'StaffMaster',
-                        'conditions' => 'StaffMaster.id = Message2Staff.recipient_staff' 
-                    )
-                )  
-            )
-        );
-        $this->set('datas', $this->paginate());
-        $this->log($this->Message2Staff->getDataSource()->getLog(), LOG_DEBUG);
+        $this->set('type', $type);
+        // テーブルの設定
+        $this->Message2Member->setSource('message2member');
+        $this->Message2Staff->setSource('message2staff');
+
+        if (empty($type)) {
+            // メッセージ一覧の表示
+            $this->paginate = array(
+                'Message2Staff' => array(
+                    'conditions' => array('Message2Staff.class' => $class, 'StaffMaster.id' => $staff_id, 'Message2Staff.sent_flag' => 1),
+                    'fields' => 'Message2Staff.*, StaffMaster.*',
+                    'limit' =>20,                        //1ページ表示できるデータ数の設定
+                    'order' => array('id' => 'desc'),  //データを降順に並べる
+                    'joins' => array (
+                        array (
+                            'type' => 'LEFT',
+                            'table' => 'staff_'.$class,
+                            'alias' => 'StaffMaster',
+                            'conditions' => 'StaffMaster.id = Message2Staff.recipient_staff' 
+                        )
+                    )  
+                )
+            );
+            $this->set('datas', $this->paginate('Message2Staff'));
+            //$this->log($this->paginate(), LOG_DEBUG);
+        } elseif ($type == 'sent') {
+            // 受信メッセージ一覧の表示
+            $this->paginate = array(
+                'Message2Member' => array(
+                    'conditions' => array('Message2Member.class' => $class, 'delete_flag' => 0),
+                    'fields' => 'Message2Member.*, User.*',
+                    'limit' =>20,                        //1ページ表示できるデータ数の設定
+                    'order' => array('id' => 'desc'),  //データを降順に並べる
+                    'joins' => array (
+                        array (
+                            'type' => 'LEFT',
+                            'table' => 'users',
+                            'alias' => 'User',
+                            'conditions' => 'User.username = Message2Member.recipient_member' 
+                        )
+                    )  
+                )
+            );
+            $this->set('datas', $this->paginate('Message2Member'));
+        }
         // 未読メッセージ件数
-        $new_count = $this->Message2Staff->find('count', array('conditions' => array('recipient_staff' => $staff_id, 'class' => $class, 'kidoku_flag' => 0)));
+        $new_count = $this->Message2Staff->find('count', array('conditions' => array('recipient_staff' => $staff_id, 'class' => $class, 'Message2Staff.sent_flag' => 1, 'kidoku_flag' => 0)));
         $this->set('new_count', $new_count);
         
         // POSTの場合
@@ -68,7 +93,7 @@ class MessageController extends AppController {
         }
     }
     /** メッセージを送信 **/
-    public function send() {
+    public function sent() {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout","メッセージ作成 - 派遣管理システム");
@@ -162,6 +187,69 @@ class MessageController extends AppController {
         $this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
         $staff_name = $result['StaffMaster']['name_sei'].' '.$result['StaffMaster']['name_mei'];
         $this->set('staff_name', $staff_name);
+
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            //$this->log($this->request->data, LOG_DEBUG);
+            if ($this->Message2Member->validates() == false) {
+                exit();
+            }
+            // 属性の変更
+            if (isset($this->request->data['class'])) {
+                $class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $class);
+                $this->Session->write('selected_class', $class);
+            } else {
+                
+            }
+        } else {
+            
+        }
+    }
+    
+    public function detail2($id = null) {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout","メッセージ内容 - 派遣管理システム");
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', 'active');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // ユーザー名前
+        $username = $this->Auth->user('username');
+        $this->set('username', $username);
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $this->set('selected_class', $this->Session->read('selected_class'));
+        // テーブルの設定
+        $this->Message2Member->setSource('message2member');
+        //$this->MessageStaff->setSource('message_staff');
+        // 既読フラグ: 1
+        // 更新する内容を設定
+        $data = array('Message2Member' => array('id' => $id, 'kidoku_flag' => 1));
+        // 更新する項目（フィールド指定）
+        $fields = array('kidoku_flag');
+        // 更新
+        if ($this->Message2Member->save($data, false, $fields)) {
+        }
+        // 受信メッセージの内容表示
+        $datas = $this->Message2Member->find('first', array('conditions' => array('id' => $id)));
+        //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
+        $this->set('data', $datas);
+        // 宛先名の取得
+        $username = $datas['Message2Member']['recipient_member'];
+        $result = $this->User->find('first', array('conditions' => array('User.username' => $username))); 
+        //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
+        $name_member = $result['User']['name_sei'].' '.$result['User']['name_mei'];
+        $this->set('name_member', $name_member);
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {

@@ -51,24 +51,24 @@ function doSearch1(id) {
 <div id='headline' style="padding:10px 10px 10px 10px;">
     ★ 案件管理
     &nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/index/0" target="" onclick=''><font Style="font-size:95%;">案件一覧</font></a>
+    <a href="<?=ROOTDIR ?>/CaseManagement/index/0" target="" onclick=''><font Style="font-size:95%;">案件一覧</font></a>
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[取引先一覧]</font></b>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/shokushu" target=""><font Style="font-size:95%;">職種マスタ</font></a>
+    <a href="<?=ROOTDIR ?>/CaseManagement/shokushu" target=""><font Style="font-size:95%;">職種マスタ</font></a>
 </div>
 <!-- 見出し１ END -->
 <!-- 見出し２ -->
 <div id='headline' style="padding:5px 10px 5px 10px;">
     &nbsp;
-    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
+    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 0 || empty($flag)) { ?>
     <b><font Style="font-size:95%;">[登録リスト]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/case_management/customer/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
+    <a href="<?=ROOTDIR ?>/CaseManagement/customer/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
 <?php } elseif ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/case_management/customer/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
+    <a href="<?=ROOTDIR ?>/CaseManagement/customer/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
     &nbsp;
     <b><font Style="font-size:95%;">[登録解除リスト]</font></b>
 <?php } ?>
@@ -122,17 +122,17 @@ function doSearch1(id) {
   <tr>
     <?php $staff_id = $data['Customer']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-weight: bold;color: #006699;"><?php echo $staff_id; ?></font>
         </a>
     </td>
     <td align="left">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['Customer']['corp_name']; ?>
         </a>
     </td>
     <td align="left">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/case_management/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <?php echo $data['Customer']['busho'].'<br>'.$data['Customer']['tantou']; ?>
         </a>
     </td>

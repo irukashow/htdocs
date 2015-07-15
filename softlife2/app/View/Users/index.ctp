@@ -52,9 +52,9 @@
                     <br>
                     <?php echo $this->Html->link('ログアウト', 'logout', array('title'=>'確認'), 'ログアウトしてもよろしいですか？'); ?>
                     
-                    <div style="text-align: center;margin-top: 0px;">
+                    <div style="text-align: center;margin-top: -5px;">
                         <?php echo $this->Html->image('dog.gif', array('title' => 'ぼしゅうちゅう！', 'style' => 'cursor: pointer;')); ?><br>
-                        <span style="font-family: 'HG創英角ﾎﾟｯﾌﾟ体';">「ホームのイメージ募集中！」</span>
+                        <span style="font-family: 'HG創英角ﾎﾟｯﾌﾟ体';">「イメージ 写真 募集中！」</span><br>
                     </div>
                     
                     <div style="margin-top: 30px;">
@@ -141,6 +141,11 @@
                             </tr>
                         </table>
                         <!-- カレンダー END-->
+                        <div style="margin-top: 10px;">
+                            <font style="font-size: 60%;">
+                            <a href="http://grapee.jp/66393" target="_blank">[記事]「私があなたのママになる。」瀕死の子ネコを助けた、優しいハスキー犬</a>
+                            </font>
+                        </div>
                     </div>
                 </div>
             </td>

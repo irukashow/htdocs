@@ -48,9 +48,9 @@ $(function() {
     <fieldset style="border:none;margin-bottom: 5px;">
         <legend style="font-size: 150%;color: red;"><?php echo __(setKari($koushin_flag).'スタッフ登録<font color=gray> （基本情報）</font>'); ?></legend>
         <font style="font-size: 110%;">
-            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
             <font color="blue" style="background-color: yellow;">基本情報</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
         </font>
         
 <?php echo $this->Form->create('StaffMaster', array('name' => 'form','enctype' => 'multipart/form-data','id' => 'regist')); ?>
@@ -405,9 +405,9 @@ $(function() {
             </tr>
         </table>
         <font style="font-size: 110%;">
-            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
             <font color="blue" style="background-color: yellow;">基本情報</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
         </font>
 
     </fieldset>

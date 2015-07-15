@@ -58,8 +58,8 @@ $(function() {
     <fieldset style="border:none;margin-bottom: 5px;">
         <legend style="font-size: 150%;color: red;"><?php echo __(setKari($koushin_flag).'スタッフ登録<font color=gray> （評価関連）</font>'); ?></legend>
         <font style="font-size: 110%;">
-            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
             <font color="blue" style="background-color: yellow;">評価関連</font>&nbsp;
         </font>
 
@@ -237,8 +237,8 @@ $(function() {
             </tr>
         </table>
         <font style="font-size: 110%;">
-            <a href="<?=ROOTDIR ?>/staff_masters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg1/<?=$staff_id ?>/<?=$koushin_flag ?>">登録情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
             <font color="blue" style="background-color: yellow;">評価関連</font>&nbsp;
         </font>
     </fieldset>

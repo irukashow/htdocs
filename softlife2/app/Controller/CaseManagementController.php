@@ -71,7 +71,7 @@ class CaseManagementController extends AppController {
         //$this->log($this->getTantou(), LOG_DEBUG);
         $this->set('getTantou', $this->getTantou());
         // テーブルの設定
-        //$this->CaseManagement->setSource('case_management');
+        //$this->CaseManagement->setSource('CaseManagement');
         // 引数の受け取り
         if (isset($this->params['named']['limit'])) {
             $limit = $this->params['named']['limit'];

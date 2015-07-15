@@ -174,7 +174,14 @@
                 $dir = 'send';
             }
         ?>
-        </font><br>
+        </font>
+        <?php if ($type == 'send') { ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <?php } elseif ($type == 'draft') { ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <?php } ?>
+        <input type='submit' name='delete' value='削　除' style='padding: 5px 10px 5px 10px;font-size: 90%;'>
+        <br>
         <?php echo $this->paginator->numbers (
             array (
                 'before' => $this->paginator->hasPrev() ? $this->paginator->first('<<').' | ' : '',
@@ -193,12 +200,20 @@
             <?php foreach ($datas as $data) { ?>
             <tr>    
                 <td style="padding-top: 8px;">
-                    <?php echo $this->Form->input('check',array('type'=>'checkbox','label'=>false)); ?>
+                    <?php echo $this->Form->input('check',array('name'=>'check['.$data['Message2Staff']['id'].']', 'type'=>'checkbox','label'=>false)); ?>
                 </td>
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['Message2Staff']['title'], $dir.'/'.$data['Message2Staff']['id'], array('style'=>'color: blue;')) ?>
                 </td>
-                <td class='message-content'><?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?></td>
+                <td class='message-content'>
+                            <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?>
+                    <?php
+                        if (strpos($data['Message2Staff']['recipient_staff'], ',')) {
+                            echo '&nbsp;など';
+                        }
+                    
+                    ?>
+                </td>
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['Message2Staff']['name'], $dir.'/'.$data['Message2Staff']['id'], array('style'=>'')) ?>
                 </td>
@@ -225,4 +240,20 @@
                 </td>
         </tr>
     </table>
+</div>
+
+<!-- 機能紹介 -->
+<script type="text/javascript">
+$(function() {
+    //alert('制作中です');
+  // 2ダイアログ機能を適用
+  $('#dialog').dialog({
+    modal: false
+  });
+});
+</script>
+<div id="dialog" title="メッセージ機能の紹介" style="display: none">
+<p style="font-size: 90%;">
+    この機能を使って、スタッフの方とメッセージをやりとりすることが可能です。<br>
+    ※ただし、スタッフ専用サイトが開設されるまでは使用できません。</p>
 </div>

@@ -61,18 +61,18 @@ function chkHankaku(textbox) {
 <div id='headline' style="padding:5px 10px 5px 10px;">
     ★ スタッフマスタ
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/provisional/0" onclick="" id="pre_regist">仮登録リスト</a>     <!-- alert('制作中');return false; -->
+    <a href="<?=ROOTDIR ?>/StaffMasters/provisional/0" onclick="" id="pre_regist">仮登録リスト</a>     <!-- alert('制作中');return false; -->
     &nbsp;
-    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/reg1/0/0','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='button-create'>新規登録</a>
+    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/reg1/0/0','スタッフ登録','width=1200,height=900,scrollbars=yes');" id='button-create'>新規登録</a>
     &nbsp;
 <?php if ($flag == 1) { ?>
-    <a href="<?=ROOTDIR ?>/staff_masters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
+    <a href="<?=ROOTDIR ?>/StaffMasters/index/0" target=""><font Style="font-size:95%;">登録リスト</font></a>
     &nbsp;
     <b><font Style="font-size:95%;">[登録解除リスト]</font></b>
 <?php } else { ?>
     <b><font Style="font-size:95%;">[登録リスト]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/staff_masters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
+    <a href="<?=ROOTDIR ?>/StaffMasters/index/1" target=""><font Style="font-size:95%;">登録解除リスト</font></a>
 <?php } ?>    
     &nbsp;&nbsp;&nbsp;
     <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'font-size:90%; margin:0px; padding:5px 15px 5px 15px;')); ?>
@@ -172,11 +172,11 @@ function chkHankaku(textbox) {
     <div style="float:left;margin:5px 0px 0px 15px;">
         【写真】
         <?php if ($pic_staff == 0) { ?>
-            <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>/pic:1">表示する</a>
+            <a href="<?=ROOTDIR ?>/StaffMasters/index/<?=$flag ?>/pic:1">表示する</a>
             &nbsp;|&nbsp;<b>非表示</b>
         <?php } else { ?>
             <b>表示</b>&nbsp;|&nbsp;
-            <a href="<?=ROOTDIR ?>/staff_masters/index/<?=$flag ?>/pic:0">非表示にする</a>
+            <a href="<?=ROOTDIR ?>/StaffMasters/index/<?=$flag ?>/pic:0">非表示にする</a>
         <?php } ?>
     </div>
     <div style="float:right;margin-top: 5px;">
@@ -241,7 +241,7 @@ function chkHankaku(textbox) {
     <td align="right">&nbsp;</td>
     <?php $staff_id = $data['StaffMaster']['id']; ?>
     <td align="center">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
             <div>
             <?php
                 if ($pic_staff == 1) {
@@ -259,7 +259,7 @@ function chkHankaku(textbox) {
         </a>
     </td>
     <td align="center" style="font-size: 110%;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/staff_masters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/<?php echo $flag ?>/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
             <?php echo $data['StaffMaster']['name_sei']." ".$data['StaffMaster']['name_mei'];?><br>
         </a>
 	<?php

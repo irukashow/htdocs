@@ -51,8 +51,14 @@
     
     echo $scripts_for_layout;
   ?>
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/sunny/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<!--
 <script type="text/javascript">google.load("jquery", "1.7");</script>
+-->
 <script type="text/javascript">
 $(function() {
 	$("#menu li").hover(function() {
@@ -115,9 +121,9 @@ $(function() {
                     <div id='cssmenu'>
                         <ul>
                             <li class='<?= $active1 ?>'><a href='<?=ROOTDIR ?>/users/'>ホーム<br><div>Home</div></a></li>
-                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/' onclick='alert("制作中");'>メッセージ<br><div>Message</div></a></li>
-                           <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/staff_masters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
-                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/case_management/' onclick='alert("制作中");'>案件管理<br><div>Case Management</div></a></li>
+                           <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/'>メッセージ<br><div>Message</div></a></li> <!--  onclick='alert("制作中");' -->
+                           <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/StaffMasters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
+                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/CaseManagement/index/0' onclick='alert("制作中です");'>案件管理<br><div>Case Management</div></a></li>
                            <li class='<?= $active5 ?>'><a href='' onclick='alert("制作予定");return false;'>シフト管理<br><div>Shift Management</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
