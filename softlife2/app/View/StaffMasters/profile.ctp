@@ -139,7 +139,7 @@ window.onload = function(){
                             <td style='width:70%;'>
                                 <?=$data['StaffMaster']['email1'] ?>
                                 <br>
-                                →<?=$this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id']); ?>
+                                →<?=$this->Html->link('ログインアカウント変更', 'password/'.$data['StaffMaster']['id']); ?>
                             </td>
                         </tr>
                         <tr>
@@ -155,7 +155,7 @@ window.onload = function(){
                         } else {
                             echo $data['StaffMaster']['account'];
                             echo '<br>';
-                            echo '→'.$this->Html->link('パスワード変更', 'password/'.$data['StaffMaster']['id']);
+                            echo '→'.$this->Html->link('ログインアカウント変更', 'password/'.$data['StaffMaster']['id']);
                         }
                     ?>
                             </td>

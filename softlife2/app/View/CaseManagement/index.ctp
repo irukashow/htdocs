@@ -29,22 +29,24 @@ window.onload = function(){
 }
   //-->
 </script>
+<!-- for Datepicker -->
+<link type="text/css" rel="stylesheet"
+  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+<script type="text/javascript"
+  src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"
+  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+<!--1国際化対応のライブラリをインポート-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/i18n/jquery-ui-i18n.min.js"></script>
 <script type="text/javascript">
-<!-- 
-//ID絞り込みテキストボックスでENTERが押された場合 
-function doSearch1(id) {
-    if(event.keyCode == 13){
-	var elm = document.createElement("input");
-	elm.setAttribute("name", "id");
-	elm.setAttribute("type", "hidden");
-	elm.setAttribute("value", id);
-	form.appendChild(elm);
-	form.submit();
-        return false;
-    }
-}
-//-->
-</script>    
+$(function() {
+  // 2日本語を有効化
+  $.datepicker.setDefaults($.datepicker.regional['ja']);
+  // 3日付選択ボックスを生成
+  $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
+});
+</script>
+
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
 <div id='headline' style="padding:10px 10px 10px 10px;">
@@ -113,40 +115,48 @@ function doSearch1(id) {
 <!--- スタッフマスタ本体 START --->
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;margin-top: -10px;">
-    <th><?php echo $this->Paginator->sort('no',"No.");?></th>
-    <th style="width:15%;"><?php echo $this->Paginator->sort('id','案件名<br>依頼主<br>事業主', array('escape' => false));?></th>
-    <th style="width:5%;"><?php echo $this->Paginator->sort('name_sei','契約形態', array('escape' => false));?></th>
-    <th style="width:6%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
-    <th style="width:5%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
-    <th style="width:15%;"><?php echo $this->Paginator->sort('ojt_date','就業場所<br>住所<br>電話番号<br>担当者', array('escape' => false));?></th>
-    <th style="width:25%;" colspan="4"><?php echo $this->Paginator->sort('service_count','今月のオーダー内容／来月のオーダー内容<br>職種・勤務時間・受注金額・人数', array('escape' => false));?></th>
-    <th style="width:7%;"><?php echo $this->Paginator->sort('shokushu_shoukai','オーダー入力<br>更新日<br>入力済ﾁｪｯｸ', array('escape' => false));?></th>
-    <th style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','シフト入力<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
-    <th style="width:7%;"><?php echo $this->Paginator->sort('3m_spot','帳票作成<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
-    <th style="width:7%;">&nbsp;</th>
+      <th rowspan="2"><?php echo $this->Paginator->sort('no',"No.");?></th>
+    <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('id','案件名<br>依頼主<br>事業主', array('escape' => false));?></th>
+    <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('name_sei','契約形態', array('escape' => false));?></th>
+    <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
+    <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
+    <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('ojt_date','就業場所<br>住所<br>電話番号<br>担当者', array('escape' => false));?></th>
+    <th style="width:25%;color: white;" colspan="4">今月のオーダー内容／来月のオーダー内容</th>
+    <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('shokushu_shoukai','オーダー入力<br>更新日<br>入力済ﾁｪｯｸ', array('escape' => false));?></th>
+    <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','シフト入力<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
+    <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('3m_spot','帳票作成<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
+    <th rowspan="2" style="width:7%;">&nbsp;</th>
+  </tr>
+  <tr>
+      <th style="color: white;">職種</th>
+      <th style="color: white;">勤務時間</th>
+      <th style="color: white;">受注金額</th>
+      <th style="color: white;">人数</th>
   </tr>
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">
-          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'placeholder'=>'依頼主', 'style' => 'width:90%;font-size:90%;')); ?>
-          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'placeholder'=>'事業主', 'style' => 'width:90%;font-size:90%;')); ?>
+          <?php echo $this->Form->input('search_client', array('type'=>'text', 'label' => false, 'placeholder'=>'依頼主', 'style' => 'width:90%;font-size:90%;')); ?>
+          <?php echo $this->Form->input('search_entrepreneur', array('type'=>'text', 'label' => false, 'placeholder'=>'事業主', 'style' => 'width:90%;font-size:90%;')); ?>
       </td>
       <td style="background-color: #ffffe6;">
           <?php $list_type = array('1'=>'派遣契約', '2'=>'請負契約'); ?>
-          <?php echo $this->Form->input('search_tantou', 
+          <?php echo $this->Form->input('search_contract', 
                   array('type'=>'select', 'label' => false, 'style' => 'width:90%;font-size:90%;', 'empty' => array('' => '契約形態を選んでください'), 'options' => $list_type)); ?>
       </td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'placeholder'=>'開始日', 'style' => 'width:90%;font-size:90%;')); ?></td>
+      <td style="background-color: #ffffe6;">
+          <?php echo $this->Form->input('search_start_date', array('type'=>'text', 'label' => false, 'class' => 'date', 'placeholder'=>'開始日', 'style' => 'width:90%;font-size:90%;')); ?>
+      </td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_tantou', 
                   array('type'=>'select', 'label' => false, 'style' => 'width:90%;font-size:90%;', 'empty' => array('' => '担当者を選んでください'), 'options' => $name_arr)); ?>
       </td>
       <td style="background-color: #ffffe6;">
-          <?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'就業場所（住所）', 'style' => 'width:95%;font-size:90%;')); ?>
+          <?php echo $this->Form->input('search_place', array('type'=>'text', 'label' => false, 'placeholder'=>'就業場所（住所）', 'style' => 'width:95%;font-size:90%;')); ?>
       </td>
       <td style="background-color: #ffffe6;" colspan="4">
-          <?php echo $this->Form->input('search_tantou', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:60%;font-size:90%;', 'empty' => array('' => '職種を選んでください'), 'options' => $name_arr)); ?>
+          <?php echo $this->Form->input('search_shokushu', 
+                  array('type'=>'select', 'label' => false, 'style' => 'width:60%;font-size:90%;', 'empty' => array('' => '職種を選んでください'), 'options' => $list_shokushu)); ?>
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
@@ -160,7 +170,7 @@ function doSearch1(id) {
         <?php echo $case_id; ?>
     </td>
     <td align="left">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','スタッフ登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','案件詳細','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-size:90%;color: #006699;">
             <b><?php echo $data['CaseManagement']['case_name']; ?></b><br>
                 <?php echo '伊藤忠ハウジング株式会社'; ?><br>
@@ -185,10 +195,32 @@ function doSearch1(id) {
     <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
     <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
     <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
-    <td align="left" style="font-size: 90%;"><?php echo ($data['CaseManagement']['id']); ?></td>
-    <td align="left" style="font-size: 90%;"><?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])).'<br>'.$data['CaseManagement']['update_user']; ?></td>
-    <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
-    <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
+    <td align="center" style="font-size: 90%;">
+        <a href="#">[ボタン]</a><br>
+        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
+        <?php echo '未作成'; ?>
+    </td>
+    <td align="center" style="font-size: 90%;">
+        <a href="#">[ボタン]</a><br>
+        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
+        <?php echo '未作成'; ?>
+    </td>
+    <td align="center" style="font-size: 90%;">
+        <a href="#">[ボタン]</a><br>
+        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
+        <?php echo '未作成'; ?>
+    </td>
+    <td align="center" style="font-size: 90%;">
+        <?php $id = 1; ?>
+        <a href="javascript:void(0);" 
+           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/0/<?php echo $data['CaseManagement']['id']; ?>/copy','案件詳細','width=1200,height=800,scrollbars=yes');">
+            [複製]
+        </a><br>
+        <?php echo $this->Html->link('[稼働表]', array(), array()); ?><br>
+        <br>
+        <?php echo $this->Html->link('[クローズ]', array(), array()); ?><br>
+        <?php echo $this->Html->link('[削除]', array(), array()); ?>
+    </td>
   </tr>
   <?php endforeach; ?>
 <?php if (count($datas) == 0) { ?>

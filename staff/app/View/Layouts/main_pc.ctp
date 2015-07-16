@@ -46,12 +46,13 @@
    // echo $this->Html->meta('icon');
     echo $this->Html->meta('favicon.ico','/favicon.ico',array('type' => 'icon'));
     //echo $this->Html->css('main');
-    echo $this->Html->css('menu-styles');
+    //echo $this->Html->css('menu-styles');
     // 端末によってCSSを切り替える
     if($browser == 'sp'){
         echo $this->Html->css('main_mobile');
     }else{
-        echo $this->Html->css('main_pc');
+        //echo $this->Html->css('main_pc');
+        echo $this->Html->css('B.min');
     }
     
     echo $scripts_for_layout;

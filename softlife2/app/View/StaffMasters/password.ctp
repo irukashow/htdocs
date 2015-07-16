@@ -11,7 +11,7 @@
         <table>
             <tr>
                 <td colspan="2">
-                    <legend style="font-size: 150%;color: red;"><?php echo __('スタッフのパスワード変更'); ?></legend>
+                    <legend style="font-size: 150%;color: red;"><?php echo __('スタッフのログインアカウント変更'); ?></legend>
                 </td>
             </tr>
             <tr>
@@ -24,7 +24,7 @@
             </tr>
             <tr>
                 <td>ログインアカウント</td>
-                <td><?php echo $data['StaffMaster']['account']; ?></td>
+                <td><?php echo $this->Form->input('account',array('label' => false, 'style' => 'width:200px;')); ?></td>
             </tr>
             <tr>
                 <td>パスワード</td>

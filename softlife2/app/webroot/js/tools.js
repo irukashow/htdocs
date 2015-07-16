@@ -85,3 +85,14 @@ function fileCheck(element, after){
 	}
 	return false;
 }
+
+/*
+ *  ファイルの個数チェック
+ */
+function countCheck(element) {
+    var upFiles = element.files;
+    if (upFiles.length > 3) {
+        alert("ファイルは3つまでです。");
+        element.value = '';
+    }
+}

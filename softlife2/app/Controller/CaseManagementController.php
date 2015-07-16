@@ -27,7 +27,7 @@ class CaseManagementController extends AppController {
         "Role" => array() 
     );
 
-    public function index($flag = null, $case_id = null, $profile = null) {
+    public function index($flag = null, $case_id = null, $window = null) {
         // 所属が選択されていなければ元の画面に戻す
         if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
             //$this->log($this->Session->read('selected_class'));
@@ -83,6 +83,10 @@ class CaseManagementController extends AppController {
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
         $this->set('name_arr', $name_arr); 
+        // 職種マスタ配列
+        $conditions0 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
         // 表示件数の初期値
         $this->set('limit', $limit);
         $conditions1 = null;$conditions2 = null;$conditions3 = null;
@@ -115,6 +119,8 @@ class CaseManagementController extends AppController {
             // 初期表示
             if ($flag == 1) {
                 $conditions2 = array('kaijo_flag' => 1);
+            } elseif ($flag == 2) {
+                $conditions3 = array('kaijo_flag' => 2);
             } else {
                 $flag = 0;
                 $conditions2 = array('kaijo_flag' => 0);
@@ -188,7 +194,16 @@ class CaseManagementController extends AppController {
             $this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
-            if (isset($profile)) {
+            if ($window == 'profile') {
+                // ページ数（レコード番号）を取得
+                $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $case_id);
+                $page = $this->CaseManagement->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
+                //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
+                //$this->log($page, LOG_DEBUG);
+                $this->redirect(array('action' => 'profile', $flag, $case_id, 'page' => $page));
+                exit();
+            // 複製
+            } elseif ($window == 'copy') {
                 // ページ数（レコード番号）を取得
                 $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $case_id);
                 $page = $this->CaseManagement->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
@@ -204,6 +219,8 @@ class CaseManagementController extends AppController {
             // 初期表示
             if ($flag == 1) {
                 $conditions3 = array('kaijo_flag' => 1);
+            } elseif ($flag == 2) {
+                $conditions3 = array('kaijo_flag' => 2);
             } else {
                 $flag = 0;
                 $conditions3 = array('kaijo_flag' => 0);
@@ -234,6 +251,8 @@ class CaseManagementController extends AppController {
             // 初期表示
             if ($flag == 1) {
                 $conditions3 = array('kaijo_flag' => 1);
+            } elseif ($flag == 2) {
+                $conditions3 = array('kaijo_flag' => 2);
             } else {
                 $flag = 0;
                 $conditions3 = array('kaijo_flag' => 0);

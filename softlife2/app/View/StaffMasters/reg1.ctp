@@ -57,9 +57,8 @@ function affixZero(int) {
             <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
             <a href="<?=ROOTDIR ?>/StaffMasters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
             <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
-        </font>
-        
 <?php } ?>
+        </font>
         <!-- ページ選択 END -->
 <?php echo $this->Form->create('StaffMaster'); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $staff_id)); ?>
@@ -214,10 +213,9 @@ function affixZero(int) {
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">登録情報</font>&nbsp;>>&nbsp;
             <a href="<?=ROOTDIR ?>/StaffMasters/reg2/<?=$staff_id ?>/<?=$koushin_flag ?>">基本情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp;
-        </font>
-        
+            <a href="<?=ROOTDIR ?>/StaffMasters/reg3/<?=$staff_id ?>/<?=$koushin_flag ?>">評価関連</a>&nbsp; 
 <?php } ?>
+        </font>
         <!-- ページ選択 END -->
     </fieldset>  
     <div style='margin-left: 10px;'>

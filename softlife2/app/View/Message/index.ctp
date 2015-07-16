@@ -136,6 +136,14 @@
                 </td>
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['Message2Member']['title'], 'detail/'.$data['Message2Member']['id'], array('style'=>'color: blue;')) ?>
+                    <?php
+                        if (!empty($data['Message2Member']['attachment'])) {
+                            echo '&nbsp;';
+                            echo '<span style="vertical-align:-7px;">';
+                            echo '<img src="'.ROOTDIR.'/img/clip.gif" style="width: 25px;" />';
+                            echo '</span>';
+                        }
+                    ?>
                 </td>
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['Message2Member']['name'], 'detail/'.$data['Message2Member']['id'], array('style'=>'')) ?>

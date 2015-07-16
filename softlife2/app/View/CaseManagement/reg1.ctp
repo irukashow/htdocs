@@ -29,16 +29,15 @@ $(function() {
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
 <?php if ($case_id == 0) { ?>
-        <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            オーダー情報&nbsp;>>&nbsp;
+        <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;&gt;&gt;&nbsp;
+            オーダー情報&nbsp;&gt;&gt;&nbsp;
             契約書情報&nbsp;
 <?php } else { ?>
-            <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>">オーダー情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>">契約書情報</a>&nbsp;
-        </font>
-        
+            <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;&gt;&gt;&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">オーダー情報</a>&nbsp;&gt;&gt;&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;
 <?php } ?>
+        </font>
         <!-- ページ選択 END -->
 <?php echo $this->Form->create('CaseManagement', array('name'=>'form')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $case_id)); ?>
@@ -367,11 +366,10 @@ $(function() {
             契約書情報&nbsp;
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>">オーダー情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>">契約書情報</a>&nbsp;
-        </font>
-        
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">オーダー情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;  
 <?php } ?>
+        </font>
         <!-- ページ選択 END -->
     </fieldset>  
     <div style='margin-left: 10px;'>

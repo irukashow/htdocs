@@ -81,13 +81,18 @@ $(function() {
                 <th colspan="7" style='background:#99ccff;text-align: center;'>個人情報付則</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:100px;'>証明写真</td>
-                <td colspan="4" style='width:550px;'>
+                <td colspan="2" rowspan="2" style='background-color: #e8ffff;width:30%;'>添付ファイル</td>
+                <td colspan="3" style='background-color: #e8ffff;'>証明写真</td>
+                <td style='background-color: #e8ffff;'>履歴書など <font color="red">※pdfファイル</font></td>
+                <td style='background-color: #e8ffff;'>その他のファイル <font color="red">※複数3個まで</font></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="vertical-align: top;">
                     <!-- 証明写真ドラッグ＆ドロップ -->
                     <input type="file" name="upfile[]" size="30" onchange=""  style="
                         border: 2px dotted #000000;
                         font-size: 100%;
-                        width:300px;
+                        width:250px;
                         height: 25px;
                         padding-top: 50px;
                         padding-bottom: 50px;
@@ -95,7 +100,7 @@ $(function() {
                         border-radius: 10px;        /* CSS3草案 */  
                         -webkit-border-radius: 10px;    /* Safari,Google Chrome用 */  
                         -moz-border-radius: 10px;   /* Firefox用 */
-                        vertical-align: middle;
+                        vertical-align: top;
                        ">
                     <!-- 証明写真ファイルのリンク -->
                     <?php
@@ -108,18 +113,17 @@ $(function() {
                             echo '<div style="float: left;">';
                             echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after.'" style="color:red;"  rel="lightbox">'
                                     . '【保存している証明写真】</a>';
-                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
-                            echo $this->Form->input( 'delete_1', array('legend' => false, 'type' => 'checkbox','label'=>'保存ファイルの削除', 'div'=>false));
+                            echo '&nbsp;&nbsp;←</div>';
+                            echo $this->Form->input( 'delete_1', array('legend' => false, 'type' => 'checkbox','label'=>'削除', 'div'=>false));
                         }
                     ?>
                 </td>
-                <td style='background-color: #e8ffff;width:100px;'>履歴書<br><font style='color: red;'>PDFファイル</font></td>
-                <td colspan="1">
+                <td colspan="1" style="vertical-align: top;">
                     <!-- 履歴書ドラッグ＆ドロップ -->
                     <input type="file" name="upfile[]" size="30" onchange="fileCheck(this, 'pdf');"  style="
                         border: 2px dotted #000000;
                         font-size: 100%;
-                        width:300px;
+                        width:250px;
                         height: 25px;
                         padding-top: 50px;
                         padding-bottom: 50px;
@@ -127,7 +131,7 @@ $(function() {
                         border-radius: 10px;        /* CSS3草案 */  
                         -webkit-border-radius: 10px;    /* Safari,Google Chrome用 */  
                         -moz-border-radius: 10px;   /* Firefox用 */
-                        vertical-align: middle;
+                        vertical-align: top;
                        ">
                     <!-- 保存ファイルのリンク -->
                     <?php
@@ -139,18 +143,51 @@ $(function() {
                             echo '<br>';
                             echo '<div style="float: left;">';
                             echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
-                            echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
-                            echo $this->Form->input( 'delete_2', array('legend' => false, 'type' => 'checkbox','label'=>'保存ファイルの削除', 'div'=>false));
+                            echo '&nbsp;&nbsp;←</div>';
+                            echo $this->Form->input( 'delete_2', array('legend' => false, 'type' => 'checkbox','label'=>'削除', 'div'=>false));
+                        }
+                    ?>
+                </td>
+                <td colspan="1" style="vertical-align: top;">
+                    <!-- その他ファイルドラッグ＆ドロップ -->
+                    <input type="file" id="extra_file" name="upfile[]" size="30" multiple="multiple" onchange="countCheck(this);" style="
+                        border: 2px dotted #000000;
+                        font-size: 100%;
+                        width:270px;
+                        height: 25px;
+                        padding-top: 50px;
+                        padding-bottom: 50px;
+                        background-color: #ffffcc;
+                        border-radius: 10px;        /* CSS3草案 */  
+                        -webkit-border-radius: 10px;    /* Safari,Google Chrome用 */  
+                        -moz-border-radius: 10px;   /* Firefox用 */
+                        vertical-align: top;
+                       ">
+                    <!-- 保存ファイルのリンク -->
+                    <?php
+                        $files = $data['StaffMaster']['para2'];
+                        if (is_null($files) || empty($files)) {
+                            echo '';
+                            echo $this->Form->input( 'delete_3', array('type' => 'hidden','value'=>'0'));
+                        } else {
+                            $file_array = explode(',', $files);
+                            foreach($file_array as $file) {
+                                echo '<br>';
+                                echo '<div style="float: left;">';
+                                echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$file.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【'.$file.'】</a>';
+                                echo '&nbsp;&nbsp;←</div>';
+                                echo $this->Form->input( 'delete_3', array('legend' => false, 'type' => 'checkbox','label'=>'削除', 'div'=>false));
+                            }
                         }
                     ?>
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;' rowspan="2">身長</td>
+                <td style='background-color: #e8ffff;' colspan="2" rowspan="2">身長</td>
                 <td style='width:150px;' rowspan="2"><?php echo $this->Form->input('height',array('label'=>false,'div'=>false,'style'=>'width:100px;')); ?>&nbsp;cm</td>
-                <td style='background-color: #e8ffff;' rowspan="2">制服サイズ</td>
+                <td style='background-color: #e8ffff;' rowspan="2">制服<br>サイズ</td>
                 <td style='width:30px;'>上</td>
-                <td colspan='3' style='width:200px;'>
+                <td colspan='2' style='width:200px;'>
                 <?php
                     $list=array('5'=>'5号','7'=>'7号','9'=>'9号','11'=>'11号','13'=>'13号');
                     echo $this->Form->input( 'size_1', array('legend' => false, 'type' => 'radio','div'=>'radio',
@@ -160,7 +197,7 @@ $(function() {
             </tr>
             <tr>
                 <td style='width:30px;'>下</td>
-                <td colspan='3' style='width:200px;'>
+                <td colspan='2' style='width:200px;'>
                 <?php
                     $list1=array('5'=>'5号','7'=>'7号','9'=>'9号','11'=>'11号','13'=>'13号');
                     echo $this->Form->input( 'size_2', array('legend' => false, 'type' => 'radio','div'=>'radio',
@@ -169,8 +206,8 @@ $(function() {
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;'>最寄駅①</td>
-                <td colspan="6">
+                <td colspan="2" style='background-color: #e8ffff;'>最寄駅①</td>
+                <td colspan="5">
                     <?php echo $this->Form->input('pref1',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem1(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→              
@@ -183,8 +220,8 @@ $(function() {
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;'>最寄駅②</td>
-                <td colspan="6">
+                <td colspan="2" style='background-color: #e8ffff;'>最寄駅②</td>
+                <td colspan="5">
                     <?php echo $this->Form->input('pref2',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem2(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
@@ -198,8 +235,8 @@ $(function() {
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;'>最寄駅③</td>
-                <td colspan="6">
+                <td colspan="2" style='background-color: #e8ffff;'>最寄駅③</td>
+                <td colspan="5">
                     <?php echo $this->Form->input('pref3',array('type'=>'select','label'=>false,'div'=>false, 'empty'=>'都道府県を選択してください', 'style' => 'width: 100px;', 
                         'onChange'=>'setMenuItem3(0,this[this.selectedIndex].value)', 'options'=>$pref_arr)); ?>
                     &nbsp;→
@@ -213,7 +250,7 @@ $(function() {
                 </td>
             </tr>
             <tr style="">
-                <td style='background-color: #e8ffff;'colspan="2">最寄駅（インポートデータより）</td>
+                <td style='background-color: #e8ffff;'colspan="2">最寄駅<br>（ｲﾝﾎﾟｰﾄﾃﾞｰﾀより）</td>
                 <td colspan="5">
                     <?php echo $this->Form->input('para1',array('type'=>'text','div'=>false,'label'=>false, 'style'=>'width:70%;text-align: left;')); ?>
                 </td>

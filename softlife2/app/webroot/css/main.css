@@ -103,6 +103,7 @@ p {
         background-color: #003d4c;  
         color: #fff; 
         z-index: 3;
+        font-size:90%;
 }
 a.logo {
 	//line-height:20px;
@@ -148,7 +149,7 @@ a.logo {
         background-color: #003d4c;
         height: 50px;
         text-align: center;
-        //font-size:90%;
+        font-size:90%;
 }
 #header a, #footer a {
 	color: #fff;
@@ -1016,6 +1017,7 @@ a.button-rink2 {
 margin: 0;
 padding: 0; 
 list-style: none;
+font-size:90%;
 }
 
 #main-menu li{ 
@@ -1024,6 +1026,7 @@ padding: 0;
 margin: 0; 
 float: left;
 height:30px;
+font-size:90%;
 }
 
 /** 管理表 **/
