@@ -23,6 +23,17 @@
         }
         return $ret;
     }
+    // ファイル名8文字以内
+    function setFileName($file) {
+        $ret = $file;
+        $p = pathinfo($file);
+        $filename = mb_convert_encoding(basename($file, ".{$p['extension']}"), 'UTF-8', 'UTF-8');
+        if (strlen($filename) > 8) {
+            $_filename = mb_convert_encoding(mb_substr($filename, 0, 8), 'UTF-8', 'UTF-8').'…';
+            $ret = $_filename.'.'.$p['extension'];
+        }
+        return $ret;
+    }
 ?>
 <?php require('reg2_element.ctp'); ?>
 
@@ -81,10 +92,10 @@ $(function() {
                 <th colspan="7" style='background:#99ccff;text-align: center;'>個人情報付則</th>
             </tr>
             <tr>
-                <td colspan="2" rowspan="2" style='background-color: #e8ffff;width:30%;'>添付ファイル</td>
-                <td colspan="3" style='background-color: #e8ffff;'>証明写真</td>
-                <td style='background-color: #e8ffff;'>履歴書など <font color="red">※pdfファイル</font></td>
-                <td style='background-color: #e8ffff;'>その他のファイル <font color="red">※複数3個まで</font></td>
+                <td colspan="2" rowspan="2" style='background-color: #e8ffff;width:30%;'>添付ファイル<br><font color="red" style="font-size:90%;">※追加と削除は同時にできません。</font></td>
+                <td colspan="3" style='background-color: #e8ffff;'>証明写真 <font color="red">※画像ファイル1つ</font></td>
+                <td style='background-color: #e8ffff;'>履歴書など <font color="red">※pdfファイル1つ</font></td>
+                <td style='background-color: #e8ffff;'>その他のファイル <font color="red">※ファイル3つまで</font></td>
             </tr>
             <tr>
                 <td colspan="3" style="vertical-align: top;">
@@ -142,7 +153,7 @@ $(function() {
                         } else {
                             echo '<br>';
                             echo '<div style="float: left;">';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【保存している履歴書】</a>';
+                            echo '<a href="javascript:void(0);" onclick="window.open(\''.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$staff_id.'.'.$after2.'\',\'履歴書\',\'width=800,height=800,scrollbars=yes\');" style="color:red;">【保存している履歴書】</a>';
                             echo '&nbsp;&nbsp;←</div>';
                             echo $this->Form->input( 'delete_2', array('legend' => false, 'type' => 'checkbox','label'=>'削除', 'div'=>false));
                         }
@@ -150,7 +161,7 @@ $(function() {
                 </td>
                 <td colspan="1" style="vertical-align: top;">
                     <!-- その他ファイルドラッグ＆ドロップ -->
-                    <input type="file" id="extra_file" name="upfile[]" size="30" multiple="multiple" onchange="countCheck(this);" style="
+                    <input type="file" id="extra_file" name="upfile[]" size="30" multiple onchange="countCheck(this, document.getElementById('StaffMasterFileCount'));" style="
                         border: 2px dotted #000000;
                         font-size: 100%;
                         width:270px;
@@ -169,15 +180,40 @@ $(function() {
                         if (is_null($files) || empty($files)) {
                             echo '';
                             echo $this->Form->input( 'delete_3', array('type' => 'hidden','value'=>'0'));
+                            echo $this->Form->input( 'delete_4', array('type' => 'hidden','value'=>'0'));
+                            echo $this->Form->input( 'delete_5', array('type' => 'hidden','value'=>'0'));
+                            echo $this->Form->input( 'file_count', array('type' => 'hidden','value'=>'0'));
                         } else {
+                            echo '<table border="0" width="100%">';
                             $file_array = explode(',', $files);
-                            foreach($file_array as $file) {
-                                echo '<br>';
-                                echo '<div style="float: left;">';
-                                echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$file.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【'.$file.'】</a>';
-                                echo '&nbsp;&nbsp;←</div>';
-                                echo $this->Form->input( 'delete_3', array('legend' => false, 'type' => 'checkbox','label'=>'削除', 'div'=>false));
+                            $i = 0;
+                            foreach($file_array as $key => $file) {
+                                echo '<tr>';
+                                echo '<td>';
+                                echo '<a href="javascript:void(0);" '
+                                . 'onclick="window.open(\''.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.mb_convert_encoding($file, 'UTF-8', 'auto').'\',\'その他ファイル\',\'width=800,height=800,scrollbars=yes\');" '
+                                        . 'style="color:red;"><font style="font-size:80%;">【'.$file.'】</font></a>';
+                                echo '</td>';
+                                echo '<td align="right">';
+                                echo '←';
+                                echo '</td>';
+                                echo '<td align="left" style="width:60px;">';
+                                echo $this->Form->input( 'delete_'.($key+3), array('legend' => false, 'type' => 'checkbox','label'=>'削除', 'div'=>false));
+                                echo '</td>';
+                                echo '</tr>';
+                                $i = $i + 1;
                             }
+                            if ($i == 1) {
+                                echo $this->Form->input( 'delete_4', array('type' => 'hidden','value'=>'0'));
+                                echo $this->Form->input( 'delete_5', array('type' => 'hidden','value'=>'0'));
+                                echo $this->Form->input( 'file_count', array('type' => 'hidden','value'=>'1'));
+                            } elseif ($i == 2) {
+                                echo $this->Form->input( 'delete_5', array('type' => 'hidden','value'=>'0'));
+                                echo $this->Form->input( 'file_count', array('type' => 'hidden','value'=>'2'));
+                            } elseif ($i == 3) {
+                                echo $this->Form->input( 'file_count', array('type' => 'hidden','value'=>'3'));
+                            }
+                            echo '</table>';
                         }
                     ?>
                 </td>

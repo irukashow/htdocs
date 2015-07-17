@@ -89,9 +89,10 @@ function fileCheck(element, after){
 /*
  *  ファイルの個数チェック
  */
-function countCheck(element) {
+function countCheck(element, db_count) {
     var upFiles = element.files;
-    if (upFiles.length > 3) {
+
+    if ((upFiles.length + Number(db_count.value)) > 3) {
         alert("ファイルは3つまでです。");
         element.value = '';
     }

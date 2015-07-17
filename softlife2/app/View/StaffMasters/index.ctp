@@ -216,23 +216,23 @@ function chkHankaku(textbox) {
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">
-          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'style' => 'width:90%;', 'onchange' => 'chkHankaku(this);')); ?>
+          <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'placeholder'=>'登録番号', 'style' => 'width:90%;', 'onchange' => 'chkHankaku(this);')); ?>
       </td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名', 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'placeholder'=>'年齢', 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_tantou', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;','empty' => array('' => ''), 'options' => $name_arr)); ?>
+                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;','empty' => array('' => '担当者を選択してください'), 'options' => $name_arr)); ?>
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_shokushu', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;display: none;','empty' => array('' => ''), 'options' => $list_shokushu)); ?>
+                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;display: none;','empty' => array('' => '担当者を選択してください'), 'options' => $list_shokushu)); ?>
       </td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_area', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_area', array('type'=>'text', 'label' => false, 'placeholder'=>'都道府県 市区郡（町村）', 'style' => 'width:90%;')); ?></td></td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
   </tr>
