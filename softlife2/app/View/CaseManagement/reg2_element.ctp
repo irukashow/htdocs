@@ -1,22 +1,22 @@
 <?php
     // 初期値セット
-    if (is_null($data['StaffMaster']['created'])) {
+    if (is_null($data['CaseManagement']['created'])) {
         $created = '＜不明＞';
     } else {
-        $created = date('Y-m-d', strtotime($data['StaffMaster']['created'])); 
+        $created = date('Y-m-d', strtotime($data['CaseManagement']['created'])); 
     }
-    if (is_null($data['StaffMaster']['modified'])) {
+    if (is_null($data['CaseManagement']['modified'])) {
         $modified = '＜不明＞';
     } else {
-        $modified = date('Y-m-d', strtotime($data['StaffMaster']['modified'])); 
+        $modified = date('Y-m-d', strtotime($data['CaseManagement']['modified'])); 
     }
-    $selected1 = explode(',',$data['StaffMaster']['shokushu_shoukai']);
-    $selected2 = explode(',',$data['StaffMaster']['shokushu_kibou']);
-    $selected3 = explode(',',$data['StaffMaster']['shokushu_keiken']);
-    $selected4 = explode(',',$data['StaffMaster']['extra_job']);
-    $selected5 = explode(',',$data['StaffMaster']['workable_day']);
-    $selected6 = explode(',',$data['StaffMaster']['regist_trigger']);
-    $name = $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'];
+    $selected1 = explode(',',$data['CaseManagement']['shokushu_shoukai']);
+    $selected2 = explode(',',$data['CaseManagement']['shokushu_kibou']);
+    $selected3 = explode(',',$data['CaseManagement']['shokushu_keiken']);
+    $selected4 = explode(',',$data['CaseManagement']['extra_job']);
+    $selected5 = explode(',',$data['CaseManagement']['workable_day']);
+    $selected6 = explode(',',$data['CaseManagement']['regist_trigger']);
+    $name = $data['CaseManagement']['name_sei'].' '.$data['CaseManagement']['name_mei'];
     
     // 路線のコンボセット
     function getLine($code) {
@@ -47,13 +47,13 @@
         return $ret;
     }
     
-    $line1 = getLine($data['StaffMaster']['pref1']);
-    $line2 = getLine($data['StaffMaster']['pref2']);
-    $line3 = getLine($data['StaffMaster']['pref3']);
+    $line1 = getLine($data['CaseManagement']['pref1']);
+    $line2 = getLine($data['CaseManagement']['pref2']);
+    $line3 = getLine($data['CaseManagement']['pref3']);
     
     // 駅のコンボセット
     function getStation($code) {
-    //$code = $data['StaffMaster']['s0_1'];
+    //$code = $data['CaseManagement']['s0_1'];
         if (!is_null($code) && !empty($code)) {
             $xml = "http://www.ekidata.jp/api/l/".$code.".xml";//ファイルを指定
             // simplexml_load_fileは使えない処理
@@ -81,8 +81,8 @@
         return $ret;
     }
     
-    $station1 = getStation($data['StaffMaster']['s0_1']);
-    $station2 = getStation($data['StaffMaster']['s0_2']);
-    $station3 = getStation($data['StaffMaster']['s0_3']);
+    $station1 = getStation($data['CaseManagement']['s0_1']);
+    $station2 = getStation($data['CaseManagement']['s0_2']);
+    $station3 = getStation($data['CaseManagement']['s0_3']);
     
 ?>

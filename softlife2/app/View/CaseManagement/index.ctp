@@ -225,7 +225,7 @@ $(function() {
   <?php endforeach; ?>
 <?php if (count($datas) == 0) { ?>
 <tr>
-    <td colspan="13" align="center">表示するデータはありません。</td>
+    <td colspan="14" align="center">表示するデータはありません。</td>
 </tr>
 <?php } ?>
 </table>

@@ -2,7 +2,6 @@
     echo $this->Html->script( 'tools');
     //echo $this->Html->script('dropzone');
     echo $this->Html->script('jquery-1.9.1');
-    echo $this->Html->script('station');
 ?>
 
 <!-- for Datepicker -->
@@ -24,7 +23,7 @@ $(function() {
 </script>
 
 <div style="width:50%;margin-top: 20px;margin-left: auto; margin-right: auto;">
-<?php echo $this->Form->create('Admin'); ?>
+<?php echo $this->Form->create('VersionRemarks'); ?>
     <fieldset style="border:none;margin-bottom: 20px;">
         <legend style="font-size: 150%;color: red;"><?php echo __('バージョン情報入力ページ'); ?></legend>
 

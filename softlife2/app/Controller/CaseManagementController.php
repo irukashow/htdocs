@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-    public $uses = array('CaseManagement', 'Item', 'User', 'Customer');
+    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo');
     
     static public $selected_class;
     public $title_for_layout = "案件管理 - 派遣管理システム";
@@ -471,6 +471,61 @@ class CaseManagementController extends AppController {
                 $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
                 $this->set('data_billing', $data_billing);
             }
+        }
+    }
+    
+    // 登録ページ（オーダー情報）
+    public function reg2($case_id = null, $koushin_flag = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 登録データのセット
+        $conditions3 = array('id' => $case_id);
+        $data = $this->OrderInfo->find('first', array('conditions' => $conditions3));
+        $this->set('data', $data);
+        // その他
+        $this->set('case_id', $case_id); 
+        $this->OrderInfo->id = $case_id;
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class); 
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (isset($this->request->data['forward'])) {
+                // データを登録する
+                if ($this->OrderInfo->save($this->request->data)) {
+                    //$this->redirect(array('action' => 'reg2', $case_id, $koushin_flag));
+                }
+            } elseif (isset($this->request->data['submit'])) {
+                // モデルの状態をリセットする
+                //$this->CaseManagement->create();
+                // データを登録する
+                if ($this->OrderInfo->save($this->request->data)) {
+                    // 依頼主
+                    $condition1 = array('id' => $this->request->data['OrderInfo']['client']);
+                    $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+                    $this->set('data_client', $data_client);
+                    // 請求先
+                    $condition2 = array('id' => $this->request->data['OrderInfo']['billing_destination']);
+                    $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+                    $this->set('data_billing', $data_billing);
+                    // 登録完了メッセージ
+                    $this->Session->setFlash('登録しました。');
+
+                } else {
+                    $this->Session->setFlash('登録時にエラーが発生しました。');
+                }
+            //} elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
+            } else {
+
+            }    
+        } else {
+            // 登録していた値をセット
+            $this->request->data = $this->CaseManagement->read(null, $case_id);
+            //$this->set('data', $this->request->data);
         }
     }
       

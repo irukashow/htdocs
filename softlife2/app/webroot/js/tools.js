@@ -97,3 +97,22 @@ function countCheck(element, db_count) {
         element.value = '';
     }
 }
+
+/*
+ * ファイルの容量チェック（10MBを超えたらエラー）
+ */
+function sizeCheck(element) {
+    var fileList = element.files;
+    var list = "";
+    for(var i=0; i<fileList.length; i++){
+        if (fileList[i].size > 10000000) {
+            if (list == "") {
+                list = "ファイル【" + fileList[i].name + "】の容量が" + fileList[i].size + "バイトで10Mバイトを超えています。";
+            }
+        }
+    }
+    if (list != "") {
+        alert(list);
+        element.value = '';
+    }
+}

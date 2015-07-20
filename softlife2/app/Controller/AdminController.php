@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class AdminController extends AppController {
-    public $uses = array('AdminInfo', 'User', 'Item');
+    public $uses = array('VersionRemarks', 'AdminInfo', 'User', 'Item');
 
     public function index() {
         /* 管理権限がある場合 */
@@ -142,17 +142,20 @@ class AdminController extends AppController {
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name); 
+        // テーブルの設定
+        $this->VersionRemarks->setSource('version_remarks');
         
+        $this->log($this->request->data, LOG_DEBUG);
     	// POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->Admin->validates() == false) {
+            if ($this->VersionRemarks->validates() == false) {
                 exit();
             }
             if (isset($this->request->data['submit'])) {
                 // モデルの状態をリセットする
-                $this->Admin->create();
+                $this->VersionRemarks->create();
                 // データを登録する
-                $this->Admin->save($this->request->data);
+                $this->VersionRemarks->save($this->request->data);
                 // 登録完了
                 $this->Session->setFlash('登録を完了しました。');
 

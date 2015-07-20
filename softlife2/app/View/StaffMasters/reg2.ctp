@@ -95,7 +95,7 @@ $(function() {
                 <td colspan="2" rowspan="2" style='background-color: #e8ffff;width:30%;'>添付ファイル<br><font color="red" style="font-size:90%;">※追加と削除は同時にできません。</font></td>
                 <td colspan="3" style='background-color: #e8ffff;'>証明写真 <font color="red">※画像ファイル1つ</font></td>
                 <td style='background-color: #e8ffff;'>履歴書など <font color="red">※pdfファイル1つ</font></td>
-                <td style='background-color: #e8ffff;'>その他のファイル <font color="red">※ファイル3つまで</font></td>
+                <td style='background-color: #e8ffff;'>その他のファイル <font color="red">※ファイルは3つまで<br>※1ファイルあたりの容量制限10MBまで</font></td>
             </tr>
             <tr>
                 <td colspan="3" style="vertical-align: top;">
@@ -161,7 +161,7 @@ $(function() {
                 </td>
                 <td colspan="1" style="vertical-align: top;">
                     <!-- その他ファイルドラッグ＆ドロップ -->
-                    <input type="file" id="extra_file" name="upfile[]" size="30" multiple onchange="countCheck(this, document.getElementById('StaffMasterFileCount'));" style="
+                    <input type="file" id="extra_file" name="upfile[]" size="30" multiple onchange="countCheck(this, document.getElementById('StaffMasterFileCount'));sizeCheck(this);" style="
                         border: 2px dotted #000000;
                         font-size: 100%;
                         width:270px;
@@ -173,10 +173,11 @@ $(function() {
                         -webkit-border-radius: 10px;    /* Safari,Google Chrome用 */  
                         -moz-border-radius: 10px;   /* Firefox用 */
                         vertical-align: top;
-                       ">
+                    " >
                     <!-- 保存ファイルのリンク -->
                     <?php
                         $files = $data['StaffMaster']['para2'];
+                        $files_2 = $data['StaffMaster']['para3'];
                         if (is_null($files) || empty($files)) {
                             echo '';
                             echo $this->Form->input( 'delete_3', array('type' => 'hidden','value'=>'0'));
@@ -186,14 +187,21 @@ $(function() {
                         } else {
                             echo '<table border="0" width="100%">';
                             $file_array = explode(',', $files);
+                            $file_array_2 = explode(',', $files_2);
                             $i = 0;
                             foreach($file_array as $key => $file) {
                                 echo '<tr>';
                                 echo '<td>';
                                 echo '<a href="javascript:void(0);" '
-                                . 'onclick="window.open(\''.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.mb_convert_encoding($file, 'UTF-8', 'auto').'\',\'その他ファイル\',\'width=800,height=800,scrollbars=yes\');" '
-                                        . 'style="color:red;"><font style="font-size:80%;">【'.$file.'】</font></a>';
+                                . 'onclick="window.open(\''.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.($file).'\',\'その他ファイル\',\'width=800,height=800,scrollbars=yes\');" '
+                                        . 'style="color:red;"><font style="font-size:80%;">【'.($file_array_2[$key]).'】</font></a>';
+                                /**
+                                echo '<a href="'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $staff_id).'/'.$file.'" target="_blank">'
+                                        . '<font style="font-size:80%;color:red;">【'.($file_array_2[$key]).'】</font></a>';
                                 echo '</td>';
+                                echo '<script></script>';
+                                 * 
+                                 */
                                 echo '<td align="right">';
                                 echo '←';
                                 echo '</td>';
@@ -215,6 +223,7 @@ $(function() {
                             }
                             echo '</table>';
                         }
+                        //echo '<font color=red>※制作中！</font>';
                     ?>
                 </td>
             </tr>

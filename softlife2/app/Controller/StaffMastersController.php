@@ -617,8 +617,10 @@ class StaffMastersController extends AppController {
         $result = $this->StaffMaster->find('first', array('conditions'=>$conditions));
         if (!empty($result)) {
             $filename2 = $result['StaffMaster']['para2'];
+            $filename2_2 = $result['StaffMaster']['para3'];
         } else {
             $filename2 = '';
+            $filename2_2 = '';
         }
         
         // post時の処理
@@ -627,11 +629,12 @@ class StaffMastersController extends AppController {
                 $_after = null;
                 $_after2 = null;
                 $_after3 = null;
+                $_after3_2 = null;
                 // ファイルのアップロード
                 if(!empty($_FILES['upfile']['name'][0]) || !empty($_FILES['upfile']['name'][1]) || !empty($_FILES['upfile']['name'][2])){
                     // ディレクトリがなければ作る
                     if ($this->chkDirectory($storeFolder, true) == false) {
-                        $this->Session->setFlash('ファイルのアップロードに失敗しました。');
+                        $this->Session->setFlash('アップロードのためのディレクトリ作成に失敗しました。');
                         $this->redirect($this->referer());
                         exit();
                     }
@@ -640,6 +643,7 @@ class StaffMastersController extends AppController {
                         $tempFile = $_FILES['upfile']['tmp_name'][$i];//3
                         $info = new SplFileInfo($_FILES['upfile']['name'][$i]);
                         $after = $info->getExtension();
+                        $random_name = $this->getName();
                         if ($i == 0) {
                             if (!empty($after)) {
                                 $_after = $after;
@@ -652,10 +656,14 @@ class StaffMastersController extends AppController {
                             if (!empty($after)) {
                                 if (empty($_after3)) {
                                     //$_after3 = $staff_id.'_'.($i-1).'.'.$after;
-                                    $_after3 = $_FILES['upfile']['name'][$i];
+                                    //$_after3 = ($_FILES['upfile']['name'][$i]);
+                                    $_after3 = $random_name.'.'.$after;  //5
+                                    $_after3_2 = ($_FILES['upfile']['name'][$i]);
                                 } else {
                                     //$_after3 = $_after3.','.$staff_id.'_'.($i-1).'.'.$after;
-                                    $_after3 = $_after3.','.$_FILES['upfile']['name'][$i];
+                                    //$_after3 = $_after3.','.($_FILES['upfile']['name'][$i]);
+                                    $_after3 = $_after3.','.$random_name.'.'.$after;  //5
+                                    $_after3_2 = $_after3_2.','.($_FILES['upfile']['name'][$i]);
                                 }
                             }
                         } 
@@ -665,7 +673,9 @@ class StaffMastersController extends AppController {
                             $targetFile =  $targetPath.$staff_id.'.'.$after;  //5
                         } else {
                             //$targetFile =  $targetPath.$staff_id.'_'.($i-1).'.'.$after;  //5
-                            $targetFile =  $targetPath. mb_convert_encoding($_FILES['upfile']['name'][$i], 'sjis-win', 'UTF-8');  //5
+                            //$targetFile =  $targetPath. mb_convert_encoding($_FILES['upfile']['name'][$i], 'sjis-win', 'UTF-8');  //5
+                            //$targetFile =  $targetPath. urlencode($_FILES['upfile']['name'][$i]);  //5
+                            $targetFile =  $targetPath.$random_name.'.'.$after;  //5
                         }
                         // ファイルアップ実行
                         if (move_uploaded_file($tempFile, $targetFile)) {
@@ -678,6 +688,9 @@ class StaffMastersController extends AppController {
                     }
                     if (!empty($filename2)) {
                         $_after3 = $filename2.','.$_after3;
+                    }
+                    if (!empty($filename2_2)) {
+                        $_after3_2 = $filename2_2.','.$_after3_2;
                     }
                 }
                 // ファイルのアップロード END
@@ -693,6 +706,9 @@ class StaffMastersController extends AppController {
                 // その他ファイル名をカンマ区切りでセット
                 if (is_null($_after3) == false) {
                     $this->request->data['StaffMaster']['para2'] = $_after3;
+                }
+                if (is_null($_after3_2) == false) {
+                    $this->request->data['StaffMaster']['para3'] = $_after3_2;
                 }
                 // アップロードファイルの無効化処理
                 if ($this->request->data['StaffMaster']['delete_1'] == 1) {
@@ -719,16 +735,19 @@ class StaffMastersController extends AppController {
                 $result = $this->StaffMaster->find('first', array('conditions'=>$conditions));
                 if (!empty($result)) {
                     $filename = explode(',', $result['StaffMaster']['para2']);
+                    $filename_2 = explode(',', $result['StaffMaster']['para3']);
                 } else {
                     $filename = null;
+                    $filename_2 = null;
                 }
-                $para2 = null;
+
                 $delete_flag = 0;
                 // その他ファイル１を削除
                 if ($this->request->data['StaffMaster']['delete_3'] == 1) {
                     // ファイル削除
                     if (unlink($storeFolder.mb_convert_encoding($filename[0], 'SJIS', 'auto'))) {
                         unset($filename[0]);
+                        unset($filename_2[0]);
                         $delete_flag = 1;
                     } else {
                         $this->Session->setFlash('【エラー】ファイルの削除に失敗しました。');
@@ -739,6 +758,7 @@ class StaffMastersController extends AppController {
                     // ファイル削除
                     if (unlink($storeFolder.mb_convert_encoding($filename[1], 'SJIS', 'auto'))) {
                         unset($filename[1]);
+                        unset($filename_2[1]);
                         $delete_flag = 1;
                     } else {
                         $this->Session->setFlash('【エラー】ファイルの削除に失敗しました。');
@@ -749,6 +769,7 @@ class StaffMastersController extends AppController {
                     // ファイル削除
                     if (unlink($storeFolder.mb_convert_encoding($filename[2], 'SJIS', 'auto'))) {
                         unset($filename[2]);
+                        unset($filename_2[2]);
                         $delete_flag = 1;
                     } else {
                         $this->Session->setFlash('【エラー】ファイルの削除に失敗しました。');
@@ -758,8 +779,10 @@ class StaffMastersController extends AppController {
                     // 残ったファイル配列をカンマ区切りにしてセット
                     if (!empty($filename)) {
                         $this->request->data['StaffMaster']['para2'] = implode(',', $filename);
+                        $this->request->data['StaffMaster']['para3'] = implode(',', $filename_2);
                     } else {
                         $this->request->data['StaffMaster']['para2'] = '';
+                        $this->request->data['StaffMaster']['para3'] = '';
                     }
                 }
                 
@@ -1362,6 +1385,25 @@ class StaffMastersController extends AppController {
       $return = true;
     }
     return $return;
+  }
+  
+  /** ランダムな名前を生成 **/
+  public function getName() {
+    //生成する文字数
+    $length = 10;
+
+    //使用する文字
+    $char = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    $charlen = mb_strlen($char);
+    $result = "";
+
+    for($i=1;$i<=$length;$i++){
+      $index = mt_rand(0, $charlen - 1);
+      $result .= mb_substr($char, $index, 1);
+    }
+
+    return $result;
   }
     
     /*** 職種をカンマ区切りに ***/

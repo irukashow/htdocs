@@ -143,7 +143,7 @@
                         <!-- カレンダー END-->
                         <div style="margin-top: 10px;">
                             <font style="font-size: 60%;">
-                            <a href="http://grapee.jp/66393" target="_blank">[記事]「私があなたのママになる。」瀕死の子ネコを助けた、優しいハスキー犬</a>
+                            <a href="http://grapee.jp/66393" target="_blank"></a>
                             </font>
                         </div>
                     </div>
