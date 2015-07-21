@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo');
+    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail');
     
     static public $selected_class;
     public $title_for_layout = "案件管理 - 派遣管理システム";
@@ -480,51 +480,68 @@ class CaseManagementController extends AppController {
         $this->layout = "sub";
         $this->set("title_for_layout", $this->title_for_layout);
         // 登録データのセット
+        $this->set('case_id', $case_id);
         $conditions3 = array('id' => $case_id);
         $data = $this->OrderInfo->find('first', array('conditions' => $conditions3));
         $this->set('data', $data);
+        if (empty($data['OrderInfo']['shokushu_num'])) {
+            $row = 1;
+        } else {
+            $row = $data['OrderInfo']['shokushu_num'];
+        }
         // その他
-        $this->set('case_id', $case_id); 
-        $this->OrderInfo->id = $case_id;
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
         $this->set('koushin_flag', $koushin_flag);
         $selected_class = $this->Session->read('selected_class');
-        $this->set('selected_class', $selected_class); 
+        $this->set('selected_class', $selected_class);
+        // 初期化
+        $this->set('row', $row);
         
+        $this->log($this->request->data['OrderInfoDetail'], LOG_DEBUG);
+        //$this->log($this->request->data['OrderInfo'], LOG_DEBUG);
+        //$this->log('$row='.$row, LOG_DEBUG);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            if (isset($this->request->data['forward'])) {
+            // 職種の追加
+            if (isset($this->request->data['insert'])) {
+                $row = $this->request->data['OrderInfo']['shokushu_num'];
+                $this->set('row', $row);
                 // データを登録する
                 if ($this->OrderInfo->save($this->request->data)) {
-                    //$this->redirect(array('action' => 'reg2', $case_id, $koushin_flag));
-                }
-            } elseif (isset($this->request->data['submit'])) {
-                // モデルの状態をリセットする
-                //$this->CaseManagement->create();
-                // データを登録する
-                if ($this->OrderInfo->save($this->request->data)) {
-                    // 依頼主
-                    $condition1 = array('id' => $this->request->data['OrderInfo']['client']);
-                    $data_client = $this->Customer->find('first', array('conditions' => $condition1));
-                    $this->set('data_client', $data_client);
-                    // 請求先
-                    $condition2 = array('id' => $this->request->data['OrderInfo']['billing_destination']);
-                    $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
-                    $this->set('data_billing', $data_billing);
                     // 登録完了メッセージ
-                    $this->Session->setFlash('登録しました。');
-
+                    //$this->Session->setFlash('登録しました。');
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
+                    exit();
                 }
-            //} elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
+                $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, 'row'=>$row));
+            // 登録
+            } elseif (isset($this->request->data['submit'])) {
+                $datas = $this->request->data['OrderInfoDetail'];
+                // データを登録する
+                foreach($datas as $key=>$data) {
+                    if ($this->OrderInfoDetail->save($data)) {
+                        $this->log('$key='.$key.' 登録したはず', LOG_DEBUG);
+                        // 登録完了メッセージ
+                        $this->Session->setFlash('登録しました。');
+                    } else {
+                        $this->Session->setFlash('登録時にエラーが発生しました。');
+                    }
+                }
             } else {
-
-            }    
+                
+            } 
+        } elseif ($this->request->is('get')) {
+            if (!empty($this->params['named']['row'])) {
+                $row = $this->params['named']['row'];
+            }
+            $this->set('row', $row);
+            // 登録していた値をセット
+            $this->request->data = $this->OrderInfo->find('first', array('conditions' => $conditions3));
         } else {
             // 登録していた値をセット
-            $this->request->data = $this->CaseManagement->read(null, $case_id);
+            $this->request->data = $this->OrderInfo->find('first', array('conditions' => $conditions3));
             //$this->set('data', $this->request->data);
         }
     }
