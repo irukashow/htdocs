@@ -9,10 +9,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * CakePHP Pref
+ * CakePHP VersionRemarks
  * @author M-YOKOI
  */
-class Pref extends AppModel {
-    public $useTable = 'preves';
-    
+class OrderInfoDetail extends AppModel {
+    public $useTable = 'order_info_details';
+    public $primaryKey = 'id';
+
 }

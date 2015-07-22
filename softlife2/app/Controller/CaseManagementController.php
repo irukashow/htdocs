@@ -489,6 +489,17 @@ class CaseManagementController extends AppController {
         } else {
             $row = $data['OrderInfo']['shokushu_num'];
         }
+        $option = array();
+        $option['recursive'] = -1; 
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*'); 
+        $option['joins'][] = array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'order_info_details',
+            'alias' => 'OrderInfoDetail',    //下でPost.user_idと書くために
+            'conditions' => '`OrderInfo`.`id`=`OrderInfoDetail`.`case_id`',
+        );
+        $option['conditions'] = array('OrderInfo.id' => $case_id);
+        
         // その他
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
@@ -497,18 +508,18 @@ class CaseManagementController extends AppController {
         $this->set('selected_class', $selected_class);
         // 初期化
         $this->set('row', $row);
-        
-        $this->log($this->request->data['OrderInfoDetail'], LOG_DEBUG);
+
         //$this->log($this->request->data['OrderInfo'], LOG_DEBUG);
         //$this->log('$row='.$row, LOG_DEBUG);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
             // 職種の追加
             if (isset($this->request->data['insert'])) {
                 $row = $this->request->data['OrderInfo']['shokushu_num'];
                 $this->set('row', $row);
                 // データを登録する
-                if ($this->OrderInfo->save($this->request->data)) {
+                if ($this->OrderInfo->saveAll($this->request->data)) {
                     // 登録完了メッセージ
                     //$this->Session->setFlash('登録しました。');
                 } else {
@@ -518,16 +529,20 @@ class CaseManagementController extends AppController {
                 $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, 'row'=>$row));
             // 登録
             } elseif (isset($this->request->data['submit'])) {
-                $datas = $this->request->data['OrderInfoDetail'];
+                $data2 = $this->request->data['OrderInfoDetail'];
                 // データを登録する
-                foreach($datas as $key=>$data) {
-                    if ($this->OrderInfoDetail->save($data)) {
-                        $this->log('$key='.$key.' 登録したはず', LOG_DEBUG);
-                        // 登録完了メッセージ
-                        $this->Session->setFlash('登録しました。');
-                    } else {
-                        $this->Session->setFlash('登録時にエラーが発生しました。');
-                    }
+                //$this->OrderInfoDetail->create(); 
+                if ($this->OrderInfoDetail->saveAll($data2)) {
+                    // 登録完了メッセージ
+                    $this->Session->setFlash('登録しました。');
+                    // 登録していた値をセット
+                    $this->request->data = $this->OrderInfo->find('all', $option);
+                    $datas = $this->request->data;
+                    $this->set('datas', $datas);
+                    $record = $this->OrderInfo->find('count', $option);
+                    $this->set('record', $record);
+                } else {
+                    $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
             } else {
                 
@@ -538,11 +553,20 @@ class CaseManagementController extends AppController {
             }
             $this->set('row', $row);
             // 登録していた値をセット
-            $this->request->data = $this->OrderInfo->find('first', array('conditions' => $conditions3));
+            $this->request->data = $this->OrderInfo->find('all', $option);
+            $datas = $this->request->data;
+            $this->set('datas', $datas);
+            $this->log($this->request->data, LOG_DEBUG);
+            $record = $this->OrderInfo->find('count', $option);
+            $this->set('record', $record);
         } else {
             // 登録していた値をセット
-            $this->request->data = $this->OrderInfo->find('first', array('conditions' => $conditions3));
-            //$this->set('data', $this->request->data);
+            $this->request->data = $this->OrderInfo->find('all', $option);
+            $datas = $this->request->data;
+            $this->set('datas', $datas);
+            $this->log($this->request->data, LOG_DEBUG);
+            $record = $this->OrderInfo->find('count', $option);
+            $this->set('record', $record);
         }
     }
       

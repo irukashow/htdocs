@@ -58,9 +58,9 @@ window.onload = function(){
             </div>
             
                     <!-- プロフィール -->
-                    <table border='0' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 2px;border-spacing: 0px;">
+                    <table border='2' cellspacing="5" cellpadding="7" style="width:100%;margin-top: 2px;border-spacing: 0px;border:2px double #999;">
                         <tr>
-                            <td style='width:50%;'>
+                            <td style='width:50%;background-color: #ffffcc;'>
                                 <?=$data['StaffMaster']['name_sei2'] ?>&nbsp;<?=$data['StaffMaster']['name_mei2'] ?><br>
                                 <div id="name" style="float:left;">
                                     <font style='font-size: 150%;'>
@@ -71,7 +71,7 @@ window.onload = function(){
                                 <div style="vertical-align: 0px;float: left;"><?=getGender($data['StaffMaster']['gender']) ?></div>
                                 <div style="clear:both;"></div>
                             </td>
-                            <td style='width:50%;text-align: center;' rowspan="5">
+                            <td style='width:50%;text-align: center;' rowspan="4">
                     <?php
                         $after = $data['StaffMaster']['pic_extension'];
                         if (empty($after)) {
@@ -82,18 +82,6 @@ window.onload = function(){
                                     <img src='<?=ROOTDIR ?>/files/staff_reg/<?=$class ?>/<?=sprintf('%07d', $data['StaffMaster']['id']) ?>/<?=$data['StaffMaster']['id'] ?>.<?=$data['StaffMaster']['pic_extension'] ?>' style='border:1px black solid; width:150px;'>
                                 </a>
                     <?php } ?>
-                                
-                    <!-- 保存した履歴書ファイルのリンク -->
-                    <?php
-                        $after2 = $data['StaffMaster']['pic_extension2'];
-                        if (is_null($after2) || empty($after2)) {
-                            echo '';
-                            echo $this->Form->input( 'delete_2', array('type' => 'hidden','value'=>'0'));
-                        } else {
-                            echo '<br>';
-                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $data['StaffMaster']['id']).'/'.$data['StaffMaster']['id'].'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">【履歴書などの書類】</a>';
-                        }
-                    ?>
                             </td>
                         </tr>
                         <tr>
@@ -106,8 +94,32 @@ window.onload = function(){
                             <td style='background-color:#ffcc66;'>就業状況：&nbsp;<?='＜不明＞' ?></td>
                         </tr>
                         <tr>
-                            <td id='shokushu_shoukai'>
+                            <td id='shokushu_shoukai' valign="top">
                                 <font style='font-size:140%;'><?=getShokushu2($data['StaffMaster']['shokushu_shoukai']) ?></font><br>
+                            </td>
+                            <td valign="top">
+                    <!-- 保存した履歴書ファイルのリンク -->
+                    <?php
+                        $after2 = $data['StaffMaster']['pic_extension2'];
+                        if (!is_null($after2) && !empty($after2)) {
+                            echo '<a href="javascript:void(0);" onclick=window.open("'.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $data['StaffMaster']['id']).'/'.$data['StaffMaster']['id'].'.'.$after2.'","履歴書","width=800,height=800,scrollbars=yes"); style="color:red;">★履歴書などの書類★</a>';
+                        }
+                    ?>
+                    <!-- その他保存ファイルのリンク -->
+                    <?php
+                        $files = $data['StaffMaster']['para2'];
+                        $files_2 = $data['StaffMaster']['para3'];
+                        if (!is_null($files) && !empty($files)) {
+                            $file_array = explode(',', $files);
+                            $file_array_2 = explode(',', $files_2);
+                            foreach($file_array as $key => $file) {
+                                echo '<br>';
+                                echo '<a href="javascript:void(0);" '
+                                . 'onclick="window.open(\''.ROOTDIR.'/files/staff_reg/'.$class.'/'.sprintf('%07d', $data['StaffMaster']['id']).'/'.($file).'\',\'その他ファイル\',\'width=800,height=800,scrollbars=yes\');" '
+                                        . 'style="color:red;"><font style="font-size:80%;">●'.($file_array_2[$key]).'</font></a>';
+                            }
+                        }
+                    ?>
                             </td>
                         </tr>
                     </table>

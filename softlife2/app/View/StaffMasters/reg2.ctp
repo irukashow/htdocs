@@ -496,7 +496,11 @@ $(function() {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?> 
+<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<?php if ($koushin_flag != 0) { ?>
+    &nbsp;&nbsp;
+<?php print($this->Html->link('ﾌﾟﾛﾌｨｰﾙ', $_SESSION['profile_url'], array('id'=>'button-create', 'style'=>'padding:10px;'))); ?> 
+<?php } ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

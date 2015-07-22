@@ -384,6 +384,8 @@ class StaffMastersController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             // 登録編集
             if (isset($this->request->data['submit'])) {
+                // 現在のURLをセッションに保存
+                $this->Session->write('profile_url', Router::reverse($this->request, true));
                 $this->redirect(array('action' => 'reg1', $this->request->data['StaffMaster']['staff_id'], 1));
             // 登録解除
             } elseif (isset($this->request->data['release'])) {
@@ -686,10 +688,10 @@ class StaffMastersController extends AppController {
                             $this->log('ファイルのアップロードに失敗しました。'.$staff_id);
                         }
                     }
-                    if (!empty($filename2)) {
+                    if (!empty($filename2) && !empty($_after3)) {
                         $_after3 = $filename2.','.$_after3;
                     }
-                    if (!empty($filename2_2)) {
+                    if (!empty($filename2_2) && !empty($_after3_2)) {
                         $_after3_2 = $filename2_2.','.$_after3_2;
                     }
                 }

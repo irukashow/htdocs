@@ -37,6 +37,16 @@ function convGtJDate($src) {
     }
     return $wadate;
 }
+
+// 指定の職種数が保存データ数を超えるときの対策
+function setData($datas, $col, $shitei, $reserved) {
+    if (intval($shitei)+1 > intval($reserved)) {
+        $ret = '';
+    } else {
+        $ret = $datas[$shitei]['OrderInfoDetail'][$col];
+    }
+    return $ret;
+} 
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -78,10 +88,9 @@ $(function() {
         </font>
         <!-- ページ選択 END -->
         
-<?php echo $this->Form->create('OrderInfo', array('name' => 'form','id' => 'regist')); ?>
+<?php echo $this->Form->create('OrderInfo'); ?>  
 <?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $case_id)); ?>   
 <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
-        
         <!-- 基本情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
             <tr>
@@ -90,20 +99,24 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>保存名</td>
                 <td colspan="3">
-                    <?php echo $this->Form->input('OrderInfo.order_name',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;')); ?>
+                    <?php echo $this->Form->input('OrderInfo.order_name',
+                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>$datas[0]['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>契約期間</td>
                 <td colspan="1">
-                    自&nbsp;<?php echo $this->Form->input('OrderInfo.period_from',array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;')); ?>
+                    自&nbsp;<?php echo $this->Form->input('OrderInfo.period_from',
+                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;','value'=>$datas[0]['OrderInfo']['period_from'])); ?>
                     ～
-                    至&nbsp;<?php echo $this->Form->input('OrderInfo.period_to',array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;')); ?>
+                    至&nbsp;<?php echo $this->Form->input('OrderInfo.period_to',
+                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;','value'=>$datas[0]['OrderInfo']['period_to'])); ?>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;'>登録職種数</td>
                 <td style='width:20%;'>
                     <?php $list = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10'); ?>
-                    <?php echo $this->Form->input('OrderInfo.shokushu_num',array('type'=>'select','div'=>false,'options'=>$list,'label'=>false,'style'=>'width:50px;')); ?>
+                    <?php echo $this->Form->input('OrderInfo.shokushu_num',
+                            array('type'=>'select','div'=>false,'options'=>$list,'label'=>false,'style'=>'width:50px;','value'=>$datas[0]['OrderInfo']['shokushu_num'])); ?>
                 </td>
             </tr>
         </table>
@@ -111,6 +124,7 @@ $(function() {
         <center>
             <?php echo $this->Form->submit('▼ 職種入力 ▼',array('label'=>false,'name'=>'insert','id'=>'button-create', 'style'=>'font-size:90%;')); ?>
         </center>
+        <?php echo $this->Form->end(); ?>
         <!-- 追加ボタン END -->
         <div style="width:1000px;overflow-y:hidden">
         <!-- 職種入力 -->
@@ -121,6 +135,7 @@ $(function() {
                 $width = '100%';
             }
         ?>
+        <?php echo $this->Form->create('OrderInfoDetail'); ?>  
         <table border='1' cellspacing="0" cellpadding="5" style="width:<?=$width ?>;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;table-layout:fixed;">
             <tr>
                 <th style='background:#99ccff;text-align: center;width:100px;table-layout:auto;'></th>
@@ -130,27 +145,32 @@ $(function() {
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;'>職種</td>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden','value'=>$case_id)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden', 'value'=>setData($datas,'id',$count,$record))); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'hidden','value'=>$count)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_name',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;text-align: left;')); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_name',array('type'=>'text','div'=>false,'label'=>false,
+                        'value'=>setData($datas,'shokushu_name',$count,$record), 'style'=>'width:95%;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;'>基本就業時間</td>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_from',array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;')); ?>&nbsp;～
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;')); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_from',
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas,'worktime_from',$count,$record))); ?>&nbsp;～
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas,'worktime_to',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;'>休憩時間</td>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
-                <td style=''><?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;')); ?></td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style=''><?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime',
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas,'resttime',$count,$record))); ?></td>
                 <?php } ?>
             </tr>
             <!-- 受注 -->
@@ -158,30 +178,34 @@ $(function() {
             <?php $list2 = array('1'=>'有', '0'=>'無'); ?>
             <tr>
                 <td rowspan="4" style='background-color: #e8ffff;'>受注</td>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_shiharai',array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_shiharai',
+                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'value'=>setData($datas,'juchuu_shiharai',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    金額：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_money',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                    金額：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_money',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;', 'value'=>setData($datas,'juchuu_money',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_koutsuuhi',array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2)); ?>
+                    交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_koutsuuhi',
+                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'value'=>setData($datas,'juchuu_koutsuuhi',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    計算方法：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_cal',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:120px;text-align: left;')); ?>
+                    計算方法：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_cal',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:120px;text-align: left;', 'value'=>setData($datas,'juchuu_cal',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -189,30 +213,34 @@ $(function() {
             <!-- 給与 -->
             <tr>
                 <td rowspan="4" style='background-color: #e8ffff;'>給与</td>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_shiharai',array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_shiharai',
+                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'value'=>setData($datas,'kyuuyo_shiharai',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    金額：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_money',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                    金額：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_money',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;', 'value'=>setData($datas,'kyuuyo_money',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_koutsuuhi',array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2)); ?>
+                    交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_koutsuuhi',
+                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'value'=>setData($datas,'kyuuyo_koutsuuhi',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr>
-                <?php for ($count = 0; $count < $row; $count++){ ?>
+                <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    計算方法：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:120px;text-align: left;')); ?>
+                    計算方法：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:120px;text-align: left;', 'value'=>setData($datas,'kyuuyo_cal',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
