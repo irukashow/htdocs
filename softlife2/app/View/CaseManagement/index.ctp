@@ -241,5 +241,6 @@ $(function() {
 ?>
  </div>
 <!--- スタッフマスタ本体 END --->
-
 <?php echo $this->Form->end(); ?>
+<br>
+<a href="<?=ROOTDIR ?>/CaseManagement/uri9">売上給与一覧</a>

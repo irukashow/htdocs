@@ -15,6 +15,8 @@ App::uses('AppController', 'Controller');
 class CaseManagementController extends AppController {
     public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail');
     
+    public $components = array('RequestHandler');
+    
     static public $selected_class;
     public $title_for_layout = "案件管理 - 派遣管理システム";
     
@@ -499,7 +501,10 @@ class CaseManagementController extends AppController {
             'conditions' => '`OrderInfo`.`id`=`OrderInfoDetail`.`case_id`',
         );
         $option['conditions'] = array('OrderInfo.id' => $case_id);
-        
+        // 職種マスタ配列
+        $conditions0 = array('item' => 16);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
         // その他
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
@@ -819,6 +824,34 @@ class CaseManagementController extends AppController {
         }
 
     }
+    
+    /**
+     * 帳票出力(excel)
+     */
+    public function download_excel($username) {
+        // レイアウトは使わない
+        $this -> layout = false;
+        $data = $this -> User-> find('first', array('conditions'=>array('User.' . $this -> User -> primaryKey => $username)));
+        $this -> set(compact('data'));
+    }
+    
+    /**
+     * 帳票出力(pdf)
+     */
+    public function download_pdf() {
+        $this->response->type('pdf'); // Content-Type を指定
+        $this->render(null, 'pdf');  // レイアウトを指定
+    }
+    
+    /**
+     * 帳票出力(pdf)
+     */
+    public function download_pdf2($username) {
+        $data = $this -> User-> find('first', array('conditions'=>array('User.' . $this -> User -> primaryKey => $username)));
+        $this -> set(compact('data'));
+        $this->response->type('pdf'); // Content-Type を指定
+        $this->render(null, 'pdf');  // レイアウトを指定
+    }
       
     /** 職種マスタ管理 **/
     public function shokushu($_id = null, $_sequence = null, $direction = null) {
@@ -914,6 +947,43 @@ class CaseManagementController extends AppController {
         } else {
             //$this->request->data = $this->User->read(null, $this->Auth->user('username'));    
         }
+    }
+    
+    /**
+     * 売上給与一覧ページ
+     */
+    public function uri9() {
+        // 所属が選択されていなければ元の画面に戻す
+        if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
+            //$this->log($this->Session->read('selected_class'));
+            $this->Session->setFlash('右上の所属を選んでください。');
+            $this->redirect($this->referer());
+        }
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', 'active');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // データ
+        $this->set('datas', $this->paginate('CaseManagement'));
+        
+        
     }
     
     /*** 職種をカンマ区切りに ***/

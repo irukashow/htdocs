@@ -47,6 +47,15 @@ function setData($datas, $col, $shitei, $reserved) {
     }
     return $ret;
 } 
+// 指定データがないときの対策
+function setData2($datas, $col) {
+    if (empty($datas)) {
+        $ret = '';
+    } else {
+        $ret = $datas[0]['OrderInfo'][$col];
+    }
+    return $ret;
+}
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -94,29 +103,29 @@ $(function() {
         <!-- 基本情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
             <tr>
-                <th colspan="4" style='background:#99ccff;text-align: center;'>基本情報</th>
+                <th colspan="4" style='background:#99ccff;text-align: center;'>オーダー情報</th>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>保存名</td>
                 <td colspan="3">
                     <?php echo $this->Form->input('OrderInfo.order_name',
-                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>$datas[0]['OrderInfo']['order_name'])); ?>
+                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>setData2($datas, 'order_name'))); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>契約期間</td>
                 <td colspan="1">
                     自&nbsp;<?php echo $this->Form->input('OrderInfo.period_from',
-                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;','value'=>$datas[0]['OrderInfo']['period_from'])); ?>
+                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;','value'=>setData2($datas, 'period_from'))); ?>
                     ～
                     至&nbsp;<?php echo $this->Form->input('OrderInfo.period_to',
-                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;','value'=>$datas[0]['OrderInfo']['period_to'])); ?>
+                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false,'style'=>'width:150px;','value'=>setData2($datas, 'period_to'))); ?>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;'>登録職種数</td>
                 <td style='width:20%;'>
                     <?php $list = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10'); ?>
                     <?php echo $this->Form->input('OrderInfo.shokushu_num',
-                            array('type'=>'select','div'=>false,'options'=>$list,'label'=>false,'style'=>'width:50px;','value'=>$datas[0]['OrderInfo']['shokushu_num'])); ?>
+                            array('type'=>'select','div'=>false,'options'=>$list,'label'=>false,'style'=>'width:50px;','value'=>setData2($datas, 'shokushu_num'))); ?>
                 </td>
             </tr>
         </table>
@@ -150,7 +159,7 @@ $(function() {
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden', 'value'=>setData($datas,'id',$count,$record))); ?>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'hidden','value'=>$count)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_name',array('type'=>'text','div'=>false,'label'=>false,
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_name',array('type'=>'select','div'=>false,'label'=>false, 'options' => $list_shokushu,
                         'value'=>setData($datas,'shokushu_name',$count,$record), 'style'=>'width:95%;text-align: left;')); ?>
                 </td>
                 <?php } ?>

@@ -62,7 +62,9 @@
                 <td>
                     <?php echo $this->Html->link('▶スタッフ職種マスタ', '/master/shokushu'); ?>
                 </td>
-                <td></td>
+                <td>
+                    テストリンク：<a href="<?=ROOTDIR ?>/CaseManagement/uri9">売上給与一覧</a>
+                </td>
             </tr>
             <tr>
                 <td width="15%">
@@ -75,6 +77,9 @@
                     <?php echo $this->Html->link('▶スタッフ仮登録履歴', '/log/staff_preregist'); ?>
                 </td>
                 <td></td>
+                <td>
+                    テストリンク：<a href="<?=ROOTDIR ?>/CaseManagement/download_excel/9">EXCEL出力</a>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -86,6 +91,9 @@
                     <?php echo $this->Html->link('▶バージョン更新履歴', '/menu/version'); ?>
                 </td>
                 <td></td>
+                <td>
+                    テストリンク：<a href="<?=ROOTDIR ?>/CaseManagement/download_pdf">HTML⇒PDF出力</a>
+                </td>
             </tr>
             <tr>
                 <td>

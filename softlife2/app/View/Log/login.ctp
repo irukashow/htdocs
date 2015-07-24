@@ -15,7 +15,14 @@
             )
         );
 ?>
-
+<div style="float:right;margin-top: 5px;">
+    ページ数：
+    <?php
+        echo $this->paginator->counter(array('format' => '<b>%page%</b> / <b>%pages%</b>'));
+    ?>
+    &nbsp;&nbsp;&nbsp;
+    <?php echo $this->Paginator->counter(array('format' => __('総件数：  <b>{:count}</b> 件')));?>
+</div>
 <!--- ログイン履歴 START --->
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center">
   <tr class="col">

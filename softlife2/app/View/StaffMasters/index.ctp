@@ -33,18 +33,6 @@ window.onload = function(){
 </script>
 <script type="text/javascript">
 <!-- 
-//ID絞り込みテキストボックスでENTERが押された場合 
-function doSearch1(id) {
-    if(event.keyCode == 13){
-	var elm = document.createElement("input");
-	elm.setAttribute("name", "id");
-	elm.setAttribute("type", "hidden");
-	elm.setAttribute("value", id);
-	form.appendChild(elm);
-	form.submit();
-        return false;
-    }
-}
 // 入力を半角しか受け付けない
 function chkHankaku(textbox) {
     if (textbox.value.match(/[^A-Z\d\-]/)) {
@@ -320,5 +308,5 @@ function chkHankaku(textbox) {
 ?>
  </div>
 <!--- スタッフマスタ本体 END --->
-
 <?php echo $this->Form->end(); ?>
+

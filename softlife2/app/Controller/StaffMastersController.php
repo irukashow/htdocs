@@ -41,7 +41,7 @@ class StaffMastersController extends AppController {
     'order' => array('id' => 'asc'),
     )); 
     
-    static public $selected_class;
+    //static public $selected_class;
     
     public $title_for_layout = "スタッフマスタ - 派遣管理システム";
 
@@ -269,6 +269,17 @@ class StaffMastersController extends AppController {
             if (isset($profile)) {
                 // ページ数（レコード番号）を取得
                 $conditions1 = array('kaijo_flag' => $flag, 'id <= ' => $staff_id);
+                // 絞り込み条件の適応
+                if($this->Session->check('filter')) {
+                    $filter = $this->Session->read('filter');
+                    if ($filter == '0') {
+                        $conditions1 = $conditions1;
+                    } else {
+                        $conditions1 = $conditions1 + $filter;
+                    }
+                } else {
+                    $conditions1 = $conditions1;
+                }
                 $page = $this->StaffMaster->find('count', array('fields' => array('*'), 'conditions' => $conditions1));
                 //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
                 //$this->log($page, LOG_DEBUG);
@@ -365,6 +376,17 @@ class StaffMastersController extends AppController {
         //$conditions2 = array('id' => $staff_id, 'kaijo_flag' => $flag);
         $conditions2 = array('kaijo_flag' => $flag);
         //$conditions2 = null;
+        // 絞り込み条件の適応
+        if($this->Session->check('filter')) {
+            $filter = $this->Session->read('filter');
+            if ($filter == '0') {
+                $conditions2 = $conditions2;
+            } else {
+                $conditions2 = $conditions2 + $filter;
+            }
+        } else {
+            $conditions2 = $conditions2;
+        }
         $this->paginate = array('StaffMaster' => array(
             'fields' => '*' ,
             'limit' =>  '1',

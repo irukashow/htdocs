@@ -34,6 +34,7 @@ class MessageController extends AppController {
         $this->Session->delete('filter');
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $username = $this->Auth->user('username');
         $this->set('user_name', $name);
         $selected_class = $this->Session->read('selected_class');
         $this->set('type', $type);
@@ -51,7 +52,7 @@ class MessageController extends AppController {
             // 受信メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Member' => array(
-                    'conditions' => array('Message2Member.class' => $selected_class, 'delete_flag' => $flag),
+                    'conditions' => array('Message2Member.class' => $selected_class, 'recipient_member' => $username, 'delete_flag' => $flag),
                     'fields' => 'Message2Member.*, User.*',
                     'limit' =>20,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
@@ -77,7 +78,7 @@ class MessageController extends AppController {
             // メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Staff' => array(
-                    'conditions' => array('Message2Staff.class' => $selected_class, 'Message2Staff.sent_flag' => $flag),
+                    'conditions' => array('Message2Staff.class' => $selected_class, 'Message2Staff.username' => $username, 'Message2Staff.sent_flag' => $flag),
                     'fields' => 'Message2Staff.*, StaffMaster.*',
                     'limit' =>20,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
