@@ -1,5 +1,8 @@
 <?php
     echo $this->Html->css('message');
+    echo $this->Html->css('lightbox');
+    echo $this->Html->script('lightbox');
+    echo $this->Html->script('sanrio');
 ?>
 <?php require('calender.ctp'); ?>
 <?php
@@ -52,9 +55,16 @@
                     <br>
                     <?php echo $this->Html->link('ログアウト', 'logout', array('title'=>'確認'), 'ログアウトしてもよろしいですか？'); ?>
                     
-                    <div style="text-align: center;margin-top: -5px;">
+                    <div style="text-align: center;margin-top: 5px;">
+                    <script type="text/javascript">
+                    <!--
+                      display('<?=ROOTDIR ?>');
+                    //-->
+                    </script>
+                        <!--
                         <?php echo $this->Html->image('dog.gif', array('title' => 'ぼしゅうちゅう！', 'style' => 'cursor: pointer;')); ?><br>
                         <span style="font-family: 'HG創英角ﾎﾟｯﾌﾟ体';">「イメージ 写真 募集中！」</span><br>
+                        -->
                     </div>
                     
                     <div style="margin-top: 30px;">

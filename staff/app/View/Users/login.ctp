@@ -1,6 +1,6 @@
 <!-- content start -->
 <div data-role="content">
-    <div style="text-align: center;">ログイン</div>
+    <div style="text-align: center;"><h3>スタッフ専用ページ</h3></div>
 
     <?php echo $this->Form->create('StaffMaster'); ?>
     <?=$this->Form->input('account', array('type' => 'text', 'label' => 'アカウントID', 'style'=>'width: 95%;',))?>

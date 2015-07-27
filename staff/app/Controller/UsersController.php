@@ -32,17 +32,38 @@ class UsersController extends AppController {
             $this->layout = "main";
             $this->set("title_for_layout",$this->title_for_layout);
             // ユーザー名前
+            $id = $this->Auth->user('id');
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('user_name', $name);
             $this->set('name', $name);
-            //$this->set('sessions', $this->Session);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            // 都道府県のセット
+            if (substr($class, 0 ,1) == 1) {
+                // 大阪（関西地方）
+                $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
+            } elseif (substr($class, 0, 1) == 2) {
+                // 東京（関東地方）
+                $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 8, 'id <= ' => 14));
+            } elseif (substr($class, 0, 1) == 3) {
+                // 名古屋（中部地方）
+                $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
+            }
+            $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
+            $this->set('pref_arr', $pref_arr);
             
             // POSTの場合
             if ($this->request->is('post')) {
                 // 属性の変更
 
             } else {
-                $this->set('class', $this->Session->read('class'));
+                // 登録していた値をセット
+                $this->request->data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                //$this->request->data['StaffMaster']['zipcode'] = $this->request->data['StaffMaster']['zipcode1'].$this->request->data['StaffMaster']['zipcode2'];
             }
 
 	}

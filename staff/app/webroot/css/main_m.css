@@ -19,6 +19,7 @@
 }
 .ui-content{
 	background:#ffffff;
+        font-family:Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;
 }
 
 /*--トップページ 画像--*/
@@ -153,6 +154,12 @@ li.toplist_menu2.ui-btn-active:visited,
 li.toplist_menu2.ui-btn-active:hover,
 li.toplist_menu2.ui-btn-active a.ui-link-inherit{
 	color:#5994bf;
+}
+/*-- 郵便番号の横並び --*/
+.yoko >.ui-input-text{
+   width:5em;
+   display:inline-block;
+   margin: 5px 0px 0px 0px;
 }
 
 
