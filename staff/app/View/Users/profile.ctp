@@ -1,34 +1,53 @@
 <?php
     echo $this->Html->script('https://ajaxzip3.github.io/ajaxzip3.js');
+    echo $this->Html->script('jquery.validate.min.js');
 ?>
+<script type='text/javascript'>
+function chkPasswd(pwd1, pwd2) {
+    if (pwd1.value != pwd2.value) {
+        alert("パスワードが異なります。");
+        return false;
+    } else {
+        return true;
+    }
+}
+</script> 
+
 <div id="page4" data-role="page">
-        <div data-role="header" data-theme="c">
-                <h1>プロフィール</h1>
-                <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
-        </div>			
-        <div data-role="content">
-            <h3>プロフィールの変更</h3>
-            <p>以下の変更ができます。</p>
-            <p><a href="#address">１．住所変更</a></p>
-            <p><a href="#contact">２．連絡先変更</a></p>
-            <p><a href="#password">３．パスワード変更</a></p>
-        </div>
-        <div class="pagetop">
-                <a href="#page4"><img src="img/pagetop.png"></a>
-        </div>			
-        <div id="footer">
-            <?=FOOTER ?>
-        </div>
+    <div data-role="header" data-theme="c">
+            <h1>プロフィール</h1>
+            <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
+    </div>			
+    <div data-role="content">
+        <b>プロフィールの変更</b>
+        <p>以下の変更ができます。</p>
+        <input type="button" value="１．住所変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#address"'>
+        <input type="button" value="２．連絡先変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#contact"'>
+        <input type="button" value="３．パスワード変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#password"'>
+        <div style='float:left;'>       
+            <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
+        </div> 
+    </div>
+    <div class="pagetop">
+            <a href="#page4">
+                <?php echo $this->Html->image('pagetop.png'); ?>
+            </a>
+    </div>			
+    <div id="footer">
+        <?=FOOTER ?>
+    </div>
 </div>
+
 
 <div id="address" data-role="page">
         <div data-role="header" data-theme="c">
                 <h1>プロフィール</h1>
                 <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
-        </div>			
+        </div>
+    <?php echo $this->Form->create('StaffMaster', array('name' => 'form', 'url' => array('controller' => 'users', 'action' => 'profile'))); ?>
+    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
         <div data-role="content">
-            <p><a href="#page4">プロフィール</a> ⇒ 住所変更</p>
-            <?php echo $this->Form->create('StaffMaster'); ?>                
+            <p><a href="#page4">プロフィール</a> ⇒ 住所変更</p>             
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <!-- 住所 Start -->
@@ -88,10 +107,16 @@
                     </tr>
                     <!-- 住所 End -->
                 </table>
+            <div style='float:left;'>
+                <input type="submit" value="登　録" data-inline="true" onclick=''>                
+                <input type="button" value="戻　る" data-inline="true" onclick='location.href="#page4"'>
+            </div>  
         </div>
     <?php echo $this->Form->end(); ?>
         <div class="pagetop">
-                <a href="#page4"><img src="img/pagetop.png"></a>
+                <a href="#address">
+                    <?php echo $this->Html->image('pagetop.png'); ?>
+                </a>
         </div>			
         <div id="footer">
             <?=FOOTER ?>
@@ -102,10 +127,11 @@
         <div data-role="header" data-theme="c">
                 <h1>プロフィール</h1>
                 <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
-        </div>			
+        </div>	
         <div data-role="content">
             <p><a href="#page4">プロフィール</a> ⇒ 連絡先変更</p>
-            <?php echo $this->Form->create('StaffMaster'); ?>                
+    <?php echo $this->Form->create('StaffMaster', array('name' => 'form2', 'url' => array('controller' => 'users', 'action' => 'profile'))); ?>
+    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>              
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <td colspan="2" style='background-color: #e8ffff;width:20%;'>電話番号１（携帯）</td>
@@ -140,10 +166,16 @@
                         </td>
                     </tr>
                 </table>
+            <div style='float:left;'>
+                <input type="submit" value="登　録" data-inline="true" onclick=''>                
+                <input type="button" value="戻　る" data-inline="true" onclick='location.href="#page4"'>
+            </div>  
+                <?php echo $this->Form->end(); ?>
         </div>
-    <?php echo $this->Form->end(); ?>
         <div class="pagetop">
-                <a href="#page4"><img src="img/pagetop.png"></a>
+                <a href="#contact">
+                    <?php echo $this->Html->image('pagetop.png'); ?>
+                </a>
         </div>			
         <div id="footer">
             <?=FOOTER ?>
@@ -157,24 +189,37 @@
         </div>			
         <div data-role="content">
             <p><a href="#page4">プロフィール</a> ⇒ パスワード変更</p>
-            <?php echo $this->Form->create('StaffMaster'); ?>                
+    <?php echo $this->Form->create('StaffMaster', 
+            array('name' => 'form3', 'method' => 'post', 
+                'url' => array('controller' => 'users', 'action' => 'profile'))); ?>
+    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>                  
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <td style='background-color: #e8ffff;width:20%;'>パスワード（２回入力）</td>
                     </tr>
                     <tr>
                         <td>
-                            <?php echo $this->Form->input('password',array('label'=>false,'div'=>false,'value'=>'')); ?>
-                            <?php echo $this->Form->input('password2',array('label'=>false,'div'=>false,'value'=>'')); ?>
+                            <?php echo $this->Form->input('password',array('label'=>false,'div'=>false,'value'=>'','class'=>'required')); ?>
+                            <?php echo $this->Form->input('password2',array('type'=>'password', 'label'=>false,'div'=>false,'value'=>'','class'=>'required')); ?>
                         </td>
                     </tr>
                 </table>
+            <div style='float:left;'>
+                <input type="submit" value="登　録" data-inline="true" onclick='return chkPasswd(document.getElementById("StaffMasterPassword"), document.getElementById("StaffMasterPassword2"));'>                
+                <input type="button" value="戻　る" data-inline="true" onclick='location.href="#page4"'>
+            </div>    
+                <?php echo $this->Form->end(); ?>
         </div>
-    <?php echo $this->Form->end(); ?>
         <div class="pagetop">
-                <a href="#page4"><img src="img/pagetop.png"></a>
+                <a href="#password">
+                    <?php echo $this->Html->image('pagetop.png'); ?>
+                </a>
         </div>			
         <div id="footer">
             <?=FOOTER ?>
         </div>
 </div>
+
+<!--ダイアログメニュー-->
+<?php require('dialog_menu.ctp'); ?>
+<!--ダイアログメニュー end-->

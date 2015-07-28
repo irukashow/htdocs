@@ -161,5 +161,11 @@ li.toplist_menu2.ui-btn-active a.ui-link-inherit{
    display:inline-block;
    margin: 5px 0px 0px 0px;
 }
+/*-- ボタンの横並び --*/
+.yoko >.ui-btn-hidden{
+   width:5em;
+   display:inline-block;
+   margin: 5px 0px 0px 0px;
+}
 
 

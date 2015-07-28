@@ -1,4 +1,4 @@
-﻿$(document).ready(function(){
+$(document).ready(function(){
 	$('.pagetop a[href^=#]').tap(function() {
 		var speed = 500;
 	       	var href= $(this).attr("href");

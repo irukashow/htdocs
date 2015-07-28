@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('StaffMaster', 'User');
+        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         /****認証周り*****/
@@ -33,8 +33,8 @@ class UsersController extends AppController {
             $this->set("title_for_layout",$this->title_for_layout);
             // ユーザー名前
             $id = $this->Auth->user('id');
+            $this->set('id', $id);
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-            $this->set('user_name', $name);
             $this->set('name', $name);
             $class = $this->Session->read('class');
             if (empty($class)) {
@@ -56,10 +56,15 @@ class UsersController extends AppController {
             $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
             $this->set('pref_arr', $pref_arr);
             
+            $this->log($this->request->data, LOG_DEBUG);
             // POSTの場合
-            if ($this->request->is('post')) {
-                // 属性の変更
-
+            if ($this->request->is('post') || $this->request->is('put')) {
+                // データを登録する
+                if ($this->StaffMaster->save($this->request->data)) {
+                    // スタッフのプロフィール更新履歴
+                    //
+                    //$this->redirect(array('controller' => 'users', 'action' => 'index#page4'));
+                }
             } else {
                 // 登録していた値をセット
                 $this->request->data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
@@ -68,11 +73,168 @@ class UsersController extends AppController {
 
 	}
         
-	public function main(){
+	/**
+	 * メッセージ
+	 */
+	public function message($flag = null){
             // レイアウト関係
             $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            $this->Message2Staff->setSource('message2staff');
+            $this->Message2Member->setSource('message2member');
+
+            // フラグ
+            if (empty($flag)) {
+                $flag = 1;
+                $this->set('flag', 1);
+            } else {
+                $this->set('flag', $flag);
+            }
+            
+            // GETの場合
+            if ($this->request->is('get')) {
+                if ($flag == 1) {
+                    // メッセージ一覧の表示
+                    $this->paginate = array(
+                        'Message2Staff' => array(
+                            'conditions' => array('Message2Staff.class' => $class, 'FIND_IN_SET('.$id.', Message2Staff.recipient_staff)', 'Message2Staff.sent_flag' => 1),
+                            'fields' => 'Message2Staff.*',
+                            'limit' =>10,                        //1ページ表示できるデータ数の設定
+                            'order' => array('id' => 'desc'),  //データを降順に並べる 
+                        )
+                    );
+                    $datas = $this->paginate('Message2Staff');
+                    $this->set('datas', $datas);
+                } elseif ($flag == 2) {
+                    // 送信済みメッセージ一覧の表示
+                    $this->paginate = array(
+                        'Message2Member' => array(
+                            'conditions' => array('Message2Member.class' => $class
+                            //, 'Message2Member.staff_id' => $id
+                            ),
+                            'fields' => 'Message2Member.*, User.*',
+                            'limit' =>10,                        //1ページ表示できるデータ数の設定
+                            'order' => array('id' => 'desc'),  //データを降順に並べる
+                            'joins' => array (
+                                array (
+                                    'type' => 'LEFT',
+                                    'table' => 'users',
+                                    'alias' => 'User',
+                                    'conditions' => 'User.username = Message2Member.recipient_member' 
+                                )
+                            )  
+                        )
+                    );
+                    $this->set('datas', $this->paginate('Message2Member'));
+                } elseif ($flag == 3) {
+                    
+                }
+                
+            } 
+        }
+        
+	/**
+	 * 勤怠入力
+	 */
+	public function work(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
             
         }
+        
+	/**
+	 * プロファイル
+	 */
+	public function profile(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            // 都道府県のセット
+            if (substr($class, 0 ,1) == 1) {
+                // 大阪（関西地方）
+                $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
+            } elseif (substr($class, 0, 1) == 2) {
+                // 東京（関東地方）
+                $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 8, 'id <= ' => 14));
+            } elseif (substr($class, 0, 1) == 3) {
+                // 名古屋（中部地方）
+                $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
+            }
+            $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
+            $this->set('pref_arr', $pref_arr);
+            
+            $this->log($this->request->data, LOG_DEBUG);
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                // データを登録する
+                if ($this->StaffMaster->save($this->request->data)) {
+                    // スタッフのプロフィール更新履歴
+                    //
+                    //$this->redirect(array('controller' => 'users', 'action' => 'index#page4'));
+                }
+            } else {
+                // 登録していた値をセット
+                $this->request->data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                //$this->request->data['StaffMaster']['zipcode'] = $this->request->data['StaffMaster']['zipcode1'].$this->request->data['StaffMaster']['zipcode2'];
+            }
+
+	}
+        
+	/**
+	 * スケジュール
+	 */
+	public function schedule(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            
+        }
+
 	
 	/**
 	 * ユーザ登録。
