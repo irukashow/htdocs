@@ -108,7 +108,7 @@ function chkPasswd(pwd1, pwd2) {
                     <!-- 住所 End -->
                 </table>
             <div style='float:left;'>
-                <input type="submit" value="登　録" data-inline="true" onclick=''>                
+                <input type="submit" value="更　新" data-theme="e" data-icon="check" data-inline="true" onclick=''>                
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="#page4"'>
             </div>  
         </div>
@@ -167,7 +167,7 @@ function chkPasswd(pwd1, pwd2) {
                     </tr>
                 </table>
             <div style='float:left;'>
-                <input type="submit" value="登　録" data-inline="true" onclick=''>                
+                <input type="submit" value="更　新" data-theme="e" data-icon="check" data-inline="true" onclick=''>                
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="#page4"'>
             </div>  
                 <?php echo $this->Form->end(); ?>
@@ -205,7 +205,7 @@ function chkPasswd(pwd1, pwd2) {
                     </tr>
                 </table>
             <div style='float:left;'>
-                <input type="submit" value="登　録" data-inline="true" onclick='return chkPasswd(document.getElementById("StaffMasterPassword"), document.getElementById("StaffMasterPassword2"));'>                
+                <input type="submit" value="更　新" data-theme="e" data-icon="check" data-inline="true" onclick='return chkPasswd(document.getElementById("StaffMasterPassword"), document.getElementById("StaffMasterPassword2"));'>                
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="#page4"'>
             </div>    
                 <?php echo $this->Form->end(); ?>

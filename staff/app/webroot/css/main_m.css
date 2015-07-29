@@ -131,7 +131,8 @@ li.toplist_news.ui-btn-up-c{
 
 /*--トップ　リストビュー(メニュー)の背景色、タップ時--*/
 li.toplist_menu1{
-	background:#dcdcdc;
+	//background:#dcdcdc;
+        background:#459ed2;
 }
 li.toplist_menu2{
 	background:#efefef;
@@ -139,6 +140,7 @@ li.toplist_menu2{
 
 .toplist_menu1.ui-btn-active{
 	border-color:#c0c0c0;
+        color: white;
 	text-shadow:none;
 }
 li.toplist_menu1.ui-btn-active:visited,
@@ -164,6 +166,12 @@ li.toplist_menu2.ui-btn-active a.ui-link-inherit{
 /*-- ボタンの横並び --*/
 .yoko >.ui-btn-hidden{
    width:5em;
+   display:inline-block;
+   margin: 5px 0px 0px 0px;
+}
+/*-- セレクトの横並び --*/
+.yoko >.ui-select{
+   //width:5em;
    display:inline-block;
    margin: 5px 0px 0px 0px;
 }

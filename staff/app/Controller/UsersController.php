@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member');
+        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 'TimeCard');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         /****認証周り*****/
@@ -145,7 +145,7 @@ class UsersController extends AppController {
         }
         
 	/**
-	 * 勤怠入力
+	 * 勤務関連
 	 */
 	public function work(){
             // レイアウト関係
@@ -161,8 +161,75 @@ class UsersController extends AppController {
                 $this->redirect('logout');
             }
             // テーブル変更
-            $this->StaffMaster->setSource('staff_'.$class);
+            $this->TimeCard->setSource('time_cards');
             
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                if (isset($this->request->data['input'])) {
+                    $date_array = array_keys($this->request->data['input']);
+                    $selected_date = $date_array[0];
+                    //$this->set('selected_date', $selected_date);
+                    $this->redirect(array('controller' => 'users', 'action' => 'work_input', $selected_date));
+                }
+            } else {
+                // 保存データの抽出
+                $now_year = date("Y"); // 現在の年を取得
+                $now_month = date("n"); // 在の月を取得
+                //$now_day = date("j"); // 現在の日を取得
+                $date1 = $now_year.sprintf('%02d', $now_month).'01';
+                $date2 = $now_year.sprintf('%02d', $now_month).'31';
+                $data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date >= '=>$date1, 'work_date <= '=>$date2)));
+                //$this->log($data['TimeCard'], LOG_DEBUG);
+                $this->set('data', $data['TimeCard']);
+                
+            }
+        }
+  
+	/**
+	 * 勤務関連の入力アクション
+	 */
+	public function work_input($date = null){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            } else {
+                $this->set('class', $class);
+            }
+            // テーブル変更
+            $this->TimeCard->setSource('time_cards');
+            $this->log($date, LOG_DEBUG);
+            // 指定日をセット
+            $now_year = date("Y"); // 現在の年を取得
+            $now_month = date("n"); // 在の月を取得
+            //$now_day = date("j"); // 現在の日を取得
+            $date1 = $now_year.'-'.sprintf('%02d', $now_month).'-'.sprintf('%02d', $date);
+            $datetime = new DateTime($date1);
+            $week = array("日", "月", "火", "水", "木", "金", "土");
+            $w = (int)$datetime->format('w');
+            $date2 = $now_year.'年'.$now_month.'月'.$date.'日（'.$week[$w].'）';
+            $this->set('date1', $date1);
+            $this->set('date2', $date2);
+            
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                // データを登録する
+                if ($this->TimeCard->save($this->request->data)) {
+                    // スタッフのプロフィール更新履歴
+                    //
+                    $this->redirect(array('controller' => 'users', 'action' => 'work'));
+                }
+            } else {
+                // 登録していた値をセット
+                $this->request->data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1)));
+            }
         }
         
 	/**
@@ -511,6 +578,9 @@ class UsersController extends AppController {
         return $result;
     } 
     
+    // 日付から曜日を計算
+    public function getWeekday($val) {
 
+    }
 
 }
