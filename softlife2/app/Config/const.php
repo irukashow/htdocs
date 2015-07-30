@@ -4,7 +4,8 @@
 define("HEADER","派遣管理システム <font color=#ffff99>SLNext 0.1.6</font>");
 define("FOOTER","SLNext Version 0.1.6 20150722 Copyright (C) 2015 SOFTLIFE Co., Ltd.<br>Powered by CakePHP");
 define("ROOTDIR","/softlife2");
-define("IMGURL","http://localhost/staff");
+define("MEMBER_URL","http://localhost/softlife2");
+define("STAFF_URL","http://localhost/staff");
  
 //配列
 //呼び出し方:    $fuga = Configure::read("fuga");

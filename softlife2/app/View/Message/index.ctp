@@ -18,6 +18,11 @@
     if ($new_count > 0) {
         $new_message = '<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;">'.$new_count.'</span>';
     }
+    // 下書きがあればその件数を表示
+    $draft_message = '';
+    if ($draft_count > 0) {
+        $draft_message = '<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;">'.$draft_count.'</span>';
+    }
 ?>
 
 <!-- 見出し -->
@@ -68,7 +73,7 @@
                 </td>
                 <td>
                     <a href="<?=ROOTDIR ?>/message/index/draft" style="text-decoration: none;">
-                        <span style="<?=$style3 ?>">下書き</span>&nbsp;<span style="background-color: grey;color: white;padding: 0 10px 0 10px;border-radius: 5px;"><?=$draft_count ?></span>
+                        <span style="<?=$style3 ?>">下書き</span>&nbsp;<?=$draft_message ?>
                     </a>
                 </td>
             </tr>
@@ -85,10 +90,12 @@
                 </td>
             </tr>
         </table>
+        <!--
         <a href="<?=ROOTDIR ?>/message/staff">●テストページ「スタッフからの送信」</a>
+        -->
     </div>
             </td>
-            <td style="width:70%;">
+            <td style="width:70%;" valign="top">
     <!-- メッセージ一覧（受信トレイ） -->
     <?php if (empty($type) || $type == 'trashbox') { ?>
     <div id='message-list'>
@@ -140,7 +147,7 @@
                         if (!empty($data['Message2Member']['attachment'])) {
                             echo '&nbsp;';
                             echo '<span style="vertical-align:-7px;">';
-                            echo '<img src="'.ROOTDIR.'/img/clip.gif" style="width: 25px;" />';
+                            echo '<img src="'.ROOTDIR.'/img/clip.png" style="width: 25px;" />';
                             echo '</span>';
                         }
                     ?>
@@ -212,6 +219,14 @@
                 </td>
                 <td class='message-content'>
                     <?php echo $this->Html->link($data['Message2Staff']['title'], $dir.'/'.$data['Message2Staff']['id'], array('style'=>'color: blue;')) ?>
+                    <?php
+                        if (!empty($data['Message2Staff']['attachment'])) {
+                            echo '&nbsp;';
+                            echo '<span style="vertical-align:-7px;">';
+                            echo '<img src="'.ROOTDIR.'/img/clip.png" style="width: 25px;" />';
+                            echo '</span>';
+                        }
+                    ?>
                 </td>
                 <td class='message-content'>
                             <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?>

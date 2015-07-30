@@ -64,7 +64,7 @@
         echo '<font color=green style="font-weight: bold;">添付ファイル</font>：（右クリックして保存してください）<br>';
         foreach ($files as $file) {
             if (!empty($file)) {
-                echo '<a href="'.ROOTDIR.'/files/message/staff/'.sprintf("%010d", $data['Message2Staff']['id']).'/'.$file.'" target="_blank">'.$file.'</a><br>';
+                echo '<a href="'.ROOTDIR.'/files/message/staff/'.sprintf("%010d", $data['Message2Staff']['recipient_staff']).'/'.$file.'" target="_blank">'.$file.'</a><br>';
             }
         }
     } 

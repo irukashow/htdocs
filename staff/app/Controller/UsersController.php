@@ -70,7 +70,6 @@ class UsersController extends AppController {
                 $this->request->data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
                 //$this->request->data['StaffMaster']['zipcode'] = $this->request->data['StaffMaster']['zipcode1'].$this->request->data['StaffMaster']['zipcode2'];
             }
-
 	}
         
 	/**
@@ -88,6 +87,8 @@ class UsersController extends AppController {
             $class = $this->Session->read('class');
             if (empty($class)) {
                 $this->redirect('logout');
+            } else {
+                $this->set('class', $class);
             }
             // テーブル変更
             $this->StaffMaster->setSource('staff_'.$class);
@@ -102,8 +103,56 @@ class UsersController extends AppController {
                 $this->set('flag', $flag);
             }
             
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
+                // 送信
+                // 添付ファイルのセット
+                if (!empty($_FILES['attachment']['name'][0])) {
+                    $this->request->data['Message2Member']['attachment'] = $_FILES['attachment']['name'][0];
+                }
+                // データを登録する
+                if ($this->Message2Member->save($this->request->data)) {
+                    //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->log($_FILES['attachment']['name'], LOG_DEBUG);
+                    // insertした宛先メンバーIDを取得
+                    $username0 = $this->request->data['Message2Member']['recipient_member'];
+                    $username = sprintf("%07d", $username0);
+                    $this->log($username, LOG_DEBUG);
+                    //$this->log($this->request->data['Message2Member']['attachment'], LOG_DEBUG);
+                    // ファイルアップロード処理の初期セット
+                    $ds = DIRECTORY_SEPARATOR;  //1
+                    $storeFolder = 'files/message/member'.$ds.$username.$ds;   //2
+                    // ファイルのアップロード
+                    if(!empty($_FILES['attachment']['name'][0])){
+                        // ディレクトリがなければ作る
+                        if ($this->chkDirectory($storeFolder, true) == false) {
+                            $this->log('ファイルのアップロードに失敗しました。', LOG_DEBUG);
+                            $this->redirect($this->referer());
+                            exit();
+                        }
+                        $count = count($_FILES['attachment']['name']);
+                        for ($i=0; $i<$count; $i++) {
+                            $tempFile = $_FILES['attachment']['tmp_name'][$i];//3
+                            $targetPath = $storeFolder.$ds;  //4
+                            $targetFile =  $targetPath. mb_convert_encoding($_FILES['attachment']['name'][$i], 'sjis-win', 'UTF-8');  //5
+                            //$targetFile =  $targetPath.$staff_id.'.'.$after;  //5
+                            // ファイルアップ実行
+                            if (move_uploaded_file($tempFile, $targetFile)) {
+                                // アップの成功
+                                $this->log('ファイルのアップロードに成功しました：'.$id, LOG_DEBUG);
+                                $this->redirect(array('action'=>'message', 2));
+                            } else {
+                                // アップの失敗
+                                $this->log('ファイルのアップロードに失敗しました。'.$id, LOG_DEBUG);
+                            }
+                        }
+                    }
+                    $this->Session->setFlash('送信処理を完了しました。');
+                    //$this->redirect('index');
+                }       
             // GETの場合
-            if ($this->request->is('get')) {
+            } elseif ($this->request->is('get')) {
                 if ($flag == 1) {
                     // メッセージ一覧の表示
                     $this->paginate = array(
@@ -120,8 +169,7 @@ class UsersController extends AppController {
                     // 送信済みメッセージ一覧の表示
                     $this->paginate = array(
                         'Message2Member' => array(
-                            'conditions' => array('Message2Member.class' => $class
-                            //, 'Message2Member.staff_id' => $id
+                            'conditions' => array('Message2Member.class' => $class, 'Message2Member.staff_id' => $id
                             ),
                             'fields' => 'Message2Member.*, User.*',
                             'limit' =>10,                        //1ページ表示できるデータ数の設定
@@ -138,10 +186,98 @@ class UsersController extends AppController {
                     );
                     $this->set('datas', $this->paginate('Message2Member'));
                 } elseif ($flag == 3) {
-                    
+                    // 宛先配列
+                    $this->User->virtualFields['name'] = 'CONCAT(User.name_sei, " ", User.name_mei)';
+                    $list_member = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>array('FIND_IN_SET('.$class.', auth)')));
+                    $this->set('list_member', $list_member);
+                    //$this->log($list_member, LOG_DEBUG);
                 }
-                
+            } else {
+
             } 
+        }
+        
+        /** 受信メッセージの詳細を表示 **/
+        public function message_detail($id = null) {
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout","メッセージ内容 - スタッフ専用サイト");
+            // ユーザー名前
+            $staff_id = $this->Auth->user('staff_id');
+            $this->set('staff_id', $staff_id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('user_name', $name);
+            $class = $this->Session->read('class');
+            $this->set('class', $class);
+            // テーブルの設定
+            $this->Message2Staff->setSource('message2staff');
+            // 既読フラグ: 1
+            // 更新する内容を設定
+            $data = array('Message2Staff' => array('id' => $id, 'kidoku_flag' => 1));
+            // 更新する項目（フィールド指定）
+            $fields = array('kidoku_flag');
+            // 更新
+            if ($this->Message2Staff->save($data, false, $fields)) {
+            }
+            // 受信メッセージの内容表示
+            $datas = $this->Message2Staff->find('first', array('conditions' => array('id' => $id)));
+            //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
+            $this->set('data', $datas);
+
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                // 属性の変更
+                if (isset($this->request->data['class'])) {
+                    $class = $this->request->data['class'];
+                    //$this->Session->setFlash($class);
+                    $this->set('selected_class', $class);
+                    $this->Session->write('selected_class', $class);
+                } else {
+
+                }
+            } else {
+
+            }
+        }
+        
+        /** 送信済メッセージの詳細を表示 **/
+        public function message_detail_sent($id = null) {
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout","メッセージ内容 - スタッフ専用サイト");
+            // ユーザー名前
+            $staff_id = $this->Auth->user('id');
+            $this->set('staff_id', $staff_id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('user_name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            } else {
+                $this->set('class', $class);
+            }
+            // テーブルの設定
+            $this->Message2Member->setSource('message2member');
+            //$this->MessageStaff->setSource('message_staff');
+            // 送信済メッセージの内容表示
+            $data = $this->Message2Member->find('first', array('conditions' => array('id' => $id)));
+            //$this->log($this->MessageStaff->getDataSource()->getLog(), LOG_DEBUG);
+            $this->set('data', $data);
+            // 宛先名の取得
+            $username = $data['Message2Member']['recipient_member'];
+            $result = $this->User->find('first', array('conditions' => array('User.username' => $username)));
+            //$this->log($result, LOG_DEBUG);
+            //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
+            $name_member = $result['User']['name_sei'].' '.$result['User']['name_mei'];
+            //$this->log($name_member, LOG_DEBUG);
+            $this->set('name_member', $name_member);
+
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+
+            } else {
+
+            }
         }
         
 	/**
@@ -180,8 +316,11 @@ class UsersController extends AppController {
                 $date2 = $now_year.sprintf('%02d', $now_month).'31';
                 $data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date >= '=>$date1, 'work_date <= '=>$date2)));
                 //$this->log($data['TimeCard'], LOG_DEBUG);
-                $this->set('data', $data['TimeCard']);
-                
+                if (empty($data)) {
+                    $this->set('data', null);
+                } else {
+                    $this->set('data', $data['TimeCard']);
+                }
             }
         }
   
@@ -301,176 +440,6 @@ class UsersController extends AppController {
             $this->StaffMaster->setSource('staff_'.$class);
             
         }
-
-	
-	/**
-	 * ユーザ登録。
-	 */
-    public function add() {
-        /* 管理権限がある場合 */
-        if ($this->isAuthorized($this->Auth->user())) {
-            
-        }else{
-            $this->Session->setFlash('管理者しか権限がありません。');
-            $this->redirect($this->referer());
-        }
-        
-            // レイアウト関係
-            $this->layout = "sub";
-            $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
-            // タブの状態
-            $this->set('active1', 'active');
-            $this->set('active2', '');
-            $this->set('active3', '');
-            $this->set('active4', '');
-            $this->set('active5', '');
-            $this->set('active6', '');
-            $this->set('active7', '');
-            $this->set('active8', '');
-            $this->set('active9', '');
-            $this->set('active10', '');
-            // ユーザー名前
-            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-            $this->set('user_name', $name); 
-        
-    	// POSTの場合
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->User->validates() == false) {
-                return null;
-            }
-            if (isset($this->request->data['submit'])) {
-                // 閲覧権限の配列をカンマ区切りに
-                $val = $this->setAuth($this->request->data['User']['auth']);
-                $this->request->data['User']['auth'] = $val;
-                
-                // モデルの状態をリセットする
-                $this->User->create();
-                // データを登録する
-                if ($this->User->save($this->request->data)) {
-                    // 登録完了
-                    $this->Session->setFlash('ユーザー登録を完了しました。');
-                }
-
-                // indexに移動する
-                //$this->redirect(array('action' => 'index'));
-            }
-        }
-    }
-
-	/**
-	 * ユーザ登録情報の更新
-	 */
-	public function edit($id=null){
-            /* 管理権限がある場合 */
-            if ($this->isAuthorized($this->Auth->user())) {
-
-            }else{
-                $this->Session->setFlash('管理者しか権限がありません。');
-                $this->redirect($this->referer());
-            }
-
-                // レイアウト関係
-                $this->layout = "sub";
-                $this->set("title_for_layout","ユーザー登録 - 派遣管理システム");
-                // ユーザー名前
-                $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-                $this->set('user_name', $name);
-
-                // 初期値設定
-                $this->User->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
-                $this->set('datas', $this->User->find('list', array('fields' => array('username','full_name'))));
-                $this->set('value', '');
-
-                // POSTの場合
-                if ($this->request->is('post') || $this->request->is('put')) {
-                    $this->log($this->request, LOG_DEBUG);
-                    if ($this->User->validates() == false) {
-                        return null;
-                    }
-                    if (isset($this->request->data['regist'])) {
-                        // 閲覧権限の配列をカンマ区切りに
-                        $val = $this->setAuth($this->request->data['User']['auth']);
-                        $this->request->data['User']['auth'] = $val;
-
-                        // モデルの状態をリセットする
-                        //$this->User->create();
-                        // データを登録する
-                        if ($this->User->save($this->request->data)) {
-                            // 表示データの保持（権限）
-                            $value = explode(',', $this->request->data['User']['auth']);
-                            $this->set('value', $value);
-                            // 登録完了
-                            $this->Session->setFlash('ユーザー情報を更新しました。');
-                        }
-                    } else {
-                        // データのセット
-                        if (!empty($this->request->data['User']['username'])) {
-                            $this->request->data = $this->User->read(null, $this->request->data['User']['username']);
-                            $value = explode(',', $this->request->data['User']['auth']);
-                            $this->set('value', $value);
-                            //$this->log($this->request->data);
-                        } else {
-                            $this->request->data = $this->User->read(null, $this->request->data['username']);
-                            $value = explode(',', $this->request->data['User']['auth']);
-                            $this->set('value', $value);
-                        }
-                    }
-                } else {
-                    // 登録していた値をセット
-                    $this->request->data = $this->User->read(null, $id);
-                    
-                }
-	}
-
-    /**
-     * ユーザ一覧。
-     */
-    public function view() {
-        // レイアウト関係
-        $this->layout = "log";
-        $this->set("title_for_layout", $this->title_for_layout);
-        $this->set("headline", 'ユーザー一覧');
-        $this->set('getValue', $this->getValue());      // 項目テーブル
-
-        $this->set('datas', $this->paginate('User'));
-    }
-
-    /**
-     * パスワードの変更
-     */
-    public function passwd(){
-        // レイアウト関係
-        $this->layout = "sub";
-        $this->set("title_for_layout","パスワード変更 - 派遣管理システム");
-        // タブの状態
-        $this->set('active1', 'active');
-        $this->set('active2', '');
-        $this->set('active3', '');
-        $this->set('active4', '');
-        $this->set('active5', '');
-        $this->set('active6', '');
-        $this->set('active7', '');
-        $this->set('active8', '');
-        $this->set('active9', '');
-        $this->set('active10', '');
-        // ユーザー名前
-        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-        $this->set('user_name', $name);
-        $this->set('name', $name);
-
-        $this->User->username = $this->Auth->user('username');
-        // POSTの場合
-        if ($this->request->is('post') || $this->request->is('put')) {
-                // データを登録する
-                $this->User->save($this->request->data);
-                $this->Session->setFlash(__('パスワードは変更されました。'));
-
-                // indexに移動する
-                $this->redirect(array('action' => 'index'));
-        } else {
-            $this->request->data = $this->User->read(null, $this->Auth->user('username'));    
-        }
-    }
     
     /**
      * ログイン処理を行う。
@@ -558,16 +527,21 @@ class UsersController extends AppController {
     	//eturn $this->flash('ログアウトしました。', '/users/index');
     }
     
-    /*** 所有権限をカンマ区切りに ***/
-    static public function setAuth($val){
-        $ret = '';
-        if (!empty($val)) {
-            foreach ($val as $value) {
-                $ret = $ret.','.$value;  
-            }
-        }
-        return $ret;
+  /*** ディレクトリの存在をチェック ***/
+  static public function chkDirectory($dirpath,$create_flg = true){
+    $return = false;
+    if(file_exists($dirpath)){
+      $return = true;
     }
+    if(!$return){
+      if($create_flg){
+        mkdir($dirpath, 0777);
+        chmod($dirpath, 0777);
+      }
+      $return = true;
+    }
+    return $return;
+  }
     
     // 項目マスタ
     public function getValue(){

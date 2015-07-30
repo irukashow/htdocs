@@ -14,7 +14,7 @@
 </div>
 
 <div style="border:1px solid black;background-color: #ffffea;padding: 10px 10px 30px 10px;">
-<?php echo $this->Form->create('Message2Staff', array('id' => 'form', 'onsubmit' => "selectAll();selectAll2();")); ?>
+<?php echo $this->Form->create('Message2Staff', array('id' => 'form', 'enctype' => 'multipart/form-data', 'onsubmit' => "selectAll();selectAll2();")); ?>
     <table id="" border="0" width="65%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 20px 0px 5px 30px;">
         <tr>
             <td width="80px">差出人</td>

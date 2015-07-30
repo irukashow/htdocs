@@ -4,6 +4,8 @@
 define("HEADER","スタッフ専用サイト");
 define("FOOTER","Version 0.0.1 20150727 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
 define("ROOTDIR","/staff");
+define("MEMBER_URL","http://localhost/softlife2");
+define("STAFF_URL","http://localhost/staff");
  
 //配列
 //呼び出し方:    $fuga = Configure::read("fuga");

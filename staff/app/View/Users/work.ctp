@@ -38,7 +38,10 @@
 <div id="timecard" data-role="page">
     <div data-role="header" data-theme="c">
             <h1>タイムカード</h1>
-            <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
+            <div data-role="controlgroup" class="ui-btn-right" data-type="horizontal">
+                <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" onclick="location.reload();"></a>
+                <a href="#dialog_menu" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
+            </div>
     </div>			
     <div data-role="content" style="font-size: 70%;">
         <?php echo $this->Form->create('TimeCard', array('name' => 'form')); ?>

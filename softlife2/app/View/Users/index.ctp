@@ -165,7 +165,7 @@
                     <font style='font-weight: bold;font-size: 110%;'>[新着情報]</font><br>
                     <table border='0' id='message-table' cellspacing="0" cellpadding="5" frame="void" style="margin-bottom: 10px;">
                         <tr style='background-color: #459ed2;'>
-                            <th colspan="2">○&nbsp;メッセージ（所属向け）</th>
+                            <th colspan="2">○&nbsp;メッセージ</th>
                         </tr>
                         <tr>
                             <td width="10px">&nbsp;</td>
@@ -176,13 +176,6 @@
                                 <a href="<?=ROOTDIR ?>/message/index"><font style="color: blue;font-weight: bold;"><?=$new_count ?>&nbsp;通</font>の新着メッセージがあります。</a>
             <?php } ?>
                             </td>
-                        </tr>
-                        <tr style='background-color: #459ed2;'>
-                            <th colspan="2">○&nbsp;メッセージ（個人向け）</th>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>新着メッセージはありません。</td>
                         </tr>
                     </table>
                     <font style='font-weight: bold;font-size: 110%;'>[システム情報]</font><br>

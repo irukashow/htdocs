@@ -52,9 +52,9 @@ class MessageController extends AppController {
             // 受信メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Member' => array(
-                    'conditions' => array('Message2Member.class' => $selected_class, 'recipient_member' => $username, 'delete_flag' => $flag),
+                    'conditions' => array('Message2Member.class' => $selected_class, 'Message2Member.recipient_member' => $username, 'Message2Member.delete_flag' => $flag),
                     'fields' => 'Message2Member.*, User.*',
-                    'limit' =>20,                        //1ページ表示できるデータ数の設定
+                    'limit' =>15,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
                     'joins' => array (
                         array (
@@ -80,7 +80,7 @@ class MessageController extends AppController {
                 'Message2Staff' => array(
                     'conditions' => array('Message2Staff.class' => $selected_class, 'Message2Staff.username' => $username, 'Message2Staff.sent_flag' => $flag),
                     'fields' => 'Message2Staff.*, StaffMaster.*',
-                    'limit' =>20,                        //1ページ表示できるデータ数の設定
+                    'limit' =>15,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
                     'joins' => array (
                         array (
@@ -99,11 +99,11 @@ class MessageController extends AppController {
         }
         // 未読メッセージ件数
         $this->Message2Member->setSource('message2member');
-        $new_count = $this->Message2Member->find('count', array('conditions' => array('class' => $selected_class, 'kidoku_flag' => 0)));
+        $new_count = $this->Message2Member->find('count', array('conditions' => array('class' => $selected_class, 'recipient_member' => $username, 'kidoku_flag' => 0)));
         $this->set('new_count', $new_count);
         // 下書きメッセージ件数
         $this->Message2Staff->setSource('message2staff');
-        $draft_count = $this->Message2Staff->find('count', array('conditions' => array('class' => $selected_class, 'sent_flag' => 0)));
+        $draft_count = $this->Message2Staff->find('count', array('conditions' => array('class' => $selected_class, 'recipient_member' => $username, 'sent_flag' => 0)));
         $this->set('draft_count', $draft_count);
         
         //$this->log($this->request->data, LOG_DEBUG);
@@ -247,9 +247,47 @@ class MessageController extends AppController {
                 $this->request->data['Message2Staff']['recipient_staff'] = implode(',', $this->request->data['Message2Staff']['recipient_staff']);
                 // 送信済みフラグ：１
                 $this->request->data['Message2Staff']['sent_flag'] = 1;
+                // 添付ファイル名称のセット
+                if (!empty(array_filter($_FILES['attachment']['name']))) {
+                    $this->request->data['Message2Staff']['attachment'] = implode(',', $_FILES['attachment']['name']);
+                }
                 // データを登録する
                 //$this->Message->create();
                 if ($this->Message2Staff->save($this->request->data)) {
+                    //$this->log($_FILES['attachment']['name'], LOG_DEBUG);
+                    // insertした宛先メンバーIDを取得
+                    $staff_id0 = $this->request->data['Message2Staff']['recipient_staff'];
+                    $staff_id = sprintf("%010d", $staff_id0);
+                    //$this->log($staff_id, LOG_DEBUG);
+                    //$this->log($this->request->data['Message2Member']['attachment'], LOG_DEBUG);
+                    // ファイルアップロード処理の初期セット
+                    $ds = DIRECTORY_SEPARATOR;  //1
+                    $storeFolder = 'files/message/staff'.$ds.$staff_id.$ds;   //2
+                    // ファイルのアップロード
+                    if(!empty($_FILES['attachment']['name'][0])){
+                        // ディレクトリがなければ作る
+                        if ($this->chkDirectory($storeFolder, true) == false) {
+                            $this->log('ファイルのアップロードに失敗しました。', LOG_DEBUG);
+                            $this->redirect($this->referer());
+                            exit();
+                        }
+                        $count = count($_FILES['attachment']['name']);
+                        for ($i=0; $i<$count; $i++) {
+                            $tempFile = $_FILES['attachment']['tmp_name'][$i];//3
+                            $targetPath = $storeFolder.$ds;  //4
+                            $targetFile =  $targetPath. mb_convert_encoding($_FILES['attachment']['name'][$i], 'sjis-win', 'UTF-8');  //5
+                            //$targetFile =  $targetPath.$staff_id.'.'.$after;  //5
+                            // ファイルアップ実行
+                            if (move_uploaded_file($tempFile, $targetFile)) {
+                                // アップの成功
+                                $this->log('ファイルのアップロードに成功しました：'.$id, LOG_DEBUG);
+                                //$this->redirect(array('action'=>'message', 2));
+                            } else {
+                                // アップの失敗
+                                $this->log('ファイルのアップロードに失敗しました。'.$id, LOG_DEBUG);
+                            }
+                        }
+                    }
                     $this->Session->setFlash('送信を完了しました。');
                     $this->redirect('index');
                 }                

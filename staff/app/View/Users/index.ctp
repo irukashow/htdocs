@@ -28,7 +28,7 @@
                         <p>2013.01.01</p>
                         ホームページをリニューアルしました。
                 </li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message/1" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/work" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務関連</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/profile" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">プロフィール</a></li>
