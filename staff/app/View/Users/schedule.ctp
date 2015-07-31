@@ -1,13 +1,25 @@
 <?php require('calender.ctp'); ?>
-
+<?php
+    function setFlag($val) {
+        if ($val == 1) {
+            $ret = '◎';
+        } elseif ($val == 2) {
+            $ret = '△';
+        } else {
+            $ret = '　';
+        }
+        return $ret;
+    }
+?>
 <div id="page2" data-role="page">
         <div data-role="header" data-theme="c">
                 <h1>スケジュール</h1>
+                <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
                 <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
         </div>
         <div data-role="content">
             <b>シフト希望表</b>
-            <p>来月以降で勤務可能な日をご入力願います。</p>
+            <p>入力は来月以降で願います。</p>
             <!--- シフト希望表 --->
             <!-- カレンダー -->
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
@@ -20,13 +32,13 @@
 
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
                 <tr align="center" style="background-color: #cccccc;">
-                        <th>日</th>
-                        <th>月</th>
-                        <th>火</th>
-                        <th>水</th>
-                        <th>木</th>
-                        <th>金</th>
-                        <th>土</th>
+                        <th style="width:10%">日</th>
+                        <th style="width:10%">月</th>
+                        <th style="width:10%">火</th>
+                        <th style="width:10%">水</th>
+                        <th style="width:10%">木</th>
+                        <th style="width:10%">金</th>
+                        <th style="width:10%">土</th>
                 </tr>
                 <tr align="center">
             <?php
@@ -60,11 +72,15 @@
 
                             // 本日
                             if ($m == date("n") && $d == date("j") && $y == date("Y")) {
-                                $style = $style.'font-weight: bold;background-color: #ffffcc;color:green;';
+                                $style2 = 'font-weight: bold;background-color: #ffffcc;color:green;';
+                            } else {
+                                $style2 = '';
                             }
 
                             // 出力
-                            echo "<td style='".$style."'>$d</td>";
+                            echo "<td style='".$style2."'>"
+                                    . "<a href='".ROOTDIR."/users/schedule_input/".$y."/".$m."/".$d."' style='".$style."'>$d</a><br>".setFlag($data[$d])
+                                    ."</td>";
 
                             // 週の始まりと終わりでタグを出力
                             if (date("w", mktime(0, 0, 0, $m, $d, $y)) == 6)

@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 'TimeCard');
+        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 'TimeCard', 'StaffSchedule');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         /****認証周り*****/
@@ -281,6 +281,93 @@ class UsersController extends AppController {
         }
         
 	/**
+	 * スケジュール
+	 */
+	public function schedule(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            //$this->StaffMaster->setSource('staff_'.$class);
+            // 登録していた値をセット
+            if (empty($this->request->query['date'])) {
+                $date1 = date('Y').'-'.date('m');
+                $date2 = null;
+            } else {
+                $date2 = $this->request->query['date'];
+                $date1 = $date2;
+            }
+            $this->Session->write('date2', $date2);
+            
+            for ($i=1; $i<=31; $i++) {
+                $data[$i] = $this->StaffSchedule->find('first', 
+                        array('fields'=>array('work_flag'), 'conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
+                if (!empty($data[$i])) {
+                    $data[$i] = $data[$i]['StaffSchedule']['work_flag'];
+                }
+            }
+            //$this->log($data, LOG_DEBUG);
+            $this->set('data', $data);
+        }
+        
+	/**
+	 * スケジュール（シフト希望）入力
+	 */
+	public function schedule_input($y = null, $m = null, $d = null){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            } else {
+                $this->set('class', $class);
+            }
+            // テーブル変更
+            //$this->StaffSchedule->setSource('staff_schedules');
+
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
+                // データを登録する
+                if ($this->StaffSchedule->save($this->request->data)) {
+                    //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+                    // スタッフのシフト希望登録履歴
+                    //　
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule'));
+                } else {
+                    $this->log('エラーが発生しました。', LOG_DEBUG);
+                }
+            } else {
+                // 日付セット
+                $date1 = $y.'-'.sprintf("%02d", $m).'-'.sprintf("%02d", $d);
+                $datetime = new DateTime($date1);
+                $week = array("日", "月", "火", "水", "木", "金", "土");
+                $w = (int)$datetime->format('w');
+                $date2 = $y.'年'.$m.'月'. $d.'日（'.$week[$w].'）';
+                $this->set('date1', $date1);
+                $this->set('date2', $date2);
+                // 登録していた値をセット
+                //$this->log($this->StaffSchedule->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1))), LOG_DEBUG);
+                $this->request->data = $this->StaffSchedule->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1)));
+            }
+        }
+        
+	/**
 	 * 勤務関連
 	 */
 	public function work(){
@@ -419,27 +506,6 @@ class UsersController extends AppController {
             }
 
 	}
-        
-	/**
-	 * スケジュール
-	 */
-	public function schedule(){
-            // レイアウト関係
-            $this->layout = "main";
-            $this->set("title_for_layout",$this->title_for_layout);
-            // ユーザー名前
-            $id = $this->Auth->user('id');
-            $this->set('id', $id);
-            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-            $this->set('name', $name);
-            $class = $this->Session->read('class');
-            if (empty($class)) {
-                $this->redirect('logout');
-            }
-            // テーブル変更
-            $this->StaffMaster->setSource('staff_'.$class);
-            
-        }
     
     /**
      * ログイン処理を行う。
@@ -551,10 +617,5 @@ class UsersController extends AppController {
         
         return $result;
     } 
-    
-    // 日付から曜日を計算
-    public function getWeekday($val) {
-
-    }
 
 }
