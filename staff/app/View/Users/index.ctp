@@ -28,10 +28,10 @@
                         <p>2013.01.01</p>
                         ホームページをリニューアルしました。
                 </li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/work" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務関連</a></li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/profile" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">プロフィール</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/work"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務関連</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/profile"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">プロフィール</a></li>
                 
                 <li class="toplist_menu2"><a href="http://www.softlife.co.jp/" target="_blank">ソフトライフ ホームページ</a></li>
                 <li class="toplist_menu2"><a href="<?=ROOTDIR ?>/users/logout">ログアウト</a></li>

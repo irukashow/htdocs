@@ -14,8 +14,10 @@
 <div id="page2" data-role="page">
         <div data-role="header" data-theme="c">
                 <h1>スケジュール</h1>
+                <!--
                 <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
-                <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
+                -->
+                <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext" data-ajax="false"></a>
         </div>
         <div data-role="content">
             <b>シフト希望表</b>

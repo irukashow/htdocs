@@ -2,18 +2,6 @@
     echo $this->Html->css('staffmaster');
 ?>
 <?php require('calender.ctp'); ?>
-<?php
-    function setFlag($val) {
-        if ($val == 1) {
-            $ret = '◎';
-        } elseif ($val == 2) {
-            $ret = '△';
-        } else {
-            $ret = '　';
-        }
-        return $ret;
-    }
-?>
 <style>
 #loading{
     position:absolute;
@@ -61,13 +49,13 @@ $(function() {
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
 <div id='headline' style="padding:10px 10px 10px 10px;">
-    ★ シフト管理
+    ★ 勤務管理
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/CaseManagement/customer/0" target="" onclick=''><font Style="font-size:95%;">取引先一覧</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/CaseManagement/customer/0" target="" onclick=''><font Style="font-size:95%;"></font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/CaseManagement/shokushu" target=""><font Style="font-size:95%;">職種マスタ</font></a>
+    <a href="<?=ROOTDIR ?>/CaseManagement/shokushu" target=""><font Style="font-size:95%;"></font></a>
 </div>
 <!-- 見出し１ END -->
 
@@ -102,9 +90,9 @@ $(function() {
 </table>
 
 <div style="width:100%;overflow-x:scroll;">
-<table border='1' cellspacing="0" cellpadding="3" style="width:2000px;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
-    <tr align="center" style="background-color: #cccccc;">
-        <td></td>
+<table border='1' cellspacing="0" cellpadding="2" style="width:2000px;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+    <tr style="background-color: #cccccc;">
+        <td align="center" rowspan="2" style="width:20px;">スタッフ</td>
 <?php
     // 1日の曜日を取得
     $wd1 = date("w", mktime(0, 0, 0, $m, 1, $y));
@@ -112,13 +100,12 @@ $(function() {
     $d = 1;
     while (checkdate($m, $d, $y)) {
         $wd2 = date("w", mktime(0, 0, 0, $m, $d, $y));
-        echo '<td>'.$week[$wd2].'</td>';
+        echo '<td align="center" style="width:10px;">'.$week[$wd2].'</td>';
         $d++;
     }
 ?>
     </tr>
-    <tr align="center">
-        <td></td>
+    <tr>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {
@@ -137,13 +124,14 @@ $(function() {
             $style = $style.'font-weight: bold;background-color: #ffffcc;color:green;';
         }
         // 出力
-        echo "<td style='".$style."'>".$d."</td>";
+        echo "<td align=\"center\" style='".$style."'>".$d."</td>";
         $d++;
     }
 ?>
     </tr>
-    <tr align="center">
-        <td><?=$datas[0]['StaffMaster']['name_sei'].' '.$datas[0]['StaffMaster']['name_mei'] ?></td>
+    <?php foreach($datas1 as $key => $data1) { ?>
+    <tr>
+        <td align="center"><?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?> (<?=$data1['StaffSchedule']['staff_id']; ?>)</td>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {
@@ -161,18 +149,34 @@ $(function() {
         if ($m == date("n") && $d == date("j") && $y == date("Y")) {
             $style = $style.'font-weight: bold;background-color: #ffffcc;color:green;';
         }
+        //$style = $style.'font-weight: bold;';
         // 予定ありかどうか
-        if ($y.$m.$d == $datas[0]['StaffSchedule']['work_date']) {
-            // 出力
-            echo "<td style='".$style."'></td>";
-        } else {
-            echo "<td style='".$style."'></td>";
+        $nodata = true;
+        foreach ($datas2[$key] as $data2) {
+            if ($y.'-'.sprintf("%02d", $m).'-'.sprintf("%02d", $d) == $data2['StaffSchedule']['work_date']) {
+                // 出力
+                if ($data2['StaffSchedule']['work_flag'] == 1) {
+                    echo "<td align=\"center\" style='".$style."'>○</td>";
+                } elseif($data2['StaffSchedule']['work_flag'] == 2) {
+                    echo "<td align=\"center\" style='".$style."'>△<br><font style='font-size:70%;'>".$data2['StaffSchedule']['conditions']."</font></td>";
+                }
+                $nodata = false;
+            }
         }
-        
+       if ($nodata) {
+            echo "<td align=\"center\" style='".$style."'></td>";
+        }
+
         $d++;
     }
 ?>
     </tr>        
+    <?php } ?>
+<?php if (count($datas1) == 0) { ?>
+<tr>
+    <td colspan="32" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
+</tr>
+<?php } ?>
 </table>
 <!-- カレンダー END-->
 </div>
@@ -189,7 +193,3 @@ $(function() {
  </div>
 <!--- スタッフマスタ本体 END --->
 <?php echo $this->Form->end(); ?>
-
-<?php
-print_r($datas);
-?>

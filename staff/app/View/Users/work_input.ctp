@@ -53,8 +53,9 @@
                 </tr>
             </table>
             <div style='float:left;'>
-                <input type="submit" value="申　請" data-theme="e" data-icon="check" data-inline="true">
-                <input type="button" value="戻　る" data-inline="true" onclick='location.href="work#timecard"'>
+                <input name="request" type="submit" value="申　請" data-theme="e" data-icon="check" data-inline="true">
+                <input name="delete" type="submit" value="申請削除" data-theme="a" data-icon="delete" data-inline="true">
+                <input type="button" value="戻　る" data-inline="true" onclick='location.href="<?=ROOTDIR ?>/users/work_timecard"'>
             </div>  
                 <?php echo $this->Form->end(); ?>
     </div>

@@ -24,8 +24,8 @@ class ShiftManagementController extends AppController {
         $this->set('active1', '');
         $this->set('active2', '');
         $this->set('active3', '');
-        $this->set('active4', 'active');
-        $this->set('active5', '');
+        $this->set('active4', '');
+        $this->set('active5', 'active');
         $this->set('active6', '');
         $this->set('active7', '');
         $this->set('active8', '');
@@ -46,30 +46,12 @@ class ShiftManagementController extends AppController {
         } else {
             $limit = '10';
         }
+        
         // 表示件数の初期値
         $this->set('limit', $limit);
-        $conditions1 = null;$conditions2 = null;$conditions3 = null;
-        // Paginationの設定
-        $this->paginate = array(
-        //モデルの指定
-        'StaffSchedule' => array(
-        //1ページ表示できるデータ数の設定
-        'limit' =>10,
-        'fields' => array('StaffSchedule.*', 'StaffMaster.*'),
-        //データを降順に並べる
-        'order' => array('id' => 'asc'),
-        'group' => 'staff_id',
-        'joins' => array (
-                array (
-                    'type' => 'LEFT',
-                    'table' => 'staff_'.$selected_class,
-                    'alias' => 'StaffMaster',
-                    'conditions' => 'StaffSchedule.staff_id = StaffMaster.id' 
-                ))
-        )); 
+
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            
             // 所属の変更
             if (isset($this->request->data['class'])) {
                 $this->selected_class = $this->request->data['class'];
@@ -77,7 +59,7 @@ class ShiftManagementController extends AppController {
                 $this->set('selected_class', $this->selected_class);
                 $this->Session->write('selected_class', $this->selected_class);
                 // テーブル変更
-                $this->CaseManagement->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
                 $this->redirect(array('page' => 1));  
             // 表示件数の変更
             } elseif (isset($this->request->data['limit'])) {
@@ -86,9 +68,47 @@ class ShiftManagementController extends AppController {
                 $this->redirect(array('limit' => $limit));
             }
         } else {
-
-            //$this->request->params['named']['page'] = 1;
-            $this->set('datas', $this->paginate());
+            // スタッフの抽出
+            $joins = array(
+                array(
+                    'type' => 'left',// innerもしくはleft
+                    'table' => 'staff_'.$selected_class,
+                    'alias' => 'StaffMaster',
+                    'conditions' => array(
+                    'StaffSchedule.staff_id = StaffMaster.id', //ここ文字列なので注意
+                    )    
+                )
+            );
+            $result = $this->StaffSchedule->find('all', array(
+                'fields'=> array('StaffSchedule.staff_id', 'StaffMaster.name_sei', 'StaffMaster.name_mei'),
+                'conditions' => array('StaffSchedule.class' => $selected_class),
+                'group' => array('staff_id'),
+                'joins' => $joins
+            ));
+            //$this->log($result, LOG_DEBUG);
+            $this->set('datas1', $result);
+            // スタッフあたりのスケジュール
+            if (!empty($result)) {
+                foreach($result as $key => $val) {
+                    // Paginationの設定
+                    $this->paginate = array(
+                        //モデルの指定
+                        'StaffSchedule' => array(
+                        //1ページ表示できるデータ数の設定
+                        //'limit' =>15,
+                        'fields' => array('*'),
+                        //データを降順に並べる
+                        'order' => array('id' => 'asc', 'staff_id' => 'asc'),
+                        'conditions' => array('staff_id' => $val['StaffSchedule']['staff_id'])
+                    ));
+                    $data[$key] = $this->paginate();
+                }
+                $this->log($data, LOG_DEBUG);
+                $this->set('datas2', $data);
+            } else {
+                $this->set('datas2', $this->paginate(null));
+            }
+            
             //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log('そと通ってる', LOG_DEBUG);
         } 

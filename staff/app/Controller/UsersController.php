@@ -410,7 +410,57 @@ class UsersController extends AppController {
                 }
             }
         }
-  
+
+	/**
+	 * 勤務関連（タイムカード）
+	 */
+	public function work_timecard(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+            }
+            // テーブル変更
+            $this->TimeCard->setSource('time_cards');
+            
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                //$this->log($this->request->data, LOG_DEBUG);
+                if (isset($this->request->data['input'])) {
+                    $date_array = array_keys($this->request->data['input']);
+                    $selected_date = $date_array[0];
+                    $this->set('selected_date', $selected_date);
+                    $this->redirect(array('controller' => 'users', 'action' => 'work_input', $selected_date));
+                }
+            } else {
+                // 保存データの抽出
+                if (empty($this->request->query['date'])) {
+                    $date1 = date('Y').'-'.date('m');
+                    $date2 = null;
+                } else {
+                    $date2 = $this->request->query['date'];
+                    $date1 = $date2;
+                }
+                $this->Session->write('date2', $date2);
+
+                for ($i=1; $i<=31; $i++) {
+                    $data[$i] = $this->TimeCard->find('first', 
+                            array('fields'=>array('*'), 'conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
+                    if (!empty($data[$i])) {
+                        $data[$i] = $data[$i]['TimeCard'];
+                    }
+                }
+                $this->set('data', $data);
+            }
+        }
+        
 	/**
 	 * 勤務関連の入力アクション
 	 */
@@ -431,30 +481,33 @@ class UsersController extends AppController {
             }
             // テーブル変更
             $this->TimeCard->setSource('time_cards');
-            $this->log($date, LOG_DEBUG);
-            // 指定日をセット
-            $now_year = date("Y"); // 現在の年を取得
-            $now_month = date("n"); // 在の月を取得
-            //$now_day = date("j"); // 現在の日を取得
-            $date1 = $now_year.'-'.sprintf('%02d', $now_month).'-'.sprintf('%02d', $date);
-            $datetime = new DateTime($date1);
-            $week = array("日", "月", "火", "水", "木", "金", "土");
-            $w = (int)$datetime->format('w');
-            $date2 = $now_year.'年'.$now_month.'月'.$date.'日（'.$week[$w].'）';
-            $this->set('date1', $date1);
-            $this->set('date2', $date2);
-            
+
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
-                // データを登録する
-                if ($this->TimeCard->save($this->request->data)) {
-                    // スタッフのプロフィール更新履歴
-                    //
-                    $this->redirect(array('controller' => 'users', 'action' => 'work'));
+                if (isset($this->request->data['request'])) {
+                    // データを登録する
+                    if ($this->TimeCard->save($this->request->data)) {
+                        $this->redirect(array('controller' => 'users', 'action' => 'work_timecard'));
+                        $this->request->query['page'] = $this->Session->read('date');
+                    }
+                } elseif (isset($this->request->data['delete'])) {
+                    $this->log($this->request->data, LOG_DEBUG);
+                    // 削除処理
+                    if ($this->TimeCard->delete($this->request->data['TimeCard']['id'])) {
+                        // 成功
+                        $this->redirect(array('controller' => 'users', 'action' => 'work_timecard'));
+                    }
                 }
             } else {
+                // 指定日をセット
+                $datetime = new DateTime($date);
+                $week = array("日", "月", "火", "水", "木", "金", "土");
+                $w = (int)$datetime->format('w');
+                $date2 = $datetime->format('Y').'年'.$datetime->format('n').'月'.$datetime->format('j').'日（'.$week[$w].'）';
+                $this->set('date1', $date);
+                $this->set('date2', $date2);
                 // 登録していた値をセット
-                $this->request->data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1)));
+                $this->request->data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date)));
             }
         }
         

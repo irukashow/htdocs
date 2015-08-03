@@ -68,7 +68,7 @@ window.onload = function(){
                     
             <!-- 左項目 -->
             <font style="font-size: 120%;">■基本情報</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;border-spacing: 0px;">
+            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;' colspan="2">案件名称</td>
                     <td style='width:70%;'><?=$data['CaseManagement']['case_name'] ?></td>
@@ -272,6 +272,40 @@ window.onload = function(){
                     </td>
                 </tr>
                 <!-- 請求先① END -->
+            </table>
+            <font style="font-size: 120%;">■推奨メンバー</font>
+            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;border-spacing: 0px;">
+                <!-- 推奨メンバー -->
+                <tr>
+                    <td style='background-color: #e8ffff;width:30%;'>メンバー１</td>
+                    <td style='width:70%;'>
+                        <?php echo ''; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:30%;'>メンバー２</td>
+                    <td style='width:70%;'>
+                        <?php echo ''; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:30%;'>メンバー３</td>
+                    <td style='width:70%;'>
+                        <?php echo ''; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:30%;'>メンバー４</td>
+                    <td style='width:70%;'>
+                        <?php echo ''; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td style='background-color: #e8ffff;width:30%;'>メンバー５</td>
+                    <td style='width:70%;'>
+                        <?php echo ''; ?>
+                    </td>
+                </tr>
             </table>
         </td>
         <td style="width:50%;vertical-align: top;padding-left: 5px;">
