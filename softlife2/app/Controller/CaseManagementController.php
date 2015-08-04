@@ -879,9 +879,9 @@ class CaseManagementController extends AppController {
         $this->set('selected_class', $selected_class);
         // テーブルの設定
         $this->CaseManagement->setSource('item');
-        
+        // 職種２ :17
         $option = array(
-            'conditions' => array('item' => '16'),
+            'conditions' => array('item' => '17'),
             'limit' => '15',
             'order' => array('sequence' => 'asc', 'id' => 'asc'));
         $this->paginate = $option;
@@ -947,43 +947,6 @@ class CaseManagementController extends AppController {
         } else {
             //$this->request->data = $this->User->read(null, $this->Auth->user('username'));    
         }
-    }
-    
-    /**
-     * 売上給与一覧ページ
-     */
-    public function uri9() {
-        // 所属が選択されていなければ元の画面に戻す
-        if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
-            //$this->log($this->Session->read('selected_class'));
-            $this->Session->setFlash('右上の所属を選んでください。');
-            $this->redirect($this->referer());
-        }
-        // レイアウト関係
-        $this->layout = "main";
-        $this->set("title_for_layout", $this->title_for_layout);
-        // タブの状態
-        $this->set('active1', '');
-        $this->set('active2', '');
-        $this->set('active3', '');
-        $this->set('active4', 'active');
-        $this->set('active5', '');
-        $this->set('active6', '');
-        $this->set('active7', '');
-        $this->set('active8', '');
-        $this->set('active9', '');
-        $this->set('active10', '');
-        // 絞り込みセッションを消去
-        $this->Session->delete('filter');
-        // ユーザー名前
-        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
-        $this->set('user_name', $name);
-        $selected_class = $this->Session->read('selected_class');
-        $this->set('selected_class', $selected_class);
-        // データ
-        $this->set('datas', $this->paginate('CaseManagement'));
-        
-        
     }
     
     /*** 職種をカンマ区切りに ***/

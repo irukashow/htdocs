@@ -1,0 +1,118 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2015/05/22, 13:38:21
+    Author     : M-YOKOI
+*/
+#message-main {
+background-color: none;
+width: 100%;
+height: 700px; 
+margin: 0;
+border: 1px solid #99cccc;
+border-radius: 8px;        /* CSS3草案 */  
+-webkit-border-radius: 8px;    /* Safari,Google Chrome用 */  
+-moz-border-radius: 8px;   /* Firefox用 */ 
+}
+#message-folder {
+//float:left;
+background-color: #e9ffff;
+width:90%;
+height: 650px; 
+border: 1px solid #45bcd2;
+margin:10px 5px 10px 10px;
+padding:10px;
+vertical-align: top;
+}
+#message-list {
+//float:left;
+background-color: none;
+width: 95%;
+height: 650px; 
+//border: 1px solid #45bcd2;
+margin:0px 10px 10px 0px;
+padding:10px;
+}
+
+/** メッセージ一覧 **/
+#message-table{
+width: 100%;
+//border-collapse: separate;
+border-spacing: 0px 3px;
+margin-top: 0px;
+//border: none;
+}
+#message-table tr{
+background-color: #e9ffff;
+}
+#message-table th{
+background-color: #459ed2;
+color: white; 
+padding: 3px 3px 3px 5px;
+//border: 1px solid #b9b9b9;
+}
+#message-table td{
+padding: 3px 3px 3px 5px;
+//background-color: #e9ffff;
+//border: 1px solid #b9b9b9;
+}
+#message-table a{
+text-decoration: none;
+}
+#message-table a:hover{
+text-decoration: underline;
+}
+
+/** メッセージ作成ボタン **/
+#button-send {
+  background: #f0ab57;
+  background-image: -webkit-linear-gradient(top, #f0ab57, #de7942);
+  background-image: -moz-linear-gradient(top, #f0ab57, #de7942);
+  background-image: -ms-linear-gradient(top, #f0ab57, #de7942);
+  background-image: -o-linear-gradient(top, #f0ab57, #de7942);
+  background-image: linear-gradient(to bottom, #f0ab57, #de7942);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px #666666;
+  font-family: Arial;
+  color: #f2f2f2;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 10px 8px 10px;
+  text-decoration: none;
+}
+
+#button-send:hover {
+  background: #f2bc8c;
+  background-image: -webkit-linear-gradient(top, #f2bc8c, #f5b658);
+  background-image: -moz-linear-gradient(top, #f2bc8c, #f5b658);
+  background-image: -ms-linear-gradient(top, #f2bc8c, #f5b658);
+  background-image: -o-linear-gradient(top, #f2bc8c, #f5b658);
+  background-image: linear-gradient(to bottom, #f2bc8c, #f5b658);
+  text-decoration: none;
+}
+.nicEdit-pane {
+    color: black;
+}
+/** 宛名移動ボタン **/
+#move_left, #move_right {
+  background: #b8b8b8;
+  background-image: -webkit-linear-gradient(top, #b8b8b8, #292929);
+  background-image: -moz-linear-gradient(top, #b8b8b8, #292929);
+  background-image: -ms-linear-gradient(top, #b8b8b8, #292929);
+  background-image: -o-linear-gradient(top, #b8b8b8, #292929);
+  background-image: linear-gradient(to bottom, #b8b8b8, #292929);
+  -webkit-border-radius: 10;
+  -moz-border-radius: 10;
+  border-radius: 10px;
+  font-family: Meiryo, メイリオ, sans-serif;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 3px 10px 3px 10px;
+  text-decoration: none;
+  cursor: pointer;
+}

@@ -1,0 +1,3 @@
+ˆÃ†‰»
+
+$password = $db->quoteSmart(sha1($_POST['password'])); 

@@ -105,6 +105,32 @@
                 </td>
                 <td></td>
             </tr>
+            <tr style="height: 40px;">
+                <th width="20%">
+                    <legend style=""><?php echo __('アカウント管理'); ?></legend>
+                </th>
+                <th width="20%">
+                    <legend style=""><?php echo __(''); ?></legend>
+                </th>
+                <th width="20%">
+                    <legend style=""><?php echo __(''); ?></legend>
+                </th>
+                <th width="20%">
+                    <legend style=""><?php echo __(''); ?></legend>
+                </th>
+                <th width="20%"></th>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $this->Html->link('▶現場責任者アカウント', '/client/index'); ?>
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                </td>
+                <td></td>
+            </tr>
         </table>
 
     </fieldset>

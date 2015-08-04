@@ -53,38 +53,17 @@ $(function() {
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/CaseManagement/customer/0" target="" onclick=''><font Style="font-size:95%;"></font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule" target="" onclick=''><font Style="font-size:95%;">稼働表</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/CaseManagement/shokushu" target=""><font Style="font-size:95%;"></font></a>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
 </div>
 <!-- 見出し１ END -->
 
 <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
-<!-- ページネーション -->
-<div class="pageNav03" style="margin-top:-20px; margin-bottom: 30px;">
-<?php
-	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
-	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
-        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
-?>
-    <div style="float:right;margin-top: 5px;">
-        <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
-        &nbsp;&nbsp;&nbsp;
-        表示件数：
-        <?php
-            $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
-            echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, 'selected' => $limit,
-                'onchange' => 'form.submit();'));
-        ?>
-    </div>
- </div>
-<div style="clear:both;"></div>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                <td><?php echo $y ?>年<?php echo $m ?>月</td>
+                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
@@ -181,15 +160,5 @@ $(function() {
 <!-- カレンダー END-->
 </div>
 
-<!-- ページネーション -->
-<div class="pageNav03" style="margin-bottom: 30px;">
-<?php
-	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
-	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
-        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
-?>
- </div>
 <!--- スタッフマスタ本体 END --->
 <?php echo $this->Form->end(); ?>
