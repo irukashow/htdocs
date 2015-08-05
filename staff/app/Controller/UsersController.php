@@ -149,6 +149,13 @@ class UsersController extends AppController {
                         }
                     }
                     $this->Session->setFlash('送信処理を完了しました。');
+                    if ($flag == 3) {
+                        // 宛先配列
+                        $this->User->virtualFields['name'] = 'CONCAT(User.name_sei, " ", User.name_mei)';
+                        $list_member = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>array('FIND_IN_SET('.$class.', auth)')));
+                        $this->set('list_member', $list_member);
+                        //$this->log($list_member, LOG_DEBUG);
+                    }
                     //$this->redirect('index');
                 }       
             // GETの場合
@@ -614,7 +621,6 @@ class UsersController extends AppController {
                      */
                     
                     $this->redirect($this->Auth->redirect());
-                    return;
                 }else{
 
                 }

@@ -242,5 +242,25 @@ $(function() {
  </div>
 <!--- スタッフマスタ本体 END --->
 <?php echo $this->Form->end(); ?>
-<br>
-<a href="<?=ROOTDIR ?>/CaseManagement/uri9">売上給与一覧</a>
+
+<!-- 機能紹介 -->
+<script type="text/javascript">
+$(function() {
+    //alert('制作中です');
+  // 2ダイアログ機能を適用
+  $('#dialog').dialog({
+    modal: true,
+    buttons: {
+　　　　"OK": function(){
+　　　　$(this).dialog('close');
+　　　　}
+　　　}
+  });
+});
+</script>
+<div id="dialog" title="案件管理の紹介" style="display: none">
+<p style="font-size: 90%;">
+    この機能を使って、取引先の登録、職種の登録、各案件の登録・管理が可能になります。<br>
+    <br>
+    ※ただいま<font color="red">制作中</font>です。</p>
+</div>

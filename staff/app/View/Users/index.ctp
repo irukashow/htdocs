@@ -1,5 +1,5 @@
 <!----home---------------------------->
-<div id="home" data-role="page">
+<div id="home" data-role="page" data-url="<?=ROOTDIR ?>/users/index">
         <div data-role="header" data-theme="c">
                 <h1>株式会社ソフトライフ</h1>
                 <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>

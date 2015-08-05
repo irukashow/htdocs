@@ -110,6 +110,13 @@
                     </td>  
                 </tr>
                 <tr>
+                    <td style="vertical-align: middle;">宛先スタッフ</td>
+                    <td>
+                        <?php echo $this->Form->input('recipient_member', 
+                                array('type' => 'select', 'label' => false, 'div' => false, 'empty'=>'宛先を選んでください', 'options' => $list_member, 'style' => 'margin-top:5px;padding: 2px;font-size:90%;width:200px;')); ?>
+                    </td>
+                </tr>
+                <tr>
                     <td style="vertical-align: -10px;">本文</td>
                     <td align="left" colspan="2">
                         <?php echo $this->Form->input('body', 
@@ -120,13 +127,6 @@
                     <td style="vertical-align: middle;">添付ファイル<br><span style="font-size: 90%;">※１つのみ</span></td>
                     <td>
                         <?php echo $this->Form->input(false, array('type' => 'file','name'=>'attachment[]', 'label' => false, 'style' => 'width: 100%;')); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: middle;">宛先スタッフ</td>
-                    <td>
-                        <?php echo $this->Form->input('recipient_member', 
-                                array('type' => 'select', 'label' => false, 'div' => false, 'empty'=>'宛先を選んでください', 'options' => $list_member, 'style' => 'margin-top:5px;padding: 2px;font-size:90%;width:200px;')); ?>
                     </td>
                 </tr>
                 <tr>

@@ -45,14 +45,14 @@ class MessageController extends AppController {
 
         if (empty($type) || $type == 'trashbox') {
             if (empty($type)) {
-                $flag = 0;
+                $delete_flag = 0;
             } else {
-                $flag = 1;
+                $delete_flag = 1;
             }
             // 受信メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Member' => array(
-                    'conditions' => array('Message2Member.class' => $selected_class, 'Message2Member.recipient_member' => $username, 'Message2Member.delete_flag' => $flag),
+                    'conditions' => array('Message2Member.class' => $selected_class, 'Message2Member.recipient_member' => $username, 'Message2Member.delete_flag' => $delete_flag),
                     'fields' => 'Message2Member.*, User.*',
                     'limit' =>15,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
@@ -71,14 +71,16 @@ class MessageController extends AppController {
         } elseif ($type == 'send' || $type == 'draft') {
             // 送信済みか下書きか
             if ($type == 'send') {
-                $flag = 1;
+                $sent_flag = 1;
+                $delete_flag = 0;
             } elseif ($type == 'draft') {
-                $flag = 0;
+                $sent_flag = 0;
+                $delete_flag = 0;
             }
             // メッセージ一覧の表示
             $this->paginate = array(
                 'Message2Staff' => array(
-                    'conditions' => array('Message2Staff.class' => $selected_class, 'Message2Staff.username' => $username, 'Message2Staff.sent_flag' => $flag),
+                    'conditions' => array('Message2Staff.class' => $selected_class, 'Message2Staff.username' => $username, 'Message2Staff.sent_flag' => $sent_flag,  'Message2Staff.delete_flag' => $delete_flag),
                     'fields' => 'Message2Staff.*, StaffMaster.*',
                     'limit' =>15,                        //1ページ表示できるデータ数の設定
                     'order' => array('id' => 'desc'),  //データを降順に並べる
@@ -128,10 +130,22 @@ class MessageController extends AppController {
                     //$this->log($key.'=>'.$val, LOG_DEBUG);
                     if ($val == 1) {
                         // 削除
-                        if ($type == 'send' || $type == 'draft') {
+                        if ($type == 'send') {
+                            // ゴミ箱行き処理($keyを消す)
+                            $data = array('Message2Staff' => array('id' => $key, 'delete_flag' => 2));
+                            $fields = array('delete_flag');
+                            // 更新
+                            $this->Message2Staff->save($data, false, $fields);
+                            //$this->Message2Staff->delete($key);
+                        } elseif ($type == 'draft') {
                             $this->Message2Staff->delete($key);
                         } elseif ($type == 'trashbox') {
-                            $this->Message2Member->delete($key);
+                            // ゴミ箱行き処理($keyを消す)
+                            $data = array('Message2Member' => array('id' => $key, 'delete_flag' => 2));
+                            $fields = array('delete_flag');
+                            // 更新
+                            $this->Message2Member->save($data, false, $fields);
+                            //$this->Message2Member->delete($key);
                         }
                     }
                 }

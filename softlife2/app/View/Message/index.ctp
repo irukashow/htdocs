@@ -32,6 +32,13 @@
     <a href="<?=ROOTDIR ?>/message/send" target="" id='button-send'>メッセージを送る</a>
 </div>
 
+<?php
+    $this->paginator->options(array(
+        'url' => array(
+            $type //名無しパラメータ
+        )
+    ));
+?>
 <!-- メインペイン -->
 <div id='message-main'>
     <table border="0" style="width:100%;">
@@ -55,12 +62,12 @@
             </tr>
             <tr>
                 <td width="15px;">
-                    <a href="<?=ROOTDIR ?>/message/index/send" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index/send/" style="text-decoration: none;">
                         <img src="<?=ROOTDIR ?>/img/folder1.gif" style="vertical-align: -9px;">
                     </a>
                 </td>
                 <td>
-                    <a href="<?=ROOTDIR ?>/message/index/send" style="text-decoration: none;">
+                    <a href="<?=ROOTDIR ?>/message/index/send/" style="text-decoration: none;">
                         <span style="<?=$style2 ?>">送信済み</span>
                     </a>
                 </td>

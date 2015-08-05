@@ -88,6 +88,7 @@ $(function() {
                             <ul>
                                 <li><a href="http://www.softlife.co.jp/" target="_blank">会社ホームページ</a></li>
                                 <li><a href="http://softlife.co.jp/cb9/ag.cgi?" target="_blank">サイボウズ</a></li>
+                                <li><a href="http://staff.softlife.biz/" target="_blank">スタッフ専用サイト</a></li>
                             </ul>
                         </li>
                         <li style="width:130px;">
@@ -123,8 +124,8 @@ $(function() {
                             <li class='<?= $active1 ?>'><a href='<?=ROOTDIR ?>/users/'>ホーム<br><div>Home</div></a></li>
                            <li class='<?= $active2 ?>'><a href='<?=ROOTDIR ?>/message/'>メッセージ<br><div>Message</div></a></li> <!--  onclick='alert("制作中");' -->
                            <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/StaffMasters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
-                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/CaseManagement/index/0' onclick='alert("制作中です");'>案件管理<br><div>Case Management</div></a></li>
-                           <li class='<?= $active5 ?>'><a href='<?=ROOTDIR ?>/ShiftManagement/index/' onclick='alert("制作中です");'>勤務管理<br><div>Shift Management</div></a></li>
+                           <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/CaseManagement/index/0'>案件管理<br><div>Case Management</div></a></li>
+                           <li class='<?= $active5 ?>'><a href='<?=ROOTDIR ?>/ShiftManagement/index/'>勤務管理<br><div>Work Management</div></a></li>
                            <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
