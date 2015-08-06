@@ -2,7 +2,7 @@
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
 define("HEADER","スタッフ専用サイト");
-define("FOOTER","Version 0.0.1 20150727 Copyright (C) 2015 SOFTLIFE Co., Ltd.");
+define("FOOTER","Version 0.0.1 20150727 Copyright &copy; 2015 softlife co., ltd.");
 define("ROOTDIR","/staff");
 define("MEMBER_URL","http://localhost/softlife2");
 define("STAFF_URL","http://localhost/staff");

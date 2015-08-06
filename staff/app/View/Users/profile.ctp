@@ -17,8 +17,9 @@ function chkPasswd(pwd1, pwd2) {
     <div data-role="header" data-theme="c">
             <h1>プロフィール</h1>
             <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
-    </div>			
+    </div>
     <div data-role="content">
+        <p><?=$message ?></p>
         <b>プロフィールの変更</b>
         <p>以下の変更ができます。</p>
         <input type="button" value="１．住所変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#address"'>
@@ -44,8 +45,9 @@ function chkPasswd(pwd1, pwd2) {
                 <h1>プロフィール</h1>
                 <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
         </div>
-    <?php echo $this->Form->create('StaffMaster', array('name' => 'form', 'url' => array('controller' => 'users', 'action' => 'profile'))); ?>
+    <?php echo $this->Form->create('StaffMaster', array('name' => 'form')); ?>
     <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
+    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 1)); ?> 
         <div data-role="content">
             <p><a href="#page4">プロフィール</a> ⇒ 住所変更</p>             
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
@@ -130,8 +132,9 @@ function chkPasswd(pwd1, pwd2) {
         </div>	
         <div data-role="content">
             <p><a href="#page4">プロフィール</a> ⇒ 連絡先変更</p>
-    <?php echo $this->Form->create('StaffMaster', array('name' => 'form2', 'url' => array('controller' => 'users', 'action' => 'profile'))); ?>
-    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>              
+    <?php echo $this->Form->create('StaffMaster', array('name' => 'form2')); ?>
+    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>
+    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 2)); ?> 
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <td colspan="2" style='background-color: #e8ffff;width:20%;'>電話番号１（携帯）</td>
@@ -190,9 +193,9 @@ function chkPasswd(pwd1, pwd2) {
         <div data-role="content">
             <p><a href="#page4">プロフィール</a> ⇒ パスワード変更</p>
     <?php echo $this->Form->create('StaffMaster', 
-            array('name' => 'form3', 'method' => 'post', 
-                'url' => array('controller' => 'users', 'action' => 'profile'))); ?>
-    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>                  
+            array('name' => 'form3', 'method' => 'post')); ?>
+    <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>   
+    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 3)); ?> 
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <td style='background-color: #e8ffff;width:20%;'>パスワード（２回入力）</td>

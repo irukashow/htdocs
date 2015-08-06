@@ -17,11 +17,11 @@
                 <!--
                 <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
                 -->
-                <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext" data-ajax="false"></a>
+                <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
         </div>
         <div data-role="content">
-            <b>シフト希望表</b>
-            <p>入力は来月以降で願います。</p>
+            <b>スケジュール</b>
+            <p>シフト希望は来月以降で願います。</p>
             <!--- シフト希望表 --->
             <!-- カレンダー -->
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">

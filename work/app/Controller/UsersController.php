@@ -572,7 +572,7 @@ class UsersController extends AppController {
        
         // レイアウト関係
         $this->layout = "main";
-        $this->set("title_for_layout","スタッフ専用サイト");
+        $this->set("title_for_layout","ログイン");
         $this->log($this->request->data, LOG_DEBUG);
         // ログイン認証
     	if ($this->request->is('post') || $this->request->is('put')) {

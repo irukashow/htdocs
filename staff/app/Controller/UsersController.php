@@ -1,7 +1,7 @@
 <?php
 
 class UsersController extends AppController {
-        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 'TimeCard', 'StaffSchedule');
+        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 'TimeCard', 'StaffSchedule', 'StaffLoginLog', 'StaffLog');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         /****認証周り*****/
@@ -547,21 +547,33 @@ class UsersController extends AppController {
                 // 名古屋（中部地方）
                 $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
             }
-            $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
+            $pref_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions1));
             $this->set('pref_arr', $pref_arr);
+            // メッセージ
+            $this->set('message', $this->Session->read('message'));
+            $this->Session->delete('message');
             
             $this->log($this->request->data, LOG_DEBUG);
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
+                // プロフィールの種類
+                if ($this->request->data['StaffMaster']['status'] == 1) {
+                    $status = 1;
+                } elseif ($this->request->data['StaffMaster']['status'] == 2) {
+                    $status = 2;
+                } elseif ($this->request->data['StaffMaster']['status'] == 3) {
+                    $status = 3;
+                }
                 // データを登録する
                 if ($this->StaffMaster->save($this->request->data)) {
                     // スタッフのプロフィール更新履歴
-                    //
-                    //$this->redirect(array('controller' => 'users', 'action' => 'index#page4'));
+                    $this->setStaffLog(0, $class, $id, $name, 0, $status, $this->request->clientIp()); // プロフィール更新コード:1
+                    //$this->redirect(array('action' => 'profile', 1));
+                    $this->Session->write('message', 1);
                 }
             } else {
                 // 登録していた値をセット
-                $this->request->data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                $this->request->data = $this->StaffMaster->find('first', array('conditions' => array('id' => $id)));
                 //$this->request->data['StaffMaster']['zipcode'] = $this->request->data['StaffMaster']['zipcode1'].$this->request->data['StaffMaster']['zipcode2'];
             }
 
@@ -579,7 +591,7 @@ class UsersController extends AppController {
        
         // レイアウト関係
         $this->layout = "main";
-        $this->set("title_for_layout","スタッフ専用サイト");
+        $this->set("title_for_layout","ログイン");
         // 所属の配列
         $class = array('11', '12', '21', '22', '31', '32');
         
@@ -611,14 +623,12 @@ class UsersController extends AppController {
                     // 所属をセッションに
                     $this->Session->write('class', $cls);
                     // ログイン履歴
-                    /**
-                    $this->loadModel("LoginLog");  // ログイン履歴テーブル
-                    $this->LoginLog->create();
-                    $log = array('username' => $this->Auth->user('username'),
-                        'status' => $this->LoginLog->status = 'login','ip_address' =>$this->request->clientIp(false));
-                    $this->LoginLog->save($log);
-                     * 
-                     */
+                    //$this->loadModel("LoginLog");  // ログイン履歴テーブル
+                    $this->StaffLoginLog->create();
+                    $log = array('class' => $cls, 'staff_id' => $this->Auth->user('id'), 
+                        'staff_name' => $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei'), 'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                        'status' => $this->StaffLoginLog->status = 'login','ip_address' =>$this->request->clientIp(false));
+                    $this->StaffLoginLog->save($log);
                     
                     $this->redirect($this->Auth->redirect());
                 }else{
@@ -633,17 +643,17 @@ class UsersController extends AppController {
         }
     }
 
-
     /**
      * ログアウト処理を行う。
      */
     public function logout(){
         // ログアウト履歴
-        $this->loadModel("LoginLog");  // ログイン履歴テーブル
-        $this->LoginLog->create();
-        $log = array('username' => $this->Auth->user('username'),
-            'status' => $this->LoginLog->status = 'logout','ip_address' => $this->request->clientIp(false));
-        $this->LoginLog->save($log);
+        //$this->loadModel("LoginLog");  // ログイン履歴テーブル
+        $this->StaffLoginLog->create();
+        $log = array('class' => $this->Session->read('class'), 'staff_id' => $this->Auth->user('id'), 
+            'staff_name' => $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei'), 'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'status' => $this->StaffLoginLog->status = 'logout','ip_address' => $this->request->clientIp(false));
+        $this->StaffLoginLog->save($log);
         // 所属のセッションを消す
         $this->Session->delete('selected_class');
         
@@ -667,6 +677,18 @@ class UsersController extends AppController {
     }
     return $return;
   }
+  
+    /** マスタ更新ログ書き込み **/
+    public function setStaffLog($username, $class, $staff_id, $staff_name, $kaijo_flag, $status, $ip_address) {
+        $sql = '';
+        $sql = $sql. ' INSERT INTO staff_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, created)';
+        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$staff_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
+        
+        // sqlの実行
+        $ret = $this->StaffLog->query($sql);
+        
+        return $ret;
+    }
     
     // 項目マスタ
     public function getValue(){

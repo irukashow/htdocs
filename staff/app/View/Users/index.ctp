@@ -7,6 +7,9 @@
         <div class="logo">
             <?php echo $this->Html->image('logo.gif', array('style'=>'width: 50%;')); ?>
         </div>
+    <div style='float: right;'>
+        ようこそ、<?= $name ?> さん！
+    </div>
         <div class="main_img">
             <?php echo $this->Html->image('sample1_2+.png'); ?>
         </div>

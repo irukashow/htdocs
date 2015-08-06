@@ -405,8 +405,8 @@ class CaseManagementController extends AppController {
         $this->set('name_arr', $name_arr); 
         // 取引先マスタのセット
         $conditions2 = array('class' => $selected_class);
-        $this->Customer->virtualFields['corp_info'] = 'CONCAT(corp_name, "　", busho, "　", tantou)';
-        $customer_arr = $this->Customer->find('list', array('fields' => array( 'id', 'corp_info'), 'conditions' => $conditions2));
+        //$this->Customer->virtualFields['corp_info'] = 'CONCAT(corp_name, "　", busho, "　", tantou)';
+        $customer_arr = $this->Customer->find('list', array('fields' => array( 'id', 'corp_name'), 'conditions' => $conditions2));
         $this->set('customer_arr', $customer_arr);
         // 登録データのセット
         $conditions3 = array('id' => $case_id);

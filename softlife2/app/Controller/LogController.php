@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class LogController extends AppController {
-    var $uses = array('LoginLogs', 'Users', 'Item', 'StaffMaster', 'StaffMasterLogs');
+    var $uses = array('LoginLogs', 'Users', 'Item', 'StaffMaster', 'StaffMasterLogs', 'StaffLoginLog');
     public $title_for_layout = "履歴情報 - 派遣管理システム";
     
     public $paginate = array (
@@ -78,6 +78,16 @@ class LogController extends AppController {
         $this->set('datas', $this->paginate('LoginLogs'));
         //$this->log($this->LoginLogs->getDataSource()->getLog(), LOG_DEBUG);
         //$this->paginate['joins'] = null;
+    }
+    
+    // ログイン履歴（スタッフ専用サイト）
+    public function staff_login() {
+        // レイアウト関係
+        $this->layout = "log";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", 'スタッフ専用サイト履歴');
+        $this->paginate = array('order' => array('id' => 'desc'));
+        $this->set('datas', $this->paginate('StaffLoginLog'));
     }
     
     // 項目マスタ

@@ -110,7 +110,7 @@
                     <legend style=""><?php echo __('アカウント管理'); ?></legend>
                 </th>
                 <th width="20%">
-                    <legend style=""><?php echo __(''); ?></legend>
+                    <legend style=""><?php echo __('スマホサイト管理'); ?></legend>
                 </th>
                 <th width="20%">
                     <legend style=""><?php echo __(''); ?></legend>
@@ -125,7 +125,18 @@
                     <?php echo $this->Html->link('▶現場責任者アカウント', '/client/index'); ?>
                 </td>
                 <td>
+                    <?php echo $this->Html->link('▶スタッフ専用サイト履歴', '/log/staff_login'); ?>
+                </td>
+                <td>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
                     
+                </td>
+                <td>
+                    <?php echo $this->Html->link('▶現場責任者専用サイト履歴', '/log/work'); ?>
                 </td>
                 <td>
                 </td>

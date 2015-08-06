@@ -99,9 +99,16 @@ $(function() {
                             <td width="95%">
                     <?php echo $this->Form->input('client',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'依頼主を選択してください', 
                         'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
+                              
                             </td>
                             <td>
                     <?php echo $this->Form->submit('選 択',array('div'=>'display: inline; ', 'name'=>'select_client','id'=>'button-create', 'label'=>false)); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <?php echo $this->Form->input('client_busho',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
+                                <?php echo $this->Form->input('client_tantou',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>  
                             </td>
                         </tr>
                     </table>
