@@ -116,7 +116,7 @@ $(function() {
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;margin-top: -10px;">
       <th rowspan="2"><?php echo $this->Paginator->sort('no',"No.");?></th>
-    <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('id','案件名<br>依頼主<br>事業主', array('escape' => false));?></th>
+    <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('id','案件名<br>依頼主<br>（事業主）', array('escape' => false));?></th>
     <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('name_sei','契約形態', array('escape' => false));?></th>
     <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
     <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
@@ -173,8 +173,14 @@ $(function() {
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','案件詳細','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-size:90%;color: #006699;">
             <b><?php echo $data['CaseManagement']['case_name']; ?></b><br>
-                <?php echo '伊藤忠ハウジング株式会社'; ?><br>
-                <?php echo '伊藤忠都市開発'; ?>
+                <?php echo ''.$customer_array[$data['CaseManagement']['client']].''; ?><br>
+                <?php
+                    for($j=0; $j<10; $j++) {
+                        if (!empty($data['CaseManagement']['entrepreneur'.($j+1)])) {
+                            echo '（'.$customer_array[$data['CaseManagement']['entrepreneur'.($j+1)]].'）<br>';
+                        }
+                    }
+                ?>
             </font>
         </a>
     </td>
@@ -245,6 +251,7 @@ $(function() {
 
 <!-- 機能紹介 -->
 <script type="text/javascript">
+/**
 $(function() {
     //alert('制作中です');
   // 2ダイアログ機能を適用
@@ -257,6 +264,7 @@ $(function() {
 　　　}
   });
 });
+**/
 </script>
 <div id="dialog" title="案件管理の紹介" style="display: none">
 <p style="font-size: 90%;">

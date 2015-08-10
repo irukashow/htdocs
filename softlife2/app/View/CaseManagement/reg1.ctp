@@ -3,6 +3,13 @@
     echo $this->Html->script('station4');
 ?>
 <?php require('reg1_element.ctp'); ?>
+<?php
+    /** 番号のマークをセット **/
+    function setNum($number) {
+        $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
+        return $arr[$number];
+    }
+?>
 
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 <!-- for Datepicker -->
@@ -161,32 +168,39 @@ $(function() {
             </tr>
             <!-- 依頼主 END -->
             <tr>
-                <td colspan="2" style='background-color: #e8ffff;width:20%;'>事業主</td>
+                <td colspan="2" style='background-color: #e8ffff;width:20%;'>事業主<br><font style="font-size: 90%;">※仕様上10個まで設定可能</font></td>
                 <td>
                     <table width="100%">
                         <tr>
-                            <td>
-                    <?php echo $this->Form->input('entrepreneur1',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'事業主を選択してください', 
+                            <td width="90%" colspan="2">
+                    <?php echo $this->Form->input('entrepreneur',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'事業主を選択してください', 
                         'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
                             </td>
+                            <td>
+                                <?php echo $this->Form->submit('追 加',array('div'=>'display: inline; ', 'name'=>'insert_entrepreneur','id'=>'button-create', 'label'=>false)); ?>
+                            </td>
                         </tr>
+                        <?php for($i=0; $i < 10; $i++) { ?>
+                        <?php 
+                            if (empty($data['CaseManagement']['entrepreneur'.($i+1)])) {
+                                continue;
+                            }
+                        ?>
                         <tr>
+                            <td width="75%">
+                                <?php echo $customer_array[$data['CaseManagement']['entrepreneur'.($i+1)]]; ?>
+                            </td>
                             <td>
-                    <?php echo $this->Form->input('entrepreneur2',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'事業主を選択してください', 
-                        'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
+                        <?php echo $this->Form->input('kubun2_'.($i+1),array('type'=>'checkbox', 'label'=>'請求先', 'style'=>'')); ?>
+                            </td>
+                            <td>
+                                <?php echo $this->Form->submit('削 除',array('div'=>'display: inline;', 
+                                    'name'=>'delete_entrepreneur['.($i+1).']','id'=>'button-delete', 'label'=>false, 'style'=>'padding:5px 10px 5px 10px;')); ?>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                    <?php echo $this->Form->input('entrepreneur3',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'事業主を選択してください', 
-                        'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
-                            </td>
-                            <td>
-
-                            </td>
-                        </tr>
+                        <?php } ?>
                     </table>
-                    <?php echo $this->Form->input('kubun2',array('type'=>'checkbox', 'label'=>'請求先', 'style'=>'')); ?>
+                    
                 </td>
             </tr>
             <tr>
@@ -287,35 +301,46 @@ $(function() {
                 </td>
             </tr>
             <!-- 就業場所 END -->
-            <!-- 請求先① -->
+            <!-- 請求先 -->
+            <?php for($j=0; $j<$count_billing ;$j++) { ?>
             <tr>
-                <td style='background-color: #e8ffff;width:10%;' rowspan="6">請求先①</td>
+                <td style='background-color: #e8ffff;width:10%;' rowspan="6">
+                    請求先<?=setNum($j+1); ?>
+                    <?php echo $this->Form->submit('削 除',array('div'=>'display: inline;', 
+                        'name'=>'delete_billing['.($j+1).']','id'=>'button-delete', 'label'=>false, 'style'=>'padding:5px 10px 5px 10px;')); ?>
+                </td>
                 <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
                 <td>
                     <table>
                         <tr>
                             <td width="95%">
-                    <?php echo $this->Form->input('billing_destination',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'請求先を選択してください', 
+                    <?php echo $this->Form->input('billing_destination'.($j+1),array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'請求先を選択してください', 
                         'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
                             </td>
                             <td>
-                    <?php echo $this->Form->submit('選 択',array('div'=>'display: inline; ', 'name'=>'select_billing', 'id'=>'button-create', 'label'=>false)); ?>
+                    <?php echo $this->Form->submit('選 択',array('div'=>'display: inline; ', 'name'=>'select_billing['.($j+1).']', 'id'=>'button-create', 'label'=>false)); ?>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <?php echo $this->Form->input('billing_busho'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
+                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>  
+                            </td>
+                        </tr>                                              
                     </table>
                     <?php $list = array('1'=>'事業主　', '2'=>'請求先　', '0' => 'その他　'); ?>
-                    <?php echo $this->Form->input('kubun3',array('type'=>'radio', 'legend'=>false, 'div'=>false, 'options'=>$list)); ?>
+                    <?php //echo $this->Form->input('kubun3',array('type'=>'radio', 'legend'=>false, 'div'=>false, 'options'=>$list)); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>郵便番号<br>住所</td>
                 <td>
                     <?php
-                        if (!empty($data_billing)) {
-                            echo '〒'.$data_billing['Customer']['zipcode1'].'-'.$data_billing['Customer']['zipcode2'];
+                        if (!empty($data_billing[$j])) {
+                            echo '〒'.$data_billing[$j]['Customer']['zipcode1'].'-'.$data_billing[$j]['Customer']['zipcode2'];
                             echo '<br>';
-                            echo $data_billing['Customer']['address1_2'].$data_billing['Customer']['address2']
-                                    .$data_billing['Customer']['address3'].$data_billing['Customer']['address4'].'&nbsp;'.$data_billing['Customer']['address5'];
+                            echo $data_billing[$j]['Customer']['address1_2'].$data_billing[$j]['Customer']['address2']
+                                    .$data_billing[$j]['Customer']['address3'].$data_billing[$j]['Customer']['address4'].'&nbsp;'.$data_billing[$j]['Customer']['address5'];
                         }
                     ?>
                 </td>
@@ -324,8 +349,8 @@ $(function() {
                 <td style='background-color: #e8ffff;width:20%;'>TEL</td>
                 <td>
                     <?php
-                        if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['telno'];
+                        if (!empty($data_billing[$j])) {
+                            echo $data_billing[$j]['Customer']['telno'];
                         }
                     ?>
                 </td>
@@ -334,8 +359,8 @@ $(function() {
                 <td style='background-color: #e8ffff;width:20%;'>FAX</td>
                 <td>
                     <?php
-                        if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['faxno'];
+                        if (!empty($data_billing[$j])) {
+                            echo $data_billing[$j]['Customer']['faxno'];
                         }
                     ?>
                 </td>
@@ -344,8 +369,8 @@ $(function() {
                 <td style='background-color: #e8ffff;width:20%;'>メールアドレス</td>
                 <td>
                     <?php
-                        if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['email'];
+                        if (!empty($data_billing[$j])) {
+                            echo $data_billing[$j]['Customer']['email'];
                         }
                     ?>
                 </td>
@@ -354,17 +379,80 @@ $(function() {
                 <td style='background-color: #e8ffff;width:20%;'>振込口座情報</td>
                 <td>
                     <?php
-                        if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['kouza_bank'].'&nbsp;&nbsp;'.$data_billing['Customer']['kouza_shiten'].'<br>';
-                            echo '名義：'.$data_billing['Customer']['kouza_meigi'].'<br>';
-                            echo '締日：'.$data_billing['Customer']['bill_cutoff'].'&nbsp;&nbsp;&nbsp;&nbsp;請求書到着日：'.$data_billing['Customer']['bill_arrival'].'<br>';
-                            echo '備考：'.$data_billing['Customer']['remarks'];
+                        if (!empty($data_billing[$j])) {
+                            echo $data_billing[$j]['Customer']['kouza_bank'].'&nbsp;&nbsp;'.$data_billing[$j]['Customer']['kouza_shiten'].'<br>';
+                            echo '名義：'.$data_billing[$j]['Customer']['kouza_meigi'].'<br>';
+                            echo '締日：'.$data_billing[$j]['Customer']['bill_cutoff'].'&nbsp;&nbsp;&nbsp;&nbsp;請求書到着日：'.$data_billing[$j]['Customer']['bill_arrival'].'<br>';
+                            echo '備考：'.$data_billing[$j]['Customer']['remarks'];
                         }
                     ?>
                 </td>
             </tr>
-            <!-- 請求先① END -->
+            <?php } ?>
+            
+            <!-- 請求先（追加分）-->
+            <?php if ($insert_billing == 1) { ?>
+            <tr>
+                <td style='background-color: #e8ffff;width:10%;' rowspan="6">
+                    請求先<?=setNum($j+1); ?>
+                </td>
+                <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
+                <td>
+                    <table>
+                        <tr>
+                            <td width="95%">
+                    <?php echo $this->Form->input('billing_destination'.($j+1),array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'請求先を選択してください', 
+                        'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
+                            </td>
+                            <td>
+                    <?php echo $this->Form->submit('選 択',array('div'=>'display: inline;', 'name'=>'select_billing['.($j+1).']', 'id'=>'button-create', 'label'=>false)); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <?php echo $this->Form->input('billing_busho'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
+                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>  
+                            </td>
+                        </tr>                                              
+                    </table>
+                    <?php $list = array('1'=>'事業主　', '2'=>'請求先　', '0' => 'その他　'); ?>
+                    <?php //echo $this->Form->input('kubun3',array('type'=>'radio', 'legend'=>false, 'div'=>false, 'options'=>$list)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>郵便番号<br>住所</td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>TEL</td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>FAX</td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>メールアドレス</td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>振込口座情報</td>
+                <td>
+                </td>
+            </tr>
+            <?php } ?>
+            <!-- 請求先（追加分） END -->
+            <!-- 請求先 END -->
         </table>
+        <!-- 追加ボタン -->
+        <center>
+            <?php echo $this->Form->submit('▼ 請求先追加 ▼',array('label'=>false,'name'=>'insert_billing','id'=>'button-create', 'style'=>'font-size:90%;')); ?>
+        </center>
+        <!-- 追加ボタン -->
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
 <?php if ($case_id == 0) { ?>
@@ -373,7 +461,7 @@ $(function() {
             契約書情報&nbsp;
 <?php } else { ?>
             <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">オーダー情報</a>&nbsp;>>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">オーダー情報</a>&nbsp;>>&nbsp;
             <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;  
 <?php } ?>
         </font>
@@ -382,6 +470,8 @@ $(function() {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
+<?php echo $this->Form->submit('登録キャンセル', array('name' => 'delete','div' => false, 'id'=>'button-delete', 'onclick'=>'return confirm("登録をキャンセルしますか？")')); ?>
+    &nbsp;&nbsp; 
 <?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>

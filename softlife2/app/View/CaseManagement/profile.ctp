@@ -10,6 +10,13 @@
     echo $this->Html->css(array('print'),'stylesheet',array('media' => 'print'));
 ?>
 <?php require('profile_element.ctp'); ?>
+<?php
+    /** 番号のマークをセット **/
+    function setNum($number) {
+        $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
+        return $arr[$number];
+    }
+?>
 <style>
 #loading{
     position:absolute;
@@ -204,15 +211,16 @@ window.onload = function(){
                     </td>
                 </tr>
                 <!-- 就業場所 END -->
-                <!-- 請求先① -->
+                <!-- 請求先 -->
+                <?php for($i=0; $i<$count_billing; $i++) { ?>
                 <tr>
-                    <td style='background-color: #e8ffff;width:10%;' rowspan="6">請求先①</td>
+                    <td style='background-color: #e8ffff;width:10%;' rowspan="6">請求先<?=setNum($i+1) ?></td>
                     <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
                     <td style='width:70%;'>
                     <?php
                         if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['corp_name'].'<br>';
-                            echo $data_billing['Customer']['busho'].' '.$data_billing['Customer']['tantou'];
+                            echo $data_billing[$i]['Customer']['corp_name'].'<br>';
+                            echo $data_billing[$i]['Customer']['busho'].' '.$data_billing[$i]['Customer']['tantou'];
                         }
                     ?>
                     </td>
@@ -222,9 +230,9 @@ window.onload = function(){
                     <td style='width:70%;'>
                     <?php
                         if (!empty($data_billing)) {
-                            echo '〒'.$data_billing['Customer']['zipcode1'].'-'.$data_billing['Customer']['zipcode2'].'<br>';
-                            echo $data_billing['Customer']['address1_2'].$data_billing['Customer']['address2'].$data_billing['Customer']['address3']
-                                    .$data_billing['Customer']['address4'].' '.$data_billing['Customer']['address5'];
+                            echo '〒'.$data_billing[$i]['Customer']['zipcode1'].'-'.$data_billing[$i]['Customer']['zipcode2'].'<br>';
+                            echo $data_billing[$i]['Customer']['address1_2'].$data_billing[$i]['Customer']['address2'].$data_billing[$i]['Customer']['address3']
+                                    .$data_billing[$i]['Customer']['address4'].' '.$data_billing[$i]['Customer']['address5'];
                         }
                     ?>
                     </td>
@@ -234,7 +242,7 @@ window.onload = function(){
                     <td style='width:70%;'>
                     <?php
                         if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['telno'];
+                            echo $data_billing[$i]['Customer']['telno'];
                         }
                     ?>
                     </td>
@@ -244,7 +252,7 @@ window.onload = function(){
                     <td style='width:70%;'>
                     <?php
                         if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['faxno'];
+                            echo $data_billing[$i]['Customer']['faxno'];
                         }
                     ?>
                     </td>
@@ -254,7 +262,7 @@ window.onload = function(){
                     <td style='width:70%;'>
                     <?php
                         if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['email'];
+                            echo $data_billing[$i]['Customer']['email'];
                         }
                     ?>
                     </td>
@@ -264,14 +272,15 @@ window.onload = function(){
                     <td style='width:70%;'>
                     <?php
                         if (!empty($data_billing)) {
-                            echo $data_billing['Customer']['kouza_bank'].'　'.$data_billing['Customer']['kouza_shiten'].'<br>';
-                            echo '締日：'.$data_billing['Customer']['bill_cutoff'].'　'.'請求書到着日：'.$data_billing['Customer']['bill_arrival'].'<br>';
-                            echo '備考：'.$data_billing['Customer']['remarks'];
+                            echo $data_billing[$i]['Customer']['kouza_bank'].'　'.$data_billing[$i]['Customer']['kouza_shiten'].'<br>';
+                            echo '締日：'.$data_billing[$i]['Customer']['bill_cutoff'].'　'.'請求書到着日：'.$data_billing[$i]['Customer']['bill_arrival'].'<br>';
+                            echo '備考：'.$data_billing[$i]['Customer']['remarks'];
                         }
                     ?>
                     </td>
                 </tr>
-                <!-- 請求先① END -->
+                <?php } ?>
+                <!-- 請求先 END -->
             </table>
             <font style="font-size: 120%;">■推奨メンバー</font>
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;border-spacing: 0px;">
@@ -372,5 +381,3 @@ window.onload = function(){
 
 <?php } ?>
 <?php echo $this->Form->end(); ?> 
-
-

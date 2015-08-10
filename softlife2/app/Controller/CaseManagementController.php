@@ -89,6 +89,10 @@ class CaseManagementController extends AppController {
         $conditions0 = array('item' => 16);
         $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
         $this->set('list_shokushu', $list_shokushu);
+        // 取引先配列
+        $customer_array = $this->Customer->find('list', array('fields'=>array('id', 'corp_name')));
+        $customer_array += array(''=>'');
+        $this->set('customer_array', $customer_array);
         // 表示件数の初期値
         $this->set('limit', $limit);
         $conditions1 = null;$conditions2 = null;$conditions3 = null;
@@ -322,32 +326,43 @@ class CaseManagementController extends AppController {
         $data_client = $this->Customer->find('first', array('conditions' => $condition1));
         $this->set('data_client', $data_client);
         // 請求先データ
-        $condition2 = array('id' => $datas[0]['CaseManagement']['billing_destination']);
-        $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+        for($i=0; $i<10 ;$i++) {
+            $condition2 = array('id' => $datas[0]['CaseManagement']['billing_destination'.($i+1)]);
+            if (empty($data_billing)) {
+                $data_billing[] = $this->Customer->find('first', array('conditions' => $condition2));
+            } else {
+                $data_billing[$i] = $this->Customer->find('first', array('conditions' => $condition2));
+            }
+        }
         $this->set('data_billing', $data_billing);   
         // 事業主
-        $condition3 = array('id' => $datas[0]['CaseManagement']['entrepreneur1']);
-        $data1 = $this->Customer->find('first', array('conditions' => $condition3));
-        if (!empty($data1)) {
-            $entrepreneur1 = $data1['Customer']['corp_name'];
-        } else {
-            $entrepreneur1 = '';
+        $entrepreneur = '';
+        for($i=0; $i<10; $i++) {
+            $condition3 = array('id' => $datas[0]['CaseManagement']['entrepreneur'.($i+1)]);
+            $data1 = $this->Customer->find('first', array('conditions' => $condition3));
+            $this->log($data1, LOG_DEBUG);
+            if (!empty($data1)) {
+                $entrepreneur1 = $data1['Customer']['corp_name'];
+                if (empty($entrepreneur)) {
+                    $entrepreneur = $entrepreneur1;
+                } else {
+                    $entrepreneur .= '<br>'.$entrepreneur1;
+                }
+            } else {
+                $entrepreneur1 = '';
+            }
         }
-        $condition4 = array('id' => $datas[0]['CaseManagement']['entrepreneur2']);
-        $data2 = $this->Customer->find('first', array('conditions' => $condition4));
-        if (!empty($data2)) {
-            $entrepreneur2 = $data2['Customer']['corp_name'];
-        } else {
-            $entrepreneur2 = '';
+        $this->set('entrepreneur', $entrepreneur);
+        // 請求先の数
+        $count2 = 0;
+        $count_billing = 0;
+        for ($i=0; $i < 10; $i++) {
+            if (!empty($datas[0]['CaseManagement']['billing_destination'.($i+1)])) {
+                $count2 = $i+1;
+            }
         }
-        $condition5 = array('id' => $datas[0]['CaseManagement']['entrepreneur3']);
-        $data3 = $this->Customer->find('first', array('conditions' => $condition5));
-        if (!empty($data3)) {
-            $entrepreneur3 = $data3['Customer']['corp_name'];
-        } else {
-            $entrepreneur3 = '';
-        }
-        $this->set('entrepreneur', $entrepreneur1.'<br>'.$entrepreneur2.'<br>'.$entrepreneur3);
+        $count_billing = $count2;
+        $this->set('count_billing', $count_billing);
         
         //$this->log($this->request->data, LOG_DEBUG);
         // post時の処理
@@ -404,14 +419,54 @@ class CaseManagementController extends AppController {
         $name_arr = $this->User->find('list', array('fields' => array('username', 'busho'), 'conditions' => $conditions1, 'order' => array('busho_id'=>'asc')));
         $this->set('name_arr', $name_arr); 
         // 取引先マスタのセット
-        $conditions2 = array('class' => $selected_class);
+        $conditions2 = array('class' => $selected_class, 'kaijo_flag' => 0);
         //$this->Customer->virtualFields['corp_info'] = 'CONCAT(corp_name, "　", busho, "　", tantou)';
         $customer_arr = $this->Customer->find('list', array('fields' => array( 'id', 'corp_name'), 'conditions' => $conditions2));
         $this->set('customer_arr', $customer_arr);
         // 登録データのセット
-        $conditions3 = array('id' => $case_id);
-        $data = $this->CaseManagement->find('first', array('conditions' => $conditions3));
+        $option = array();
+        $option['recursive'] = -1; 
+        /**
+        $option['joins'][] = array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'customers',
+            'alias' => 'Customer',    //下でPost.user_idと書くために
+            'conditions' => '`CaseManagement`.`entrepreneur1`=`Customer`.`user_id`',
+        );
+         * 
+         */
+        $option['conditions'] = array('CaseManagement.id' => $case_id);
+        $data = $this->CaseManagement->find('first', $option);
         $this->set('data', $data);
+        // 事業主の数
+        $count = 0;
+        $count_entrepreneur = 0;
+        for ($i=0; $i < 10; $i++) {
+            if (!empty($data['CaseManagement']['entrepreneur'.($i+1)])) {
+                $count = $i+1;
+            }
+        }
+        $count_entrepreneur = $count;
+        // 請求先の数
+        $count2 = 0;
+        $count_billing = 0;
+        for ($i=0; $i < 10; $i++) {
+            if (!empty($data['CaseManagement']['billing_destination'.($i+1)])) {
+                $count2 = $i+1;
+            }
+        }
+        $count_billing = $count2;
+        $this->set('count_billing', $count_billing);
+        //$this->log($count_billing, LOG_DEBUG);
+        if ($count_billing == 0) {
+            $this->set('insert_billing', 1);
+        } else {
+            $this->set('insert_billing', $this->Session->read('insert_billing'));
+        }
+        
+        // 取引先配列
+        $customer_array = $this->Customer->find('list', array('fields'=>array('id', 'corp_name')));
+        $this->set('customer_array', $customer_array);
         // その他
         $this->set('case_id', $case_id); 
         $this->CaseManagement->id = $case_id;
@@ -427,6 +482,7 @@ class CaseManagementController extends AppController {
         $this->set('station2', '');
         $this->set('line3', '');
         $this->set('station3', '');
+        $this->Session->write('insert_billing', 0);
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -435,6 +491,7 @@ class CaseManagementController extends AppController {
                 //$this->CaseManagement->create();
                 // データを登録する
                 if ($this->CaseManagement->save($this->request->data)) {
+                    /**
                     // 依頼主
                     $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
                     $data_client = $this->Customer->find('first', array('conditions' => $condition1));
@@ -443,22 +500,119 @@ class CaseManagementController extends AppController {
                     $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination']);
                     $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
                     $this->set('data_billing', $data_billing);
+                     * 
+                     */
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録しました。');
+                    $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
 
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                 }
-            //} elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
-            } else {
+            // 事業主追加
+            } elseif (isset($this->request->data['insert_entrepreneur'])) {
+                // 重複チェック
+                $flag = false;
+                $condition1 = array('id' => $case_id);
+                $data = $this->CaseManagement->find('first', array('conditions'=>$condition1));
+                $this->log($data, LOG_DEBUG);
+                for ($j=0; $j<10; $j++) {
+                    if (empty($data['CaseManagement']['entrepreneur'.($j+1)])) {
+                        continue;
+                    }
+                    if ($this->request->data['CaseManagement']['entrepreneur'] == $data['CaseManagement']['entrepreneur'.($j+1)]) {
+                        $flag = true;
+                    }
+                }
+                if ($flag) {
+                    $this->Session->setFlash('事業主が既に存在します。');
+                    $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                    return;
+                }
+                // 登録する内容を設定
+                $data = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 
+                    'entrepreneur'.($count_entrepreneur+1) => $this->request->data['CaseManagement']['entrepreneur']));
+                // 登録する項目（フィールド指定）
+                $fields = array('entrepreneur'.($count_entrepreneur+1)); 
+                // 更新登録
+                $this->CaseManagement->save($data, false, $fields);
+                $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+            // 事業主の削除
+            } elseif (isset($this->request->data['delete_entrepreneur'])) {
+                $i_array = array_keys($this->request->data['delete_entrepreneur']);
+                $i = $i_array[0];
+                // 登録する内容を設定
+                $data = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 'entrepreneur'.$i => null, 'kubun2_'.$i => 0));
+                // 登録する項目（フィールド指定）
+                $fields = array('entrepreneur'.$i, 'kubun2_'.$i); 
+                // 更新登録
+                if ($this->CaseManagement->save($data, false, $fields)) {
+                    // 成功
+                    $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                }
+            // 請求先追加
+            } elseif (isset($this->request->data['insert_billing'])) { 
+                $this->Session->write('insert_billing', 1);
+                $this->set('insert_billing', 1);
+                $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+            // 請求先削除
+            } elseif (isset($this->request->data['delete_billing'])) { 
+                $i_array = array_keys($this->request->data['delete_billing']);
+                $i = $i_array[0];
+                //$this->log($i, LOG_DEBUG);
+                // 登録する内容を設定
+                $data = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 
+                    'billing_destination'.$i => null, 'billing_busho'.$i => null, 'billing_tantou'.$i => null));
+                // 登録する項目（フィールド指定）
+                $fields = array('billing_destination'.$i, 'billing_busho'.$i, 'billing_tantou'.$i); 
+                // 更新登録
+                if ($this->CaseManagement->save($data, false, $fields)) {
+                    //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
+                    // 成功
+                    $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                }
+            } elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
+                // 選択した項目番号
+                $j_array = array_keys($this->request->data['select_billing']);
+                $j = $j_array[0];
+                $this->log($this->request->data, LOG_DEBUG);
+                $this->log($j, LOG_DEBUG);
                 // 依頼主
                 $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
                 $data_client = $this->Customer->find('first', array('conditions' => $condition1));
                 $this->set('data_client', $data_client);
                 // 請求先
-                $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination']);
-                $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+                for($i=0; $i<10 ;$i++) {
+                    if (empty($this->request->data['CaseManagement']['billing_destination'.($i+1)])) {
+                        continue;
+                    } else {
+                        // 登録する内容を設定
+                        $data = array('CaseManagement' => 
+                            array('id' => $this->request->data['CaseManagement']['id'], 
+                                'billing_destination'.($i+1) => $this->request->data['CaseManagement']['billing_destination'.($i+1)]));
+                        // 登録する項目（フィールド指定）
+                        $fields = array('billing_destination'.($i+1)); 
+                        // 更新登録
+                        if ($this->CaseManagement->save($data, false, $fields)) {
+                            // 成功
+                            //$this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                        }
+                    }
+                    $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination'.($i+1)]);
+                    if (empty($data_billing)) {
+                        $data_billing[] = $this->Customer->find('first', array('conditions' => $condition2));
+                    } else {
+                        $data_billing[$i] = $this->Customer->find('first', array('conditions' => $condition2));
+                    }
+                    $this->log($data_billing, LOG_DEBUG);
+                }
                 $this->set('data_billing', $data_billing);
+                $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+            // 登録削除
+            } elseif (isset($this->request->data['delete'])) {
+                if ($this->CaseManagement->delete($this->request->data['CaseManagement']['id'])) {
+                    $this->Session->setFlash('登録をキャンセルしました。');
+                }
             }    
         } else {
             // 登録していた値をセット
@@ -469,8 +623,15 @@ class CaseManagementController extends AppController {
                 $data_client = $this->Customer->find('first', array('conditions' => $condition1));
                 $this->set('data_client', $data_client);
                 // 請求先
-                $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination']);
-                $data_billing = $this->Customer->find('first', array('conditions' => $condition2));
+                for($i=0; $i<10 ;$i++) {
+                    $condition2 = array('id' => $this->request->data['CaseManagement']['billing_destination'.($i+1)]);
+                    if (empty($data_billing)) { 
+                        $data_billing[] = $this->Customer->find('first', array('conditions' => $condition2));
+                    } else {
+                        $data_billing[$i] = $this->Customer->find('first', array('conditions' => $condition2));
+                    }
+                }
+                $this->log($data_billing, LOG_DEBUG);
                 $this->set('data_billing', $data_billing);
             }
         }
@@ -792,6 +953,13 @@ class CaseManagementController extends AppController {
                 }
                 // 登録解除フラグ：０
                 //$this->request->data['Customer']['kaijo_flag'] = 0;
+                // 企業名の重複チェック
+                $conditions = array('class'=>$selected_class, 'corp_name'=>$this->request->data['Customer']['corp_name']);
+                $count = $this->Customer->find('count', array('conditions' => $conditions));
+                if ($count > 0) {
+                    $this->Session->setFlash('【エラー】企業名は既に登録されています。');
+                    return;
+                }
                 // データを登録する
                 if ($this->Customer->save($this->request->data)) {
                     // 登録完了メッセージ

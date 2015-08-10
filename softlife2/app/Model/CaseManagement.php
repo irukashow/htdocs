@@ -17,5 +17,14 @@ class CaseManagement extends AppModel {
     /** 主キー(省略時は「id」になるので省略も可) */
     //public $primaryKey = array('id');
     
-    
+    public $validate = array(
+        'case_name' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '案件名称を入力してください。'
+        ),
+        'username' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '担当者（所属・氏名）を入力してください。'
+        ),
+        );
 }
