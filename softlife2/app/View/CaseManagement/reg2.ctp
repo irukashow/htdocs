@@ -4,6 +4,7 @@
     echo $this->Html->script('jquery-1.9.1');
     //echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
     echo $this->Html->script('jquery.timepicker');
+    echo $this->Html->script('fixed_midashi');
     echo $this->Html->css('jquery.timepicker');
 ?>
 <?php
@@ -57,6 +58,13 @@ function setData2($datas, $col) {
     return $ret;
 }
 ?>
+<?php
+    /** 番号のマークをセット **/
+    function setNum($number) {
+        $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
+        return $arr[$number];
+    }
+?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
   href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
@@ -79,6 +87,18 @@ $(function() {
 	$('#time').timepicker();
 });
 </script>
+<script>
+onload = function() {
+    FixedMidashi.create();
+}
+</script>
+<style type="text/css" media="screen">
+  div.scroll_div { 
+      overflow: auto;
+      height: 800px;
+      width: 1000px;
+  }
+</style>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
@@ -92,21 +112,72 @@ $(function() {
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <font color=blue style="background-color: yellow;">オーダー情報</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">【契約書情報】</a>&nbsp;
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
         
 <?php echo $this->Form->create('OrderInfo'); ?>  
-<?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $case_id)); ?>   
+<?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $order_id)); ?>
+<?php echo $this->Form->input('OrderInfo.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
 <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
         <!-- 基本情報 -->
-        <table border='1' cellspacing="0" cellpadding="5" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
             <tr>
-                <th colspan="4" style='background:#99ccff;text-align: center;'>オーダー情報</th>
+                <th colspan="5" style='background:#99ccff;text-align: center;'>登録済オーダー</th>
+            </tr>
+            <?php foreach($datas0 as $key=>$data0) { ?>
+            <tr>
+                <td align="center" style='background-color: #e8ffff;width:20%;'><?=setNum($key+1) ?></td>
+                <?php if ($data0['OrderInfo']['id'] == $order_id) { ?>
+                <td colspan="3" style="background-color: #ffffcc;">
+                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
+                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
+                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
+                    </a>
+                </td>
+                <td align="center" style="background-color: #ffffcc;width: 50px;">
+                    <?php echo $this->Form->input('削　除',
+                            array('type'=>'submit','div'=>false,'label'=>false,
+                                'name'=>'delete_order['.$data0['OrderInfo']['id'].']','id'=>'button-delete', 
+                                'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding:3px 10px 3px 10px;')); ?>
+                </td>
+                <?php } else { ?>
+                <td colspan="3">
+                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
+                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
+                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
+                    </a>
+                </td>
+                <td></td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+            <?php if (empty($datas0)) { ?>
+            <tr>
+                <td align="center" colspan="5" style="background-color: #fff9ff;">登録されたデータはありません。</td>
+            </tr>
+            <?php } ?>
+            <?php 
+                if (empty($order_id)) { 
+                    $style = 'background-color: #ffffcc;';
+                } else {
+                    $style = 'background-color: #fff9ff;';
+                }
+            ?>
+            <tr>
+                <td align="center" colspan="5" style="<?=$style ?>">
+                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/">▶ 新規登録 ◀</a>
+                </td>
+            </tr>
+        </table>
+        
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
+            <tr>
+                <th colspan="4" style='background:#99ccff;text-align: center;'>オーダー入力</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>保存名</td>
+                <td style='background-color: #e8ffff;width:20%;'>保存名（帳票単位）</td>
                 <td colspan="3">
                     <?php echo $this->Form->input('OrderInfo.order_name',
                             array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>setData2($datas, 'order_name'))); ?>
@@ -130,12 +201,12 @@ $(function() {
             </tr>
         </table>
         <!-- 追加ボタン -->
-        <center>
+        <div style="margin-left: 450px;">
             <?php echo $this->Form->submit('▼ 職種入力 ▼',array('label'=>false,'name'=>'insert','id'=>'button-create', 'style'=>'font-size:90%;')); ?>
-        </center>
+        </div>
         <?php echo $this->Form->end(); ?>
         <!-- 追加ボタン END -->
-        <div style="width:1000px;overflow-y:hidden">
+        
         <!-- 職種入力 -->
         <?php
             if ($row <5) {
@@ -144,26 +215,35 @@ $(function() {
                 $width = '100%';
             }
         ?>
-        <?php echo $this->Form->create('OrderInfoDetail'); ?>  
-        <table border='1' cellspacing="0" cellpadding="5" style="width:<?=$width ?>;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;table-layout:fixed;">
+        <?php echo $this->Form->create('OrderInfoDetail'); ?>
+        <div class="scroll_div">
+        <table border='1' cellspacing="0" cellpadding="5" 
+               style="width:<?=$width ?>;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;" _fixedhead="rows:2; cols:1">
+            <thead>
             <tr>
-                <th style='background:#99ccff;text-align: center;width:100px;table-layout:auto;'></th>
+                <th style='background:#99ccff;text-align: center;width:100px;'></th>
                 <?php for ($count = 0; $count < $row; $count++){ ?>
-                <th style='background:#99ccff;text-align: center;width:200px;table-layout:auto;'>【<?= $count+1 ?>】</th>
+                <th style='background:#99ccff;text-align: center;width:200px;'>【<?= $count+1 ?>】</th>
                 <?php } ?>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;'>職種</td>
+                <td style='width:100px;background-color: #e8ffff;'>職種</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
-                <td style=''>
+                <td style='width:200px;'>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden', 'value'=>setData($datas,'id',$count,$record))); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'hidden','value'=>$count)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_name',array('type'=>'select','div'=>false,'label'=>false, 'options' => $list_shokushu,
-                        'value'=>setData($datas,'shokushu_name',$count,$record), 'style'=>'width:95%;text-align: left;')); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
+                    
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'select','div'=>false,'label'=>false, 'options' => $list_shokushu,
+                        'value'=>setData($datas,'shokushu_id',$count,$record), 'style'=>'width:200px;text-align: left;')); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_memo',array('type'=>'text','div'=>false,'label'=>false,
+                        'value'=>setData($datas,'shokushu_memo',$count,$record), 'style'=>'width:95%;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
+            </thead>
+            <tbody>
             <tr>
                 <td style='background-color: #e8ffff;'>基本就業時間</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
@@ -178,8 +258,12 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;'>休憩時間</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
-                <td style=''><?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas,'resttime',$count,$record))); ?></td>
+                <td style=''>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas,'resttime_from',$count,$record))); ?>&nbsp;～
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_to',
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas,'resttime_to',$count,$record))); ?>
+                </td>
                 <?php } ?>
             </tr>
             <!-- 受注 -->
@@ -254,56 +338,33 @@ $(function() {
                 <?php } ?>
             </tr>
             <!-- 給与 END -->
-        </table>
-        </div>
-        <!--
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;">
             <tr>
-                <th colspan="10" style='background:#99ccff;text-align: center;'>
-                    職種情報
-                </th>
+                <td rowspan="1" style='background-color: #e8ffff;'></td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td align='center' style='background-color: #e8ffff;'>
+                    <?php echo $this->Form->input('消　去',
+                            array('type'=>'submit','div'=>false,'label'=>false,
+                                'name'=>'delete['.setData($datas,'id',$count,$record).']','id'=>'button-delete', 
+                                'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding: 5px 15px 5px 15px;')); ?>
+                </td>
+                <?php } ?>
             </tr>
-            <?php for ($count = 0; $count < $row; $count++){ ?>
+            <!-- カレンダー部分 --> 
+            <?php for($i=1; $i<32; $i++) { ?>
             <tr>
-                <td rowspan="2" colspan="1" align="center" style='background-color: #e8ffff;'>【<?= $count+1 ?>】</td>
-                <td rowspan="1" colspan="1" style='background-color: #e8ffff;width:10%;'>職種</td>
-                <td rowspan="1" colspan="3" style='width:10%;'>
-                    <?php echo $this->Form->input('OrderInfo.shokushu_name',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90%;text-align: left;')); ?>
+                <td rowspan="1" style='background-color: #e8ffff;width:100px;table-layout:auto;'>10/<?=$i ?>(月)</td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style='text-align: center;width:200px;table-layout:auto;'>
+                <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_koutsuuhi',
+                            array('type'=>'checkbox','div'=>true,'legend'=>false,'label'=>'選択', 'options'=>$list2, 'value'=>setData($datas,'kyuuyo_koutsuuhi',$count,$record))); ?>
                 </td>
-                <td rowspan="2" style='background-color: #e8ffff;width:5%;'>受注</td>
-                <td rowspan="2" style='width:20%;'>
-                    <?php $list1 = array('1'=>'日払', '2'=>'月払'); ?>
-                    <?php $list2 = array('1'=>'有', '0'=>'無'); ?>
-                    時間：<?php echo $this->Form->input('OrderInfo.juchuu_time',array('type'=>'radio','div'=>false,'legend'=>false,'options'=>$list1,'style'=>'text-align: left;')); ?><br>
-                    金額：<?php echo $this->Form->input('OrderInfo.juchuu_money',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70%;text-align: left;')); ?><br>
-                    交通費：<?php echo $this->Form->input('OrderInfo.juchuu_koutsuuhi',array('type'=>'radio','div'=>false,'legend'=>false,'options'=>$list2,'style'=>'text-align: left;')); ?><br>
-                    計算方法：<?php echo $this->Form->input($count.'.OrderInfo.juchuu_cal',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:55%;text-align: left;')); ?>
-                </td>
-                <td rowspan="2" style='background-color: #e8ffff;width:5%;'>給与</td>
-                <td rowspan="2" style='width:20%;'>
-                    <?php $list1 = array('1'=>'日払', '2'=>'月払'); ?>
-                    <?php $list2 = array('1'=>'有', '0'=>'無'); ?>
-                    時間：<?php echo $this->Form->input($count.'.OrderInfo.kyuuyo_time',array('type'=>'radio','div'=>false,'legend'=>false,'options'=>$list1,'style'=>'text-align: left;')); ?><br>
-                    金額：<?php echo $this->Form->input($count.'.OrderInfo.kyuuyo_money',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70%;text-align: left;')); ?><br>
-                    交通費：<?php echo $this->Form->input($count.'.OrderInfo.kyuuyo_koutsuuhi',array('type'=>'radio','div'=>false,'legend'=>false,'options'=>$list2,'style'=>'text-align: left;')); ?><br>
-                    計算方法：<?php echo $this->Form->input($count.'.OrderInfo.kyuuyo_cal',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:55%;text-align: left;')); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:10%;'>基本就業時間</td>
-                <td style='width:15%;'>
-                    <?php echo $this->Form->input($count.'.OrderInfo.worktime_from',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:35%;text-align: left;')); ?>&nbsp;～
-                    <?php echo $this->Form->input($count.'.OrderInfo.worktime_to',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:35%;text-align: left;')); ?>
-                </td>
-                <td style='background-color: #e8ffff;width:10%;'>休憩時間</td>
-                <td style='width:10%;'>
-                    <?php echo $this->Form->input($count.'.OrderInfo.resttime',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90%;text-align: left;')); ?>
-                </td>
+                <?php } ?>
             </tr>
             <?php } ?>
+            <!-- カレンダー部分 END -->
+            </tbody>
         </table>
-        -->
-        
+        </div>
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
 <?php if ($case_id == 0) { ?>
@@ -313,7 +374,7 @@ $(function() {
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <font color=blue style="background-color: yellow;">オーダー情報</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">【契約書情報】</a>&nbsp;
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
