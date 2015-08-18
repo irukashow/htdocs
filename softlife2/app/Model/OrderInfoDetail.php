@@ -15,18 +15,11 @@ App::uses('AppModel', 'Model');
 class OrderInfoDetail extends AppModel {
     public $useTable = 'order_info_details';
     public $primaryKey = 'id';
-    public $name = 'OrderInfoDetail';
-    public $belongsTo = array(
-        'OrderCalender' => array(
-            'className' => 'OrderCalender',
-            'conditions' => 'OrderCalender.order_id = OrderInfoDetail.order_id AND OrderCalender.shokushu_id = OrderInfoDetail.shokushu_id',
-            'order' => 'OrderInfoDetail.id ASC',
-            'foreignKey' => ''),
-        'OrderInfo' => array (               // ここから追加
-            'className' => 'OrderInfo',
-            'conditions' => '',
-            'order' => 'OrderInfo.id ASC',
-            'foreignKey' => 'case_id')
-    );
 
+    public $validate = array(
+            'shokushu_id' =>  array(
+                    'rule' => 'notEmpty',
+                    'message' => '職種を選択してください。'
+            ),
+        );
 }

@@ -1,7 +1,9 @@
 <?php
 	// 初期値
-	$y = date('Y');
-	$m = date('n');
+	//$y = date('Y');
+        $y = date('Y', strtotime('+1 month'));
+	//$m = date('n');
+	$m = date('n', strtotime('+1 month'));
 		
 	// 日付の指定がある場合
 	if(!empty($_GET['date']))

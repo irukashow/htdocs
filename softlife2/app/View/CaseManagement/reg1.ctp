@@ -237,15 +237,15 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>TEL・FAX</td>
                 <td>
-                    <?php echo $this->Form->input('telno',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:30%;')); ?>
-                    <?php echo $this->Form->input('faxno',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('telno',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => 'TEL','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('faxno',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => 'FAX','style'=>'width:30%;')); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>指揮命令者・役職</td>
                 <td>
-                    <?php echo $this->Form->input('director',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:30%;')); ?>
-                    <?php echo $this->Form->input('position',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('director',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '指揮命令者','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('position',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '役職','style'=>'width:30%;')); ?>
                 </td>
             </tr>
             <tr>
@@ -295,9 +295,9 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>現場長<br>携帯・メールアドレス</td>
                 <td>
-                    <?php echo $this->Form->input('leader',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:50%;')); ?><br>
-                    <?php echo $this->Form->input('mobile',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:30%;margin-top:5px;')); ?>
-                    <?php echo $this->Form->input('email',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:50%;')); ?>
+                    <?php echo $this->Form->input('leader',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '現場長','style'=>'width:50%;')); ?><br>
+                    <?php echo $this->Form->input('mobile',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '携帯','style'=>'width:30%;margin-top:5px;')); ?>
+                    <?php echo $this->Form->input('email',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => 'メールアドレス','style'=>'width:50%;')); ?>
                 </td>
             </tr>
             <!-- 就業場所 END -->

@@ -692,17 +692,28 @@ class CaseManagementController extends AppController {
             if (isset($this->request->data['insert'])) {
                 $row = $this->request->data['OrderInfo']['shokushu_num'];
                 $this->set('row', $row);
+                if (!empty($order_id)) {
+                    // 既存データがある場合はチェック
+                    $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
+                    $result = $this->OrderInfoDetail->find('count', array('conditions' => $conditions));
+                    if ($result > $row) {
+                        $this->Session->setFlash('【エラー】登録済みの職種データがあります。');
+                        $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id));
+                        return;
+                    }
+                }
                 // データを登録する
                 if ($this->OrderInfo->save($this->request->data)) {
-                    $this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
-                    // 登録完了メッセージ
-                    //$this->Session->setFlash('登録しました。');
+                    //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
+                    if (empty($order_id)) {
+                        $order_id = $this->OrderInfo->getLastInsertID();
+                    }
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                     exit();
                 }
                 $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id, 'row'=>$row));
-            // 登録
+            // 登録（職種等）
             } elseif (isset($this->request->data['register'])) {
                 $this->log($this->request->data, LOG_DEBUG);
                 // オーダーの登録がまだな場合、エラー
@@ -711,9 +722,6 @@ class CaseManagementController extends AppController {
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag));
                     return;
                 }
-                // 年月
-                $year = $this->request->data['year'];
-                $month = $this->request->data['month'];
                 
                 $data2 = $this->request->data['OrderInfoDetail'];
                 // データを登録する（オーダー詳細）
@@ -736,10 +744,26 @@ class CaseManagementController extends AppController {
                     $this->Session->setFlash('【エラー】登録時にエラーが発生しました。(0001)');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
                 }
-            // 登録
+            // 登録（カレンダー）
             } elseif (isset($this->request->data['register2'])) {
                 $this->log($this->request->data, LOG_DEBUG);
+                // オーダーの登録がまだな場合、エラー
+                if (is_null($order_id)) {
+                    $this->Session->setFlash('【エラー】保存名などを入力の上、『職種入力』ボタンを押してください。');
+                    $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag));
+                    return;
+                }
+                // 年月
+                $year = $this->request->data['year'];
+                $month = $this->request->data['month'];
+                // 年月のセット
+                $datas = $this->request->data['OrderCalender'];
+                for ($i=0; $i<count($datas) ;$i++) {
+                    $this->request->data['OrderCalender'][$i]['year'] = $this->request->data['year'];
+                    $this->request->data['OrderCalender'][$i]['month'] = $this->request->data['month'];
+                }
                 $data3 = $this->request->data['OrderCalender'];
+                $this->log($datas, LOG_DEBUG);
                 // データを登録する（オーダー詳細）
                 //$this->OrderInfoDetail->create(); 
                 if ($this->OrderCalender->saveAll($data3)) {
@@ -756,6 +780,11 @@ class CaseManagementController extends AppController {
                 $id_array = array_keys($this->request->data['delete']);
                 $id = $id_array[0];
                 $this->OrderInfoDetail->delete($id);
+                // カレンダーの削除
+                $conditions = array();
+                $shokushu_num = $this->OrderInfoDetail->find('first', array('conditions'=>$conditions));
+                $param = array('case_id' => $case_id, 'order_id' => $order_id, 'shokushu_num' => ???);
+                $this->OrderCalender->deleteAll($param);
                 $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
             // 削除（オーダーごと）
             } elseif (isset($this->request->data['delete_order'])) {
@@ -781,8 +810,10 @@ class CaseManagementController extends AppController {
                 $year = $date_arr[0];
                 $month = $date_arr[1];
             } else {
-                $year = date('Y');
-                $month = date('n');
+                //$year = date('Y');
+                //$month = date('n');
+                $year = date('Y', strtotime('+1 month'));
+                $month = date('n', strtotime('+1 month'));
             }
             $this->set('row', $row);
             $this->set('year', $year);
@@ -791,19 +822,34 @@ class CaseManagementController extends AppController {
             // 登録していた値をセット
             // オーダー一覧用
             $conditions = array('OrderInfo.case_id' => $case_id);
-            $this->request->data = $this->OrderInfo->find('all', array('conditions'=>$conditions));
-            $datas0 = $this->request->data;
+            $datas0 = $this->OrderInfo->find('all', array('conditions'=>$conditions));
             $this->set('datas0', $datas0);
             // オーダー入力欄以下
             if (is_null($order_id)) {
                 $this->set('datas', null);
             } else {
-                $option['conditions'] = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
-                $this->request->data = $this->OrderInfo->find('all', $option);
-                $datas = $this->request->data;
+                //$option['conditions'] = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
+                $conditions = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
+                $datas = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+                //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
                 $this->set('datas', $datas);
                 $this->log($datas, LOG_DEBUG);
             }
+            // 職種以下
+            // オーダー入力欄以下
+            if (is_null($order_id)) {
+                $this->set('datas2', null);
+            } else {
+                $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
+                $datas2 = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions));
+                $this->set('datas2', $datas2);
+                $this->log($datas2, LOG_DEBUG);
+            }
+            // カレンダー部分のデータ・セット
+            $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
+            $datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions));
+            $this->set('datas1', $datas1);
+            $this->log($datas1, LOG_DEBUG);
             $record = $this->OrderInfo->find('count', $option);
             $this->set('record', $record);
             //$this->set('y', date('Y'));
