@@ -113,7 +113,7 @@
                     <legend style=""><?php echo __('スマホサイト管理'); ?></legend>
                 </th>
                 <th width="20%">
-                    <legend style=""><?php echo __(''); ?></legend>
+                    <legend style=""><?php echo __('案件管理・シフト管理'); ?></legend>
                 </th>
                 <th width="20%">
                     <legend style=""><?php echo __(''); ?></legend>
@@ -128,6 +128,7 @@
                     <?php echo $this->Html->link('▶スタッフ専用サイト履歴', '/log/staff_login'); ?>
                 </td>
                 <td>
+                    <?php echo $this->Html->link('▶案件管理履歴', '/log/case_log'); ?>
                 </td>
                 <td></td>
             </tr>

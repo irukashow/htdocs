@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender');
+    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'CaseLog');
     
     public $components = array('RequestHandler');
     
@@ -86,7 +86,7 @@ class CaseManagementController extends AppController {
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
-        $conditions0 = array('item' => 16);
+        $conditions0 = array('item' => 17);
         $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
         $this->set('list_shokushu', $list_shokushu);
         // 取引先配列
@@ -245,9 +245,28 @@ class CaseManagementController extends AppController {
             }
             $conditions3 += array('class'=>$selected_class);
             //$this->request->params['named']['page'] = 1;
-            $this->set('datas', $this->paginate('CaseManagement', $conditions3)); 
-            $this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
-            //$this->log('GET', LOG_DEBUG);
+            $datas = $this->paginate('CaseManagement', $conditions3);
+            $this->set('datas', $datas);
+            if (!empty($datas)) {
+                // オーダー内容
+                foreach($datas as $key=>$data) {
+                    $conditions2 = array('case_id'=>$data['CaseManagement']['id']);
+                    $result_order[$key] = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions2, 'fields'=>array('*', 'COUNT(shokushu_id) AS cnt'), 'group'=>array('shokushu_id')));
+                }
+                $this->log($result_order, LOG_DEBUG);
+                $this->log('レコード数は、'.count($result_order), LOG_DEBUG);
+                $this->set('datas_order', $result_order);
+                // オーダー情報の更新日
+                foreach($datas as $key=>$data) {
+                    $conditions2 = array('case_id'=>$data['CaseManagement']['id'], 'status LIKE '=>'2%');
+                    $result[$key] = $this->CaseLog->find('first', array('conditions'=>$conditions2, 'order'=>array('created'=>'desc')));
+                }
+                //$this->log($result, LOG_DEBUG);
+                $this->set('order_update_date', $result);
+            } else {
+                $this->set('order_update_date', null);
+            }
+            
         } else {
             // 所属の取得とセット
             //$this->selected_class = $this->Session->read('selected_class');
@@ -279,7 +298,7 @@ class CaseManagementController extends AppController {
         $this->set('station1', $station1);
         $this->set('station2', $station2);
         $this->set('station3', $station3);        
-      }
+    }
     
     /** 案件情報 **/
     public function profile($flag = null, $case_id = null) {
@@ -502,6 +521,8 @@ class CaseManagementController extends AppController {
                     $this->set('data_billing', $data_billing);
                      * 
                      */
+                    // ログ書き込み
+                    $this->setCaseLog($username, $selected_class, $case_id, $this->request->data['CaseManagement']['case_name'], 0, 11, $this->request->clientIp()); // 案件基本情報登録コード:11
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録しました。');
                     $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
@@ -708,6 +729,11 @@ class CaseManagementController extends AppController {
                     if (empty($order_id)) {
                         $order_id = $this->OrderInfo->getLastInsertID();
                     }
+                    // ログ書き込み
+                    $conditions = array('id' => $case_id);
+                    $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                    $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                            '('.$order_id.')'.$this->request->data['OrderInfo']['order_name'], 21, $this->request->clientIp()); // (2)オーダー名登録コード:21
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                     exit();
@@ -722,11 +748,17 @@ class CaseManagementController extends AppController {
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag));
                     return;
                 }
-                
                 $data2 = $this->request->data['OrderInfoDetail'];
                 // データを登録する（オーダー詳細）
                 //$this->OrderInfoDetail->create(); 
                 if ($this->OrderInfoDetail->saveAll($data2)) {
+                    // ログ書き込み
+                    $conditions = array('id' => $case_id);
+                    $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                    $conditions2 = array('id' => $order_id);
+                    $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
+                    $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                            '('.$order_id.')'.$result2['OrderInfo']['order_name'], 22, $this->request->clientIp()); // (2)オーダー職種登録コード:22
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録しました。');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
@@ -767,6 +799,13 @@ class CaseManagementController extends AppController {
                 // データを登録する（オーダー詳細）
                 //$this->OrderInfoDetail->create(); 
                 if ($this->OrderCalender->saveAll($data3)) {
+                    // ログ書き込み
+                    $conditions = array('id' => $case_id);
+                    $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                    $conditions2 = array('id' => $order_id);
+                    $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
+                    $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                            '('.$order_id.')'.$result2['OrderInfo']['order_name'], 23, $this->request->clientIp()); // (23)オーダーカレンダー登録コード:23
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録しました。');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
@@ -779,20 +818,41 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['delete'])) {
                 $id_array = array_keys($this->request->data['delete']);
                 $id = $id_array[0];
-                $this->OrderInfoDetail->delete($id);
                 // カレンダーの削除
-                $conditions = array();
-                $shokushu_num = $this->OrderInfoDetail->find('first', array('conditions'=>$conditions));
-                $param = array('case_id' => $case_id, 'order_id' => $order_id, 'shokushu_num' => ???);
+                $conditions = array('id'=>$id);
+                $result = $this->OrderInfoDetail->find('first', array('conditions'=>$conditions));
+                //$this->log($result, LOG_DEBUG);
+                $shokushu_num = $result['OrderInfoDetail']['shokushu_num'];
+                $param = array('case_id' => $case_id, 'order_id' => $order_id, 'shokushu_num' => $shokushu_num);
                 $this->OrderCalender->deleteAll($param);
+                // 職種情報削除
+                $this->OrderInfoDetail->delete($id);
+                // ログ書き込み
+                $conditions = array('id' => $case_id);
+                $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                $conditions2 = array('id' => $order_id);
+                $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
+                $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                        '('.$order_id.')'.$result2['OrderInfo']['order_name'], 26, $this->request->clientIp()); // (26)職種・カレンダー消去コード:26
                 $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
             // 削除（オーダーごと）
             } elseif (isset($this->request->data['delete_order'])) {
+                // オーダー名の取得
+                $conditions2 = array('id' => $order_id);
+                $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
+                // 削除処理
                 $id_array = array_keys($this->request->data['delete_order']);
                 $id = $id_array[0];
                 $this->OrderInfo->delete($id);
                 $param = array('order_id' => $id);
                 $this->OrderInfoDetail->deleteAll($param);
+                $this->OrderCalender->deleteAll($param);
+                // ログ書き込み
+                $conditions = array('id' => $case_id);
+                $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                        '('.$order_id.')'.$result2['OrderInfo']['order_name'], 25, $this->request->clientIp()); // (25)オーダー削除コード:25
+                $this->Session->setFlash('オーダーを削除しました。');
                 $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
             // カレンダー変更
             } else {
@@ -1357,15 +1417,15 @@ class CaseManagementController extends AppController {
         
         return $ret;
     }
-    
+
     /** マスタ更新ログ書き込み **/
-    public function setSMLog($username, $class, $case_id, $staff_name, $kaijo_flag, $status, $ip_address) {
+    public function setCaseLog($username, $class, $case_id, $case_name, $order_name, $status, $ip_address) {
         $sql = '';
-        $sql = $sql. ' INSERT INTO staff_master_logs (username, class, staff_id, staff_name, kaijo_flag, status, ip_address, created)';
-        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$case_id.', "'.$staff_name.'", '.$kaijo_flag.', '.$status.', "'.$ip_address.'", now())';
+        $sql = $sql. ' INSERT INTO case_logs (username, class, case_id, case_name, order_name, status, ip_address, created)';
+        $sql = $sql. ' VALUES ('.$username.', '.$class.', '.$case_id.', "'.$case_name.'", "'.$order_name.'", '.$status.', "'.$ip_address.'", now())';
         
         // sqlの実行
-        $ret = $this->CaseManagementLog->query($sql);
+        $ret = $this->CaseLog->query($sql);
         
         return $ret;
     }

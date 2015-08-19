@@ -123,7 +123,7 @@ $(function() {
     <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('ojt_date','就業場所<br>住所<br>電話番号<br>担当者', array('escape' => false));?></th>
     <th style="width:25%;color: white;" colspan="4">今月のオーダー内容／来月のオーダー内容</th>
     <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('shokushu_shoukai','オーダー入力<br>更新日<br>入力済ﾁｪｯｸ', array('escape' => false));?></th>
-    <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','シフト入力<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
+    <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','シフト入力<br>更新日<br>入力済ﾁｪｯｸ', array('escape' => false));?></th>
     <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('3m_spot','帳票作成<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
     <th rowspan="2" style="width:7%;">&nbsp;</th>
   </tr>
@@ -163,13 +163,14 @@ $(function() {
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
   </tr>
-  <?php foreach ($datas as $data): ?>
+  <?php foreach ($datas as $key=>$data): ?>
+  <?php $row = count($datas_order[$key]); ?>
   <tr>
-    <td align="center">
+    <td align="center" rowspan="<?=$row ?>">
         <?php $case_id = $data['CaseManagement']['id']; ?>
         <?php echo $case_id; ?>
     </td>
-    <td align="left">
+    <td align="left" rowspan="<?=$row ?>">
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','案件詳細','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-size:90%;color: #006699;">
             <b><?php echo $data['CaseManagement']['case_name']; ?></b><br>
@@ -184,39 +185,76 @@ $(function() {
             </font>
         </a>
     </td>
-    <td align="center" style="font-size: 90%;">
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
 	<?=setCType($data['CaseManagement']['contract_type']); ?>
     </td>
-    <td align="center" style="font-size: 90%;"><?php echo $data['CaseManagement']['start_date'];?></td>
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>"><?php echo $data['CaseManagement']['start_date'];?></td>
     <?php $tantou_user = $data['User']['name_sei'].' '.$data['User']['name_mei']; ?>
-    <td align="center" style="font-size: 90%;"><?php echo $tantou_user; ?></td>
-    <td align="left" style="font-size: 90%;">
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>"><?php echo $tantou_user; ?></td>
+    <td align="left" style="font-size: 90%;" rowspan="<?=$row ?>">
         <?php 
             echo $data['CaseManagement']['address'].'<br>'; 
             echo $data['CaseManagement']['telno'].'<br>'; 
             echo $data['CaseManagement']['leader']; 
         ?>
     </td>
-    <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
-    <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
-    <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
-    <td align="center" style="font-size: 90%;"><?php echo '＜？＞'; ?></td>
-    <td align="center" style="font-size: 90%;">
-        <a href="#">[ボタン]</a><br>
-        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
-        <?php echo '未作成'; ?>
+    <td align="left" style="font-size: 90%;">
+        <?php
+            if (!empty($datas_order[$key])) {
+                echo $list_shokushu[$datas_order[$key][0]['OrderInfoDetail']['shokushu_id']].'<br>';
+            }
+        ?>
     </td>
     <td align="center" style="font-size: 90%;">
-        <a href="#">[ボタン]</a><br>
-        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
-        <?php echo '未作成'; ?>
+        <?php
+            if (!empty($datas_order[$key])) {
+                if (!empty($datas_order[$key][0]['OrderInfoDetail']['worktime_from']) && !empty($datas_order[$key][0]['OrderInfoDetail']['worktime_to'])) {
+                    echo $datas_order[$key][0]['OrderInfoDetail']['worktime_from'].'～'.$datas_order[$key][0]['OrderInfoDetail']['worktime_to'].'<br>';
+                }
+            }
+        ?>
     </td>
     <td align="center" style="font-size: 90%;">
-        <a href="#">[ボタン]</a><br>
-        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
-        <?php echo '未作成'; ?>
+        <?php
+            if (!empty($datas_order[$key])) {
+                echo $datas_order[$key][0]['OrderInfoDetail']['juchuu_money'].'円<br>';
+            }
+        ?>
     </td>
     <td align="center" style="font-size: 90%;">
+         <?php
+            if (!empty($datas_order[$key])) {
+                echo $datas_order[$key][0][0]['cnt'].'名<br>';
+            }
+        ?>
+    </td>
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/reg2/<?php echo $data['CaseManagement']['id'] ?>/2','オーダー情報','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            【リンク】
+        </a><br>
+        <?php
+            if (empty($order_update_date[$key])) {
+                echo '<font color=red>未入力</font>';
+            } else {
+                echo date('Y-m-d', strtotime($order_update_date[$key]['CaseLog']['created']));
+            }
+        ?>
+    </td>
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
+        <a href="#">
+            【リンク】
+        </a><br>
+        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
+        <?php echo '<font color=red>未入力</font>'; ?>
+    </td>
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
+        <a href="#">
+            【リンク】
+        </a><br>
+        <?php echo date('Y-m-d', strtotime($data['CaseManagement']['modified'])); ?><br>
+        <?php echo '<font color=red>未作成</font>'; ?>
+    </td>
+    <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
         <?php $id = 1; ?>
         <a href="javascript:void(0);" 
            onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/0/<?php echo $data['CaseManagement']['id']; ?>/copy','案件詳細','width=1200,height=800,scrollbars=yes');">
@@ -228,6 +266,24 @@ $(function() {
         <?php echo $this->Html->link('[削除]', array(), array()); ?>
     </td>
   </tr>
+<?php if ($row > 1) { ?>
+<?php for ($i=1; $i<$row ;$i++) { ?>
+  <tr>
+      <td style="font-size: 90%;" align="left">
+          <?php echo $list_shokushu[$datas_order[$key][$i]['OrderInfoDetail']['shokushu_id']].'<br>'; ?>
+      </td>
+      <td style="font-size: 90%;" align="center">
+          <?php echo $datas_order[$key][$i]['OrderInfoDetail']['worktime_from'].'～'.$datas_order[$key][$i]['OrderInfoDetail']['worktime_to'].'<br>'; ?>
+      </td>
+      <td style="font-size: 90%;" align="center">
+          <?php echo $datas_order[$key][$i]['OrderInfoDetail']['juchuu_money'].'円<br>'; ?>
+      </td>
+      <td style="font-size: 90%;" align="center">
+          <?php echo $datas_order[$key][$i][0]['cnt'].'名<br>'; ?>
+      </td>
+  </tr>
+    <?php } ?>
+    <?php } ?>
   <?php endforeach; ?>
 <?php if (count($datas) == 0) { ?>
 <tr>

@@ -198,6 +198,7 @@ function changeColor(col, day, flag) {
 <?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $order_id)); ?>
 <?php echo $this->Form->input('OrderInfo.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
 <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
+<?php echo $this->Form->input('OrderInfo.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
         <!-- 基本情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
             <tr>
@@ -316,6 +317,8 @@ function changeColor(col, day, flag) {
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                     
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'select','div'=>false,'label'=>false, 'options' => $list_shokushu,
                         'value'=>setData($datas2,'shokushu_id',$count,$record), 'empty'=>array(''=>'職種を選んでください'), 'style'=>'width:200px;text-align: left;')); ?>
@@ -427,7 +430,7 @@ function changeColor(col, day, flag) {
                 <td align='center' style='background-color: #e8ffff;'>
                     <?php echo $this->Form->submit('(2) 登 録', array('name' => 'register','div' => false, 'style'=>'margin-top:0px;padding: 5px 15px 5px 15px;')); ?>
                         &nbsp;&nbsp;
-                    <?php echo $this->Form->submit('消去',
+                    <?php echo $this->Form->submit('↑消去↓',
                             array('div'=>false,'label'=>false,
                                 'name'=>'delete['.setData($datas2,'id',$count,$record).']','id'=>'button-delete', 
                                 'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding: 5px 15px 5px 15px;')); ?>
@@ -468,6 +471,8 @@ function changeColor(col, day, flag) {
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
                 <td align='center' style='background-color: #e8ffff;'>

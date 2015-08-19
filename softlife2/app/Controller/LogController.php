@@ -90,6 +90,22 @@ class LogController extends AppController {
         $this->set('datas', $this->paginate('StaffLoginLog'));
     }
     
+    // 案件管理履歴
+    public function case_log() {
+        // レイアウト関係
+        $this->layout = "log";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", '案件管理履歴');
+        // テーブルの設定
+        $this->LoginLogs->setSource('case_logs');
+        // 項目配列セット
+        $this->set('data_item', $this->getValue());
+        
+        $this->set('datas', $this->paginate('LoginLogs'));
+        //$this->log($this->LoginLogs->getDataSource()->getLog(), LOG_DEBUG);
+        //$this->paginate['joins'] = null;
+    }
+    
     // 項目マスタ
     public function getValue(){
         $conditions = null;
