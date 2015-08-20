@@ -46,6 +46,30 @@ $(function() {
   $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>
+<script type="text/javascript">
+function doSubmit(value, flag) {
+    if (flag == 1) {
+        msg = "削除";
+    } else if(flag == 2) {
+        msg = "クローズ";    
+    }
+    if (confirm('本当に' + msg + '処理を行いますか？') == false) {
+        return;
+    }
+    var form = document.getElementById("frm");
+    var elm1 = document.createElement("input");
+    elm1.setAttribute("name", "case_id");
+    elm1.setAttribute("type", "hidden");
+    elm1.setAttribute("value", value);
+    form.appendChild(elm1);
+    var elm2 = document.createElement("input");
+    elm2.setAttribute("name", "flag");
+    elm2.setAttribute("type", "hidden");
+    elm2.setAttribute("value", flag);
+    form.appendChild(elm2);
+    form.submit();
+}
+</script>
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
@@ -90,7 +114,7 @@ $(function() {
 </div>
 <!-- 見出し２ END -->
 
-<?php echo $this->Form->create('CaseManagement', array('name' => 'form')); ?>
+<?php echo $this->Form->create('CaseManagement', array('id' => 'frm')); ?>
 <!-- ページネーション -->
 <div class="pageNav03" style="margin-top:-20px; margin-bottom: 30px;">
 <?php
@@ -121,7 +145,7 @@ $(function() {
     <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
     <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
     <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('ojt_date','就業場所<br>住所<br>電話番号<br>担当者', array('escape' => false));?></th>
-    <th style="width:25%;color: white;" colspan="4">今月のオーダー内容／来月のオーダー内容</th>
+    <th style="width:25%;color: white;" colspan="4">今月～来月のオーダー内容</th>
     <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('shokushu_shoukai','オーダー入力<br>更新日<br>入力済ﾁｪｯｸ', array('escape' => false));?></th>
     <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('koushin_date','シフト入力<br>更新日<br>入力済ﾁｪｯｸ', array('escape' => false));?></th>
     <th rowspan="2" style="width:7%;"><?php echo $this->Paginator->sort('3m_spot','帳票作成<br>更新日<br>作成済ﾁｪｯｸ', array('escape' => false));?></th>
@@ -174,7 +198,11 @@ $(function() {
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/<?php echo $flag ?>/<?php echo $data['CaseManagement']['id']; ?>/profile','案件詳細','width=1200,height=800,scrollbars=yes');" class="link_prof">
             <font style="font-size:90%;color: #006699;">
             <b><?php echo $data['CaseManagement']['case_name']; ?></b><br>
-                <?php echo ''.$customer_array[$data['CaseManagement']['client']].''; ?><br>
+                <?php
+                    if (!empty($data['CaseManagement']['client'])) {
+                        echo $customer_array[$data['CaseManagement']['client']].'<br>';
+                    }
+                ?>
                 <?php
                     for($j=0; $j<10; $j++) {
                         if (!empty($data['CaseManagement']['entrepreneur'.($j+1)])) {
@@ -194,14 +222,22 @@ $(function() {
     <td align="left" style="font-size: 90%;" rowspan="<?=$row ?>">
         <?php 
             echo $data['CaseManagement']['address'].'<br>'; 
-            echo $data['CaseManagement']['telno'].'<br>'; 
-            echo $data['CaseManagement']['leader']; 
+            if (!empty($data['CaseManagement']['telno'])) {
+                echo $data['CaseManagement']['telno'].'<br>'; 
+            }
+            if (!empty($data['CaseManagement']['leader'])) {
+                echo $data['CaseManagement']['leader'].'<br>'; 
+            }
         ?>
     </td>
     <td align="left" style="font-size: 90%;">
         <?php
             if (!empty($datas_order[$key])) {
-                echo $list_shokushu[$datas_order[$key][0]['OrderInfoDetail']['shokushu_id']].'<br>';
+                echo $list_shokushu[$datas_order[$key][0]['OrderInfoDetail']['shokushu_id']];
+                if (!empty($datas_order[$key][0]['OrderInfoDetail']['shokushu_memo'])) {
+                    echo '（'.$datas_order[$key][0]['OrderInfoDetail']['shokushu_memo'].'）';
+                }
+                echo '<br>';
             }
         ?>
     </td>
@@ -216,7 +252,9 @@ $(function() {
     </td>
     <td align="center" style="font-size: 90%;">
         <?php
+            $shiharai_arr = array('1'=>'時給', '2'=>'日給', '3'=>'月給', ''=>'');
             if (!empty($datas_order[$key])) {
+                echo $shiharai_arr[$datas_order[$key][0]['OrderInfoDetail']['juchuu_shiharai']].' ';
                 echo $datas_order[$key][0]['OrderInfoDetail']['juchuu_money'].'円<br>';
             }
         ?>
@@ -258,25 +296,35 @@ $(function() {
         <?php $id = 1; ?>
         <a href="javascript:void(0);" 
            onclick="window.open('<?=ROOTDIR ?>/CaseManagement/index/0/<?php echo $data['CaseManagement']['id']; ?>/copy','案件詳細','width=1200,height=800,scrollbars=yes');">
-            [複製]
+            【複製】
         </a><br>
-        <?php echo $this->Html->link('[稼働表]', array(), array()); ?><br>
+        <?php echo $this->Html->link('【稼働表】', array(), array()); ?><br>
         <br>
-        <?php echo $this->Html->link('[クローズ]', array(), array()); ?><br>
-        <?php echo $this->Html->link('[削除]', array(), array()); ?>
+        <a type="button" href="#" onclick="doSubmit(<?=$data['CaseManagement']['id'] ?>, 1);" class="link_prof">【削除】</a><br>
+        <a type="button" href="#" onclick="doSubmit(<?=$data['CaseManagement']['id'] ?>, 2);" class="link_prof">【クローズ】</a>
     </td>
   </tr>
 <?php if ($row > 1) { ?>
 <?php for ($i=1; $i<$row ;$i++) { ?>
   <tr>
       <td style="font-size: 90%;" align="left">
-          <?php echo $list_shokushu[$datas_order[$key][$i]['OrderInfoDetail']['shokushu_id']].'<br>'; ?>
+        <?php
+            echo $list_shokushu[$datas_order[$key][$i]['OrderInfoDetail']['shokushu_id']];
+            if (!empty($datas_order[$key][$i]['OrderInfoDetail']['shokushu_memo'])) {
+                echo '（'.$datas_order[$key][$i]['OrderInfoDetail']['shokushu_memo'].'）';
+            }
+            echo '<br>';
+        ?>
       </td>
       <td style="font-size: 90%;" align="center">
           <?php echo $datas_order[$key][$i]['OrderInfoDetail']['worktime_from'].'～'.$datas_order[$key][$i]['OrderInfoDetail']['worktime_to'].'<br>'; ?>
       </td>
       <td style="font-size: 90%;" align="center">
-          <?php echo $datas_order[$key][$i]['OrderInfoDetail']['juchuu_money'].'円<br>'; ?>
+        <?php
+            $shiharai_arr = array('1'=>'時給', '2'=>'日給', '3'=>'月給', ''=>'');
+            echo $shiharai_arr[$datas_order[$key][$i]['OrderInfoDetail']['juchuu_shiharai']].' ';
+            echo $datas_order[$key][$i]['OrderInfoDetail']['juchuu_money'].'円<br>'; 
+        ?>
       </td>
       <td style="font-size: 90%;" align="center">
           <?php echo $datas_order[$key][$i][0]['cnt'].'名<br>'; ?>

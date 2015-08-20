@@ -7,14 +7,33 @@
     echo $this->Html->script('fixed_midashi');
     echo $this->Html->css('jquery.timepicker');
 ?>
-<?php require('calender.ctp'); ?>
+<?php
+    // 初期値
+    //$y = date('Y');
+    //$y = date('Y', strtotime('+1 month'));
+    $y = $yyyy;
+    //$m = date('n');
+    //$m = date('n', strtotime('+1 month'));
+    $m = $mm;
+
+    // 日付の指定がある場合
+    if(!empty($_GET['date']))
+    {
+            $arr_date = explode('-', $_GET['date']);
+
+            if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
+            {
+                    $y = (int)$arr_date[0];
+                    $m = (int)$arr_date[1];
+            }
+    }
+?>
 <?php
 //JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
-function convGtJDate($src) {
+function convGtJDate($src, $flag) {
     list($year, $month, $day) = explode("-", $src);
-    if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4
-            || strlen($month) !== 2 || strlen($day) !== 2) return false;
-    $date = str_replace("-", "", $src);
+    if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4) return false;
+    $date = $year.sprintf("%02d", $month).sprintf("%02d", $day);
     $gengo = "";
     $wayear = 0;
     if ($date >= 19890108) {
@@ -30,12 +49,22 @@ function convGtJDate($src) {
         $gengo = "明治";
         $wayear = $year - 1868;
     }
-    switch ($wayear) {
-        case 1:
-            $wadate = $gengo."元年".$month."月".$day."日";
-            break;
-        default:
-            $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月".$day."日";
+    if ($flag == 0) {
+        switch ($wayear) {
+            case 1:
+                $wadate = $gengo."元年".$month."月".$day."日";
+                break;
+            default:
+                $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月".$day."日";
+        } 
+    } elseif ($flag == 1) {
+        switch ($wayear) {
+            case 1:
+                $wadate = $gengo."元年".$month."月";
+                break;
+            default:
+                $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月";
+        }
     }
     return $wadate;
 }
@@ -86,11 +115,6 @@ $(function() {
 });
 </script>
 <script>
-$(function() {
-	$('#time').timepicker();
-});
-</script>
-<script>
 onload = function() {
     FixedMidashi.create();
     // チェックのあるセルを着色
@@ -110,12 +134,15 @@ onload = function() {
 </script>
 <script>
 // カレンダー月指定
-function setCalender(case_id, koushin_flag, order_id, year, month) {
+function setCalender(case_id, yyyy, mm, order_id, year, month) {
+    if (order_id == '') {
+        alert("オーダーを指定してください。");
+    }
     var options1 = year.options;
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;
     var value2 = options2[month.options.selectedIndex].value;
-    location.href="<?=ROOTDIR ?>/CaseManagement/reg2/" + case_id + "/" + koushin_flag + "/" + order_id + "?date=" +value1 + "-" + value2;
+    location.href="<?=ROOTDIR ?>/CaseManagement/order/" + case_id + "/" + yyyy + "/" + mm + "/" + order_id + "?date=" +value1 + "-" + value2;
 }
 // 全選択・全解除
 function setAllSelect(col, element) {
@@ -147,13 +174,13 @@ function setAllSelect2(col, element) {
 // 職種の詳細を隠す
 function setHidden() {
     target = document.getElementById("ActiveDisplay");
-    if (document.getElementById("OrderDetail12").style.display == 'none') {
-        for(i=1; i<=12; i++) {
+    if (document.getElementById("OrderDetail1").style.display == 'none') {
+        for(i=1; i<=10; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
         }
         //target.innerHTML = '<span>詳細を隠す</span>';
     } else {
-        for(i=1; i<=12; i++) {
+        for(i=1; i<=10; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
         }
         //target.innerHTML = '<span>詳細を表示する</span>';
@@ -179,20 +206,8 @@ function changeColor(col, day, flag) {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('案件登録<font color=gray> （オーダー情報）</font>'); ?></legend>
-        <!-- ページ選択 -->
-        <font style="font-size: 110%;">
-<?php if ($case_id == 0) { ?>
-        <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;&gt;&gt;&nbsp;
-            オーダー情報&nbsp;&gt;&gt;&nbsp;
-            契約書情報&nbsp;
-<?php } else { ?>
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
-            <font color=blue style="background-color: yellow;">オーダー情報</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">【契約書情報】</a>&nbsp;
-<?php } ?>
-        </font>
-        <!-- ページ選択 END -->
+        <legend style="font-size: 150%;color: red;"><?php echo __('オーダー表<font color=gray> （'.convGtJDate($yyyy.'-'.$mm.'-1', 1).'）</font>'); ?></legend>
+
 <div style="font-size: 80%;margin-bottom: 10px;">
 <?php echo $this->Form->create('OrderInfo'); ?>  
 <?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $order_id)); ?>
@@ -200,34 +215,27 @@ function changeColor(col, day, flag) {
 <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('OrderInfo.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
         <!-- 基本情報 -->
-        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 0px;border-spacing: 0px;'>
             <tr>
-                <th colspan="5" style='background:#99ccff;text-align: center;'>登録済オーダー</th>
+                <th colspan="4" style='background:#99ccff;text-align: center;'>登録済オーダー（オーダーを選択してください）</th>
             </tr>
             <?php foreach($datas0 as $key=>$data0) { ?>
             <tr>
                 <td align="center" style='background-color: #e8ffff;width:20%;'><?=setNum($key+1) ?></td>
                 <?php if ($data0['OrderInfo']['id'] == $order_id) { ?>
                 <td colspan="3" style="background-color: #ffffcc;">
-                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
-                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
-                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
+                    <a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$yyyy ?>/<?=$mm ?>/<?=$data0['OrderInfo']['id']  ?>">
+                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'], 0)
+                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to'], 0).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
                     </a>
-                </td>
-                <td align="center" style="background-color: #ffffcc;width: 50px;">
-                    <?php echo $this->Form->input('削　除',
-                            array('type'=>'submit','div'=>false,'label'=>false,
-                                'name'=>'delete_order['.$data0['OrderInfo']['id'].']','id'=>'button-delete', 
-                                'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding:3px 10px 3px 10px;')); ?>
                 </td>
                 <?php } else { ?>
                 <td colspan="3">
-                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
-                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
-                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
+                    <a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$yyyy ?>/<?=$mm ?>/<?=$data0['OrderInfo']['id']  ?>">
+                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'], 0)
+                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to'], 0).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
                     </a>
                 </td>
-                <td></td>
                 <?php } ?>
             </tr>
             <?php } ?>
@@ -243,51 +251,11 @@ function changeColor(col, day, flag) {
                     $style = 'background-color: #fff9ff;';
                 }
             ?>
-            <tr>
-                <td align="center" colspan="5" style="<?=$style ?>">
-                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/">▶ 新規登録 ◀</a>
-                </td>
-            </tr>
         </table>
-        
-        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
-            <tr>
-                <th colspan="4" style='background:#99ccff;text-align: center;'>オーダー入力</th>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;'>保存名（帳票単位）</td>
-                <td colspan="3">
-                    <?php echo $this->Form->input('OrderInfo.order_name',
-                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>setData2($datas, 'OrderInfo', 'order_name'))); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;'>契約期間</td>
-                <td colspan="1">
-                    自&nbsp;<?php echo $this->Form->input('OrderInfo.period_from',
-                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false, 'placeholder' => '開始日','style'=>'width:150px;','value'=>setData2($datas, 'OrderInfo', 'period_from'))); ?>
-                    ～
-                    至&nbsp;<?php echo $this->Form->input('OrderInfo.period_to',
-                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false, 'placeholder' => '終了日','style'=>'width:150px;','value'=>setData2($datas, 'OrderInfo', 'period_to'))); ?>
-                </td>
-                <td style='background-color: #e8ffff;width:20%;'>登録職種数</td>
-                <td style='width:20%;'>
-                    <?php $list = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12','13'=>'13','14'=>'14','15'=>'15'); ?>
-                    <?php echo $this->Form->input('OrderInfo.shokushu_num',
-                            array('type'=>'select','div'=>false,'options'=>$list,'label'=>false,'style'=>'width:50px;','value'=>setData2($datas, 'OrderInfo', 'shokushu_num'))); ?>
-                </td>
-            </tr>
-        </table>
-        <!-- 追加ボタン -->
-        <div style="margin-left: 450px;">
-            <?php echo $this->Form->submit('▼ (1) 職種入力 ▼',array('label'=>false,'name'=>'insert','id'=>'button-create', 'style'=>'font-size:110%;')); ?>
-        </div>
-        <?php echo $this->Form->end(); ?>
-        <!-- 追加ボタン END -->
         
         <!-- 職種入力 -->
         <?php
-            if ($row <5) {
+            if ($row < 5) {
                 $width = 'auto';
             } else {
                 $width = '100%';
@@ -423,30 +391,7 @@ function changeColor(col, day, flag) {
                 <?php } ?>
             </tr>
             <!-- 給与 END -->
-            <!-- 推奨スタッフ -->
-            <tr id="OrderDetail11">
-                <td rowspan="1" style='background-color: #e8ffff;'>推奨スタッフ</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
-                <td>
-                    <input type="button" value="スタッフ選択" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/','スタッフ選択','width=800,height=600,scrollbars=yes');">
-                </td>
-                <?php } ?>
-            </tr>
-            <!-- 推奨スタッフ END -->
-            <tr id="OrderDetail12">
-                <td rowspan="1" style='background-color: #e8ffff;'>
-                </td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
-                <td align='center' style='background-color: #e8ffff;'>
-                    <?php echo $this->Form->submit('(2) 登 録', array('name' => 'register','div' => false, 'style'=>'margin-top:0px;padding: 5px 15px 5px 15px;')); ?>
-                        &nbsp;&nbsp;
-                    <?php echo $this->Form->submit('↑消去↓',
-                            array('div'=>false,'label'=>false,
-                                'name'=>'delete['.setData($datas2,'id',$count,$record).']','id'=>'button-delete', 
-                                'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding: 5px 15px 5px 15px;')); ?>
-                </td>
-                <?php } ?>
-            </tr>
+
 <?php echo $this->Form->end(); ?>
 <?php echo $this->Form->create('OrderCalender', array('name'=>'form2')); ?>
             <tr>
@@ -461,13 +406,13 @@ function changeColor(col, day, flag) {
                     ?>
                     <?php echo $this->Form->input(false,array('name'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;',
-                        'onchange'=>'setCalender('.$case_id.','.$koushin_flag.','.$order_id.', this, document.form2.month)')); ?>年<br>
-                        <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
+                        'onchange'=>'setCalender('.$case_id.','.$yyyy.','.$mm.','.$order_id.', this, document.form2.month)')); ?>年<br>
+                        <a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$yyyy ?>/<?=$mm ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
                     <?php echo $this->Form->input(false,array('name'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
                         'value'=>$month, 'style'=>'text-align: right;', 
-                        'onchange'=>'setCalender('.$case_id.','.$koushin_flag.','.$order_id.', document.form2.year, this)')); ?>月
-                        <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
+                        'onchange'=>'setCalender('.$case_id.','.$yyyy.','.$mm.','.$order_id.', document.form2.year, this)')); ?>月
+                        <a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$yyyy ?>/<?=$mm ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php for ($count=0; $count<$row; $count++){ ?>
@@ -486,12 +431,6 @@ function changeColor(col, day, flag) {
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
                 <td align='center' style='background-color: #e8ffff;'>
-                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'全選択・全解除',
-                        'value'=>1, 'style'=>'text-align: left;',
-                        'onclick'=>'setAllSelect('.$count.', this);')); ?><br>
-                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'土日選択・解除',
-                        'value'=>1, 'style'=>'text-align: left;',
-                        'onclick'=>'setAllSelect2('.$count.', this);')); ?>
                 </td>
                 <?php } ?>
             </tr> 
@@ -563,26 +502,12 @@ function changeColor(col, day, flag) {
         </table>
         </div>
 </div>
-        <!-- ページ選択 -->
-        <font style="font-size: 110%;">
-<?php if ($case_id == 0) { ?>
-        <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;&gt;&gt;&nbsp;
-            オーダー情報&nbsp;&gt;&gt;&nbsp;
-            契約書情報&nbsp;
-<?php } else { ?>
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
-            <font color=blue style="background-color: yellow;">オーダー情報</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">【契約書情報】</a>&nbsp;
-<?php } ?>
-        </font>
-        <!-- ページ選択 END -->
+
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('(3) 登録する', array('name' => 'register2','div' => false, 'onclick' => 'form1.submit();form2.submit();')); ?>
-    &nbsp;&nbsp;
+<?php print($this->Html->link('戻　る', 'javascript:void(0);', array('id'=>'button-create', 'style'=>'padding:11px;', 'onclick'=>'window.history.back(-1);return false;'))); ?>
+    &nbsp;&nbsp;  
 <?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
-    &nbsp;&nbsp;
-<?php print($this->Html->link('ﾌﾟﾛﾌｨｰﾙ', $_SESSION['cm_profile_url'], array('id'=>'button-create', 'style'=>'padding:10px;'))); ?> 
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

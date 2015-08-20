@@ -119,7 +119,7 @@ class CaseManagementController extends AppController {
                 ))
         )); 
         
-        //$this->log($this->request, LOG_DEBUG);
+        //$this->log($this->request->data, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
             // 初期表示
@@ -133,8 +133,24 @@ class CaseManagementController extends AppController {
             }
             $this->set('flag', $flag);
             
+            // フラグの書き換え
+            if (isset($this->request->data['case_id']) && isset($this->request->data['flag'])) {
+                // 登録する内容を設定
+                $data = array('CaseManagement' => array('id' => $this->request->data['case_id'], 'kaijo_flag' => $this->request->data['flag']));
+                // 登録する項目（フィールド指定）
+                $fields = array('kaijo_flag');
+                // 新規登録
+                $this->CaseManagement->save($data, false, $fields);
+                if($this->request->data['flag'] == 1) {
+                    $msg = '削除';
+                } elseif($this->request->data['flag'] == 2) {
+                    $msg = 'クローズ';
+                }
+                $this->redirect(array('action' => 'index', 0));
+                $this->Session->setFlash($msg.'処理を完了しました。');
+                return;
             // 絞り込み
-            if(isset($this->request->data['search1'])) {
+            } elseif(isset($this->request->data['search1'])) {
                 // 登録番号で検索
                 if (!empty($this->data['CaseManagement']['search_id'])){
                     $search_id = $this->data['CaseManagement']['search_id'];
@@ -197,7 +213,7 @@ class CaseManagementController extends AppController {
             // ページネーションの実行
             //$this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('CaseManagement', $conditions2));
-            $this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
+            //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
             if ($window == 'profile') {
@@ -247,14 +263,32 @@ class CaseManagementController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $datas = $this->paginate('CaseManagement', $conditions3);
             $this->set('datas', $datas);
+            
             if (!empty($datas)) {
-                // オーダー内容
+                // オーダー内容用
                 foreach($datas as $key=>$data) {
-                    $conditions2 = array('case_id'=>$data['CaseManagement']['id']);
-                    $result_order[$key] = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions2, 'fields'=>array('*', 'COUNT(shokushu_id) AS cnt'), 'group'=>array('shokushu_id')));
+                    $joins = array(
+                      array(
+                        'type' => 'left',// innerもしくはleft
+                        'table' => 'order_infos',
+                        'alias' => 'OrderInfo',
+                        'conditions' => array(
+                          'OrderInfoDetail.order_id = OrderInfo.id', //ここ文字列なので注意
+                        ),
+                      ),
+                    );
+                    $conditions2 = array('OrderInfoDetail.case_id'=>$data['CaseManagement']['id'], 
+                        'OR' => array(
+                            array('OrderInfo.period_to >= '=>date('Ym').'01', 'OrderInfo.period_to <= '=>date('Ym', strtotime('+1 month')).'31'),
+                            array('OrderInfo.period_from >= '=>date('Ym').'01', 'OrderInfo.period_from <= '=>date('Ym', strtotime('+1 month')).'31')
+                            )
+                        );
+                    $result_order[$key] = $this->OrderInfoDetail->find('all', 
+                            array('conditions'=>$conditions2, 'fields'=>array('*', 'COUNT(OrderInfoDetail.shokushu_id) AS cnt'), 
+                                'group'=>array('OrderInfoDetail.shokushu_id', 'OrderInfoDetail.shokushu_memo'), 'joins'=>$joins));
                 }
                 $this->log($result_order, LOG_DEBUG);
-                $this->log('レコード数は、'.count($result_order), LOG_DEBUG);
+                //$this->log('レコード数は、'.count($result_order), LOG_DEBUG);
                 $this->set('datas_order', $result_order);
                 // オーダー情報の更新日
                 foreach($datas as $key=>$data) {
@@ -321,6 +355,7 @@ class CaseManagementController extends AppController {
         //$this->CaseManagement->setSource('staff_'.$selected_class);
         $this->set('class', $selected_class);
         $this->set('flag', $flag);
+        $this->set('case_id', $case_id);
                 
         // ページネーション
         //$conditions2 = array('id' => $case_id, 'kaijo_flag' => $flag);
@@ -388,6 +423,8 @@ class CaseManagementController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             // 登録編集
             if (isset($this->request->data['submit'])) {
+                // 現在のURLをセッションに保存
+                $this->Session->write('cm_profile_url', Router::reverse($this->request, true));
                 $this->redirect(array('action' => 'reg1', $this->request->data['CaseManagement']['case_id'], 1));
             // 登録解除
             } elseif (isset($this->request->data['release'])) {
@@ -402,6 +439,17 @@ class CaseManagementController extends AppController {
                 //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
                 $this->Session->setFlash('登録解除しました。');
             } 
+        } elseif ($this->request->is('get')) {
+            // ページ引数
+            $page = $this->params['named']['page'];
+            $this->set('page', $page);
+            // 指定月
+            if (!empty($this->request->query('year'))) {
+                $year = $this->request->query('year');
+            } else {
+                $year = date('Y');
+            }
+            $this->set('year', $year);
         } else {
             
         }
@@ -734,6 +782,7 @@ class CaseManagementController extends AppController {
                     $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
                     $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                             '('.$order_id.')'.$this->request->data['OrderInfo']['order_name'], 21, $this->request->clientIp()); // (2)オーダー名登録コード:21
+                    $this->Session->setFlash('２．次に、職種情報を入力してください。');
                 } else {
                     $this->Session->setFlash('登録時にエラーが発生しました。');
                     exit();
@@ -760,7 +809,7 @@ class CaseManagementController extends AppController {
                     $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                             '('.$order_id.')'.$result2['OrderInfo']['order_name'], 22, $this->request->clientIp()); // (2)オーダー職種登録コード:22
                     // 登録完了メッセージ
-                    $this->Session->setFlash('登録しました。');
+                    $this->Session->setFlash('３．カレンダーで勤務日を指定してください。');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
                     /**
                     // 登録していた値をセット
@@ -807,7 +856,7 @@ class CaseManagementController extends AppController {
                     $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                             '('.$order_id.')'.$result2['OrderInfo']['order_name'], 23, $this->request->clientIp()); // (23)オーダーカレンダー登録コード:23
                     // 登録完了メッセージ
-                    $this->Session->setFlash('登録しました。');
+                    $this->Session->setFlash('登録完了しました。');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
                 } else {
                     $this->log($this->OrderCalender->getDataSource()->getLog(), LOG_DEBUG);
@@ -917,6 +966,170 @@ class CaseManagementController extends AppController {
         } else {
             $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
         }
+    }
+    
+    // オーダー表（指定月）
+    public function order($case_id = null, $yyyy = null, $mm = null, $order_id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 登録データのセット
+        $koushin_flag = null;
+        $this->set('case_id', $case_id);
+        $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+        $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+        $this->set('data', $data);
+        if (empty($data['OrderInfo']['shokushu_num'])) {
+            $row = 1;
+        } else {
+            $row = $data['OrderInfo']['shokushu_num'];
+        }
+        $option = array();
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['order'] = array('OrderInfo.id' => 'asc');
+        $option['joins'] = array(
+        array(
+            'type' => 'RIGHT',   //LEFT, INNER, OUTER
+            'table' => 'order_info_details',
+            'alias' => 'OrderInfoDetail',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderInfoDetail.order_id'
+            ),
+        array(
+            'type' => 'RIGHT',   //LEFT, INNER, OUTER
+            'table' => 'order_calenders',
+            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalender.order_id'
+            ),
+        );
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
+        // その他
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+        $this->set('order_id', $order_id);
+        $this->set('yyyy', $yyyy);
+        $this->set('mm', $mm);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // 初期化
+        $this->set('row', $row);
+
+        //$this->log($this->request->data['OrderInfo'], LOG_DEBUG);
+        //$this->log('$row='.$row, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            // 職種の追加
+            if (isset($this->request->data['insert'])) {
+                $row = $this->request->data['OrderInfo']['shokushu_num'];
+                $this->set('row', $row);
+                if (!empty($order_id)) {
+                    // 既存データがある場合はチェック
+                    $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
+                    $result = $this->OrderInfoDetail->find('count', array('conditions' => $conditions));
+                    if ($result > $row) {
+                        $this->Session->setFlash('【エラー】登録済みの職種データがあります。');
+                        $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id));
+                        return;
+                    }
+                }
+                // データを登録する
+                if ($this->OrderInfo->save($this->request->data)) {
+                    //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
+                    if (empty($order_id)) {
+                        $order_id = $this->OrderInfo->getLastInsertID();
+                    }
+                    // ログ書き込み
+                    $conditions = array('id' => $case_id);
+                    $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                    $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                            '('.$order_id.')'.$this->request->data['OrderInfo']['order_name'], 21, $this->request->clientIp()); // (2)オーダー名登録コード:21
+                    $this->Session->setFlash('２．次に、職種情報を入力してください。');
+                } else {
+                    $this->Session->setFlash('登録時にエラーが発生しました。');
+                    exit();
+                }
+                $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id, 'row'=>$row));
+            // カレンダー変更
+            } else {
+                $this->set('y', $this->request->data['OrderInfoDetail']['year']);
+                $this->set('m', $this->request->data['OrderInfoDetail']['month']);
+                //$this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
+            } 
+        } elseif ($this->request->is('get')) {
+            if (!empty($this->params['named']['row'])) {
+                $row = $this->params['named']['row'];
+            }
+            if (!empty($this->request->query('date'))) {
+                $date = $this->request->query('date');
+                $date_arr = explode('-',$date);
+                $year = $date_arr[0];
+                $month = $date_arr[1];
+            } else {
+                //$year = date('Y');
+                //$month = date('n');
+                $year = $yyyy;
+                $month = $mm;
+            }
+            $this->set('row', $row);
+            $this->set('year', $year);
+            $this->set('month', $month);
+            
+            // 登録していた値をセット
+            // オーダー一覧用
+            $conditions = array('OrderInfo.case_id' => $case_id, 
+                'OR' => array(
+                    array('period_from >= ' => $yyyy.sprintf("%02d", $mm).'01', 'period_from <= ' => $yyyy.sprintf("%02d", $mm).'31'),
+                    array('period_to >= ' => $yyyy.sprintf("%02d", $mm).'01', 'period_to <= ' => $yyyy.sprintf("%02d", $mm).'31'),
+                    array('period_from < ' => $yyyy.sprintf("%02d", $mm).'01', 'period_to > ' => $yyyy.sprintf("%02d", $mm).'31')
+                    )
+                );
+            $datas0 = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+            $this->set('datas0', $datas0);
+            // オーダー入力欄以下
+            if (is_null($order_id)) {
+                $this->set('datas', null);
+            } else {
+                //$option['conditions'] = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
+                $conditions = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
+                $datas = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+                //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
+                $this->set('datas', $datas);
+                $this->log($datas, LOG_DEBUG);
+            }
+            // 職種以下
+            // オーダー入力欄以下
+            if (is_null($order_id)) {
+                $this->set('datas2', null);
+            } else {
+                $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
+                $datas2 = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions));
+                $this->set('datas2', $datas2);
+                $this->log($datas2, LOG_DEBUG);
+            }
+            // カレンダー部分のデータ・セット
+            $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
+            $datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions));
+            $this->set('datas1', $datas1);
+            $this->log($datas1, LOG_DEBUG);
+            $record = $this->OrderInfo->find('count', $option);
+            $this->set('record', $record);
+            //$this->set('y', date('Y'));
+            //$this->set('m', date('n')+1);
+        } else {
+            $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
+        }
+    }
+    
+    // スタッフの選択（小画面）
+    public function select() {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        
     }
       
     /** 取引先マスタ **/

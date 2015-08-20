@@ -17,6 +17,36 @@
         return $arr[$number];
     }
 ?>
+<?php
+/**
+ * 西暦を和暦に
+ */
+function convGtJDate($year) {
+    $gengo = "";
+    $wayear = 0;
+    if ($year >= 1989) {
+        $gengo = "平成";
+        $wayear = $year - 1988;
+    } elseif ($year >= 1926) {
+        $gengo = "昭和";
+        $wayear = $year - 1925;
+    } elseif ($year >= 1912) {
+        $gengo = "大正";
+        $wayear = $year - 1911;
+    } else {
+        $gengo = "明治";
+        $wayear = $year - 1868;
+    }
+    switch ($wayear) {
+        case 1:
+            $wadate = $gengo."元年";
+            break;
+        default:
+            $wadate = $gengo.sprintf("%02d", $wayear)."年";
+    } 
+    return $wadate;
+}
+?>
 <style>
 #loading{
     position:absolute;
@@ -282,40 +312,6 @@ window.onload = function(){
                 <?php } ?>
                 <!-- 請求先 END -->
             </table>
-            <font style="font-size: 120%;">■推奨メンバー</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;border-spacing: 0px;">
-                <!-- 推奨メンバー -->
-                <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>メンバー１</td>
-                    <td style='width:70%;'>
-                        <?php echo ''; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>メンバー２</td>
-                    <td style='width:70%;'>
-                        <?php echo ''; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>メンバー３</td>
-                    <td style='width:70%;'>
-                        <?php echo ''; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>メンバー４</td>
-                    <td style='width:70%;'>
-                        <?php echo ''; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>メンバー５</td>
-                    <td style='width:70%;'>
-                        <?php echo ''; ?>
-                    </td>
-                </tr>
-            </table>
         </td>
         <td style="width:50%;vertical-align: top;padding-left: 5px;">
             <div id="editbox" style="color: black;background-color: #ffff99;border:1px solid orange;padding:5px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
@@ -349,13 +345,57 @@ window.onload = function(){
 
             <!-- オーダー表 -->
             <font style="font-size: 120%;">■オーダー表</font>
-            <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
+            <table border='1' cellspacing="2" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 5px;" frame="void">
                 <tr>
-                    <td style='background-color: #e8ffff;width:30%;'>日付</td>
-                    <td style='background-color: #e8ffff;width:70%;'>案件名</td>
+                    <?php
+                        if($year == date('Y', strtotime('-1 year'))) {
+                            $style1 = 'background-color: #e8ffff; font-weight: bold;';
+                            $style2 = 'background-color: #cccccc; color: white;';
+                            $style3 = 'background-color: #cccccc; color: white;';
+                        } elseif($year == date('Y')) {
+                            $style1 = 'background-color: #cccccc; color: white;';
+                            $style2 = 'background-color: #e8ffff; font-weight: bold;';
+                            $style3 = 'background-color: #cccccc; color: white;';
+                        } elseif($year == date('Y', strtotime('+1 year'))) {
+                            $style1 = 'background-color: #cccccc; color: white;';
+                            $style2 = 'background-color: #cccccc; color: white;';
+                            $style3 = 'background-color: #e8ffff; font-weight: bold;';
+                        }
+
+                    ?>
+                    <td align="center" style='<?=$style1 ?>width:25%;'>
+                        <a href="<?=ROOTDIR ?>/CaseManagement/profile/<?=$flag ?>/<?=$case_id ?>/page:<?=$page ?>?year=<?=date('Y', strtotime('-1 year')) ?>">
+                            <?=convGtJDate(date('Y', strtotime('-1 year'))); ?>
+                        </a>
+                    </td>
+                    <td align="center" style='<?=$style2 ?>width:50%;' colspan="2">
+                        <a href="<?=ROOTDIR ?>/CaseManagement/profile/<?=$flag ?>/<?=$case_id ?>/page:<?=$page ?>?year=<?=date('Y') ?>">
+                            <?=convGtJDate(date('Y')); ?>
+                        </a>
+                    </td>
+                    <td align="center" style='<?=$style3 ?>width:25%;'>
+                        <a href="<?=ROOTDIR ?>/CaseManagement/profile/<?=$flag ?>/<?=$case_id ?>/page:<?=$page ?>?year=<?=date('Y', strtotime('+1 year')) ?>">
+                            <?=convGtJDate(date('Y', strtotime('+1 year'))); ?>
+                        </a>
+                    </td>
                 </tr>
                 <tr>
-                    <td colspan="2" align="center">表示するデータはありません。</td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/4">4月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/5">5月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/6">6月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/7">7月</a></td>
+                </tr>
+                <tr>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/8">8月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/9">9月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/10">10月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/11">11月</a></td>
+                </tr>
+                <tr>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year ?>/12">12月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year+1 ?>/1">1月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year+1 ?>/2">2月</a></td>
+                    <td align="center" style='background-color: #e8ffff;width:25%;'><a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$year+1 ?>/3">3月</a></td>
                 </tr>
             </table>
             
