@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'CaseLog');
+    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster');
     
     public $components = array('RequestHandler');
     
@@ -749,6 +749,7 @@ class CaseManagementController extends AppController {
         $this->set('order_id', $order_id);
         $selected_class = $this->Session->read('selected_class');
         $this->set('selected_class', $selected_class);
+        $this->StaffMaster->setSource('staff_'.$selected_class);
         // 初期化
         $this->set('row', $row);
 
@@ -855,6 +856,10 @@ class CaseManagementController extends AppController {
                     $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
                     $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                             '('.$order_id.')'.$result2['OrderInfo']['order_name'], 23, $this->request->clientIp()); // (23)オーダーカレンダー登録コード:23
+                    // 推奨スタッフのセッションの削除
+                    for($i=0; $i<$row; $i++) {
+                        $this->Session->delete('staff_id'.$i);
+                    }
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録完了しました。');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
@@ -903,6 +908,12 @@ class CaseManagementController extends AppController {
                         '('.$order_id.')'.$result2['OrderInfo']['order_name'], 25, $this->request->clientIp()); // (25)オーダー削除コード:25
                 $this->Session->setFlash('オーダーを削除しました。');
                 $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
+            // 閉じる
+            } elseif (isset($this->request->data['close'])) {
+                // 推奨スタッフのセッションの削除
+                for($i=0; $i<$row; $i++) {
+                    $this->Session->delete('staff_id'.$i);
+                }
             // カレンダー変更
             } else {
                 $this->set('y', $this->request->data['OrderInfoDetail']['year']);
@@ -942,7 +953,7 @@ class CaseManagementController extends AppController {
                 $datas = $this->OrderInfo->find('all', array('conditions'=>$conditions));
                 //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
                 $this->set('datas', $datas);
-                $this->log($datas, LOG_DEBUG);
+                //$this->log($datas, LOG_DEBUG);
             }
             // 職種以下
             // オーダー入力欄以下
@@ -952,17 +963,71 @@ class CaseManagementController extends AppController {
                 $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
                 $datas2 = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions));
                 $this->set('datas2', $datas2);
-                $this->log($datas2, LOG_DEBUG);
+                //$this->log($datas2, LOG_DEBUG);
             }
             // カレンダー部分のデータ・セット
             $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
             $datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions));
             $this->set('datas1', $datas1);
-            $this->log($datas1, LOG_DEBUG);
+            //$this->log($datas1, LOG_DEBUG);
             $record = $this->OrderInfo->find('count', $option);
             $this->set('record', $record);
             //$this->set('y', date('Y'));
             //$this->set('m', date('n')+1);
+            
+            // スタッフ選択の値を渡す
+            $results = null;
+            $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
+            for($i=0; $i<$row; $i++) {
+                if (!empty($this->Session->read('staff_id'.$i))) {
+                    $result = $this->Session->read('staff_id'.$i);
+                } else {
+                    if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
+                        $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
+            $this->log($ids, LOG_DEBUG);
+                        $result = $ids;
+                    } else {
+                        $result = null;
+                    }
+                    //$this->Session->write('staff_id'.$i, $result);
+                }
+                $results[$i] = $result;
+            }
+            $this->set('staff_ids', $results);
+            //$this->log($results, LOG_DEBUG);
+            // スタッフ名の検索
+            $results2 = null;
+            for($i=0; $i<$row; $i++) {
+                if (!empty($this->Session->read('staff_id'.$i))) {
+                    $ids = $this->Session->read('staff_id'.$i);
+                    foreach($ids as $key=>$id) {
+                        $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                        //$this->log($id, LOG_DEBUG);
+                        $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
+                    }
+                } else {
+                    $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
+                    //$this->log($ids, LOG_DEBUG);
+                    if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
+                        $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
+                        //$this->log($ids, LOG_DEBUG);
+                        foreach($ids as $key=>$id) {
+                            if (empty($id)) {
+                                continue;
+                            }
+                            $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                            $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
+                        }
+                    } else {
+                        $result2 = null;
+                    }
+                }
+                $results2[$i] = $result2;
+            }
+            $this->log($results2, LOG_DEBUG);
+            $this->set('staff_names', $results2);
+            //$this->log($results2, LOG_DEBUG);
+            //$this->Session->delete('staff_id');
         } else {
             $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
         }
@@ -1125,11 +1190,149 @@ class CaseManagementController extends AppController {
     }
     
     // スタッフの選択（小画面）
-    public function select() {
+    public function select($order_id = null, $col = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout", $this->title_for_layout);
+        // 初期セット
+        $username = $this->Auth->user('username').' '.$this->Auth->user('name_mei');
+        $this->set('username', $username);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->set('datas1', null);
+        $this->set('datas2', null);
+        $this->set('order_id', $order_id);
+        $session_id = null;
+        $session_name = null;
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
         
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            //$this->log($this->request->data, LOG_DEBUG);
+            // 検索
+            if (isset($this->request->data['search'])) {
+                $search_name = $this->data['StaffMaster']['search_name'];
+                if (!empty($search_name)) {
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    }
+                    // ひらがなでの検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2) LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $datas1 = $this->StaffMaster->find('all', array('conditions'=>array('OR'=>array($conditions1, $conditions2))));
+                    //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->set('datas1', $datas1);
+                }
+                // セッション
+                $session_id = $this->Session->read('staff_id'.$col);
+                // 選択済みスタッフ
+                if (!empty($session_id)) {
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    foreach($session_id as $key=>$staff_id) {
+                        if (empty($datas2)) {
+                            $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        } else {
+                            $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        }
+                    }
+                    $this->set('datas2', $datas2);
+                }
+            // 選択
+            } elseif (isset($this->request->data['select'])) {
+                $id_array = array_keys($this->request->data['select']);
+                $id = $id_array[0];
+                // 選択は５つまで
+                $session_id = $this->Session->read('staff_id'.$col);
+                if (count($session_id) == 5) {
+                    $this->Session->setFlash('【エラー】選択できるのは5つまでです。');
+                    $this->redirect(array('action' => 'select', $order_id ,$col));
+                    return;
+                }
+                // セッション格納
+                if (empty($session_id)) {
+                    $session_id[0] = $id;
+                } else {
+                    $flag = false;
+                    for($i=0; $i<count($session_id) ;$i++) {
+                        if ($session_id[$i] == $id) {
+                            $flag = true;
+                            break;
+                        }
+                    }
+                    if (!$flag) {
+                        $session_id[] += $id;
+                    }
+                }
+                $this->Session->write('staff_id'.$col, $session_id);
+                $this->log($session_id, LOG_DEBUG);
+                // 選択済みスタッフ
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                foreach($session_id as $key=>$staff_id) {
+                    if (empty($datas2)) {
+                        $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    } else {
+                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    }
+                }
+                $this->set('datas2', $datas2);
+                //$this->log($datas2, LOG_DEBUG);
+            // 決定
+            } elseif (isset($this->request->data['decision'])) {
+                $this->log($this->request->data, LOG_DEBUG);
+                $staff_ids = $this->Session->read('staff_id'.$col);
+                if (empty($staff_ids)) {
+                    $this->Session->setFlash('【エラー】スタッフが選択されていません。');
+                    return;
+                }
+                // データベースに保存
+                // 登録する内容を設定
+                for($i=0; $i<5 ;$i++) {
+                    if (!empty($this->request->data['staff_id'.$i])) {
+                        $staff_ids[$i] = $this->request->data['staff_id'.$i];
+                    } else {
+                        break;
+                    }
+                }
+                $values = implode(',', $staff_ids);
+                $data = array('OrderInfo' => 
+                    array('id' => $order_id, 'staff_ids'.($col+1) => $values));
+                // 登録する項目（フィールド指定）
+                $fields = array('staff_ids'.($col+1)); 
+                // 更新登録
+                if ($this->OrderInfo->save($data, false, $fields)) {
+                    // 成功
+                    $this->Session->delete('staff_id'.$col);
+                    //$this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                }
+            // 消去
+            } elseif (isset($this->request->data['erasure'])) {
+                $this->Session->delete('staff_id'.$col);
+            } else {
+                
+            }
+        } else {
+            // セッション
+            $session_id = $this->Session->read('staff_id'.$col);
+            // 選択済みスタッフ
+            if (!empty($session_id)) {
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                foreach($session_id as $key=>$staff_id) {
+                    if (empty($datas2)) {
+                        $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    } else {
+                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    }
+                }
+                $this->set('datas2', $datas2);
+            }
+        }
     }
       
     /** 取引先マスタ **/

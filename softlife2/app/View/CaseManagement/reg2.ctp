@@ -428,7 +428,21 @@ function changeColor(col, day, flag) {
                 <td rowspan="1" style='background-color: #e8ffff;'>推奨スタッフ</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td>
-                    <input type="button" value="スタッフ選択" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/','スタッフ選択','width=800,height=600,scrollbars=yes');">
+                    <?php
+                        if (!empty($staff_ids[$count])) {
+                            $staff_id = $staff_ids[$count];
+                            echo $this->Form->input('OrderInfoDetail.'.$count.'.staff_ids',
+                                array('type'=>'hidden', 'value'=> implode(',', $staff_id))); 
+                            foreach($staff_names[$count] as $staff_name) {
+                                echo $staff_name.'<br>';
+                            }
+                        } else {
+                            $staff_id = null;
+                        }
+                    ?>
+                    <input type="button" value="スタッフ選択" 
+                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>?s1=<?=$staff_id[0] ?>&s2=<?=$staff_id[1] ?>&s3=<?=$staff_id[2] ?>&s4=<?=$staff_id[3] ?>&s5=<?=$staff_id[4] ?>',
+                                'スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
                 <?php } ?>
             </tr>
@@ -580,7 +594,7 @@ function changeColor(col, day, flag) {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('(3) 登録する', array('name' => 'register2','div' => false, 'onclick' => 'form1.submit();form2.submit();')); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Html->link('ﾌﾟﾛﾌｨｰﾙ', $_SESSION['cm_profile_url'], array('id'=>'button-create', 'style'=>'padding:10px;'))); ?> 
     </div>
