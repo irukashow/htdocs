@@ -302,28 +302,39 @@ class UsersController extends AppController {
             $class = $this->Session->read('class');
             if (empty($class)) {
                 $this->redirect('logout');
+                return;
             }
+            $this->set('class', $class);
             // テーブル変更
             //$this->StaffMaster->setSource('staff_'.$class);
-            // 登録していた値をセット
-            if (empty($this->request->query['date'])) {
-                $date1 = date('Y').'-'.date('m');
-                $date2 = null;
-            } else {
-                $date2 = $this->request->query['date'];
-                $date1 = $date2;
-            }
-            $this->Session->write('date2', $date2);
-            
-            for ($i=1; $i<=31; $i++) {
-                $data[$i] = $this->StaffSchedule->find('first', 
-                        array('fields'=>array('work_flag'), 'conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
-                if (!empty($data[$i])) {
-                    $data[$i] = $data[$i]['StaffSchedule']['work_flag'];
+            //
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                
+            } elseif ($this->request->is('get')) {
+                $this->log($this->request->data, LOG_DEBUG);
+                // 登録していた値をセット
+                if (empty($this->request->query['date'])) {
+                    $date1 = date('Y').'-'.date('m');
+                    $date2 = null;
+                } else {
+                    $date2 = $this->request->query['date'];
+                    $date1 = $date2;
                 }
+                $this->Session->write('date2', $date2);
+
+                for ($i=1; $i<=31; $i++) {
+                    $data[$i] = $this->StaffSchedule->find('first', 
+                            array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
+                    if (!empty($data[$i])) {
+                        $data[$i] = $data[$i]['StaffSchedule'];
+                    }
+                }
+                $this->log($data, LOG_DEBUG);
+                $this->set('data', $data);
+            } else {
+                
             }
-            //$this->log($data, LOG_DEBUG);
-            $this->set('data', $data);
         }
         
 	/**

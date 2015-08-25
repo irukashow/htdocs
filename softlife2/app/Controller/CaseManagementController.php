@@ -979,17 +979,13 @@ class CaseManagementController extends AppController {
             $results = null;
             $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
             for($i=0; $i<$row; $i++) {
-                if (!empty($this->Session->read('staff_id'.$i))) {
-                    $result = $this->Session->read('staff_id'.$i);
+                $result = null;
+                if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
+                    $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
+        $this->log($ids, LOG_DEBUG);
+                    $result = $ids;
                 } else {
-                    if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
-                        $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
-            $this->log($ids, LOG_DEBUG);
-                        $result = $ids;
-                    } else {
-                        $result = null;
-                    }
-                    //$this->Session->write('staff_id'.$i, $result);
+                    $result =null;
                 }
                 $results[$i] = $result;
             }
@@ -998,33 +994,25 @@ class CaseManagementController extends AppController {
             // スタッフ名の検索
             $results2 = null;
             for($i=0; $i<$row; $i++) {
-                if (!empty($this->Session->read('staff_id'.$i))) {
-                    $ids = $this->Session->read('staff_id'.$i);
+                $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
+                //$this->log($values, LOG_DEBUG);
+                $result2 = null;
+                if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
+                    $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
                     foreach($ids as $key=>$id) {
+                        if (empty($id)) {
+                            continue;
+                        }
                         $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
-                        //$this->log($id, LOG_DEBUG);
                         $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
                     }
                 } else {
-                    $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
-                    //$this->log($ids, LOG_DEBUG);
-                    if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
-                        $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
-                        //$this->log($ids, LOG_DEBUG);
-                        foreach($ids as $key=>$id) {
-                            if (empty($id)) {
-                                continue;
-                            }
-                            $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
-                            $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
-                        }
-                    } else {
-                        $result2 = null;
-                    }
+                    $result2 = null;
                 }
                 $results2[$i] = $result2;
+                //$this->log($result2, LOG_DEBUG);
             }
-            $this->log($results2, LOG_DEBUG);
+            //$this->log($results2, LOG_DEBUG);
             $this->set('staff_names', $results2);
             //$this->log($results2, LOG_DEBUG);
             //$this->Session->delete('staff_id');
@@ -1288,8 +1276,8 @@ class CaseManagementController extends AppController {
                 $this->log($this->request->data, LOG_DEBUG);
                 $staff_ids = $this->Session->read('staff_id'.$col);
                 if (empty($staff_ids)) {
-                    $this->Session->setFlash('【エラー】スタッフが選択されていません。');
-                    return;
+                    //$this->Session->setFlash('【エラー】スタッフが選択されていません。');
+                    //return;
                 }
                 // データベースに保存
                 // 登録する内容を設定
@@ -1300,7 +1288,12 @@ class CaseManagementController extends AppController {
                         break;
                     }
                 }
-                $values = implode(',', $staff_ids);
+                $this->log($staff_ids, LOG_DEBUG);
+                if (empty($staff_ids)) {
+                    $values = '';
+                } else {
+                    $values = implode(',', $staff_ids);
+                }
                 $data = array('OrderInfo' => 
                     array('id' => $order_id, 'staff_ids'.($col+1) => $values));
                 // 登録する項目（フィールド指定）
@@ -1309,7 +1302,9 @@ class CaseManagementController extends AppController {
                 if ($this->OrderInfo->save($data, false, $fields)) {
                     // 成功
                     $this->Session->delete('staff_id'.$col);
-                    //$this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                    // メッセージ
+                    $this->Session->setFlash('スタッフを選択完了しました。閉じてください。');
+                    //$this->redirect(array('action'=>'select/'.$order_id.'/'.$col.'?flag=close'));
                 }
             // 消去
             } elseif (isset($this->request->data['erasure'])) {
@@ -1317,7 +1312,7 @@ class CaseManagementController extends AppController {
             } else {
                 
             }
-        } else {
+        } elseif ($this->request->is('get')) {
             // セッション
             $session_id = $this->Session->read('staff_id'.$col);
             // 選択済みスタッフ
@@ -1331,7 +1326,31 @@ class CaseManagementController extends AppController {
                     }
                 }
                 $this->set('datas2', $datas2);
+            // セッションがない場合、GET値で
+            } else {
+                $staff = null;
+                for ($i=0; $i<5 ;$i++) {
+                    if (empty($this->request->query('s'.($i+1)))) {
+                        continue;
+                    }
+                    $staff[$i] = $this->request->query('s'.($i+1));
+                }
+                // セッション保存
+                $this->Session->write('staff_id'.$col, $staff);
+                if (empty($staff)) {
+                    $datas2 = null;
+                } else {
+                    // セッション
+                    $session_id = $this->Session->read('staff_id'.$col);
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    foreach($session_id as $key=>$staff_id) {
+                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    }
+                }
+                $this->set('datas2', $datas2);
             }
+        } else {
+            
         }
     }
       

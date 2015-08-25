@@ -24,7 +24,7 @@ onload = function() {
         <legend style="font-size: 150%;color: red;"><?php echo __('スタッフ選択'); ?></legend>
 
 <div style="font-size: 90%;margin-bottom: 0px;">
-<?php echo $this->Form->create('StaffMaster'); ?>
+<?php echo $this->Form->create('StaffMaster', array('name'=>'form')); ?>
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $selected_class)); ?>
     <!-- スタッフ検索 -->

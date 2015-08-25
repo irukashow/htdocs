@@ -67,6 +67,16 @@ function setData2($datas, $table, $col) {
         $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
         return $arr[$number];
     }
+    /**  **/
+    function NZ($value) {
+        for ($i=0; $i<count($value) ;$i++) {
+            $ret[$i] = $value[$i];
+        }
+        for ($i=count($value); $i<5 ;$i++) {
+            $ret[$i] = '';
+        }
+        return $ret;
+    }
 ?>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -279,8 +289,8 @@ function changeColor(col, day, flag) {
             </tr>
         </table>
         <!-- 追加ボタン -->
-        <div style="margin-left: 450px;">
-            <?php echo $this->Form->submit('▼ (1) 職種入力 ▼',array('label'=>false,'name'=>'insert','id'=>'button-create', 'style'=>'font-size:110%;')); ?>
+        <div style="margin-left: 400px;">
+            <?php echo $this->Form->submit('▼ (1) 登 録（職種入力へ） ▼',array('label'=>false,'name'=>'insert','id'=>'', 'style'=>'font-size:110%;')); ?>
         </div>
         <?php echo $this->Form->end(); ?>
         <!-- 追加ボタン END -->
@@ -441,7 +451,7 @@ function changeColor(col, day, flag) {
                         }
                     ?>
                     <input type="button" value="スタッフ選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>?s1=<?=$staff_id[0] ?>&s2=<?=$staff_id[1] ?>&s3=<?=$staff_id[2] ?>&s4=<?=$staff_id[3] ?>&s5=<?=$staff_id[4] ?>',
+                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>?s1=<?=NZ($staff_id)[0] ?>&s2=<?=NZ($staff_id)[1] ?>&s3=<?=NZ($staff_id)[2] ?>&s4=<?=NZ($staff_id)[3] ?>&s5=<?=NZ($staff_id)[4] ?>',
                                 'スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
                 <?php } ?>
