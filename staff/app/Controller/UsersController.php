@@ -310,12 +310,23 @@ class UsersController extends AppController {
             //
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
-                
-            } elseif ($this->request->is('get')) {
                 $this->log($this->request->data, LOG_DEBUG);
+                $this->log($this->request->data['StaffSchedule'], LOG_DEBUG);
+                
+                // データを登録する
+                if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
+                    //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+                    // スタッフのシフト希望登録履歴
+                    //　
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule'));
+                } else {
+                    $this->log('エラーが発生しました。', LOG_DEBUG);
+                }
+            } elseif ($this->request->is('get')) {
+                //$this->log($this->request->data, LOG_DEBUG);
                 // 登録していた値をセット
                 if (empty($this->request->query['date'])) {
-                    $date1 = date('Y').'-'.date('m');
+                    $date1 = date('Y-m');
                     $date2 = null;
                 } else {
                     $date2 = $this->request->query['date'];
@@ -330,7 +341,7 @@ class UsersController extends AppController {
                         $data[$i] = $data[$i]['StaffSchedule'];
                     }
                 }
-                $this->log($data, LOG_DEBUG);
+                //$this->log($data, LOG_DEBUG);
                 $this->set('data', $data);
             } else {
                 

@@ -16,9 +16,12 @@
         });
         -->
          </script>
+
         <?php
             echo $this->Html->css('main_m');
+            echo $this->Html->css('jquery.checkbox');
             echo $this->Html->script('sample1');
+            echo $this->Html->script('jquery.checkbox.min');
         ?>
     </head>
     <body>
