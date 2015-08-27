@@ -56,6 +56,8 @@ $(function() {
     <a href="<?=ROOTDIR ?>/ShiftManagement/schedule" target="" onclick=''><font Style="font-size:95%;">稼働表</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/ShiftManagement/test" target="" onclick=''><font Style="font-size:95%;">稼働表技術テスト</font></a>
 </div>
 <!-- 見出し１ END -->
 
@@ -165,6 +167,7 @@ $(function() {
 
 <!-- 機能紹介 -->
 <script type="text/javascript">
+/**
 $(function() {
     //alert('制作中です');
   // 2ダイアログ機能を適用
@@ -177,6 +180,7 @@ $(function() {
 　　　}
   });
 });
+**/
 </script>
 <div id="dialog" title="勤務管理の紹介" style="display: none">
 <p style="font-size: 90%;">

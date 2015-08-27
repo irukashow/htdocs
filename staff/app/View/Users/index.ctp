@@ -23,17 +23,17 @@
             <ul data-role="listview">
                 <li class="toplist_news">
                     <a href="http://sumaho-design.com/" target="_blank">
-                            <p>2013.01.02</p>
-                            新商品の販売開始に伴いキャンペーン実施中です。詳細はこちら
+                            <p>2015-09-01</p>
+                            年末調整についてのお知らせ。詳細はこちら
                     </a>
                 </li>
                 <li class="toplist_news">
-                        <p>2013.01.01</p>
+                        <p>2015-08-21</p>
                         ホームページをリニューアルしました。
                 </li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>
-                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/work"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務関連</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule#page3"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>
+                <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/work"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務について</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/profile"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">プロフィール</a></li>
                 
                 <li class="toplist_menu2"><a href="http://www.softlife.co.jp/" target="_blank">ソフトライフ ホームページ</a></li>

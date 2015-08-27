@@ -91,7 +91,7 @@
                         echo '<td align="center">'.setStatus($data[$d]['status']).'</td>';
                         echo '<td align="center">'.$data[$d]['start_time_h'].':'.$data[$d]['start_time_m'].'</td>';
                         echo '<td align="center">'.$data[$d]['end_time_h'].':'.$data[$d]['end_time_m'].'</td>';
-                        echo '<td align="center">'.$data[$d]['rest_time'].'</td>';
+                        echo '<td align="center">'.$data[$d]['rest_time_from_h'].':'.$data[$d]['rest_time_from_m'].'～'.$data[$d]['rest_time_to_h'].':'.$data[$d]['rest_time_to_m'].'</td>';
                         if ($data[$d]['status'] == 2) {
                             echo '<td align="center"></td>';
                         } else {

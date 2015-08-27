@@ -73,16 +73,16 @@ $(function() {
 <!-- ヘッダ部分 -->
   <div id="container">
     <div id="header">
-        <table style="width: 100%;" border="0">
+        <table style="width: 100%;" border="0" style="">
             <tr>
-                <td style="width:350px;">
+                <td style="width:350px;font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;">
                     <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif"></a>
                     <font size="3" style="vertical-align: 8px;">
                         <?php echo HEADER; ?>
                     </font>
                 </td>
                 <td>&nbsp;</td>
-                <td style="width:330px;float: right;padding-top: 5px;">
+                <td style="width:330px;float: right;padding-top: 5px;font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;">
                     <ul  id="menu">
                         <li>リンク <font style='font-size:50%;vertical-align: 2px;'>▼</font>
                             <ul>
@@ -149,7 +149,7 @@ $(function() {
         <?php echo $this->Session->flash(); ?>
       <?php echo $content_for_layout; ?>
     </div>
-    <div id="footer">
+    <div id="footer" style="font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;">
       <?php echo FOOTER; ?>
     </div>
   </div>
