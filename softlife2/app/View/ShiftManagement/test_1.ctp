@@ -92,7 +92,7 @@ try{
 <style type="text/css" media="screen">
   div.scroll_div { 
       overflow: auto;
-      height: 600px;
+      height: 500px;
       width: auto;
       margin-top: 5px;
   }
@@ -116,16 +116,15 @@ try{
 <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
-                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
+                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                 <td style='background-color: #006699;color: white;'><font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
-                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
 
 <!-- tables inside this DIV could have draggable content -->
 <div id="redips-drag" style="width: 5000px;">
-    <div class="scroll_div">
-        <table id="table1" style="margin-top: 5px;margin-bottom: 0px;" _fixedhead="rows:2; cols:2"> <!--  _fixedhead="rows:2; cols:2" -->
+        <table id="table1" style="margin-top: 5px;margin-bottom: 0px;"> <!--  _fixedhead="rows:2; cols:2" -->
             <colgroup><col width="100"/><col width="100"/><col width="100"/><col width="100"/><col width="100"/></colgroup>
             <tr>
                 <td class="redips-mark" rowspan="2" style="width: 50px;">日付</td>
@@ -136,23 +135,23 @@ try{
                 <td class="redips-mark" colspan="6" style="height: 30px;">案件C</td>
             </tr>
             <tr> 
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（平日）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">保育</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（平日）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">保育</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（平日）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">受付（土日祝）</td>
-                <td class="redips-mark" style="height: 30px;width: 50px;">保育</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（平日）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">保育</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（平日）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">保育</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（平日）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">受付（土日祝）</td>
+                <td class="redips-mark" style="height: 30px;">保育</td>
             </tr>
         <?php
             // 曜日の配列作成
@@ -199,24 +198,155 @@ try{
             <tr style="<?=$bgclr ?>">
                 <td class="redips-mark" style="color:<?=$style ?>;"><?=$m ?>/<?=$d ?>(<?=$weekday[$i] ?>)</td>
                 <td style="height: 30px;"></td>
-                <?php for($j=0; $j<17; $j++) { ?>
                 <td>
                     <?php
-                        if (!empty($staff_cell[2][$j+2])) {
-                            if (!empty($data_staffs[2][$j+2])) {
-                                foreach($data_staffs[2][$j+2] as $data_staff) {
+                        if (!empty($staff_cell[2][3])) {
+                            if (!empty($data_staffs[2][3])) {
+                                foreach($data_staffs[2][3] as $data_staff) {
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">'.$data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'].'</div>';
                                 }
                             }
                         }
                     ?>
                 </td>
-                <?php } ?>
+                <td>
+                    <?php
+                        if (!empty($staff_cell[2][3])) {
+                            if (!empty($data_staffs[2][3])) {
+                                foreach($data_staffs[2][3] as $data_staff) {
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">'.$data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'].'</div>';
+                                }
+                            }
+                        }
+                    ?>
+                </td>
+                <td>
+                    <div id="2_4" class="redips-drag t1" title="999">加藤愛子</div>
+                    <?php
+                        if (!empty($staff_cell[2][4])) {
+                            if (!empty($data_staffs[2][4])) {
+                                foreach($data_staffs[2][4] as $data_staff) {
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">'.$data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'].'</div>';
+                                }
+                            }
+                        }
+                    ?>
+                </td>
+                <td><div id="d3" class="redips-drag t1">植村麗美</div></td>
+                <td>
+                    <?php
+                        if (!empty($staff_cell[2][6])) {
+                            if (!empty($data_staffs[2][6])) {
+                                foreach($data_staffs[2][6] as $data_staff) {
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">'.$data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'].'</div>';
+                                }
+                            }
+                        }
+                    ?> 
+                </td>
+                <td></td>
+                <td><div id="d2" class="redips-drag t1">加藤愛子</div></td>
+                <td><div id="d2" class="redips-drag t1">加藤愛子</div></td>
+                <td><div id="d2" class="redips-drag t1">加藤愛子</div></td>
+                <td><div id="d2" class="redips-drag t1">加藤愛子</div></td>
+                <td><div id="d2" class="redips-drag t1">加藤愛子</div></td>
+                <td id="here"><div id="d1" class="redips-drag t1">金川聡子</div></td>
+                <td></td>
+                <td><div id="d2" class="redips-drag t1">加藤愛子</div></td>
+                <td><div id="d3" class="redips-drag t1">植村麗美</div></td>
+                <td></td>
+                <td></td>
             </tr>
             <?php
                     $i++; //カウント値（曜日カウンター）+1
                 } 
             ?>
+            
+            <tr>
+                <td>8/2（日）</td>
+                <td style="height: 30px;"></td>
+                <td><div id="d4" class="redips-drag t1">西尾理沙</div></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><div id="d5" class="redips-drag t1">前薗佐知</div></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="background-color: #eee">
+                <td class="redips-mark">8/3（月）</td>
+                <td style="height: 30px;"></td>
+                <td class="redips-mark"></td>
+                <td><div id="d6" class="redips-drag t1">松下千尋</div></td>
+                <td class="redips-mark"></td>
+                <td class="redips-mark"></td>
+                <td class="redips-mark"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="redips-mark">8/4（火）</td>
+                <td style="height: 30px;"></td>
+                <td class="redips-mark"></td>
+                <td><div id="d7" class="redips-drag t1">竹内深雪</div></td>
+                <td class="redips-mark"></td>
+                <td class="redips-mark"></td>
+                <td class="redips-mark"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="background-color: #eee">
+                <td class="redips-mark">8/5（水）</td>
+                <td style="height: 30px;"></td>
+                <td class="redips-mark"></td>
+                <td><div id="d8" class="redips-drag t1">中畑有紀子</div></td>
+                <td class="redips-mark"></td>
+                <td class="redips-mark"></td>
+                <td class="redips-mark"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <!-- <td><div id="d8" class="redips-drag t1"><img id="smile_img" src="/wp-includes/images/smilies/icon_smile.gif"/></div></td> -->
+            </tr>
     </table>
         <table id="table2" style="display: none;">
                 <colgroup><col width="100"/><col width="100"/><col width="100"/><col width="100"/><col width="100"/></colgroup>
@@ -301,7 +431,7 @@ try{
         <div><input type="checkbox" class="checkbox" onclick="toggleConfirm(this)" title="Confirm delete"/><span class="message_line">Confirm delete</span></div>
         <div><input type="checkbox" class="checkbox" onclick="toggleDragging(this)" title="Enable dragging" checked="true"/><span class="message_line">Enable dragging</span></div>			
     </div>
-</div>
+
 
 <div id="Div"><p id="Mbox0">セルをクリックしたらここに書き出します。</p>
  <p id="Mbox1">インデックス値は '0'から始まります。</p>

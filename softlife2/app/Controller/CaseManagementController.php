@@ -1178,7 +1178,7 @@ class CaseManagementController extends AppController {
     }
     
     // スタッフの選択（小画面）
-    public function select($order_id = null, $col = null) {
+    public function select($order_id = null, $col = null, $cell_row = null, $cell_col = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -1190,8 +1190,10 @@ class CaseManagementController extends AppController {
         $this->set('datas1', null);
         $this->set('datas2', null);
         $this->set('order_id', $order_id);
+        $this->set('cell_row', $cell_row);
+        $this->set('cell_col', $cell_col);
         $session_id = null;
-        $session_name = null;
+        //$session_name = null;
         // テーブルの設定
         $this->StaffMaster->setSource('staff_'.$selected_class);
         

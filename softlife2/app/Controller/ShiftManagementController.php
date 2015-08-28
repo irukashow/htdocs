@@ -309,8 +309,165 @@ class ShiftManagementController extends AppController {
         $this->set('user_name', $name);
         $selected_class = $this->Session->read('selected_class');
         $this->set('selected_class', $selected_class);
-        // データ
-        $this->set('datas', $this->paginate('CaseManagement'));
+        $data_staffs = null;
+        $staff_cell = $this->Session->read('staff_cell');
+        $this->set('staff_cell', $staff_cell);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+
+        } else {
+            // データ
+            if (empty($staff_cell)) {
+                $this->set('data_staffs', null);
+            } else {
+                for($row=0; $row<31; $row++) {
+                    for($col=0; $col<31; $col++) {
+                        if (empty($staff_cell[$row][$col])) {
+                            continue;
+                        }
+                        foreach ($staff_cell[$row][$col] as $key=>$staff_id) {
+                            $conditions1 = array('id'=>$staff_id);
+                            $data_staffs[$row][$col][$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name_sei', 'name_mei'), 'conditions'=>$conditions1));
+                        }
+                    }
+                }
+                $this->set('data_staffs', $data_staffs);
+                // セッション削除
+                $this->Session->delete('staff_id');
+            }
+        }
         
+    }
+    
+    // スタッフの選択（小画面）
+    public function select($order_id = null, $col = null, $cell_row = null, $cell_col = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 初期セット
+        $username = $this->Auth->user('username').' '.$this->Auth->user('name_mei');
+        $this->set('username', $username);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->set('datas1', null);
+        $datas2 = null;
+        $this->set('datas2', $datas2);
+        $staff_cell = $this->Session->read('staff_cell');
+        //$this->Session->write('staff_cell', $staff_cell);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            //$this->log($this->request->data, LOG_DEBUG);
+            // 検索
+            if (isset($this->request->data['search'])) {
+                $search_name = $this->data['StaffMaster']['search_name'];
+                if (!empty($search_name)) {
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    }
+                    // ひらがなでの検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2) LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $datas1 = $this->StaffMaster->find('all', array('conditions'=>array('OR'=>array($conditions1, $conditions2))));
+                    //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->set('datas1', $datas1);
+                }
+                // 選択済みスタッフ
+                $this->log($staff_cell, LOG_DEBUG);
+                if (!empty($staff_cell[$cell_row][$cell_col])) {
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    foreach($staff_cell[$cell_row][$cell_col] as $key=>$staff_id) {
+                        if (empty($staff_id)) {
+                            continue;
+                        }
+                        if (empty($datas2)) {
+                            $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        } else {
+                            $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        }
+                    }
+                    $this->set('datas2', $datas2);
+                }
+            // 選択
+            } elseif (isset($this->request->data['select'])) {
+                $id_array = array_keys($this->request->data['select']);
+                $id = $id_array[0];
+                // 選択は５つまで
+                /**
+                $session_id = $this->Session->read('staff_id');
+                if (count($session_id) == 5) {
+                    $this->Session->setFlash('【エラー】選択できるのは5つまでです。');
+                    $this->redirect(array('action' => 'select', $order_id ));
+                    return;
+                }
+                 * 
+                 */
+                // セッション格納
+                if (empty($staff_cell[$cell_row][$cell_col])) {
+                    $staff_cell[$cell_row][$cell_col][0] = $id;
+                } else {
+                    $flag = false;
+                    for($i=0; $i<count($staff_cell[$cell_row][$cell_col]) ;$i++) {
+                        if ($staff_cell[$cell_row][$cell_col][$i] == $id) {
+                            $flag = true;
+                            break;
+                        }
+                    }
+                    if (!$flag) {
+                        $staff_cell[$cell_row][$cell_col][] += $id;
+                    }
+                }
+                $this->log($staff_cell, LOG_DEBUG);
+                $this->Session->write('staff_cell', $staff_cell);
+                // 選択済みスタッフ
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                foreach($staff_cell[$cell_row][$cell_col] as $key=>$staff_id) {
+                    if (empty($datas2)) {
+                        $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    } else {
+                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    }
+                }
+                $this->set('datas2', $datas2);
+                //$this->log($datas2, LOG_DEBUG);
+            // 消去
+            } elseif (isset($this->request->data['erasure'])) {
+                $staff_cell[$cell_row][$cell_col] = null;
+                $this->Session->write('staff_cell', $staff_cell);
+                //$this->Session->delete('staff_cell');
+            } else {
+                
+            }
+        } elseif ($this->request->is('get')) {
+            // 選択済みスタッフ
+            $this->log($staff_cell, LOG_DEBUG);
+            if (!empty($staff_cell[$cell_row][$cell_col])) {
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                foreach($staff_cell[$cell_row][$cell_col] as $key=>$staff_id) {
+                    if (empty($staff_id)) {
+                        continue;
+                    }
+                    if (empty($datas2)) {
+                        $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    } else {
+                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    }
+                }
+                $this->set('datas2', $datas2);
+            }
+        } else {
+            
+        }
     }
 }
