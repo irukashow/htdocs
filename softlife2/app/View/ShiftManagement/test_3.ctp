@@ -36,6 +36,7 @@ function getCELL() {
 　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
     Cells.onclick =function(){Mclk(this);}
     Cells.ondblclick =function(){Mdblclk(this);}
+    Cells.onchange = function(){Mchange(this);}
 　  }
 　 }
 　}
@@ -52,6 +53,7 @@ function Mclk(Cell) {
          divs = divs + "," + Cell.getElementsByTagName("DIV")[i].id;       
      }
  }
+    Cell.getElementsByTagName("input")[2].value = Cell.cellIndex;
     //alert("移動確定!");
  //console.log('ID:'+divs);
  var cellDivIDs = 'セル内のDivのID：'+divs;
@@ -77,69 +79,9 @@ try{
    window.attachEvent("onload",getCELL);
   }
 </script>
-<script>
-function doAccount(year, month) {
-    var myTbl = document.getElementById('table1');
-    //var form = document.getElementById('form');
-    var form = document.createElement('form');
-    document.body.appendChild(form);
-    var input = document.createElement('input');
-    input.setAttribute('type', 'hidden');
-    input.setAttribute('name', 'month');
-    input.setAttribute('value', year+"-"+setZero2(month)+"-01");
-    form.appendChild(input);
-
-    for (var i=2; i<myTbl.rows.length; i++) {
-        for (var j=2; j<myTbl.rows[i].cells.length; j++) {
-            var val = [];
-            Cell = myTbl.rows[i].cells[j];
-            if (Cell.innerHTML.length == 0) {
-                continue;
-            }
-            for(k=0; k<Cell.getElementsByTagName("DIV").length; k++) {
-                if (k == 0) {
-                    val = Cell.getElementsByTagName("DIV")[0].id;
-                } else {
-                    val = val + "," + Cell.getElementsByTagName("DIV")[k].id;
-                }
-            }
-            if (val.length > 0) {
-                var input = document.createElement('input');
-                input.setAttribute('type', 'hidden');
-                input.setAttribute('name', (i-1)+'_'+(j-1));
-                input.setAttribute('value', val);
-                form.appendChild(input);
-            }
-        }
-    }
-    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/test');
-    form.setAttribute('method', 'post');
-    form.submit();
-}
-function setZero2(value) {
-    if (value.length == 2) {
-        ret = value;
-    } else {
-        ret = "0"+value;
-    }
-    return ret;
-}
-</script>
 <style>
     .redips-drag t1 {
         text-align: center;
-    }    
-</style>
-<style>
-    .tag {
-        text-align: center;
-        border:1px solid black;
-        background-color: #ffffcc;
-        padding: 3px;
-        width:100px;
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
     }    
 </style>
 <style>
@@ -174,7 +116,7 @@ function setZero2(value) {
 </div>
 <!-- 見出し１ END -->
 
-<?php echo $this->Form->create('WorkTable'); ?>
+<?php echo $this->Form->create('WorkTable', array('name' => 'form')); ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
@@ -304,7 +246,7 @@ function setZero2(value) {
 </div>
 
     <div style='margin-top: 10px;margin-left: 10px;'>
-        <button type="button" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>);return false;">確定</button>
+<?php echo $this->Form->submit('確定する', array('name' => 'determine','div' => false)); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('保存する', array('id'=>'button-create', 'name'=>'save','div' => false))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
