@@ -66,7 +66,7 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-1)+'/'+(Cell.cellIndex-1),'スタッフ選択','width=800,height=600,scrollbars=yes');
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+Cell.parentNode.rowIndex+'/'+Cell.cellIndex,'スタッフ選択','width=800,height=600,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
       // イベントリスナーaddEventListener,attachEventメソッド
@@ -113,21 +113,18 @@ try{
 </div>
 <!-- 見出し１ END -->
 
-<?php echo $this->Form->create('WorkTable', array('name' => 'form')); ?>
+<?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                <td style='background-color: #006699;color: white;'>
-                    <font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月】</font>
-                </td>
+                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
                 <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
 
 <!-- tables inside this DIV could have draggable content -->
-<!-- <div id="redips-drag" style="width: 5000px;"> -->
-    <div id="redips-drag" style="width: 5000px;">
-        <table id="table1" style="margin-top: 5px;margin-bottom: 0px;" _fixedhead="rows:2; cols:2"> <!--  _fixedhead="rows:2; cols:2" -->
+<div id="redips-drag" style="width: 5000px;">
+        <table id="table1" style="margin-top: 5px;margin-bottom: 0px;zoom: 90%;"> <!--  _fixedhead="rows:2; cols:2" -->
             <colgroup>
                 <col width="100"/><col width="100"/><col width="100"/><col width="100"/><col width="100"/>
                 <col width="100"/><col width="100"/><col width="100"/><col width="100"/><col width="100"/>
@@ -207,35 +204,13 @@ try{
             <tr style="<?=$bgclr ?>">
                 <td class="redips-mark" style="color:<?=$style ?>;"><?=$m ?>/<?=$d ?>(<?=$weekday[$i] ?>)</td>
                 <td style="height: 30px;"></td>
-                <?php for($j=1; $j<=17; $j++) { ?>
+                <?php for($j=0; $j<17; $j++) { ?>
                 <td>
                     <?php
-                        if (!empty($data_staffs2[$d][$j])) {
-                            foreach($data_staffs2[$d][$j] as $data_staff2) {
-                                echo '<div id="'.$data_staff2['StaffMaster']['id'].'" class="redips-drag t1">';
-                                echo '<input type="hidden" name="data[WorkTable]['.$j.'][id]">';
-                                echo '<input type="hidden" name="data[WorkTable]['.$j.'][class]" value="'.$selected_class.'">';
-                                echo '<input type="hidden" name="data[WorkTable]['.$j.'][column]" value="'.$j.'">';
-                                echo '<input type="hidden" name="data[WorkTable]['.$j.'][work_date]" value="'.$y.'-'.$m.'-'.$d.'">';
-                                echo '<input type="hidden" name="data[WorkTable]['.$j.'][d'.$d.']" value="'.$staff_ids[$d][$j].'">';
-                                echo '<input type="hidden" name="data[WorkTable]['.$j.'][username]" value="'.$username.'">';
-                                echo $data_staff2['StaffMaster']['name_sei'].$data_staff2['StaffMaster']['name_mei'];
-                                echo '</div>';
-                            }
-                        }
-                        if (!empty($staff_cell[$d][$j])) {
-                            if (!empty($data_staffs[$d][$j])) {
-                                $this->log($data_staffs[$d][$j], LOG_DEBUG);
-                                foreach($data_staffs[$d][$j] as $data_staff) {
-                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][id]">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][class]" value="'.$selected_class.'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][column]" value="'.$j.'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][work_date]" value="'.$y.'-'.$m.'-'.$d.'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][d'.$d.']" value="'.$staff_cell[$d][$j].'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][username]" value="'.$username.'">';
-                                    echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
-                                    echo '</div>';
+                        if (!empty($staff_cell[$d+1][$j+2])) {
+                            if (!empty($data_staffs[$d+1][$j+2])) {
+                                foreach($data_staffs[$d+1][$j+2] as $data_staff) {
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">'.$data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'].'</div>';
                                 }
                             }
                         }
@@ -265,4 +240,7 @@ try{
 <div style="margin-top: 5px;">
     ※「前回保存時まで戻す」は、保存していない分をキャンセルすることを指す。[F5]でも同様の動作をします。
 </div>
-<?php echo $this->Form->end(); ?>
+
+<?php
+            print_r($data_staffs);
+?>

@@ -17,12 +17,12 @@ redipsInit = function () {
         
 	// how to display disabled elements
 	rd.style.borderDisabled = 'solid';	// border style for disabled element will not be changed (default is dotted)
-	rd.style.opacityDisabled = 60;		// disabled elements will have opacity effect
+	//rd.style.opacityDisabled = 60;		// disabled elements will have opacity effect
 	// initialization
 	rd.init();
         rd.clone.keyDiv = rd.clone.keyRow = true;
 	// only "smile" can be placed to the marked cell
-	rd.mark.exception.d8 = 'smile';
+	//rd.mark.exception.d8 = 'smile';
 	// prepare handlers
 	rd.event.clicked = function () {
 		msg.innerHTML = 'Clicked';
@@ -83,7 +83,7 @@ redipsInit = function () {
             // get target and source position (method returns positions as array)
             var pos = rd.getPosition();
             // display current row and current cell
-            msg.innerHTML = 'Changed: ' + pos[1] + ' ' + pos[2];
+            msg.innerHTML = 'Changed: ' + (pos[1]-1) + ' ' + (pos[2]-1);
             //alert(msg.innerHTML);
 	};
 	rd.event.droppedBefore = function () {
