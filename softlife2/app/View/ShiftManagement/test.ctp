@@ -67,7 +67,7 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-1)+'/'+(Cell.cellIndex-1),'スタッフ選択','width=800,height=600,scrollbars=yes');
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-1)+'/'+(Cell.cellIndex-1)+'?date=<?=$month ?>','スタッフ選択','width=800,height=600,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
       // イベントリスナーaddEventListener,attachEventメソッド
@@ -86,7 +86,7 @@ function doAccount(year, month) {
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
     input.setAttribute('name', 'month');
-    input.setAttribute('value', year+"-"+setZero2(month)+"-01");
+    input.setAttribute('value', year+"-"+month+"-01");
     form.appendChild(input);
 
     for (var i=2; i<myTbl.rows.length; i++) {
@@ -304,9 +304,9 @@ function setZero2(value) {
 </div>
 
     <div style='margin-top: 10px;margin-left: 10px;'>
-        <button type="button" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>);return false;">確定</button>
+        <button type="button" id="button-create" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>);return false;">保存</button>
     &nbsp;&nbsp;
-<?php print($this->Form->submit('保存する', array('id'=>'button-create', 'name'=>'save','div' => false))); ?>
+<?php print($this->Form->submit('確定する', array('id'=>'button-create', 'name'=>'save','div' => false))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <?php print($this->Html->link('前回保存時まで戻す', 'javascript:void(0);', array('id'=>'button-delete', 'style'=>'' , 'onclick'=>'window.location.reload();'))); ?>
     </div>
