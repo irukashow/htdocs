@@ -87,6 +87,24 @@ function setData2($datas, $table, $col) {
     }
     return $ret;
 }
+// 値があれば括弧で囲む
+function setKakko($value) {
+    if (!empty($value)) {
+        $ret = '（'.$value.'）';
+    } else {
+        $ret = '';
+    }
+    return $ret;
+}
+// nullならば空を返す
+function NZ($value) {
+    if (empty($value)) {
+        $ret = '';
+    } else {
+        $ret = $value;
+    }
+    return $ret;
+}
 ?>
 <?php
     /** 番号のマークをセット **/
@@ -139,33 +157,6 @@ function setCalender(year, month) {
     var value2 = options2[month.options.selectedIndex].value;
     location.href="<?=ROOTDIR ?>/ShiftManagement/test2?date=" +value1 + "-" + value2;
 }
-// 全選択・全解除
-function setAllSelect(col, element) {
-    for(var i=1; i<=31 ;i++) {
-        if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
-            changeColor(col, i, 1);
-        } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
-            changeColor(col, i, 0);
-        }
-    }
-}
-// 土日選択・解除
-function setAllSelect2(col, element) {
-    for(var i=1; i<=31 ;i++) {
-        if (document.getElementById("HolidayD"+i).value == 0) {
-            continue;
-        }
-        if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
-            changeColor(col, i, 1);
-        } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
-            changeColor(col, i, 0);
-        }
-    }
-}
 // 職種の詳細を隠す
 function setHidden() {
     target = document.getElementById("ActiveDisplay");
@@ -207,55 +198,100 @@ function changeColor(col, day, flag) {
         <?php echo $this->Form->create('OrderInfoDetail', array('name'=>'form1')); ?>
         <div class="scroll_div">
         <table border='1' cellspacing="0" cellpadding="5"
-               style="width:auto;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;" _fixedhead="rows:2; cols:1">
+               style="width:<?=$row*80 ?>px;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;" _fixedhead="rows:2; cols:1">
             <thead>
             <tr>
                 <th style='background:#99ccff;text-align: center;width:80px;'>
                     <a href="#" onclick="setHidden();"><span id="ActiveDisplay">表示切り替え</span></a>
                 </th>
                 <?php foreach ($datas as $data){ ?>
-                <th style='background:#99ccff;text-align: center;width:200px;' colspan="<?=$data[0]['cnt'] ?>">
+                <th style='background:#99ccff;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
                 <?php } ?>
             </tr>
-            <tr>
-                <td style='width:80px;background-color: #e8ffff;'>職種</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
-                <td style='width:200px;'>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden', 'value'=>setData($datas2,'id',$count,$record))); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                    
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'select','div'=>false,'label'=>false, 'options' => $list_shokushu,
-                        'value'=>setData($datas2,'shokushu_id',$count,$record), 'empty'=>array(''=>'職種を選んでください'), 'style'=>'width:200px;text-align: left;')); ?>
-                    （<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_memo',array('type'=>'text','div'=>false,'label'=>false, 'placeholder'=>'備考',
-                        'value'=>setData($datas2,'shokushu_memo',$count,$record), 'style'=>'width:85%;text-align: left;')); ?>）
-                </td>
-                <?php } ?>
-            </tr>
             </thead>
             <tbody>
-            <tr id="OrderDetail1">
-                <td style='background-color: #e8ffff;'>基本<br>就業時間</td>
+            <tr style="">
+                <td style='background-color: #e8ffff;'>番号</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_from',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record))); ?>&nbsp;～
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record))); ?>
+                    <?php echo $count+1; ?>
                 </td>
                 <?php } ?>
             </tr>
-            <tr id="OrderDetail2">
-                <td style='background-color: #e8ffff;'>休憩時間</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
-                <td style=''>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_from',$count,$record))); ?>&nbsp;～
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_to',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_to',$count,$record))); ?>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>事業主</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='background:#ffffcc;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($list_entrepreneur[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>販売会社</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($list_client[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>指揮命令者/<br>担当者</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>現場住所</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($list_address[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>現場連絡先</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo 'TEL:'.NZ($list_telno[$data['OrderCalender']['case_id']]); ?><br>
+                <?php echo 'FAX:'.NZ($list_faxno[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>待ち合わせ</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;')); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>請求先担当者</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($list_entrepreneur[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>請求書締日</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($list_entrepreneur[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>クリーニング</td>
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
+                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -331,7 +367,39 @@ function changeColor(col, day, flag) {
                 <?php } ?>
             </tr>
             <!-- 給与 END -->
-
+            <tr>
+                <td style='width:80px;background-color: #e8ffff;'>職種</td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style='background-color: #ffffcc;'>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden', 'value'=>setData($datas2,'id',$count,$record))); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+                    
+                    <?php echo $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]; ?>
+                    <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail1">
+                <td style='background-color: #e8ffff;'>勤務時間</td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style='background-color: #ffffcc;'>
+                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
+                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:130px;text-align: left;background-color: #ffffcc;', 'rows'=>2,
+                            'value'=>setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record))); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="OrderDetail2">
+                <td style='background-color: #e8ffff;'>休憩時間</td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style='background-color: #ffffcc;'>
+                    <?php echo setData($datas2,'resttime_from',$count,$record); ?>&nbsp;～
+                    <?php echo setData($datas2,'resttime_to',$count,$record); ?>
+                </td>
+                <?php } ?>
+            </tr>
 <?php echo $this->Form->end(); ?>
 <?php echo $this->Form->create('OrderCalender', array('name'=>'form2')); ?>
             <tr>
@@ -367,7 +435,8 @@ function changeColor(col, day, flag) {
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
-                <td align='center' style='background-color: #e8ffff;'>
+                <td align='left' style='background-color: #e8ffff;'>
+                    <?='備考欄' ?>
                 </td>
                 <?php } ?>
             </tr> 
@@ -413,17 +482,9 @@ function changeColor(col, day, flag) {
                 <td id="Cell<?=$count ?>D<?=$d ?>">
                     <div style='color:<?=$style ?>;' class='input checkbox'>
                         <?php if (empty($datas2) || empty($datas2[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
-                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
-                                        'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
-                        <?php } elseif ($datas2[$count]['OrderCalender']['year'] != $year || $datas2[$count]['OrderCalender']['month'] != $month) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
-                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
-                                        'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
+                        <?php echo ''; ?>
                         <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
-                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas2[$count]['OrderCalender']['d'.$d],
-                                        'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
+                        <?php echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
                         <?php } ?>
                         
                     </div>

@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class ShiftManagementController extends AppController {
-    public $uses = array('StaffSchedule' ,'WorkTable' ,'Item', 'User', 'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender');
+    public $uses = array('StaffSchedule' ,'WorkTable' ,'Item', 'User', 'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'Customer');
     public $title_for_layout = "シフト管理 - 派遣管理システム";
     
     public function index() {
@@ -492,9 +492,66 @@ class ShiftManagementController extends AppController {
         $conditions1 = array('class'=>$selected_class);
         $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1));
         $this->set('getCasename', $getCasename);
-        $this->log($getCasename, LOG_DEBUG);
-        //$this->log($this->request->data['OrderInfo'], LOG_DEBUG);
-        //$this->log('$row='.$row, LOG_DEBUG);
+        //$this->log($getCasename, LOG_DEBUG);
+        // 取引先の取得
+        $conditions1 = array('class'=>$selected_class);
+        $list_customer = $this->Customer->find('list', array('fields'=>array('id', 'corp_name'), 'conditions' => $conditions1));
+        $this->set('list_customer', $list_customer);
+        // 事業主の取得
+        $conditions1 = array('class'=>$selected_class);
+        $result1 = $this->CaseManagement->find('all', array('conditions' => $conditions1));
+        //$this->log($result1, LOG_DEBUG);
+        $datas1 = null;
+        foreach ($result1 as $key=>$value) {
+            for ($i=0; $i<count($result1); $i++) {
+                if ($i == 0) {
+                    if (empty($value['CaseManagement']['entrepreneur1'])) {
+                        $datas1[$value['CaseManagement']['id']] = '';
+                        break;
+                    }
+                    $datas1[$value['CaseManagement']['id']] = $list_customer[$value['CaseManagement']['entrepreneur1']];
+                } else {
+                    if (empty($value['CaseManagement']['entrepreneur'.($i+1)])) {
+                        break;
+                    }
+                    $datas1[$value['CaseManagement']['id']] = $datas1[$value['CaseManagement']['id']].'/'.$list_customer[$value['CaseManagement']['entrepreneur'.($i+1)]];
+                }
+            }
+        }
+        //$this->log($datas1, LOG_DEBUG);
+        $this->set('list_entrepreneur', $datas1);
+        // 依頼主
+        $conditions1 = array('class'=>$selected_class);
+        $result1 = $this->CaseManagement->find('all', array(
+            'fields'=>array('id', 'client'), 'conditions' => $conditions1));
+        //$this->log($result1, LOG_DEBUG);
+        $datas2 = null;
+        foreach ($result1 as $value) {
+            if (empty($value['CaseManagement']['client'])) {
+                $datas2[$value['CaseManagement']['id']] = '';
+                continue;
+            }
+            $datas2[$value['CaseManagement']['id']] = $list_customer[$value['CaseManagement']['client']];
+        }
+        $this->set('list_client', $datas2);
+        $this->log($datas2, LOG_DEBUG);
+        // 指揮命令者・担当者
+        $conditions2 = array('class'=>$selected_class);
+        $this->CaseManagement->virtualFields['director2'] = 'CONCAT(position, "：", director)';
+        $list_director = $this->CaseManagement->find('list', array('fields' => array('id', 'director2'), 'conditions' => $conditions2));
+        $this->set('list_director', $list_director);
+        // 住所
+        $list_address = $this->CaseManagement->find('list', array('fields' => array('id', 'address'), 'conditions' => $conditions2));
+        $this->set('list_address', $list_address);
+        // TEL
+        $list_telno = $this->CaseManagement->find('list', array('fields' => array('id', 'telno'), 'conditions' => $conditions2));
+        $this->set('list_telno', $list_telno);
+        // FAX
+        $list_faxno = $this->CaseManagement->find('list', array('fields' => array('id', 'faxno'), 'conditions' => $conditions2));
+        $this->set('list_faxno', $list_faxno);
+        // 請求先担当者
+        
+        
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
