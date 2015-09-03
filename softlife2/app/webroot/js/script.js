@@ -83,7 +83,7 @@ redipsInit = function () {
             // get target and source position (method returns positions as array)
             var pos = rd.getPosition();
             // display current row and current cell
-            msg.innerHTML = 'Changed: ' + (pos[1]-1) + ' ' + (pos[2]-1);
+            msg.innerHTML = 'Changed: ' + (pos[1]-21) + ' ' + (pos[2]);
             //alert(msg.innerHTML);
 	};
 	rd.event.droppedBefore = function () {
