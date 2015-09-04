@@ -496,10 +496,16 @@ class ShiftManagementController extends AppController {
         $staff_ids3 = null;
         $staff_ids = null;
         $data_staffs = null;
+        $this->set('row', null);
+        $this->set('datas', null);
+        
         // シフト編集モード
+        /*
         $edit = $this->Session->read('edit');
         $this->set('edit', $edit);
         $this->log($edit, LOG_DEBUG);
+         * 
+         */
         
         // 案件名の取得
         $conditions1 = array('class'=>$selected_class);
@@ -595,13 +601,31 @@ class ShiftManagementController extends AppController {
         $list_cutoff = $this->CaseManagement->find('list', $option);
         //$this->log($datas, LOG_DEBUG);
         $this->set('list_cutoff', $list_cutoff);
+        // 推奨スタッフ
+        for ($i=1; $i<=20; $i++) {
+            $results = $this->OrderInfo->find('list', array('fields'=>array('id', 'staff_ids'.$i)));
+            foreach ($results as $key=>$result) {
+                if (empty($result)) {
+                    $list_staffs2[$key][$i] = '';
+                    continue;
+                }
+                $list_staffs[$key][$i] = explode(',', $result);
+                foreach($list_staffs[$key][$i] as $j=>$staff_id) {
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $list_staffs2[$key][$i][$j] = $this->StaffMaster->find('first', array('fields'=>'name', 'conditions'=>array('id'=>$staff_id)));
+                }
+            }
+        }
+        $this->log($list_staffs2, LOG_DEBUG);
+        $this->set('list_staffs', $list_staffs2);
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
             $data = $this->request->data;
             if (isset($data['mode'])) {
-                for ($i=1; $i<200; $i++) {
+                $row = $data['row'];
+                for ($i=1; $i<=$row; $i++) {
                     for ($d=1; $d<=31; $d++) {
                         if (empty($data[$d.'_'.$i])) {
                             continue;
@@ -611,6 +635,9 @@ class ShiftManagementController extends AppController {
                         $data2[$i]['username'] = $username;
                         $data2[$i]['month'] = $data['month'];
                         $data2[$i]['d'.$d] = $data[$d.'_'.$i];
+                        $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
+                        $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
+                        $data2[$i]['shokushu_num'] = $data['WorkTable'][$i]['shokushu_num'];
                     }
                 }
                 // 該当月を削除
@@ -623,19 +650,29 @@ class ShiftManagementController extends AppController {
                         $this->Session->delete('staff_cell');
                         // シフト編集モード
                         //$this->Session->write('edit', $data['edit']);
-                        $this->set('edit', $data['edit']);
-                        $this->log('$edit='.$data['edit']);
+                        //$this->set('edit', $data['edit']);
+                        //$this->log('$edit='.$data['edit']);
                         $this->redirect(array('action'=>'test2', '?date='.date('Y-m', strtotime($data['month']))));
                     } else {
 
                     }
                 } 
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit));
             } else {
-                // シフト編集モード
-                $this->Session->write('edit', $data['edit']);
-                $this->set('edit', $data['edit']);
-                $this->log('$edit='.$data['edit']);
-                $this->redirect(array('action'=>'test2', '?date='.date('Y-m', strtotime($data['month']))));
+
             }
         } elseif ($this->request->is('get')) {
             if (!empty($this->request->query('date'))) {
@@ -704,7 +741,7 @@ class ShiftManagementController extends AppController {
             //$this->Session->delete('staff_cell');
             // スタッフIDをカンマ区切りにする
             $staff_cell = $this->Session->read('staff_cell');
-            $this->log($staff_cell, LOG_DEBUG);
+            //$this->log($staff_cell, LOG_DEBUG);
             $staff_cell2 = null;
             if (!empty($staff_cell) && $staff_cell[0][0] == $year.'-'.$month) {
                 for($i=1; $i<=31; $i++) {
@@ -739,7 +776,7 @@ class ShiftManagementController extends AppController {
                 $staff_cell[0][0] = $year.'-'.$month;     // 該当月セット
                 $this->Session->write('staff_cell', $staff_cell);
                 $this->set('staff_cell', $staff_ids3);
-                $this->log($this->Session->read('staff_cell'), LOG_DEBUG);
+                //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
             }
             
             // 氏名のセット
@@ -758,7 +795,7 @@ class ShiftManagementController extends AppController {
                     }
                 }
                 $this->set('data_staffs', $data_staffs);
-                $this->log($data_staffs, LOG_DEBUG);
+                //$this->log($data_staffs, LOG_DEBUG);
                 // セッション削除
                 //$this->Session->delete('staff_cell');
             }
@@ -783,7 +820,7 @@ class ShiftManagementController extends AppController {
             //$this->Session->delete('staff_cell');
             // スタッフIDをカンマ区切りにする
             $staff_cell = $this->Session->read('staff_cell');
-            $this->log($staff_cell, LOG_DEBUG);
+            //$this->log($staff_cell, LOG_DEBUG);
             $staff_cell2 = null;
             if (!empty($staff_cell) && $staff_cell[0][0] == $month) {
                 for($i=1; $i<=31; $i++) {
@@ -818,7 +855,7 @@ class ShiftManagementController extends AppController {
                 $staff_cell[0][0] = $month;     // 該当月セット
                 $this->Session->write('staff_cell', $staff_cell);
                 $this->set('staff_cell', $staff_ids3);
-                $this->log($this->Session->read('staff_cell'), LOG_DEBUG);
+                //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
             }
             
             // データ

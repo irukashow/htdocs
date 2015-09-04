@@ -11,12 +11,12 @@ body {
 /* add bottom margin between tables */
 #table1,#table2 {
 	margin-bottom: 20px;
-        //font-size: 10px;
+        font-size: 12px;
 }
 
 /* drag container (contains two tables) */
 #redips-drag {
-	margin: auto;
+	//margin: auto;
 	//width: 730px;
 }
 
@@ -25,7 +25,7 @@ body {
 	position: relative;
 	cursor: move;
 	margin: 2px auto;
-	z-index: 10;
+	//z-index: 10;
 	background-color: #ffffcc;
         color: black;
 	text-align: left;
@@ -53,7 +53,7 @@ body {
 /* tables */
 div#redips-drag table {
 	background-color: #66cccc;  // 対象のセルの色
-	//border-collapse: collapse;
+	border-collapse: collapse;
 }
 
 /* table cells */

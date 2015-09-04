@@ -73,7 +73,7 @@ $(function() {
 <!-- ヘッダ部分 -->
   <div id="container">
     <div id="header">
-        <table style="width: 100%;" border="0" style="">
+        <table id="header_table" style="width: 100%;" border="0" style="">
             <tr>
                 <td style="width:350px;font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;">
                     <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif"></a>
@@ -116,7 +116,7 @@ $(function() {
     <div id="content">
       
         <!-- メニュー部分 START -->
-        <table border="0" style="width:100%;">
+        <table id="menu_table" border="0" style="width:100%;">
             <tr>
                 <td>
                     <div id='cssmenu'>

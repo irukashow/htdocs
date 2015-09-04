@@ -1,13 +1,14 @@
 <?php
-    echo $this->Html->script( 'tools');
+    //echo $this->Html->script( 'tools');
     //echo $this->Html->script('dropzone');
-    echo $this->Html->script('jquery-1.9.1');
+    //echo $this->Html->script('jquery-1.9.1');
     //echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
-    echo $this->Html->script('jquery.timepicker');
+    //echo $this->Html->script('jquery.timepicker');
     echo $this->Html->script('fixed_midashi');
     echo $this->Html->script('redips-drag-min');
     echo $this->Html->script('script');
-    echo $this->Html->css('jquery.timepicker');
+    echo $this->Html->css('evol.colorpicker.min');
+    //echo $this->Html->css('jquery.timepicker');
     echo $this->Html->css('style_1');
 ?>
 <?php
@@ -109,6 +110,21 @@ function NZ($value) {
     }
     return $ret;
 }
+// 配列を処理する
+function setArray($array) {
+    if (empty($array)) {
+        $ret = '';
+    } else {
+        foreach($array as $key=>$value) {
+            if ($key == 0) {
+                $ret = $value['StaffMaster']['name'];
+            } else {
+                $ret = $ret.'<br>'.$value['StaffMaster']['name'];
+            }
+        }
+    }
+    return $ret;
+}
 ?>
 <?php
     /** 番号のマークをセット **/
@@ -117,39 +133,22 @@ function NZ($value) {
         return $arr[$number];
     }
 ?>
-<!-- for Datepicker -->
-<link type="text/css" rel="stylesheet"
-  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
-<script type="text/javascript"
-  src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script type="text/javascript"
-  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-<!--1国際化対応のライブラリをインポート-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/i18n/jquery-ui-i18n.min.js"></script>
-<script type="text/javascript">
-$(function() {
-  // 2日本語を有効化
-  $.datepicker.setDefaults($.datepicker.regional['ja']);
-  // 3日付選択ボックスを生成
-  $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
-});
-</script>
+
 <script>
 onload = function() {
     FixedMidashi.create();
-    // チェックのあるセルを着色
-    for(var col=0; col<<?=$row ?> ;col++) {
-        for(var i=1; i<=31 ;i++) {
-            if (document.getElementById("OrderCalender"+col+"D"+i) == null) {
-                break;
-            }
-            if (document.getElementById("OrderCalender"+col+"D"+i).checked) {
-                changeColor(col, i, 1);
-            } else {
-                changeColor(col, i, 0);
-            }
-        }
-    }
+    REDIPS.drag.dropMode = 'multiple';
+    // ヘッダを隠す
+    document.getElementById("header").style.display = 'none';
+    //document.getElementById("menu_table").style.display = 'none';
+    // 待機マーク
+    $(function() {
+        //ページの読み込みが完了したのでアニメーションはフェードアウトさせる
+        $("#loading").fadeOut();
+        //ページの表示準備が整ったのでコンテンツをフェードインさせる
+        $("#table1").fadeIn();
+    });
+    getCELL();
     // シフト編集モードのセット
     if (getCookie("edit") == 1) {
         for(i=1; i<=18; i++) {
@@ -186,14 +185,6 @@ function setHidden() {
             document.cookie = "edit=1;";
         }
         //target.innerHTML = '<span>全表示</span>';
-    }
-}
-// チェックを入れたセルを黄色にする
-function changeColor(col, day, flag) {
-    if (flag == 0) {
-        document.getElementById("Cell"+col+"D"+day).style.background = 'white';
-    } else {
-        document.getElementById("Cell"+col+"D"+day).style.background = '#ffffcc';
     }
 }
 // クッキーの取得
@@ -264,8 +255,9 @@ function Mclk(Cell) {
         Ms1.innerText=Cell.innerHTML;
         Ms1.textContent=Cell.innerHTML;
 }
+var startrow = 24;
 function Mdblclk(Cell) {
-    if (Cell.parentNode.rowIndex < 22 || Cell.cellIndex < 1) {
+    if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 1) {
         return false;
     }
     // class名が「redips-drag t1」以外ならばNG
@@ -273,26 +265,34 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-21)+'/'+(Cell.cellIndex)+'?date=<?=$year.'-'.$month ?>','スタッフ選択','width=800,height=600,scrollbars=yes');
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex)+'?date=<?=$year.'-'.$month ?>','スタッフ選択','width=800,height=600,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
       // イベントリスナーaddEventListener,attachEventメソッド
+/**
 try{
  window.addEventListener("load",getCELL,false);
      }catch(e){
    window.attachEvent("onload",getCELL);
   }
+**/
 </script>
 <script>
 function doAccount(year, month, mode) {
     var myTbl = document.getElementById('table1');
-    //var form = document.getElementById('form');
-    var form = document.createElement('form');
-    document.body.appendChild(form);
+    var form = document.getElementById('form');
+    //var form = document.createElement('form');
+    //document.body.appendChild(form);
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
     input.setAttribute('name', 'month');
     input.setAttribute('value', year+"-"+month+"-01");
+    form.appendChild(input);
+    // データ列数
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'row');
+    input.setAttribute('value', <?=$row ?>);
     form.appendChild(input);
     // シフト編集モード
     var input = document.createElement('input');
@@ -312,7 +312,7 @@ function doAccount(year, month, mode) {
         input.setAttribute('name', 'mode');
         input.setAttribute('value', 1);
         form.appendChild(input);
-        for (var i=22; i<myTbl.rows.length; i++) {
+        for (var i=startrow; i<myTbl.rows.length; i++) {
             for (var j=1; j<myTbl.rows[i].cells.length; j++) {
                 var val = [];
                 Cell = myTbl.rows[i].cells[j];
@@ -330,7 +330,7 @@ function doAccount(year, month, mode) {
                 if (val.length > 0) {
                     var input = document.createElement('input');
                     input.setAttribute('type', 'hidden');
-                    input.setAttribute('name', (i-21)+'_'+(j));
+                    input.setAttribute('name', (i-(startrow-1))+'_'+(j));
                     input.setAttribute('value', val);
                     form.appendChild(input);
                 }
@@ -341,31 +341,42 @@ function doAccount(year, month, mode) {
     form.setAttribute('method', 'post');
     form.submit();
 }
-function setZero2(value) {
-    if (value.length == 2) {
-        ret = value;
-    } else {
-        ret = "0"+value;
-    }
-    return ret;
-}
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+<script src="<?=ROOTDIR ?>/js/jquery-hex-colorpicker.js"></script>
+<link rel="stylesheet" href="<?=ROOTDIR ?>/css/jquery-hex-colorpicker.css" />
+
+<script>
+$(document).ready(function() {
+  $(".demo").hexColorPicker();
+});
 </script>
 <style>
     .redips-drag t1 {
         text-align: center;
     }    
 </style>
+<style>
+#loading{
+    position:absolute;
+    left:50%;
+    top:40%;
+    margin-left:-30px;
+}
+</style>
 <style type="text/css" media="screen">
   div.scroll_div { 
       overflow: auto;
-      height: 600px;
+      height: auto;
       width: auto;
       margin-top: 5px;
   }
 </style>
 
-<div style="width:100%;margin-top: 0px;margin-right: auto;<?=$font_normal ?>">
-    <fieldset style="border:none;margin-bottom: 5px;">
+<div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
+<div style="width:100%;margin-top: 0px;<?=$font_normal ?>;">
+    <?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
     <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: -5px;border-spacing: 0px;background-color: white;">
             <tr align="center">
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
@@ -376,10 +387,8 @@ function setZero2(value) {
             </tr>
     </table>
         
-<div id="redips-drag" style="font-size: 80%;margin-bottom: 10px;">  
-        <!-- 職種入力 -->
-        <?php echo $this->Form->create('OrderInfoDetail', array('name'=>'form1')); ?>        
-        <div class="scroll_div">
+    <div id="redips-drag" style="margin-top: 5px;margin-bottom: 10px;">  
+        <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
                style="width:<?=120+$row*120 ?>px;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;table-layout: fixed;" _fixedhead="rows:2; cols:1">
             <colgroup> 
@@ -396,19 +405,24 @@ function setZero2(value) {
                         <span id="ActiveDisplay" onclick="">シフト編集</span>
                     </a>
                 </th>
-                <?php foreach ($datas as $data){ ?>
-                <th style='background:#99ccff;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php foreach ($datas as $key=>$data){ ?>
+                <th class="demo" style='background:#99ccff;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
                 <?php } ?>
             </tr>
             </thead>
-            <tbody>
+            <tbody style="overflow: auto;">
             <tr style="">
                 <td class="redips-trash" style='background-color: #999999;color: white;' colspan="2">削除</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td class="redips-trash" style='background-color: #999999;color: white;'>
                     <?php echo $count+1; ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.case_id',array('type'=>'hidden', 'value'=>setData($datas2,'case_id',$count,$record))); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.order_id',array('type'=>'hidden', 'value'=>setData($datas2,'order_id',$count,$record))); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_num',array('type'=>'hidden','value'=>setData($datas2,'shokushu_num',$count,$record))); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -457,7 +471,7 @@ function setZero2(value) {
                 <td style='background-color: #e8ffff;' colspan="2">待ち合わせ</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
+                    <?php echo $this->Form->input('WorkTable.0.juchuu_cal',
                             array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -482,7 +496,7 @@ function setZero2(value) {
                 <td style='background-color: #e8ffff;' colspan="2">クリーニング</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
+                    <?php echo $this->Form->input('WorkTable.0.juchuu_cal',
                             array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -495,7 +509,7 @@ function setZero2(value) {
                 <td rowspan="2" style='background-color: #e8ffff;'>単価</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -503,7 +517,7 @@ function setZero2(value) {
             <tr id="OrderDetail11">
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -512,7 +526,7 @@ function setZero2(value) {
                 <td rowspan="1" style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -524,7 +538,7 @@ function setZero2(value) {
                 <td style='background-color: #e8ffff;'>時給</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -533,7 +547,7 @@ function setZero2(value) {
                 <td style='background-color: #e8ffff;'>基本日給</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -542,7 +556,7 @@ function setZero2(value) {
                 <td style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -551,7 +565,7 @@ function setZero2(value) {
                 <td style='background-color: #e8ffff;'>研修中（時給）</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -561,11 +575,6 @@ function setZero2(value) {
                 <td style='width:80px;background-color: #e8ffff;' colspan="2" id="message">職種</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.id',array('type'=>'hidden', 'value'=>setData($datas2,'id',$count,$record))); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                    
                     <?php echo $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]; ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
@@ -576,7 +585,21 @@ function setZero2(value) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
+                    <?php if (empty($datas2) || empty($datas2[$count])) { ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                    <?php } elseif ($datas2[$count]['OrderCalender']['year'] != $year || $datas2[$count]['OrderCalender']['month'] != $month) { ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                    <?php } else { ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas2[$count]['OrderCalender']['id'])); ?>
+                    <?php } ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['case_id'])); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
                         array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
                 </td>
                 <?php } ?>
@@ -590,8 +613,22 @@ function setZero2(value) {
                 </td>
                 <?php } ?>
             </tr>
-<?php echo $this->Form->end(); ?>
-<?php echo $this->Form->create('OrderCalender', array('name'=>'form2')); ?>
+            <tr id="">
+                <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style='background-color: #ffffcc;'>
+                    <?php echo setArray($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <tr id="">
+                <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
+                <?php for ($count=0; $count<$row; $count++){ ?>
+                <td style='background-color: #ffffcc;'>
+                    
+                </td>
+                <?php } ?>
+            </tr>
             <tr>
                 <!-- カレンダー月指定 -->
                 <td rowspan="1" align="center" style='background-color: #e8ffff;' colspan="2">
@@ -602,32 +639,20 @@ function setZero2(value) {
                             $year_arr += array($j => $j); 
                         }
                     ?>
-                    <?php echo $this->Form->input(false,array('name'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
+                    <?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;', 
-                        'onchange'=>'setCalender(this, document.form2.month)')); ?>年<br>
+                        'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>年<br>
                         <a href="<?=ROOTDIR ?>/ShiftManagement/test2?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
-                    <?php echo $this->Form->input(false,array('name'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                        'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.form2.year, this)')); ?>月
+                    <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
+                        'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>月
                         <a href="<?=ROOTDIR ?>/ShiftManagement/test2?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php for ($count=0; $count<$row; $count++){ ?>
-                    <?php if (empty($datas2) || empty($datas2[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
-                    <?php } elseif ($datas2[$count]['OrderCalender']['year'] != $year || $datas2[$count]['OrderCalender']['month'] != $month) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
-                    <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas2[$count]['OrderCalender']['id'])); ?>
-                    <?php } ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
                 <td align='left' style='background-color: #e8ffff;'>
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
-                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;', 'rows'=>2)); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;', 'rows'=>2)); ?>
                 </td>
                 <?php } ?>
             </tr> 
@@ -689,12 +714,6 @@ function setZero2(value) {
                                 $this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $data_staff) {
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][id]">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][class]" value="'.$selected_class.'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][column]" id="column" value="'.($count+1).'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][work_date]" value="'.$y.'-'.$m.'-'.$d.'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][d'.$d.'][]" value="'.$data_staff['StaffMaster']['id'].'">';
-                                    echo '<input type="hidden" name="data[WorkTable]['.$j.'][username]" value="'.$username.'">';
                                     echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
                                     echo '</div>';
                                 }
@@ -711,9 +730,7 @@ function setZero2(value) {
             <!-- カレンダー部分 END -->
             </tbody>
         </table>
-        </div>
-</div>
-    </fieldset>
+    </div>
 <div id="Div" style="display: none;"><p id="Mbox0">セルをクリックしたらここに書き出します。</p>
  <p id="Mbox1">インデックス値は '0'から始まります。</p>
 </div>
@@ -728,10 +745,8 @@ function setZero2(value) {
 <?php print($this->Html->link('ページを戻る', 'javascript:void(0);', array('id'=>'button-delete', 'style'=>'padding:8px;', 
     'onclick'=>'deleteCookie("edit");location.href="'.ROOTDIR.'/ShiftManagement/index"'))); ?>
     </div>
-<?php echo $this->Form->end(); ?>
+<div style="margin-top: 5px;">
+    ※「前回保存時まで戻す」は、保存していない分をキャンセルすることを指す。[F5]でも同様の動作をします。
 </div>
-
-<?php
-            print_r($staff_cell);
-            print_r($data_staffs);
-?>
+<?php echo $this->Form->end(); ?>  
+</div>
