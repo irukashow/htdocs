@@ -5,6 +5,7 @@
     //echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
     //echo $this->Html->script('jquery.timepicker');
     echo $this->Html->script('fixed_midashi');
+    echo $this->Html->script('jquery.tablefix');
     echo $this->Html->script('redips-drag-min');
     echo $this->Html->script('script');
     echo $this->Html->css('evol.colorpicker.min');
@@ -125,6 +126,22 @@ function setArray($array) {
     }
     return $ret;
 }
+// 推奨スタッフ
+function setRecoStaff($count, $datas) {
+    if (empty($datas[$count])) {
+        $ret = '';
+    } else {
+        asort($datas[$count]);
+        foreach ($datas[$count] as $value) {
+            if (empty($ret)) {
+                $ret = $value['StaffMaster']['name'].'('.$value['StaffMaster']['id'].')';
+            } else {
+                $ret = $ret.'<br>'.$value['StaffMaster']['name'].'('.$value['StaffMaster']['id'].')';
+            }
+        }
+    }
+    return $ret;
+}
 ?>
 <?php
     /** 番号のマークをセット **/
@@ -132,15 +149,31 @@ function setArray($array) {
         $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
         return $arr[$number];
     }
+    /** 幅 **/
+    function setWidth($row) {
+        $width = 1200;
+        if (120+$row*120+20 > $width) {
+            $ret = 120+$row*120+20;
+        } else {
+            $ret = $width;
+        } 
+        return $ret;
+    }
 ?>
 
 <script>
 onload = function() {
     FixedMidashi.create();
     REDIPS.drag.dropMode = 'multiple';
+    var width = 1200;
     // ヘッダを隠す
     document.getElementById("header").style.display = 'none';
     //document.getElementById("menu_table").style.display = 'none';
+    if (120+<?=$row ?>*120+20 > width) {
+        document.body.style.width = '<?=120+$row*120+20 ?>px';
+    } else {
+        document.body.style.width = width + 'px';
+    }
     // 待機マーク
     $(function() {
         //ページの読み込みが完了したのでアニメーションはフェードアウトさせる
@@ -368,16 +401,16 @@ $(document).ready(function() {
 <style type="text/css" media="screen">
   div.scroll_div { 
       overflow: auto;
-      height: auto;
+      height: 500px;
       width: auto;
       margin-top: 5px;
   }
 </style>
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
-<div style="width:100%;margin-top: 0px;<?=$font_normal ?>;">
+<div style="width:<?=setWidth($row) ?>px;margin-top: 0px;<?=$font_normal ?>;">
     <?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
-    <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: -5px;border-spacing: 0px;background-color: white;">
+    <table border='1' cellspacing="0" cellpadding="3" style="width:95%;margin-top: -5px;border-spacing: 0px;background-color: white;">
             <tr align="center">
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/test2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                     <td style='background-color: #006699;color: white;'>
@@ -446,7 +479,7 @@ $(document).ready(function() {
                 <td style='background-color: #e8ffff;' colspan="2">指揮命令者/<br>担当者</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>
+                <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>様
                 </td>
                 <?php } ?>
             </tr>
@@ -472,7 +505,7 @@ $(document).ready(function() {
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('WorkTable.0.juchuu_cal',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;')); ?>
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -625,7 +658,7 @@ $(document).ready(function() {
                 <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
-                    
+                    <?php echo setRecoStaff($count, $list_recommend); ?>
                 </td>
                 <?php } ?>
             </tr>

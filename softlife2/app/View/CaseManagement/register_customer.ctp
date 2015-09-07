@@ -43,6 +43,13 @@ $(function() {
                 </td>
             </tr>
             <tr>
+                <td style='background-color: #e8ffff;width:20%;'>企業名（かな）</td>
+                <td colspan="2">
+                    <?php echo $this->Form->input('corp_name_kana',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:70%;')); ?>
+                    （『株式会社』を除く）
+                </td>
+            </tr>
+            <tr>
                 <td style='background-color: #e8ffff;width:20%;' rowspan="6">会社住所</td>
                 <!-- 住所 Start -->
                 <td style='background-color: #e8ffff;width:20%;'>郵便番号</td>

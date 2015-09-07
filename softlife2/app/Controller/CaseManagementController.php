@@ -488,8 +488,8 @@ class CaseManagementController extends AppController {
         $this->set('name_arr', $name_arr); 
         // 取引先マスタのセット
         $conditions2 = array('class' => $selected_class, 'kaijo_flag' => 0);
-        //$this->Customer->virtualFields['corp_info'] = 'CONCAT(corp_name, "　", busho, "　", tantou)';
-        $customer_arr = $this->Customer->find('list', array('fields' => array( 'id', 'corp_name'), 'conditions' => $conditions2));
+        $this->Customer->virtualFields['corp_name2'] = 'CONCAT("（", LEFT(corp_name_kana,1), "）", corp_name)';
+        $customer_arr = $this->Customer->find('list', array('fields' => array( 'id', 'corp_name2'), 'conditions' => $conditions2, 'order' => array('corp_name_kana'=>'asc')));
         $this->set('customer_arr', $customer_arr);
         // 登録データのセット
         $option = array();
@@ -1542,6 +1542,10 @@ class CaseManagementController extends AppController {
         $this->set('username', $username);
         $selected_class = $this->Session->read('selected_class');
         $this->set('selected_class', $selected_class);
+        // 解除フラグ
+        if (empty($flag)) {
+            $flag = 0;
+        }
         $this->set('flag', $flag);
         // 都道府県のセット
         //$conditions = array('item' => 10);      // 全国を選択可能に
@@ -1576,9 +1580,9 @@ class CaseManagementController extends AppController {
                 // 登録解除フラグ：０
                 //$this->request->data['Customer']['kaijo_flag'] = 0;
                 // 企業名の重複チェック
-                $conditions = array('class'=>$selected_class, 'corp_name'=>$this->request->data['Customer']['corp_name']);
+                $conditions = array('class'=>$selected_class, 'kaijo_flag'=>$flag, 'corp_name LIKE '=> '%'.trim($this->request->data['Customer']['corp_name'], '株式会社').'%');
                 $count = $this->Customer->find('count', array('conditions' => $conditions));
-                if ($count > 0) {
+                if (empty($this->request->data['Customer']['id']) && $count > 0) {
                     $this->Session->setFlash('【エラー】企業名は既に登録されています。');
                     return;
                 }

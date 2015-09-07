@@ -104,16 +104,16 @@ function doSearch1(id) {
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;">
       <th style="width:5%;"><?php echo $this->Paginator->sort('id',"No.");?></th>
-    <th style="width:25%;"><?php echo $this->Paginator->sort('corp_name','企業名');?></th>
+    <th style="width:25%;"><?php echo $this->Paginator->sort('corp_name_kana','企業名');?></th>
     <th style="width:10%;"><?php echo $this->Paginator->sort('telno','電話番号', array('escape' => false));?></th>
     <th style="width:15%;"><?php echo $this->Paginator->sort('email','メールアドレス');?></th>
     <th style="width:10%;"><?php echo $this->Paginator->sort('modified','作成日時<br>更新日時', array('escape' => false));?></th>
   </tr>
   <tr>
       <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_corp_name', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_telno', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_email', array('type'=>'text', 'label' => false, 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_corp_name', array('type'=>'text', 'label' => false, 'placeholder'=>'企業名（漢字、あるいは、ひらがな）', 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_telno', array('type'=>'text', 'label' => false, 'placeholder'=>'電話番号', 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_email', array('type'=>'text', 'label' => false, 'placeholder'=>'メールアドレス', 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
   </tr>
   <?php foreach ($datas as $data): ?>
@@ -126,7 +126,7 @@ function doSearch1(id) {
     </td>
     <td align="left">
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/<?php echo $flag ?>/<?php echo $data['Customer']['id']; ?>','取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
-            <?php echo $data['Customer']['corp_name']; ?>
+            <?php echo $data['Customer']['corp_name']; ?>（<?php echo $data['Customer']['corp_name_kana']; ?>）
         </a>
     </td>
     <td align="left"><?php echo $data['Customer']['telno']; ?></td>

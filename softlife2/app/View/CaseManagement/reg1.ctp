@@ -115,7 +115,7 @@ $(function() {
                         <tr>
                             <td>
                                 <?php echo $this->Form->input('client_busho',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
-                                <?php echo $this->Form->input('client_tantou',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>  
+                                <?php echo $this->Form->input('client_tantou',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>様 
                             </td>
                         </tr>
                     </table>
@@ -244,7 +244,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>指揮命令者・役職</td>
                 <td>
-                    <?php echo $this->Form->input('director',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '指揮命令者','style'=>'width:30%;')); ?>
+                    <?php echo $this->Form->input('director',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '指揮命令者','style'=>'width:30%;')); ?>様
                     <?php echo $this->Form->input('position',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '役職','style'=>'width:30%;')); ?>
                 </td>
             </tr>
@@ -295,7 +295,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>現場長<br>携帯・メールアドレス</td>
                 <td>
-                    <?php echo $this->Form->input('leader',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '現場長','style'=>'width:50%;')); ?><br>
+                    <?php echo $this->Form->input('leader',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '現場長','style'=>'width:50%;')); ?>様<br>
                     <?php echo $this->Form->input('mobile',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '携帯','style'=>'width:30%;margin-top:5px;')); ?>
                     <?php echo $this->Form->input('email',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => 'メールアドレス','style'=>'width:50%;')); ?>
                 </td>
@@ -305,7 +305,11 @@ $(function() {
             <?php for($j=0; $j<$count_billing ;$j++) { ?>
             <tr>
                 <td style='background-color: #e8ffff;width:10%;' rowspan="6">
-                    請求先<?=setNum($j+1); ?>
+                    <a href="javascript:void(0);" 
+                       onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/<?php echo $data['CaseManagement']['billing_destination'.($j+1)]; ?>',
+                                   '取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
+                        請求先<?=setNum($j+1); ?>
+                    </a>
                     <?php echo $this->Form->submit('削 除',array('div'=>'display: inline;', 
                         'name'=>'delete_billing['.($j+1).']','id'=>'button-delete', 'label'=>false, 'style'=>'padding:5px 10px 5px 10px;')); ?>
                 </td>
@@ -324,7 +328,7 @@ $(function() {
                         <tr>
                             <td>
                                 <?php echo $this->Form->input('billing_busho'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
-                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>  
+                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>様 
                             </td>
                         </tr>                                              
                     </table>

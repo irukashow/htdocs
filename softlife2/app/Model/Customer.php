@@ -22,6 +22,10 @@ class Customer extends AppModel {
         'corp_name' =>  array(
                 'rule' => 'notEmpty',
                 'message' => '企業名を入力してください。'
+        ),
+        'corp_name_kana' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '企業名（かな）を入力してください。'
         )
         );
 }

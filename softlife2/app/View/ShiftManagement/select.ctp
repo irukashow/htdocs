@@ -4,6 +4,7 @@
 <script>
 onload = function() {
     FixedMidashi.create();
+    document.getElementById('StaffMasterSearchName').focus();
 }
 </script>
 <style type="text/css" media="screen">
