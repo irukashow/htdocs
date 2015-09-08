@@ -4,6 +4,7 @@
 <script>
 onload = function() {
     FixedMidashi.create();
+    document.getElementById('StaffMasterSearchName').focus();
 }
 </script>
 <style type="text/css" media="screen">
@@ -70,25 +71,27 @@ onload = function() {
         <?php foreach ($datas2 as $key=>$data2) { ?>
         <tr>
             <td align="center" style="width:15%;">
-            <?=$data2['StaffMaster']['id']; ?>
+                <?=$data2['StaffMaster']['id']; ?>
                 <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
             </td>
-            <td align="left" style="padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="center">
+                <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
+                    'name' => 'erasure['.$data2['StaffMaster']['id'].']','div' => false, 'style'=>'padding: 3px 15px;')); ?>
+            </td>
         </tr>
         <?php } ?>
         <?php } else { ?>
         <tr align="center">
-            <td colspan="2">選択済みのデータはありません</td>
+            <td colspan="3">選択済みのデータはありません</td>
         </tr>
         <?php } ?>
     </table>
         
     <div style='margin-top: 10px;margin-left: 10px;'>
-<?php echo $this->Form->submit('決定する', array('name' => 'decision','div' => false, 'onclick' => 'return confirm("決定してもよろしいですか？");window.opener.location.reload();window.close();')); ?>
+<?php echo $this->Form->submit('決定する', array('name' => 'decision','div' => false, 'onclick' => '')); ?>
     &nbsp;&nbsp;
-<?php echo $this->Form->submit('消　去', array('id'=>'button-delete', 'name' => 'erasure','div' => false, 'onclick' => 'return confirm("消去してもよろしいですか？");')); ?>
-    &nbsp;&nbsp;
-<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name' => 'close', 'div' => false, 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>        
     </fieldset>

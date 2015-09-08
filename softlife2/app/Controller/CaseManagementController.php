@@ -859,7 +859,7 @@ class CaseManagementController extends AppController {
                             '('.$order_id.')'.$result2['OrderInfo']['order_name'], 23, $this->request->clientIp()); // (23)オーダーカレンダー登録コード:23
                     // 推奨スタッフのセッションの削除
                     for($i=0; $i<$row; $i++) {
-                        $this->Session->delete('staff_id'.$i);
+                        $this->Session->delete('staff_id-'.$order_id.'_'.$i);
                     }
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録完了しました。');
@@ -913,7 +913,7 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['close'])) {
                 // 推奨スタッフのセッションの削除
                 for($i=0; $i<$row; $i++) {
-                    $this->Session->delete('staff_id'.$i);
+                    $this->Session->delete('staff_id-'.$order_id.'_'.$i);
                 }
             // カレンダー変更
             } else {
@@ -1195,6 +1195,8 @@ class CaseManagementController extends AppController {
         $this->set('cell_row', $cell_row);
         $this->set('cell_col', $cell_col);
         $session_id = null;
+        $datas2 = null;
+        $this->set('datas2', $datas2);
         //$session_name = null;
         // テーブルの設定
         $this->StaffMaster->setSource('staff_'.$selected_class);
@@ -1223,7 +1225,7 @@ class CaseManagementController extends AppController {
                     $this->set('datas1', $datas1);
                 }
                 // セッション
-                $session_id = $this->Session->read('staff_id'.$col);
+                $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
                 // 選択済みスタッフ
                 if (!empty($session_id)) {
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
@@ -1241,7 +1243,7 @@ class CaseManagementController extends AppController {
                 $id_array = array_keys($this->request->data['select']);
                 $id = $id_array[0];
                 // 選択は５つまで
-                $session_id = $this->Session->read('staff_id'.$col);
+                $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
                 if (count($session_id) == 5) {
                     $this->Session->setFlash('【エラー】選択できるのは5つまでです。');
                     $this->redirect(array('action' => 'select', $order_id ,$col));
@@ -1262,7 +1264,7 @@ class CaseManagementController extends AppController {
                         $session_id[] += $id;
                     }
                 }
-                $this->Session->write('staff_id'.$col, $session_id);
+                $this->Session->write('staff_id-'.$order_id.'_'.$col, $session_id);
                 $this->log($session_id, LOG_DEBUG);
                 // 選択済みスタッフ
                 $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
@@ -1278,7 +1280,7 @@ class CaseManagementController extends AppController {
             // 決定
             } elseif (isset($this->request->data['decision'])) {
                 $this->log($this->request->data, LOG_DEBUG);
-                $staff_ids = $this->Session->read('staff_id'.$col);
+                $staff_ids = $this->Session->read('staff_id-'.$order_id.'_'.$col);
                 if (empty($staff_ids)) {
                     //$this->Session->setFlash('【エラー】スタッフが選択されていません。');
                     //return;
@@ -1304,21 +1306,52 @@ class CaseManagementController extends AppController {
                 $fields = array('staff_ids'.($col+1)); 
                 // 更新登録
                 if ($this->OrderInfo->save($data, false, $fields)) {
+                    $this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
                     // 成功
-                    $this->Session->delete('staff_id'.$col);
+                    $this->Session->delete('staff_id-'.$order_id.'_'.$col);
                     // メッセージ
                     $this->Session->setFlash('スタッフを選択完了しました。閉じてください。');
-                    //$this->redirect(array('action'=>'select/'.$order_id.'/'.$col.'?flag=close'));
+                    $this->redirect(array('action'=>'select', $order_id, $col));
                 }
             // 消去
             } elseif (isset($this->request->data['erasure'])) {
-                $this->Session->delete('staff_id'.$col);
+                $id_array = array_keys($this->request->data['erasure']);
+                $staff_id = $id_array[0];
+                $staff_ids = $this->Session->read('staff_id-'.$order_id.'_'.$col);
+                $key =array_search($staff_id, $staff_ids);
+                unset($staff_ids[$key]);
+                $this->Session->write('staff_id-'.$order_id.'_'.$col, $staff_ids);
+                // データベースに保存
+                // 登録する内容を設定
+                $this->log($staff_ids, LOG_DEBUG);
+                if (empty($staff_ids)) {
+                    $values = '';
+                } else {
+                    $values = implode(',', $staff_ids);
+                }
+                $data = array('OrderInfo' => 
+                    array('id' => $order_id, 'staff_ids'.($col+1) => $values));
+                // 登録する項目（フィールド指定）
+                $fields = array('staff_ids'.($col+1)); 
+                // 更新登録
+                if ($this->OrderInfo->save($data, false, $fields)) {
+                    //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
+                    // 成功
+                    //$this->Session->delete('staff_id-'.$order_id.'_'.$col);
+                    // メッセージ
+                    //$this->Session->setFlash('スタッフを選択完了しました。閉じてください。');
+                    $this->redirect(array('action'=>'select', $order_id, $col));
+                }
+            // 閉じる
+            } elseif (isset($this->request->data['close'])) {
+                $this->Session->delete('staff_id-'.$order_id.'_'.$col);
             } else {
                 
             }
         } elseif ($this->request->is('get')) {
             // セッション
-            $session_id = $this->Session->read('staff_id'.$col);
+            $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
+            $session_id = null;
             // 選択済みスタッフ
             if (!empty($session_id)) {
                 $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
@@ -1330,8 +1363,10 @@ class CaseManagementController extends AppController {
                     }
                 }
                 $this->set('datas2', $datas2);
+                $this->log($datas2, LOG_DEBUG);
             // セッションがない場合、GET値で
             } else {
+                /**
                 $staff = null;
                 for ($i=0; $i<5 ;$i++) {
                     if (empty($this->request->query('s'.($i+1)))) {
@@ -1339,19 +1374,27 @@ class CaseManagementController extends AppController {
                     }
                     $staff[$i] = $this->request->query('s'.($i+1));
                 }
-                // セッション保存
-                $this->Session->write('staff_id'.$col, $staff);
-                if (empty($staff)) {
+                 * 
+                 */
+                // データベースから
+                $result = $this->OrderInfo->find('first', array('fields'=>array('id', 'staff_ids'.($col+1)), 'conditions'=>array('id'=>$order_id)));
+                $this->log($result, LOG_DEBUG);
+                if (empty($result['OrderInfo']['staff_ids'.($col+1)])) {
+                    $staff = null;
                     $datas2 = null;
                 } else {
+                    $staff = explode(',', $result['OrderInfo']['staff_ids'.($col+1)]);
+                    // セッション保存
+                    $this->Session->write('staff_id-'.$order_id.'_'.$col, $staff);
                     // セッション
-                    $session_id = $this->Session->read('staff_id'.$col);
+                    $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     foreach($session_id as $key=>$staff_id) {
                         $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
                     }
                 }
                 $this->set('datas2', $datas2);
+                $this->log($datas2, LOG_DEBUG);
             }
         } else {
             

@@ -117,6 +117,10 @@ function setArray($array) {
         $ret = '';
     } else {
         foreach($array as $key=>$value) {
+            if (empty($value['StaffMaster']['name'])) {
+                $ret = '';
+                continue;
+            }
             if ($key == 0) {
                 $ret = $value['StaffMaster']['name'];
             } else {
@@ -126,7 +130,28 @@ function setArray($array) {
     }
     return $ret;
 }
-// 推奨スタッフ
+// 配列を処理する2
+function setArray2($array) {
+    $ret = '';
+    foreach($array as $key=>$value) {
+        if (empty($value)) {
+            if ($key == 0) {
+                $ret = 's1=';
+            } else {
+                $ret = $ret.'&s'.($key+1).'=';
+            }
+        } else {
+            if ($key == 0) {
+                $ret = 's1='.$value;
+            } else {
+                $ret = $ret.'&s'.($key+1).'='.$value;
+            }
+        }
+    }
+
+    return $ret;
+}
+// 前月スタッフ
 function setRecoStaff($count, $datas) {
     if (empty($datas[$count])) {
         $ret = '';
@@ -141,6 +166,22 @@ function setRecoStaff($count, $datas) {
         }
     }
     return $ret;
+}
+// 前月スタッフ（隠しデータ）
+function setRecoStaff2($count, $datas) {
+    if (empty($datas[$count])) {
+        $ret = '';
+    } else {
+        asort($datas[$count]);
+        foreach ($datas[$count] as $value) {
+            if (empty($ret)) {
+                $ret = $value['StaffMaster']['id'];
+            } else {
+                $ret = $ret.','.$value['StaffMaster']['id'];
+            }
+        }
+    }
+    return '<span id="'.$ret.'"></span>';
 }
 ?>
 <?php
@@ -181,7 +222,7 @@ onload = function() {
         //ページの表示準備が整ったのでコンテンツをフェードインさせる
         $("#table1").fadeIn();
     });
-    getCELL();
+    //getCELL();
     // シフト編集モードのセット
     if (getCookie("edit") == 1) {
         for(i=1; i<=18; i++) {
@@ -201,7 +242,7 @@ function setCalender(year, month) {
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;
     var value2 = options2[month.options.selectedIndex].value;
-    location.href="<?=ROOTDIR ?>/ShiftManagement/test2?date=" +value1 + "-" + value2;
+    location.href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=" +value1 + "-" + value2;
 }
 // 職種の詳細を隠す
 function setHidden() {
@@ -298,17 +339,16 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex)+'?date=<?=$year.'-'.$month ?>','スタッフ選択','width=800,height=600,scrollbars=yes');
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex)
+            +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>&pre_month='+Cell.getElementsByTagName("span")[2].id,'スタッフ選択','width=800,height=600,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
       // イベントリスナーaddEventListener,attachEventメソッド
-/**
 try{
  window.addEventListener("load",getCELL,false);
      }catch(e){
    window.attachEvent("onload",getCELL);
   }
-**/
 </script>
 <script>
 function doAccount(year, month, mode) {
@@ -370,7 +410,7 @@ function doAccount(year, month, mode) {
             }
         }
     }
-    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/test2');
+    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule');
     form.setAttribute('method', 'post');
     form.submit();
 }
@@ -666,7 +706,9 @@ $(document).ready(function() {
                 <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
-                    <?php echo setArray($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
+                    <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
+                    <input type="button" value="スタッフ選択" 
+                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
                 <?php } ?>
             </tr>
@@ -691,11 +733,11 @@ $(document).ready(function() {
                     <?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;', 
                         'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>年<br>
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/test2?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
+                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
                     <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
                         'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>月
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/test2?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
+                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php for ($count=0; $count<$row; $count++){ ?>
@@ -757,6 +799,11 @@ $(document).ready(function() {
                     <?php } else { ?>
                     <?php //echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
                     <?php } ?>
+                    <span id="<?=setData($datas2,'order_id',$count,$record) ?>"></span>
+                    <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
+                    <!-- 前月スタッフのセット -->
+                    <?=setRecoStaff2($count, $list_recommend) ?>
+                    <!-- 前月スタッフのセット END -->
                     <?php
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
@@ -799,3 +846,7 @@ $(document).ready(function() {
 </div>
 <?php echo $this->Form->end(); ?>  
 </div>
+
+<?php
+ print_r($datas2[0]['OrderInfoDetail']['shokushu_num']);
+?>

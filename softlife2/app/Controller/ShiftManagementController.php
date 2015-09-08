@@ -185,7 +185,7 @@ class ShiftManagementController extends AppController {
         $datas1 = null;
         foreach ($result1 as $key=>$value) {
             for ($i=0; $i<10; $i++) {
-                $this->log($value['CaseManagement']['entrepreneur2'], LOG_DEBUG);
+                //$this->log($value['CaseManagement']['entrepreneur2'], LOG_DEBUG);
                 if ($i == 0) {
                     if (empty($value['CaseManagement']['entrepreneur1'])) {
                         $datas1[$value['CaseManagement']['id']] = '';
@@ -266,25 +266,25 @@ class ShiftManagementController extends AppController {
         $this->set('list_cutoff', $list_cutoff);
         // 推奨スタッフ
         for ($i=1; $i<=20; $i++) {
-            $results = $this->OrderInfo->find('list', array('fields'=>array('id', 'staff_ids'.$i)));
-            foreach ($results as $key=>$result) {
-                if (empty($result)) {
-                    $list_staffs2[$key][$i] = '';
-                    continue;
-                }
-                $list_staffs[$key][$i] = explode(',', $result);
-                foreach($list_staffs[$key][$i] as $j=>$staff_id) {
+            $results = $this->OrderInfo->find('all', array('fields'=>array('id', 'staff_ids'.$i)));
+            //$this->log($results, LOG_DEBUG);
+            foreach ($results as $result) {
+                $list_staffs[$result['OrderInfo']['id']][$i] = explode(',', $result['OrderInfo']['staff_ids'.$i]);
+                
+                foreach($list_staffs[$result['OrderInfo']['id']][$i] as $j=>$staff_id) {
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
-                    $list_staffs2[$key][$i][$j] = $this->StaffMaster->find('first', array('fields'=>'name', 'conditions'=>array('id'=>$staff_id)));
+                    $list_staffs2[$result['OrderInfo']['id']][$i][$j] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
                 }
             }
         }
-        //$this->log($list_staffs2, LOG_DEBUG);
-        $this->set('list_staffs', $list_staffs2);
+        $this->log($list_staffs, LOG_DEBUG);
+        $this->log($list_staffs2, LOG_DEBUG);
+        $this->set('list_staffs', $list_staffs);
+        $this->set('list_staffs2', $list_staffs2);
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            $this->log($this->request->data, LOG_DEBUG);
+            //$this->log($this->request->data, LOG_DEBUG);
             $data = $this->request->data;
             if (isset($data['mode'])) {
                 $row = $data['row'];
@@ -403,8 +403,9 @@ class ShiftManagementController extends AppController {
                     }
                     $datas3[$key][$i-1] = $results['WorkTable']['d'.$i];
                 }
+                //$this->log($datas3, LOG_DEBUG);
                 if (empty($datas3[$key])) {
-                    $list_recommend = null;
+                    $list_recommend[$key] = null;
                 } else {
                     $datas3[$key] = array_filter($datas3[$key], 'strlen');      // 空を削除
                     $datas3[$key] = array_unique($datas3[$key]);                // 重複を削除
@@ -417,7 +418,7 @@ class ShiftManagementController extends AppController {
                 }
             }
             $this->set('list_recommend', $list_recommend);
-            $this->log($list_recommend, LOG_DEBUG);
+            //$this->log($list_recommend, LOG_DEBUG);
             // カレンダー部分のデータ・セット
 
             $record = $this->OrderInfoDetail->find('count', $option);
@@ -970,7 +971,7 @@ class ShiftManagementController extends AppController {
                 }
                 // データがなければ処理停止
                 if (empty($data2)) {
-                    $this->redirect(array('action'=>'test2', '?date='.date('Y-m', strtotime($data['month']))));
+                    $this->redirect(array('action'=>'$list_staffs', '?date='.date('Y-m', strtotime($data['month']))));
                     return;
                 }
                 // 該当月を削除
@@ -1236,7 +1237,7 @@ class ShiftManagementController extends AppController {
     }
 
     // スタッフの選択（小画面）
-    public function select($order_id = null, $col = null, $cell_row = null, $cell_col = null) {
+    public function select($order_id = null, $col = null, $cell_row = null, $cell_col = null, $shokushu_num = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -1248,6 +1249,8 @@ class ShiftManagementController extends AppController {
         $this->set('datas1', null);
         $datas2 = null;
         $this->set('datas2', $datas2);
+        $this->set('order_id', $order_id);
+        $this->set('shokushu_num', $shokushu_num);
         $staff_cell = $this->Session->read('staff_cell');
         //$this->Session->write('staff_cell', $staff_cell);
         // テーブルの設定
@@ -1258,8 +1261,34 @@ class ShiftManagementController extends AppController {
         } else {
             $month = date('Y-m');
         }
-        // シフト編集モード
-        //$this->Session->write('edit', 1);
+        // 推奨スタッフ
+        for ($i=1; $i<=20; $i++) {
+            $results = $this->OrderInfo->find('all', array('fields'=>array('id', 'staff_ids'.$i)));
+            //$this->log($results, LOG_DEBUG);
+            foreach ($results as $result) {
+                $list_staffs[$result['OrderInfo']['id']][$i] = explode(',', $result['OrderInfo']['staff_ids'.$i]);
+                
+                foreach($list_staffs[$result['OrderInfo']['id']][$i] as $j=>$staff_id) {
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $list_staffs2[$result['OrderInfo']['id']][$i][$j] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                }
+            }
+        }
+        $this->set('list_staffs2', $list_staffs2);
+        $this->log($list_staffs2, LOG_DEBUG);
+        //　前月スタッフ
+        if (isset($this->request->query['pre_month'])) {
+            $staff_ids = explode(',', $this->request->query['pre_month']);
+        } else {
+            $staff_ids = null;
+        }
+        //$this->log($staff_ids, LOG_DEBUG);
+        foreach($staff_ids as $key=>$staff_id) {
+            $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+            $data_staff[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+        }
+        //$this->log($data_staff, LOG_DEBUG);
+        $this->set('data_staff', $data_staff);
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
