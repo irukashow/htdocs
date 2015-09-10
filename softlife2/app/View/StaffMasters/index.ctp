@@ -206,7 +206,7 @@ function chkHankaku(textbox) {
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_id', array('type'=>'text', 'label' => false, 'placeholder'=>'登録番号', 'style' => 'width:90%;', 'onchange' => 'chkHankaku(this);')); ?>
       </td>
-      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名', 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名（漢字 or かな）', 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;"><?php echo $this->Form->input('search_age', array('type'=>'text', 'label' => false, 'placeholder'=>'年齢', 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">
           <?php echo $this->Form->input('search_tantou', 

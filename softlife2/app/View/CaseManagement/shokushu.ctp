@@ -14,7 +14,7 @@
 <!-- 見出し１ END -->
 
 <div style="height: 900px;">
-<?php echo $this->Form->create('CaseManagement'); ?>
+<?php echo $this->Form->create('Item'); ?>
 <?php
     echo $this->Paginator->numbers (
         array (

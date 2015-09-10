@@ -46,6 +46,12 @@ class LogController extends AppController {
         $this->set("headline", 'ログイン履歴');
 
         $this->set('datas', $this->paginate('LoginLogs'));
+        
+        // エリア配列
+        $conditions = array('item' => 1);
+        $list_area = $this->Item->find('list', array('fields'=>array('id', 'value'), 'conditions'=>$conditions));
+        $list_area += array('' => '');
+        $this->set('list_area', $list_area);
     }
     
     // スタッフマスタ更新履歴

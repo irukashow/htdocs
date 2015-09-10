@@ -17,16 +17,17 @@
 ?>
 <div style="clear:both;"></div>
 <!--- 職種マスタ管理 START --->
-<table border="1" width="50%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="left">
+<table border="1" width="60%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="left">
   <tr class="col">
-    <th width="15%"><?php echo $this->Paginator->sort('item',"Item");?></th>
-    <th width="15%"><?php echo $this->Paginator->sort('id',"ID");?></th>
+    <th width="10%"><?php echo $this->Paginator->sort('item',"Item");?></th>
+    <th width="10%"><?php echo $this->Paginator->sort('id',"ID");?></th>
+    <th width="10%"><?php echo $this->Paginator->sort('sequence',"シーケンス");?></th>
     <th width="60%"><?php echo $this->Paginator->sort('value','値');?></th>
     <th width="20%"> </th>
   </tr>
   <tr class="col">
     <?php echo $this->Form->create('Item0', array('name' => 'form')); ?>
-      <td colspan="4">
+      <td colspan="5">
         <?php echo $this->Form->input('item',array('type' => 'select', 'label'=>false,'div'=>false,'style'=>'width:30%;padding:3px;', 
             'onchange' => 'form.submit();', 'options' => $list_item)); ?>
     </td>
@@ -36,6 +37,7 @@
     <?php echo $this->Form->create('Item'); ?>
     <td><?php echo $this->Form->input('item',array('label'=>false,'div'=>false,'maxlength'=>'5','style'=>'width:90%;padding:3px;')); ?></td>
     <td><?php echo $this->Form->input('id',array('label'=>false,'div'=>false,'maxlength'=>'5','style'=>'width:90%;padding:3px;')); ?></td>
+    <td><?php echo $this->Form->input('sequence',array('label'=>false,'div'=>false,'maxlength'=>'5','style'=>'width:90%;padding:3px;')); ?></td>
     <td>
         <?php echo $this->Form->input('value',array('label'=>false,'div'=>false,'maxlength'=>'30','style'=>'width:97%;padding:3px;')); ?>
     </td>
@@ -49,6 +51,7 @@
     <?php echo $this->Form->create('Item2'); ?>
     <td><?php echo $data['Item']['item']; ?></td>
     <td><?php echo $data['Item']['id']; ?></td>
+    <td><?php echo $data['Item']['sequence']; ?></td>
     <td><?php echo $data['Item']['value']; ?></td>
     <td align="center">
         <?php echo $this->Form->input('item', array('type'=>'hidden', 'value' => $data['Item']['item'])); ?>

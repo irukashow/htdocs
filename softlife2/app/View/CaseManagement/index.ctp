@@ -72,6 +72,7 @@ function doSubmit(value, flag) {
 </script>
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
+<?php echo $this->Form->create('CaseManagement', array('name' => 'form')); ?>
 <!-- 見出し１ -->
 <div id='headline' style="padding:10px 10px 10px 10px;">
     ★ 案件管理
@@ -114,9 +115,8 @@ function doSubmit(value, flag) {
 </div>
 <!-- 見出し２ END -->
 
-<?php echo $this->Form->create('CaseManagement', array('id' => 'frm')); ?>
 <!-- ページネーション -->
-<div class="pageNav03" style="margin-top:-20px; margin-bottom: 30px;">
+<div class="pageNav03" style="margin-top:-5px; margin-bottom: 30px;">
 <?php
 	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
 	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));

@@ -1,3 +1,4 @@
+<?php require 'schedule_element.ctp'; ?>
 <?php
     //echo $this->Html->script( 'tools');
     //echo $this->Html->script('dropzone');
@@ -12,25 +13,7 @@
     //echo $this->Html->css('jquery.timepicker');
     echo $this->Html->css('style_1');
 ?>
-<?php
-    // 初期値
-    //$y = date('Y');
-    $y = date('Y', strtotime('+1 month'));
-    //$m = date('n');
-    $m = date('n', strtotime('+1 month'));
 
-    // 日付の指定がある場合
-    if(!empty($_GET['date']))
-    {
-            $arr_date = explode('-', $_GET['date']);
-
-            if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
-            {
-                    $y = (int)$arr_date[0];
-                    $m = (int)$arr_date[1];
-            }
-    }
-?>
 <?php
 $font_normal = "font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;";
 //JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
@@ -454,7 +437,7 @@ $(document).ready(function() {
     &nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/index" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
     &nbsp;
-    <b><font Style="font-size:95%;color: yellow;">[稼働表]</font></b>        <!-- alert("制作中");return false; -->
+    <b><font Style="font-size:95%;color: yellow;">[シフト作成]</font></b>        <!-- alert("制作中");return false; -->
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
     &nbsp;

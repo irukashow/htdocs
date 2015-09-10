@@ -56,21 +56,7 @@ class CaseManagementController extends AppController {
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
         $selected_class = $this->Session->read('selected_class');
-        // 都道府県のセット
-        if (substr($selected_class, 0 ,1) == 1) {
-            // 大阪（関西地方）
-            $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 24, 'id <= ' => 30));
-        } elseif (substr($selected_class, 0, 1) == 2) {
-            // 東京（関東地方）
-            $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 8, 'id <= ' => 14));
-        } elseif (substr($selected_class, 0, 1) == 3) {
-            // 名古屋（中部地方）
-            $conditions1 = array('item' => 10, 'AND' => array('id >= ' => 15, 'id <= ' => 24));
-        }
-        $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
-        $this->set('pref_arr', $pref_arr);
         // 登録担当者配列
-        //$this->log($this->getTantou(), LOG_DEBUG);
         $this->set('getTantou', $this->getTantou());
         // テーブルの設定
         //$this->CaseManagement->setSource('CaseManagement');
@@ -93,14 +79,10 @@ class CaseManagementController extends AppController {
         $customer_array = $this->Customer->find('list', array('fields'=>array('id', 'corp_name')));
         $customer_array += array(''=>'');
         $this->set('customer_array', $customer_array);
+        //$this->log($customer_array, LOG_DEBUG);
         // 表示件数の初期値
         $this->set('limit', $limit);
         $conditions1 = null;$conditions2 = null;$conditions3 = null;
-        $line1 = null;$line2 = null;$line3 = null;
-        $station1 = null;$station2 = null;$station3 = null;
-        $array_11 = null;$array_12 = null;$array_13 = null;
-        $array_21 = null;$array_22 = null;$array_23 = null;
-        $array_31 = null;$array_32 = null;$array_33 = null;
         // Paginationの設定
         $this->paginate = array(
         //モデルの指定
@@ -150,49 +132,101 @@ class CaseManagementController extends AppController {
                 $this->Session->setFlash($msg.'処理を完了しました。');
                 return;
             // 絞り込み
-            } elseif(isset($this->request->data['search1'])) {
-                // 登録番号で検索
-                if (!empty($this->data['CaseManagement']['search_id'])){
-                    $search_id = $this->data['CaseManagement']['search_id'];
-                    $conditions2 += array('id' => $search_id);
+            } elseif(isset($this->request->data['search'])) {
+                // 依頼主で検索（部分一致）
+                if (!empty($this->data['CaseManagement']['search_client'])){
+                    $search_client_name = $this->data['CaseManagement']['search_client'];
+                    $result_arr = preg_grep('/'.$search_client_name.'/', $customer_array);
+                    if (!empty($result_arr)) {
+                        $conditions2 += array('client' => key($result_arr));
+                    } else {
+                        $conditions2 += array('client' => 0);
+                    }
                 }
-                // 氏名で検索
-                if (!empty($this->data['CaseManagement']['search_name'])){
-                    $search_name = $this->data['CaseManagement']['search_name'];
-                    //$conditions2 += array( 'OR' => array(array('CaseManagement.name_sei LIKE ' => '%'.$search_name.'%'), array('CaseManagement.name_mei LIKE ' => '%'.$search_name.'%')));
-                    $conditions2 += array('CONCAT(CaseManagement.name_sei, CaseManagement.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
-                    //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+                // 事業主で検索（部分一致）
+                if (!empty($this->data['CaseManagement']['search_entrepreneur'])){
+                    $search_entrepreneur = $this->data['CaseManagement']['search_entrepreneur'];
+                    $result_arr = preg_grep('/'.$search_entrepreneur.'/', $customer_array);
+                    $conditions = null;
+                    if (!empty($result_arr)) {
+                        for ($i=1; $i<=10; $i++) {
+                            if ($i == 1) {
+                                $conditions = array('entrepreneur'.$i => key($result_arr));
+                            } else {
+                                $conditions += array('entrepreneur'.$i => key($result_arr));
+                            }
+                        }
+                        $conditions2 += array('OR' => $conditions);
+                    } else {
+                        $conditions2 += array('entrepreneur1' => 0);
+                    }
+                    $this->log($result_arr, LOG_DEBUG);
                 }
-                // 年齢で検索
-                if (!empty($this->data['CaseManagement']['search_age'])){
-                    $search_age = $this->data['CaseManagement']['search_age'];
-                    $conditions2 += array('CaseManagement.age' => $search_age);
+                // 契約形態で検索
+                if (!empty($this->data['CaseManagement']['search_contract'])){
+                    $search_contract = $this->data['CaseManagement']['search_contract'];
+                    $conditions2 += array('CaseManagement.contract_type' => $search_contract);
+                    //$this->log($search_contract, LOG_DEBUG);
                 }
-                // 都道府県
-                if (!empty($this->data['CaseManagement']['search_area'])){
-                    $search_area = $this->data['CaseManagement']['search_area'];
+                // 開始日
+                if (!empty($this->data['CaseManagement']['search_start_date'])){
+                    $start_date = $this->data['CaseManagement']['search_start_date'];
                     //$this->log($search_area);
-                    $conditions2 += array('CONCAT(CaseManagement.address1_2, CaseManagement.address2) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_area).'%');
+                    $conditions2 += array('start_date' => $start_date);
                 }
-            // 担当者で絞り込み
-            } elseif (!empty($this->data['CaseManagement']['search_tantou'])){
-                $search_tantou = $this->data['CaseManagement']['search_tantou'];
-                $conditions2 += array('CaseManagement.tantou' => $search_tantou);
-            // 年齢での絞り込み
-            } elseif (isset($this->request->data['search2'])) {
-                //$this->Session->setFlash($this->request->data['CaseManagement']['search_age_lower'].'-'.$this->request->data['CaseManagement']['search_age_upper']);
-                $lower = $this->request->data['CaseManagement']['search_age_lower'];
-                $upper = $this->request->data['CaseManagement']['search_age_upper'];
-                if (!empty($lower) && !empty($upper)) {
-                    $conditions2 += array(
-                        array('CaseManagement.age >=' => $this->request->data['CaseManagement']['search_age_lower']), 
-                        array('CaseManagement.age <= ' => $this->request->data['CaseManagement']['search_age_upper']));
-                } elseif (!empty($lower) && empty($upper)) {
-                    $conditions2 += array('CaseManagement.age >=' => $this->request->data['CaseManagement']['search_age_lower']);
-                } elseif (empty($lower) && !empty($upper)) {
-                    $conditions2 += array('CaseManagement.age <= ' => $this->request->data['CaseManagement']['search_age_upper']);
-                } else {
-                    $this->Session->setFlash('年齢を入力してください。');
+                // 担当者（弊社）
+                if (!empty($this->data['CaseManagement']['search_tantou'])){
+                    $tantou = $this->data['CaseManagement']['search_tantou'];
+                    //$this->log($search_area);
+                    $conditions2 += array('CaseManagement.username' => $tantou);
+                }
+                // 就業場所住所（部分一致）
+                if (!empty($this->data['CaseManagement']['search_place'])){
+                    $search_area = $this->data['CaseManagement']['search_place'];
+                    //$this->log($search_area);
+                    $conditions2 += array('CaseManagement.address LIKE ' => '%'.$search_area.'%');
+                }
+                // 職種
+                if (!empty($this->data['CaseManagement']['search_shokushu'])){
+                    $search_shokushu = $this->data['CaseManagement']['search_shokushu'];
+                    // オーダー内容用
+                    $joins = array(
+                      array(
+                        'type' => 'left',// innerもしくはleft
+                        'table' => 'order_infos',
+                        'alias' => 'OrderInfo',
+                        'conditions' => array(
+                          'OrderInfoDetail.order_id = OrderInfo.id', //ここ文字列なので注意
+                        ),
+                      ),
+                    );
+                    $conditions4 = array('OrderInfoDetail.class'=>$selected_class, 
+                        'OrderInfoDetail.shokushu_id'=>$search_shokushu,
+                        'OR' => array(
+                            array('OrderInfo.period_to >= '=>date('Ym').'01', 'OrderInfo.period_to <= '=>date('Ym', strtotime('+1 month')).'31'),
+                            array('OrderInfo.period_from >= '=>date('Ym').'01', 'OrderInfo.period_from <= '=>date('Ym', strtotime('+1 month')).'31')
+                            )
+                        );
+                    $result = $this->OrderInfoDetail->find('all', 
+                            array('conditions'=>$conditions4, 'fields'=>array('OrderInfoDetail.case_id', 'OrderInfoDetail.shokushu_id'), 
+                                'joins'=>$joins, 
+                                'order'=>array('OrderInfoDetail.case_id', 'OrderInfoDetail.order_id', 'OrderInfoDetail.shokushu_num')));
+                    foreach ($result as $key=>$value) {
+                        $array1[$key] = $value['OrderInfoDetail']['case_id'];
+                    }
+                    if (!empty($array1)) {
+                        $array2 = array_unique($array1);
+                    }
+                    $array3 = array();
+                    if (!empty($array2)) {
+                        foreach($array2 as $key=>$value) {
+                            $array3[$key] = array('CaseManagement.id' => $value);
+                        }
+                        $conditions2 += array('OR' => $array3);
+                    } else {
+                        $conditions2 += array('CaseManagement.id' => 0);
+                    }
+                    //$this->log($conditions2, LOG_DEBUG);
                 }
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
@@ -212,8 +246,10 @@ class CaseManagementController extends AppController {
             $conditions2 += array('class'=>$selected_class);
             // ページネーションの実行
             //$this->request->params['named']['page'] = 1;
-            $this->set('datas', $this->paginate('CaseManagement', $conditions2));
+            $datas = $this->paginate('CaseManagement', $conditions2);
+            $this->set('datas', $datas);
             //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
+            
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
             if ($window == 'profile') {
@@ -236,8 +272,7 @@ class CaseManagementController extends AppController {
             }
             // テーブル変更
             //$this->CaseManagement->setSource('staff_'.$this->Session->read('selected_class'));
-            // 年齢の計算
-            $this->setAge($this->Session->read('selected_class'));
+
             // 初期表示
             if ($flag == 1) {
                 $conditions3 = array('kaijo_flag' => 1);
@@ -249,60 +284,14 @@ class CaseManagementController extends AppController {
             }
             $this->set('flag', $flag);
             // 絞り込み条件の適応
-            if($this->Session->check('filter')) {
-                $filter = $this->Session->read('filter');
-                if ($filter == '0') {
-                    $conditions3 = $conditions3;
-                } else {
-                    $conditions3 = $conditions3 + $filter;
-                }
-            } else {
-                $conditions3 = $conditions3;
-            }
             $conditions3 += array('class'=>$selected_class);
             //$this->request->params['named']['page'] = 1;
             $datas = $this->paginate('CaseManagement', $conditions3);
             $this->set('datas', $datas);
             
-            if (!empty($datas)) {
-                // オーダー内容用
-                foreach($datas as $key=>$data) {
-                    $joins = array(
-                      array(
-                        'type' => 'left',// innerもしくはleft
-                        'table' => 'order_infos',
-                        'alias' => 'OrderInfo',
-                        'conditions' => array(
-                          'OrderInfoDetail.order_id = OrderInfo.id', //ここ文字列なので注意
-                        ),
-                      ),
-                    );
-                    $conditions2 = array('OrderInfoDetail.case_id'=>$data['CaseManagement']['id'], 
-                        'OR' => array(
-                            array('OrderInfo.period_to >= '=>date('Ym').'01', 'OrderInfo.period_to <= '=>date('Ym', strtotime('+1 month')).'31'),
-                            array('OrderInfo.period_from >= '=>date('Ym').'01', 'OrderInfo.period_from <= '=>date('Ym', strtotime('+1 month')).'31')
-                            )
-                        );
-                    $result_order[$key] = $this->OrderInfoDetail->find('all', 
-                            array('conditions'=>$conditions2, 'fields'=>array('*', 'COUNT(OrderInfoDetail.shokushu_id) AS cnt'), 
-                                'group'=>array('OrderInfoDetail.shokushu_id', 'OrderInfoDetail.shokushu_memo'), 'joins'=>$joins, 
-                                'order'=>array('OrderInfoDetail.order_id', 'OrderInfoDetail.shokushu_num')));
-                }
-                $this->log($result_order, LOG_DEBUG);
-                //$this->log('レコード数は、'.count($result_order), LOG_DEBUG);
-                $this->set('datas_order', $result_order);
-                // オーダー情報の更新日
-                foreach($datas as $key=>$data) {
-                    $conditions2 = array('case_id'=>$data['CaseManagement']['id'], 'status LIKE '=>'2%');
-                    $result[$key] = $this->CaseLog->find('first', array('conditions'=>$conditions2, 'order'=>array('created'=>'desc')));
-                }
-                //$this->log($result, LOG_DEBUG);
-                $this->set('order_update_date', $result);
-            } else {
-                $this->set('order_update_date', null);
-            }
-            
         } else {
+            /**
+            $this->log('ここ', LOG_DEBUG);
             // 所属の取得とセット
             //$this->selected_class = $this->Session->read('selected_class');
             //$this->set('selected_class', $this->selected_class);
@@ -323,16 +312,50 @@ class CaseManagementController extends AppController {
             $this->set('datas', $this->paginate('CaseManagement', $conditions3));
             //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
             //$this->log('そと通ってる', LOG_DEBUG);
+             * 
+             */
         }
         $this->set('selected_class', $this->Session->read('selected_class'));
         
-        // 路線・駅のコンボ値セット
-        $this->set('line1', $line1);
-        $this->set('line2', $line2);
-        $this->set('line3', $line3);
-        $this->set('station1', $station1);
-        $this->set('station2', $station2);
-        $this->set('station3', $station3);        
+        // 共通処理
+        if (!empty($datas)) {
+            // オーダー内容用
+            foreach($datas as $key=>$data) {
+                $joins = array(
+                  array(
+                    'type' => 'left',// innerもしくはleft
+                    'table' => 'order_infos',
+                    'alias' => 'OrderInfo',
+                    'conditions' => array(
+                      'OrderInfoDetail.order_id = OrderInfo.id', //ここ文字列なので注意
+                    ),
+                  ),
+                );
+                $conditions2 = array('OrderInfoDetail.case_id'=>$data['CaseManagement']['id'], 
+                    'OR' => array(
+                        array('OrderInfo.period_to >= '=>date('Ym').'01', 'OrderInfo.period_to <= '=>date('Ym', strtotime('+1 month')).'31'),
+                        array('OrderInfo.period_from >= '=>date('Ym').'01', 'OrderInfo.period_from <= '=>date('Ym', strtotime('+1 month')).'31')
+                        )
+                    );
+                $result_order[$key] = $this->OrderInfoDetail->find('all', 
+                        array('conditions'=>$conditions2, 'fields'=>array('*', 'COUNT(OrderInfoDetail.shokushu_id) AS cnt'), 
+                            'group'=>array('OrderInfoDetail.shokushu_id', 'OrderInfoDetail.shokushu_memo'), 'joins'=>$joins, 
+                            'order'=>array('OrderInfoDetail.order_id', 'OrderInfoDetail.shokushu_num')));
+            }
+            //$this->log($result_order, LOG_DEBUG);
+            //$this->log('レコード数は、'.count($result_order), LOG_DEBUG);
+            $this->set('datas_order', $result_order);
+            // オーダー情報の更新日
+            foreach($datas as $key=>$data) {
+                $conditions2 = array('case_id'=>$data['CaseManagement']['id'], 'status LIKE '=>'2%');
+                $result[$key] = $this->CaseLog->find('first', array('conditions'=>$conditions2, 'order'=>array('created'=>'desc')));
+            }
+            //$this->log($result, LOG_DEBUG);
+            $this->set('order_update_date', $result);
+        } else {
+            $this->set('order_update_date', null);
+        }
+             
     }
     
     /** 案件情報 **/
@@ -585,7 +608,7 @@ class CaseManagementController extends AppController {
                 $flag = false;
                 $condition1 = array('id' => $case_id);
                 $data = $this->CaseManagement->find('first', array('conditions'=>$condition1));
-                $this->log($data, LOG_DEBUG);
+                //$this->log($data, LOG_DEBUG);
                 for ($j=0; $j<10; $j++) {
                     if (empty($data['CaseManagement']['entrepreneur'.($j+1)])) {
                         continue;
@@ -642,16 +665,28 @@ class CaseManagementController extends AppController {
                     $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
                 }
             } elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
-                // 選択した項目番号
-                $j_array = array_keys($this->request->data['select_billing']);
-                $j = $j_array[0];
-                $this->log($this->request->data, LOG_DEBUG);
-                $this->log($j, LOG_DEBUG);
                 // 依頼主
-                $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
-                $data_client = $this->Customer->find('first', array('conditions' => $condition1));
-                $this->set('data_client', $data_client);
+                if (!empty($this->request->data['CaseManagement']['client'])) {
+                    // 登録する内容を設定
+                    $data = array('CaseManagement' => 
+                        array('id' => $this->request->data['CaseManagement']['id'], 
+                            'client' => $this->request->data['CaseManagement']['client']));
+                    // 登録する項目（フィールド指定）
+                    $fields = array('client'); 
+                    // 更新登録
+                    if ($this->CaseManagement->save($data, false, $fields)) {
+                        // 成功
+                        $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
+                        $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+                        $this->set('data_client', $data_client);
+                    }
+                }
+                
                 // 請求先
+                if (!empty($this->request->data['select_billing'])) {
+                    $j_array = array_keys($this->request->data['select_billing']);
+                    $j = $j_array[0];
+                }
                 for($i=0; $i<10 ;$i++) {
                     if (empty($this->request->data['CaseManagement']['billing_destination'.($i+1)])) {
                         continue;
@@ -674,9 +709,10 @@ class CaseManagementController extends AppController {
                     } else {
                         $data_billing[$i] = $this->Customer->find('first', array('conditions' => $condition2));
                     }
-                    $this->log($data_billing, LOG_DEBUG);
+                    //$this->log($data_billing, LOG_DEBUG);
                 }
                 $this->set('data_billing', $data_billing);
+                
                 $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
             // 登録削除
             } elseif (isset($this->request->data['delete'])) {
@@ -701,7 +737,7 @@ class CaseManagementController extends AppController {
                         $data_billing[$i] = $this->Customer->find('first', array('conditions' => $condition2));
                     }
                 }
-                $this->log($data_billing, LOG_DEBUG);
+                //$this->log($data_billing, LOG_DEBUG);
                 $this->set('data_billing', $data_billing);
             }
         }
@@ -1215,7 +1251,7 @@ class CaseManagementController extends AppController {
                         // 検索条件を設定するコードをここに書く
                         $conditions1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
                     }
-                    // ひらがなでの検索
+                    // ひらがな（カタカナ）での検索
                     foreach( $ary_keyword as $val ){
                         // 検索条件を設定するコードをここに書く
                         $conditions2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2) LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
@@ -1469,10 +1505,17 @@ class CaseManagementController extends AppController {
                     $search_name = $this->data['Customer']['search_corp_name'];
                     $keyword = mb_convert_kana($search_name, 's');
                     $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字での検索
                     foreach( $ary_keyword as $val ){
                         // 検索条件を設定するコードをここに書く
-                        $conditions2[] = array('Customer.corp_name LIKE ' => '%'.$val.'%');
+                        $conditions1_1[] = array('Customer.corp_name LIKE ' => '%'.$val.'%');
                     }
+                    // ひらがなでの検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions1_2[] = array('Customer.corp_name_kana LIKE ' => '%'.$val.'%');
+                    }
+                    $conditions2 += array('OR'=>array($conditions1_1, $conditions1_2));
                 }
                 // 電話番号で絞り込み
                 if (!empty($this->data['Customer']['search_telno'])){
@@ -1514,7 +1557,7 @@ class CaseManagementController extends AppController {
             // ページネーションの実行
             $this->request->params['named']['page'] = 1;
             $this->set('datas', $this->paginate('Customer', $conditions2));
-            $this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
+            //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
             $this->log($conditions2, LOG_DEBUG);
         // GETの処理
         } elseif ($this->request->is('get')) {
@@ -1986,12 +2029,12 @@ class CaseManagementController extends AppController {
                 // 削除
                 $sql = '';
                 $sql = $sql.' DELETE FROM item';
-                $sql = $sql.' WHERE item = 16 AND id = '.$id;
+                $sql = $sql.' WHERE item = 17 AND id = '.$id;
                 $this->log($this->Item->query($sql));
                 // 追加
                 $sql = "";
                 $sql = $sql." INSERT INTO item (item, id, value, sequence, created)";
-                $sql = $sql." VALUES (16, ".$id.", '".$value."', ".$sequence.", now())";
+                $sql = $sql." VALUES (17, ".$id.", '".$value."', ".$sequence.", now())";
                 $this->log($this->Item->query($sql));
                 $this->redirect('shokushu');
                 $this->Session->setFlash('ID='.$id.', 値='.$value.'を追加しました。');
@@ -2000,7 +2043,7 @@ class CaseManagementController extends AppController {
                 $id = $id_array[0];
                 $sql = '';
                 $sql = $sql.' DELETE FROM item';
-                $sql = $sql.' WHERE item = 16 AND id = '.$id;
+                $sql = $sql.' WHERE item = 17 AND id = '.$id;
                 $this->Item->query($sql);
                 $this->redirect('shokushu');
                 $this->Session->setFlash('ID='.$id.'を削除しました。');
@@ -2012,17 +2055,17 @@ class CaseManagementController extends AppController {
                 if ($direction == 'up' && $_sequence != 1) {
                     $sql1 = '';
                     $sql1 = $sql1.' UPDATE item SET sequence = '.$_sequence;
-                    $sql1 = $sql1.' WHERE item = 16 AND sequence = '.($_sequence-1).';';
+                    $sql1 = $sql1.' WHERE item = 17 AND sequence = '.($_sequence-1).';';
                     $sql2 = '';
                     $sql2 = $sql2.' UPDATE item SET sequence = '.($_sequence-1);
-                    $sql2 = $sql2.' WHERE item = 16 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
+                    $sql2 = $sql2.' WHERE item = 17 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
                 } elseif ($direction == 'down') {
                     $sql1 = '';
                     $sql1 = $sql1.' UPDATE item SET sequence = '.$_sequence;
-                    $sql1 = $sql1.' WHERE item = 16 AND sequence = '.($_sequence+1).';';
+                    $sql1 = $sql1.' WHERE item = 17 AND sequence = '.($_sequence+1).';';
                     $sql2 = '';
                     $sql2 = $sql2.' UPDATE item SET sequence = '.($_sequence+1);
-                    $sql2 = $sql2.' WHERE item = 16 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
+                    $sql2 = $sql2.' WHERE item = 17 AND id = '.$_id.' AND sequence = '.$_sequence.';'; 
                 } else {
                     // 無処理
                     $this->redirect('shokushu');

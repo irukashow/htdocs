@@ -110,7 +110,7 @@ class StaffMastersController extends AppController {
         $conditions = array("FIND_IN_SET($selected_class, User.auth)");
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
-        $this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
+        //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
         $conditions0 = array('item' => 16);
@@ -125,7 +125,7 @@ class StaffMastersController extends AppController {
         $array_21 = null;$array_22 = null;$array_23 = null;
         $array_31 = null;$array_32 = null;$array_33 = null;
         
-        $this->log($this->request, LOG_DEBUG);
+        //$this->log($this->request, LOG_DEBUG);
         // POSTの場合
         //if ($this->request->is('post') || $this->request->is('put') || $this->request->is('get')) {
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -197,10 +197,15 @@ class StaffMastersController extends AppController {
                     //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
                     $keyword = mb_convert_kana($search_name, 's');
                     $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字で検索
                     foreach( $ary_keyword as $val ){
-                        // 検索条件を設定するコードをここに書く
-                        $conditions2[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                        // 漢字で検索
+                        $conditions1_1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                        // かなで検索
+                        $conditions1_2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2)  LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
                     }
+                    $conditions2[] = array('OR' => array($conditions1_1, $conditions1_2));
+                    $this->log($conditions2, LOG_DEBUG);
                 }
                 // 年齢で検索
                 if (!empty($this->data['StaffMaster']['search_age'])){

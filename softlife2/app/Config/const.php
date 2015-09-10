@@ -1,8 +1,8 @@
 <?php
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
-define("HEADER","派遣管理システム <font color=#ffff99>SLNext 0.1.7</font>");
-define("FOOTER","SLNext Version 0.1.7 20150805 Copyright &copy; 2015 softlife co., ltd.");
+define("HEADER","派遣管理システム <font color=#ffff99>SLNext 0.1.8</font>");
+define("FOOTER","SLNext Version 0.1.8 20150914 Copyright &copy; 2015 softlife co., ltd.");
 define("ROOTDIR","/softlife2");
 define("MEMBER_URL","http://softlife.biz");
 define("STAFF_URL","http://staff.softlife.biz");

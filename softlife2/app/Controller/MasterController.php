@@ -36,6 +36,7 @@ class MasterController extends AppController {
                 // データを登録する
                 $item = $this->request->data['Item']['item'];
                 $id = $this->request->data['Item']['id'];
+                $sequence = $this->request->data['Item']['sequence'];
                 $value = $this->request->data['Item']['value'];
                 // 削除
                 $sql = '';
@@ -44,8 +45,8 @@ class MasterController extends AppController {
                 $this->log($this->Item->query($sql));
                 // 追加
                 $sql = "";
-                $sql = $sql." INSERT INTO item (item, id, value, created)";
-                $sql = $sql." VALUES (".$item.", ".$id.", '".$value."', now())";
+                $sql = $sql." INSERT INTO item (item, id, value, sequence, created)";
+                $sql = $sql." VALUES (".$item.", ".$id.", '".$value."', '".$sequence."', now())";
                 $this->log($this->Item->query($sql));
                 $this->redirect('index');
                 $this->Session->setFlash('ID='.$id.', 値='.$value.'を追加しました。');
