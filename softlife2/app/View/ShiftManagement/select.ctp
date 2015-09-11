@@ -36,22 +36,23 @@ onload = function() {
 <?php echo $this->Form->create('StaffMaster', array('name'=>'form')); ?>
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+<?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display:none;')); ?>
     <!-- 推奨スタッフ -->
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>（１）推奨スタッフ</th>
         </tr>
-        <?php if (!empty($list_staffs2[$order_id][$shokushu_num])) { ?>
-        <?php foreach ($list_staffs2[$order_id][$shokushu_num] as $key=>$data2) { ?>
+        <?php if (!empty($recommend_staff2)) { ?>
+        <?php foreach ($recommend_staff2 as $key=>$data2) { ?>
         <tr style="background:#ffccff;">
             <td align="center" style="width:15%;">
             <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
+                <input type="hidden" name="staff_id1<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
             </td>
             <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
             <td align="center" style="width:20%;">
-                <?php echo $this->Form->submit('決定', 
-                        array('name' => 'commit['.$data2['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'padding:5px 15px 5px 15px;')); ?>
+                <?php echo $this->Form->submit('選択', 
+                        array('name' => 'select['.$data2['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
@@ -65,8 +66,8 @@ onload = function() {
             <th colspan="3" style='background:#99ccff;text-align: center;'>（２）前月スタッフ</th>
         </tr>
         <?php $flag = 0; ?>
-        <?php if (!empty($data_staff)) { ?>
-        <?php foreach ($data_staff as $key=>$data) { ?>
+        <?php if (!empty($premonth_staff2)) { ?>
+        <?php foreach ($premonth_staff2 as $key=>$data) { ?>
         <?php
             if (empty($data)) {
                 $flag = 1;
@@ -76,12 +77,12 @@ onload = function() {
         <tr style="background:#ffffcc;">
             <td align="center" style="width:15%;">
             <?=$data['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data['StaffMaster']['id']; ?>">
+                <input type="hidden" name="staff_id2<?=$key ?>" value="<?=$data['StaffMaster']['id']; ?>">
             </td>
             <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name']; ?></td>
             <td align="center" style="">
-                <?php echo $this->Form->submit('決定', 
-                        array('name' => 'commit['.$data['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'padding:5px 15px 5px 15px;')); ?>
+                <?php echo $this->Form->submit('選択', 
+                        array('name' => 'select['.$data['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
@@ -97,7 +98,7 @@ onload = function() {
         <?php } ?>
     <!-- その他スタッフ -->
         <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>（３）その他スタッフ</th>
+            <th colspan="3" style='background:#99ccff;text-align: center;'>（３）シフト希望スタッフ</th>
         </tr>
         <?php $flag = 0; ?>
         <?php if (!empty($data_staff)) { ?>
@@ -111,12 +112,12 @@ onload = function() {
         <tr style="background:white;">
             <td align="center" style="width:15%;">
             <?=$data['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data['StaffMaster']['id']; ?>">
+                <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffMaster']['id']; ?>">
             </td>
             <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name']; ?></td>
             <td align="center" style="">
-                <?php echo $this->Form->submit('決定', 
-                        array('name' => 'commit['.$data['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'padding:5px 15px 5px 15px;')); ?>
+                <?php echo $this->Form->submit('選択', 
+                        array('name' => 'select['.$data['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
@@ -136,14 +137,16 @@ onload = function() {
     <div class="scroll_div">
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;' _fixedhead="rows:2; cols:1">
         <tr>
-            <th colspan="3" style='background:#ccffff;text-align: center;'>追加候補スタッフ検索</th>
+            <th colspan="3" style='background:#ccffff;text-align: center;'>追加スタッフ検索</th>
         </tr>
-        <tr style="background-color: #ffffcc;">
+        <tr style="background-color: #ccffff;">
             <td style='text-align: center;' style="width:15%;">氏　名</td>
             <td align="center" style="width:75%;">
                 <?php echo $this->Form->input('search_name',array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'漢字、もしくは、ひらがな', 'style'=>'width:95%;padding:3px;')); ?>
             </td>
-            <td align="center" style="width:10%;"><?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'id' => '')); ?></td>
+            <td align="center" style="width:10%;">
+                <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'font-size:110%;padding: 5px 10px;')); ?>
+            </td>
         </tr>
         <?php if (!empty($datas1)) { ?>
         <?php foreach ($datas1 as $data1) { ?>
@@ -153,8 +156,8 @@ onload = function() {
                 <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
             </td>
             <td align="center">
-                <?php echo $this->Form->submit('選　択', 
-                        array('name' => 'select['.$data1['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'padding:5px 10px 5px 10px;')); ?>
+                <?php echo $this->Form->submit('選択', 
+                        array('name' => 'select['.$data1['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:3px 15px 3px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
@@ -166,52 +169,22 @@ onload = function() {
     </table>
     </div>
 
-    <!-- 選択済みスタッフ -->
-    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 0px;border-spacing: 0px;'>
-        <tr>
-            <th colspan="3" style='background:#ccffff;text-align: center;'>（４）追加候補スタッフ</th>
-        </tr>
-        <?php if (!empty($datas2)) { ?>
-        <?php foreach ($datas2 as $key=>$data2) { ?>
-        <tr>
-            <td align="center" style="width:15%;">
-            <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
-            </td>
-            <td align="left" style="width:60%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
-            <td align="center">
-                <?php echo $this->Form->submit('決定', 
-                        array('name' => 'commit['.$data2['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'padding:5px 15px 5px 15px;')); ?>
-                <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
-                    'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'padding: 3px 15px;')); ?>
-            </td>
-        </tr>
-        <?php } ?>
-        <?php } else { ?>
-        <tr align="center">
-            <td colspan="3">選択済みのデータはありません</td>
-        </tr>
-        <?php } ?>
-    </table>
-
     <!-- 選択中スタッフ -->
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
         <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>（５）選択中スタッフ</th>
+            <th colspan="3" style='background:#99ccff;text-align: center;'>選択中スタッフ</th>
         </tr>
         <?php if (!empty($datas2)) { ?>
         <?php foreach ($datas2 as $key=>$data2) { ?>
         <tr>
             <td align="center" style="width:15%;">
             <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
+                <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
             </td>
-            <td align="left" style="width:60%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
             <td align="center">
-                <?php echo $this->Form->submit('決定', 
-                        array('name' => 'commit['.$data2['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'padding:5px 15px 5px 15px;')); ?>
                 <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
-                    'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'padding: 3px 15px;')); ?>
+                    'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
@@ -223,9 +196,7 @@ onload = function() {
     </table>
     
     <div style='margin-top: 10px;margin-left: 10px;'>
-<?php echo $this->Form->submit('保　存', array('id'=>'button-create', 'div'=>false, 'style'=>'padding:12px;' , 'onclick'=>'')); ?>
-    &nbsp;&nbsp;
-<?php print($this->Form->submit('閉じる', array('id'=>'button-delete', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<?php print($this->Form->submit('完　了', array('id'=>'button-create', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>        
     </fieldset>

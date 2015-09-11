@@ -49,7 +49,7 @@ $(function() {
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
 <div id='headline' style="padding:10px 10px 10px 10px;">
-    ★ 勤務管理
+    ★ シフト管理
     &nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/index" target="" onclick=''><font Style="font-size:95%;">スタッフシフト希望</font></a>
     &nbsp;

@@ -49,7 +49,7 @@ $(function() {
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
 <div id='headline' style="padding:10px 10px 10px 10px;">
-    ★ 勤務管理
+    ★ シフト管理
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
     &nbsp;
@@ -184,7 +184,7 @@ $(function() {
 });
 **/
 </script>
-<div id="dialog" title="勤務管理の紹介" style="display: none">
+<div id="dialog" title="シフト管理の紹介" style="display: none">
 <p style="font-size: 90%;">
     この機能を使って、各案件のシフト決めや勤怠管理、給与管理が可能になります。<br>
     <br>
