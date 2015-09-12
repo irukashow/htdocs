@@ -2,6 +2,23 @@
     echo $this->Html->css('staffmaster');
 ?>
 <?php require('calender.ctp'); ?>
+<?php
+function setShokushu($shokushu_ids, $list_shokushu) {
+    $shokushu_id = explode(',', $shokushu_ids);
+    $ret = '';
+    foreach ($shokushu_id as $id) {
+        if (empty($id)) {
+            continue;
+        }
+        if (empty($ret)) {
+            $ret = trim(mb_convert_kana($list_shokushu[$id], 's'));
+        } else {
+            $ret = $ret.', '.trim(mb_convert_kana($list_shokushu[$id], 's'));
+        }
+    }
+    return $ret;
+}
+?>
 <style>
 #loading{
     position:absolute;
@@ -73,9 +90,9 @@ $(function() {
 </table>
 
 <div style="width:100%;overflow-x:scroll;">
-<table border='1' cellspacing="0" cellpadding="2" style="width:2000px;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+<table border='1' cellspacing="0" cellpadding="2" style="margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
     <tr style="background-color: #cccccc;">
-        <td align="center" rowspan="2" style="width:20px;">スタッフ</td>
+        <td align="center" colspan="2">スタッフ</td>
 <?php
     // 1日の曜日を取得
     $wd1 = date("w", mktime(0, 0, 0, $m, 1, $y));
@@ -89,6 +106,8 @@ $(function() {
 ?>
     </tr>
     <tr>
+        <td align="center" style="background-color: #cccccc;">氏名</td>
+        <td align="center" style="background-color: #cccccc;">職種</td>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {
@@ -114,7 +133,12 @@ $(function() {
     </tr>
     <?php foreach($datas1 as $key => $data1) { ?>
     <tr>
-        <td align="center"><?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?> (<?=$data1['StaffSchedule']['staff_id']; ?>)</td>
+        <td align="left" style="padding: 0px 10px;">
+            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data1['StaffSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+        <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?> (<?=$data1['StaffSchedule']['staff_id']; ?>)
+            </a>
+        </td>
+        <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffMaster']['shokushu_shoukai'], $list_shokushu); ?></td>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {
@@ -138,7 +162,9 @@ $(function() {
         foreach ($datas2[$key] as $data2) {
             if ($y.'-'.sprintf("%02d", $m).'-'.sprintf("%02d", $d) == $data2['StaffSchedule']['work_date']) {
                 // 出力
-                if ($data2['StaffSchedule']['work_flag'] == 1) {
+                if ($data2['StaffSchedule']['work_flag'] == 0) {
+                    echo "<td align=\"center\" style='".$style."'>－</td>";
+                } elseif ($data2['StaffSchedule']['work_flag'] == 1) {
                     echo "<td align=\"center\" style='".$style."'>○</td>";
                 } elseif($data2['StaffSchedule']['work_flag'] == 2) {
                     echo "<td align=\"center\" style='".$style."'>△<br><font style='font-size:70%;'>".$data2['StaffSchedule']['conditions']."</font></td>";
@@ -147,7 +173,7 @@ $(function() {
             }
         }
        if ($nodata) {
-            echo "<td align=\"center\" style='".$style."'></td>";
+            echo "<td align=\"center\" style='".$style."'>"."</td>";
         }
 
         $d++;

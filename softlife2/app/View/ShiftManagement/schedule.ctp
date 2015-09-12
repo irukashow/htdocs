@@ -366,6 +366,14 @@
                             }
                         }
                     ?>
+                    <?php
+                    foreach ($request_staffs as $data) {
+                        if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
+                                && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
+                            echo $data['StaffSchedule']['staff_id'].'<br>';
+                        }
+                    }
+                    ?>
                 </td>
             <?php
                     }

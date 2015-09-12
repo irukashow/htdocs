@@ -184,6 +184,18 @@ function setRecoStaff2($count, $datas) {
     }
     return '<span id="'.$ret.'"></span>';
 }
+// 指定した職種が含まれるか判定
+function chkShokushu($shokushu_id, $list) {
+    if (empty($list)) {
+        return false;
+    }
+    $array = explode(',', $list);
+    if (array_search($shokushu_id, $array)) {
+        return true;
+    } else {
+        return false;
+    }
+}
 ?>
 <?php
     /** 番号のマークをセット **/

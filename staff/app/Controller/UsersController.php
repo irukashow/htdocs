@@ -306,8 +306,12 @@ class UsersController extends AppController {
             }
             $this->set('class', $class);
             // テーブル変更
-            //$this->StaffMaster->setSource('staff_'.$class);
-            //
+            $this->StaffMaster->setSource('staff_'.$class);
+            // 職種IDのセット
+            $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+            $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
+            $this->set('shokushu_id', $shokushu_id);
+
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
                 $this->log($this->request->data, LOG_DEBUG);
