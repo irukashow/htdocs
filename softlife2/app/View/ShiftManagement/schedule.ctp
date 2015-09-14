@@ -368,9 +368,15 @@
                     ?>
                     <?php
                     foreach ($request_staffs as $data) {
+                        $point = $data['StaffSchedule']['point'];
+                        if (!empty($point)) {
+                            $point2 = explode(',', $point);
+                        } else {
+                            $point2 = null;
+                        }
                         if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
                                 && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
-                            echo $data['StaffSchedule']['staff_id'].'<br>';
+                            echo $data['StaffSchedule']['staff_id'].'('.setPoint($point2, $count).')'.'<br>';
                         }
                     }
                     ?>

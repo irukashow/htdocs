@@ -1,7 +1,26 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
-<?php require('calender.ctp'); ?>
+<?php
+	// 初期値
+	$y = date('Y');
+	$m = date('n');
+		
+	// 日付の指定がある場合
+	if(!empty($_GET['date'])){
+            $arr_date = explode('-', $_GET['date']);
+
+            if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
+            {
+                    $y = (int)$arr_date[0];
+                    $m = (int)$arr_date[1];
+            }
+	} elseif (!empty($month)) {
+            $y = substr($month, 0, 4);
+            $m = substr($month, 4, 2);
+            $m = ltrim($m, '0');
+        }
+?>
 <?php
 function setShokushu($shokushu_ids, $list_shokushu) {
     $shokushu_id = explode(',', $shokushu_ids);
@@ -80,7 +99,9 @@ $(function() {
 </div>
 <!-- 見出し１ END -->
 
+<!-- 月の指定 -->
 <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
+<?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display: none;')); ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
@@ -88,11 +109,32 @@ $(function() {
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
-
+<!-- ページネーション -->
+<div class="pageNav03" style="margin-top:5px; margin-bottom: 30px;">
+<?php
+	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
+	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
+	echo $this->Paginator->numbers(array('separator' => ''));
+	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
+        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+?>
+    <div style="float:right;margin-top: 5px;">
+        <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
+        &nbsp;&nbsp;&nbsp;
+        表示件数：
+        <?php
+            $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
+            echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, 'selected' => $limit,
+                'onchange' => 'form.submit();'));
+        ?>
+    </div>
+ </div>
+<div style="clear:both;"></div>
+<!-- シフト希望表本体 -->
 <div style="width:100%;overflow-x:scroll;">
-<table border='1' cellspacing="0" cellpadding="2" style="margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+<table border='1' cellspacing="0" cellpadding="3" style="margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
     <tr style="background-color: #cccccc;">
-        <td align="center" colspan="2">スタッフ</td>
+        <td align="center" colspan="3">スタッフ</td>
 <?php
     // 1日の曜日を取得
     $wd1 = date("w", mktime(0, 0, 0, $m, 1, $y));
@@ -106,6 +148,7 @@ $(function() {
 ?>
     </tr>
     <tr>
+        <td align="center" style="background-color: #cccccc;">ID</td>
         <td align="center" style="background-color: #cccccc;">氏名</td>
         <td align="center" style="background-color: #cccccc;">職種</td>
 <?php
@@ -131,11 +174,32 @@ $(function() {
     }
 ?>
     </tr>
+    <tr style="background-color: #ffffcc;">
+        <td align="center"></td>
+        <td align="left">
+            <?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名（漢字 or かな）', 'style' => 'width:95%;font-size:90%;')); ?>
+        </td>
+        <td align="left">
+          <?php echo $this->Form->input('search_shokushu', 
+                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;font-size:90%;', 
+                      'empty' => array('' => '職種を選んでください'), 'options' => $list_shokushu, 'onchange' => 'form.submit();')); ?>
+        </td>
+<?php
+    $d = 1;
+    while (checkdate($m, $d, $y)) {
+        echo '<td></td>';
+        $d++;
+    } 
+?>
+    </tr>
     <?php foreach($datas1 as $key => $data1) { ?>
     <tr>
+        <td align="center" style="padding: 0px 10px;">
+            <?=$data1['StaffSchedule']['staff_id']; ?>
+        </td>
         <td align="left" style="padding: 0px 10px;">
             <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data1['StaffSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
-        <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?> (<?=$data1['StaffSchedule']['staff_id']; ?>)
+        <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
             </a>
         </td>
         <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffMaster']['shokushu_shoukai'], $list_shokushu); ?></td>
@@ -183,7 +247,7 @@ $(function() {
     <?php } ?>
 <?php if (count($datas1) == 0) { ?>
 <tr>
-    <td colspan="32" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
+    <td colspan="34" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
 </tr>
 <?php } ?>
 </table>

@@ -196,6 +196,19 @@ function chkShokushu($shokushu_id, $list) {
         return false;
     }
 }
+// 空またはNULLの場合、0とする
+function setPoint($array, $column) {
+    if (is_null($array)) {
+        $ret = 0;
+    } else {
+        if (empty($array[$column])) {
+            $ret = 0;
+        } else {
+            $ret = $array[$column];
+        }
+    }
+    return $ret;
+}
 ?>
 <?php
     /** 番号のマークをセット **/

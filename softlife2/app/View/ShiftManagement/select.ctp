@@ -1,6 +1,21 @@
 <?php
     echo $this->Html->script('fixed_midashi');
 ?>
+<?php
+// 優先順位で色分け
+function setBgcolor($point) {
+    if ($point == 3) {
+        $ret = '#ff99cc';
+    } elseif ($point == 2) {
+        $ret = '#ffcccc';
+    } elseif ($point == 1) {
+        $ret = '#ffffcc';
+    } else {
+        $ret = 'white';
+    }
+    return $ret;
+}
+?>
 <script>
 onload = function() {
     FixedMidashi.create();
@@ -39,6 +54,7 @@ onload = function() {
 <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display:none;')); ?>
     <!-- 推奨スタッフ -->
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+        <!--
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>（１）推奨スタッフ</th>
         </tr>
@@ -61,7 +77,9 @@ onload = function() {
             <td colspan="3">該当するデータはありません。</td>
         </tr>
         <?php } ?>
+        -->
     <!-- 前月スタッフ -->
+    <!--
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>（２）前月スタッフ</th>
         </tr>
@@ -96,28 +114,30 @@ onload = function() {
             <td colspan="3">該当するデータはありません。</td>
         </tr>
         <?php } ?>
-    <!-- その他スタッフ -->
+        -->
+    <!-- シフト希望スタッフ -->
         <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>（３）シフト希望スタッフ</th>
+            <th colspan="3" style='background:#99ccff;text-align: center;'>シフト希望スタッフ</th>
         </tr>
         <?php $flag = 0; ?>
-        <?php if (!empty($data_staff)) { ?>
-        <?php foreach ($data_staff as $key=>$data) { ?>
+        <?php if (!empty($request_staffs)) { ?>
+        <?php foreach ($request_staffs as $key=>$data) { ?>
         <?php
             if (empty($data)) {
                 $flag = 1;
                 continue;
             }
         ?>
-        <tr style="background:white;">
+        <?php $point_arr = explode(',', $data['StaffSchedule']['point']); ?>
+        <tr style="background:<?=setBgcolor($point_arr[$col-1]) ?>;">
             <td align="center" style="width:15%;">
-            <?=$data['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffMaster']['id']; ?>">
+            <?=$data['StaffSchedule']['staff_id']; ?>
+                <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffSchedule']['staff_id']; ?>">
             </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name']; ?></td>
+            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)</td>
             <td align="center" style="">
                 <?php echo $this->Form->submit('選択', 
-                        array('name' => 'select['.$data['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+                        array('name' => 'select['.$data['StaffSchedule']['staff_id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
