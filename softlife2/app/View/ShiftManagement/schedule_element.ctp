@@ -27,6 +27,7 @@
     echo $this->Html->script('jquery.tablefix');
     echo $this->Html->script('redips-drag-min');
     echo $this->Html->script('script');
+    //echo $this->Html->script('jquery.blockUI');
     echo $this->Html->css('evol.colorpicker.min');
     //echo $this->Html->css('jquery.timepicker');
     echo $this->Html->css('style_1');
@@ -34,45 +35,6 @@
 
 <?php
 $font_normal = "font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;";
-//JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
-function convGtJDate($src, $flag) {
-    list($year, $month, $day) = explode("-", $src);
-    if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4) return false;
-    $date = $year.sprintf("%02d", $month).sprintf("%02d", $day);
-    $gengo = "";
-    $wayear = 0;
-    if ($date >= 19890108) {
-        $gengo = "平成";
-        $wayear = $year - 1988;
-    } elseif ($date >= 19261225) {
-        $gengo = "昭和";
-        $wayear = $year - 1925;
-    } elseif ($date >= 19120730) {
-        $gengo = "大正";
-        $wayear = $year - 1911;
-    } else {
-        $gengo = "明治";
-        $wayear = $year - 1868;
-    }
-    if ($flag == 0) {
-        switch ($wayear) {
-            case 1:
-                $wadate = $gengo."元年".$month."月".$day."日";
-                break;
-            default:
-                $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月".$day."日";
-        } 
-    } elseif ($flag == 1) {
-        switch ($wayear) {
-            case 1:
-                $wadate = $gengo."元年".$month."月";
-                break;
-            default:
-                $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月";
-        }
-    }
-    return $wadate;
-}
 // 指定の職種数が保存データ数を超えるときの対策
 function setData($datas, $col, $shitei, $reserved) {
     if (empty($datas) || empty($datas[$shitei])) {
@@ -134,6 +96,9 @@ function setArray($array) {
 // 配列を処理する2
 function setArray2($array) {
     $ret = '';
+    if (empty($array)) {
+        return '';
+    }
     foreach($array as $key=>$value) {
         if (empty($value)) {
             if ($key == 0) {
@@ -153,7 +118,7 @@ function setArray2($array) {
     return $ret;
 }
 // 前月スタッフ
-function setRecoStaff($count, $datas) {
+function setPMStaff($count, $datas) {
     if (empty($datas[$count])) {
         $ret = '';
     } else {
@@ -217,10 +182,10 @@ function setPoint($array, $column) {
         return $arr[$number];
     }
     /** 幅 **/
-    function setWidth($row) {
+    function setWidth($col) {
         $width = 1200;
-        if (120+$row*120+20 > $width) {
-            $ret = 120+$row*120+20;
+        if (120+$col*120+20 > $width) {
+            $ret = 120+$col*120+20;
         } else {
             $ret = $width;
         } 
@@ -236,8 +201,8 @@ onload = function() {
     // ヘッダを隠す
     document.getElementById("header").style.display = 'none';
     //document.getElementById("menu_table").style.display = 'none';
-    if (120+<?=$row ?>*120+20 > width) {
-        document.body.style.width = '<?=120+$row*120+20 ?>px';
+    if (120+<?=$col ?>*120+20 > width) {
+        document.body.style.width = '<?=120+$col*120+20 ?>px';
     } else {
         document.body.style.width = width + 'px';
     }
@@ -390,8 +355,8 @@ function doAccount(year, month, mode) {
     // データ列数
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
-    input.setAttribute('name', 'row');
-    input.setAttribute('value', <?=$row ?>);
+    input.setAttribute('name', 'col');
+    input.setAttribute('value', <?=$col ?>);
     form.appendChild(input);
     // シフト編集モード
     var input = document.createElement('input');

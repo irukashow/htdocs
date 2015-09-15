@@ -208,7 +208,7 @@ class ShiftManagementController extends AppController {
         $this->set('row', null);
         $this->set('datas', null);
         $data2 = null;
-        $list_recommend = null;
+        $list_premonth = null;
         // 案件名の取得
         $conditions1 = array('class'=>$selected_class);
         $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1));
@@ -325,8 +325,8 @@ class ShiftManagementController extends AppController {
             //$this->log($this->request->data, LOG_DEBUG);
             $data = $this->request->data;
             if (isset($data['mode'])) {
-                $row = $data['row'];
-                for ($i=1; $i<=$row; $i++) {
+                $col = $data['col'];
+                for ($i=1; $i<=$col; $i++) {
                     for ($d=1; $d<=31; $d++) {
                         if (empty($data[$d.'_'.$i])) {
                             continue;
@@ -400,8 +400,8 @@ class ShiftManagementController extends AppController {
             // 登録データのセット
             //$conditions1 = array('id' => $order_id, 'case_id' => $case_id);
             $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-            $row = $this->OrderCalender->find('count', array('conditions' => $conditions1));
-            $this->set('row', $row);
+            $col = $this->OrderCalender->find('count', array('conditions' => $conditions1));
+            $this->set('col', $col);
             // 案件あたりの職種数
             $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
             $datas = $this->OrderCalender->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
@@ -444,6 +444,9 @@ class ShiftManagementController extends AppController {
                 }
                 // 推奨スタッフ
                 foreach ($list_staffs2[$data['OrderInfoDetail']['order_id']][$data['OrderInfoDetail']['shokushu_num']] as $key2=>$value) {
+                    if (empty($value)) {
+                        continue;
+                    }
                     if ($key2 == 0) {
                         $ret[$key] = $value['StaffMaster']['id'];
                     } else {
@@ -451,7 +454,7 @@ class ShiftManagementController extends AppController {
                     }
                 }
                 if (empty($datas3[$key])) {
-                    $list_recommend[$key] = null;
+                    $list_premonth[$key] = null;
                     // ワークテーブル配列
                     $data_wk[$key] = array('WkShift' => array('month' => $year.'-'.$month.'-01', 'order_id' => $data['OrderInfoDetail']['order_id'], 
                         'shokushu_num' => $data['OrderInfoDetail']['shokushu_num'], 'column' => $key+1, 'shokushu_id' => $data['OrderInfoDetail']['shokushu_id'], 
@@ -470,11 +473,11 @@ class ShiftManagementController extends AppController {
                     foreach ($datas3[$key] as $j=>$value) {
                         $condition = array('id'=>$value);
                         $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
-                        $list_recommend[$key][$j] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>$condition));
+                        $list_premonth[$key][$j] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>$condition));
                     }
                 }
             }
-            $this->set('list_recommend', $list_recommend);
+            $this->set('list_premonth', $list_premonth);
             
             if (!empty($data_wk)) {
                 // 既存ワークデータ削除（該当月）
@@ -546,7 +549,7 @@ class ShiftManagementController extends AppController {
                 ),
             );
             $request_staffs2 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei'), 'conditions'=>$conditions6, 'joins'=>$joins, 'order'=>array('staff_id')));
-            $this->log($request_staffs2, LOG_DEBUG);
+            //$this->log($request_staffs2, LOG_DEBUG);
             $this->set('request_staffs', $request_staffs2 );
 
             // セッション保存データ

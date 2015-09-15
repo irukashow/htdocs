@@ -52,6 +52,33 @@ onload = function() {
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $selected_class)); ?>
 <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display:none;')); ?>
+    
+   <!-- 選択中スタッフ -->
+    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+        <tr>
+            <th colspan="3" style='background:#99ccff;text-align: center;'>選択中スタッフ</th>
+        </tr>
+        <?php if (!empty($datas2)) { ?>
+        <?php foreach ($datas2 as $key=>$data2) { ?>
+        <tr>
+            <td align="center" style="width:15%;">
+            <?=$data2['StaffMaster']['id']; ?>
+                <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
+            </td>
+            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="center">
+                <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
+                    'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+            </td>
+        </tr>
+        <?php } ?>
+        <?php } else { ?>
+        <tr align="center">
+            <td colspan="3">選択済みのデータはありません</td>
+        </tr>
+        <?php } ?>
+    </table>
+   
     <!-- 推奨スタッフ -->
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
         <!--
@@ -115,6 +142,7 @@ onload = function() {
         </tr>
         <?php } ?>
         -->
+        
     <!-- シフト希望スタッフ -->
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>シフト希望スタッフ</th>
@@ -188,32 +216,6 @@ onload = function() {
         <?php } ?>
     </table>
     </div>
-
-    <!-- 選択中スタッフ -->
-    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
-        <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>選択中スタッフ</th>
-        </tr>
-        <?php if (!empty($datas2)) { ?>
-        <?php foreach ($datas2 as $key=>$data2) { ?>
-        <tr>
-            <td align="center" style="width:15%;">
-            <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
-            </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
-            <td align="center">
-                <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
-                    'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
-            </td>
-        </tr>
-        <?php } ?>
-        <?php } else { ?>
-        <tr align="center">
-            <td colspan="3">選択済みのデータはありません</td>
-        </tr>
-        <?php } ?>
-    </table>
     
     <div style='margin-top: 10px;margin-left: 10px;'>
 <?php print($this->Form->submit('完　了', array('id'=>'button-create', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>

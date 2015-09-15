@@ -18,6 +18,16 @@
     top:40%;
     margin-left:-30px;
 }
+#complete-delete {
+    width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    font-size: 150%;
+    font-weight: bold;
+    font-family: メイリオ;
+    color:red;
+    background-color: #e0e7e7;
+}
 </style>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
 <script type="text/javascript">
@@ -38,6 +48,13 @@ window.onload = function(){
   //-->
 </script>
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
+
+<?php
+    if (!empty($msg)) {
+        echo '<br>'.$msg.'<br>';
+        echo '<button onclick="window.opener.location.reload();window.close();">閉じる</button>';
+    }
+?>
 <?php foreach ($datas as $data){ ?>
 <?php echo $this->Form->create('StaffMaster'); ?>
 <table id='profile' border="0" style="margin:10px;width:98%;">
@@ -123,7 +140,9 @@ window.onload = function(){
                             </td>
                         </tr>
                     </table>
-                    
+                    <?php if ($flag == 1) { ?>
+                    <input type="submit" id="complete-delete" name="complete_delete" value="★★★ 完 全 削 除 ★★★">
+                    <?php } ?>
                     <!-- 左項目１ -->
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
@@ -328,8 +347,16 @@ window.onload = function(){
             <div id="editbox" style="color: black;background-color: #ffff99;border:1px solid orange;padding:5px;vertical-align: middle;padding-left: 10px;margin-bottom: 10px;">
                 <?php echo $this->Form->submit('編　集', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
-                <?php $comment = __('本当に登録解除してよろしいですか？', true); ?>
-                <?php echo $this->Form->submit('登録解除', array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
+                <?php
+                    if ($flag == 0) {
+                        $strKaijo = '登録解除';
+                        $comment = __('本当に登録解除してよろしいですか？', true);
+                    } else {
+                        $strKaijo = '解除取消';
+                        $comment = __('登録解除を取り消しますか？', true);
+                    }
+                ?>
+                <?php echo $this->Form->submit($strKaijo, array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
                 &nbsp;&nbsp;

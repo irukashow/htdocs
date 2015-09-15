@@ -365,6 +365,7 @@ class StaffMastersController extends AppController {
         $this->set('id', $staff_id); 
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
+        $this->set('flag', $flag);
         // テーブルの設定
         $selected_class = $this->Session->read('selected_class');
         $this->StaffMaster->setSource('staff_'.$selected_class);
@@ -401,7 +402,12 @@ class StaffMastersController extends AppController {
         ));
         $datas = $this->paginate();
         $this->set('datas', $datas);
-        $_id = $datas[0]['StaffMaster']['id'];
+        if (!empty($datas)) {
+            $_id = $datas[0]['StaffMaster']['id'];
+        } else {
+            $this->set('msg', 'データはありません。');
+            return;
+        }
         //$this->log($datas[0]['StaffMaster']['id'], LOG_DEBUG);
         // 登録していた値をセット
         $this->set('memo_datas', $this->StaffMemo->find('all', array('conditions' => array('class' => $selected_class, 'staff_id' => $_id), 'order' => array('id' => 'desc')))); 
@@ -409,6 +415,7 @@ class StaffMastersController extends AppController {
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
             // 登録編集
             if (isset($this->request->data['submit'])) {
                 // 現在のURLをセッションに保存
@@ -416,14 +423,21 @@ class StaffMastersController extends AppController {
                 $this->redirect(array('action' => 'reg1', $this->request->data['StaffMaster']['staff_id'], 1));
             // 登録解除
             } elseif (isset($this->request->data['release'])) {
+                if ($flag == 0) {
+                    $flag2 = 1;
+                    $status = 9;
+                } else {
+                    $flag2 = 0;
+                    $status = 8;
+                }
                 $sql = '';
                 $sql = $sql.' UPDATE staff_'.$selected_class; 
-                $sql = $sql.' SET kaijo_flag = 1, modified = CURRENT_TIMESTAMP()';  
+                $sql = $sql.' SET kaijo_flag = '.$flag2.', modified = CURRENT_TIMESTAMP()';  
                 $sql = $sql.' WHERE id = '.$this->request->data['StaffMaster']['staff_id'];
                 $this->log($sql, LOG_DEBUG);
                 $this->StaffMaster->query($sql);
                 // ログ書き込み
-                $this->setSMLog($username, $selected_class, $this->request->data['StaffMaster']['staff_id'], $this->request->data['StaffMaster']['staff_name'], $flag, 9, $this->request->clientIp()); // 登録解除コード:9
+                $this->setSMLog($username, $selected_class, $this->request->data['StaffMaster']['staff_id'], $this->request->data['StaffMaster']['staff_name'], $flag, $status, $this->request->clientIp()); // 登録解除コード:9
                 $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => 1));
                 //$this->StaffMaster->save($this->request->data);
                 //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);

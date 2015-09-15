@@ -17,7 +17,7 @@
 </div>
 <!-- 見出し１ END -->
 
-<div style="width:<?=setWidth($row) ?>px;margin-top: 0px;<?=$font_normal ?>;">
+<div style="width:<?=setWidth($col) ?>px;margin-top: 0px;<?=$font_normal ?>;">
     <?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
     <table border='1' cellspacing="0" cellpadding="3" style="width:98%;margin-top: -5px;border-spacing: 0px;background-color: white;">
             <tr align="center">
@@ -32,11 +32,11 @@
     <div id="redips-drag" style="margin-top: 5px;margin-bottom: 10px;">  
         <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
-               style="width:<?=120+$row*120 ?>px;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;table-layout: fixed;" _fixedhead="rows:2; cols:1">
+               style="width:<?=120+$col*120 ?>px;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;table-layout: fixed;" _fixedhead="rows:2; cols:1">
             <colgroup> 
               <col style='width:25px;'>
               <col style='width:95px;'>
-              <?php for ($count=0; $count<$row; $count++){ ?>
+              <?php for ($count=0; $count<$col; $count++){ ?>
               <col style='width:120px;'>
               <?php } ?>
             </colgroup>
@@ -57,7 +57,7 @@
             <tbody style="overflow: auto;">
             <tr style="">
                 <td class="redips-trash" style='background-color: #999999;color: white;' colspan="2">削除</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td class="redips-trash" style='background-color: #999999;color: white;'>
                     <?php echo $count+1; ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.case_id',array('type'=>'hidden', 'value'=>setData($datas2,'case_id',$count,$record))); ?>
@@ -149,7 +149,7 @@
             <tr id="OrderDetail10">
                 <td rowspan="3" style='background-color: #e8ffff;'></td>
                 <td rowspan="2" style='background-color: #e8ffff;'>単価</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -157,7 +157,7 @@
                 <?php } ?>
             </tr>
             <tr id="OrderDetail11">
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -166,7 +166,7 @@
             </tr>
             <tr id="OrderDetail12">
                 <td rowspan="1" style='background-color: #e8ffff;'>残業／ｈ</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -178,7 +178,7 @@
             <tr id="OrderDetail13">
                 <td rowspan="4" style='background-color: #e8ffff;'>ス<br>タ<br>ッ<br>フ<br>分</td>
                 <td style='background-color: #e8ffff;'>時給</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -187,7 +187,7 @@
             </tr>
             <tr id="OrderDetail14">
                 <td style='background-color: #e8ffff;'>基本日給</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -196,7 +196,7 @@
             </tr>
             <tr id="OrderDetail15">
                 <td style='background-color: #e8ffff;'>残業／ｈ</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -205,7 +205,7 @@
             </tr>
             <tr id="OrderDetail16">
                 <td style='background-color: #e8ffff;'>研修中（時給）</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
@@ -215,7 +215,7 @@
             <!-- 給与 END -->
             <tr>
                 <td style='width:80px;background-color: #e8ffff;' colspan="2" id="message">職種</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
                     <?php echo $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]; ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
@@ -224,7 +224,7 @@
             </tr>
             <tr id="OrderDetail17">
                 <td style='background-color: #e8ffff;' colspan="2">勤務時間</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
                     <?php if (empty($datas2) || empty($datas2[$count])) { ?>
@@ -248,7 +248,7 @@
             </tr>
             <tr id="OrderDetail18">
                 <td style='background-color: #e8ffff;' colspan="2">休憩時間</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
                     <?php echo setData($datas2,'resttime_from',$count,$record); ?>&nbsp;～
                     <?php echo setData($datas2,'resttime_to',$count,$record); ?>
@@ -257,7 +257,7 @@
             </tr>
             <tr id="">
                 <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
                     <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
                     <input type="button" value="スタッフ選択" 
@@ -267,9 +267,9 @@
             </tr>
             <tr id="">
                 <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;'>
-                    <?php echo setRecoStaff($count, $list_recommend); ?>
+                    <?php echo setPMStaff($count, $list_premonth); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -293,7 +293,7 @@
                         <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
-                <?php for ($count=0; $count<$row; $count++){ ?>
+                <?php for ($count=0; $count<$col; $count++){ ?>
                 <td align='left' style='background-color: #e8ffff;'>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
                         array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;', 'rows'=>2)); ?>
@@ -337,7 +337,7 @@
                     } else {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';
                     }
-                    for ($count=0; $count<$row; $count++){
+                    for ($count=0; $count<$col; $count++){
                         if (empty($datas2) || empty($datas2[$count])) {
                             $class_name = 'redips-mark';
                         } elseif ($datas2[$count]['OrderCalender']['d'.$d] == 0) {
@@ -347,11 +347,10 @@
                         }
             ?>
                 <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>">
-                    <?php if (empty($datas2) || empty($datas2[$count])) { ?>
+                    <?php if (!empty($class_name)) { ?>
                     <?php echo ''; ?>
                     <?php } else { ?>
                     <?php //echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
-                    <?php } ?>
                     <span id="<?=setData($datas2,'order_id',$count,$record) ?>"></span>
                     <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
                     <?php
@@ -367,6 +366,7 @@
                         }
                     ?>
                     <?php
+                    $i = 0;
                     foreach ($request_staffs as $data) {
                         $point = $data['StaffSchedule']['point'];
                         if (!empty($point)) {
@@ -376,10 +376,45 @@
                         }
                         if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
                                 && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
-                            echo $data['StaffSchedule']['staff_id'].'('.setPoint($point2, $count).')'.'<br>';
+                            $datas3[$count][$d][$i]['staff_id'] = $data['StaffSchedule']['staff_id'];
+                            $datas3[$count][$d][$i]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
+                            $datas3[$count][$d][$i]['point'] = setPoint($point2, $count);
+                            
+                            $i++;
+                        }
+                    }
+                    // ポイント順、ID順に並び替え
+                    if (!empty($datas3[$count][$d])) {
+                        foreach ($datas3[$count][$d] as $key => $value){
+                            $key_point[$key] = $value['point'];
+                            $key_staff_id[$key] = $value['staff_id'];
+                        }
+                        array_multisort($key_point, SORT_DESC ,$key_staff_id , SORT_ASC , $datas3[$count][$d]);
+                        // 優先順に表示
+                        $flag3 = false;
+                        $flag2 = false;
+                        foreach ($datas3[$count][$d] as $key => $value){
+                            if ($value['point'] == 3) {
+                                    echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                    echo $value['name'].' ('.$value['point'].')';
+                                    echo '</div>';
+                                $flag3 = true;
+                            } elseif ($flag3 == false && $value['point'] == 2) {
+                                    echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                    echo $value['name'].' ('.$value['point'].')';
+                                    echo '</div>';
+                                    $flag2 = true;
+                            } elseif (($flag3 == false && $flag2 == false) && $value['point'] == 1) {
+                                    echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                    echo $value['name'].' ('.$value['point'].')';
+                                    echo '</div>';
+                            } else {
+                                //echo $value['staff_id'].'('.$value['point'].')'.'<br>';
+                            }
                         }
                     }
                     ?>
+                    <?php } ?>
                 </td>
             <?php
                     }
