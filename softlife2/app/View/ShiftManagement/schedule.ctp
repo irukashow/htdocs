@@ -24,6 +24,8 @@
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                     <td style='background-color: #006699;color: white;'>
                         <font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月 稼働表】</font>
+                        <?php $comment = '【注意！】いままで保存した当月のシフトは消去されます。\n自動割付を実行しますか？'; ?>
+                        <input type="submit" name="assignment" value="シフト自動割付" id="button-create" onclick="return window.confirm('<?=$comment ?>');">
                     </td>
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
             </tr>
@@ -367,49 +369,58 @@
                     ?>
                     <?php
                     $i = 0;
-                    foreach ($request_staffs as $data) {
-                        $point = $data['StaffSchedule']['point'];
-                        if (!empty($point)) {
-                            $point2 = explode(',', $point);
-                        } else {
-                            $point2 = null;
-                        }
-                        if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
-                                && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
-                            $datas3[$count][$d][$i]['staff_id'] = $data['StaffSchedule']['staff_id'];
-                            $datas3[$count][$d][$i]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
-                            $datas3[$count][$d][$i]['point'] = setPoint($point2, $count);
-                            
-                            $i++;
-                        }
-                    }
-                    // ポイント順、ID順に並び替え
-                    if (!empty($datas3[$count][$d])) {
-                        foreach ($datas3[$count][$d] as $key => $value){
-                            $key_point[$key] = $value['point'];
-                            $key_staff_id[$key] = $value['staff_id'];
-                        }
-                        array_multisort($key_point, SORT_DESC ,$key_staff_id , SORT_ASC , $datas3[$count][$d]);
-                        // 優先順に表示
-                        $flag3 = false;
-                        $flag2 = false;
-                        foreach ($datas3[$count][$d] as $key => $value){
-                            if ($value['point'] == 3) {
-                                    echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                    echo $value['name'].' ('.$value['point'].')';
-                                    echo '</div>';
-                                $flag3 = true;
-                            } elseif ($flag3 == false && $value['point'] == 2) {
-                                    echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                    echo $value['name'].' ('.$value['point'].')';
-                                    echo '</div>';
-                                    $flag2 = true;
-                            } elseif (($flag3 == false && $flag2 == false) && $value['point'] == 1) {
-                                    echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                    echo $value['name'].' ('.$value['point'].')';
-                                    echo '</div>';
+                    if (!empty($request_staffs)) {
+                        foreach ($request_staffs as $data) {
+                            $point = $data['StaffSchedule']['point'];
+                            if (!empty($point)) {
+                                $point2 = explode(',', $point);
                             } else {
-                                //echo $value['staff_id'].'('.$value['point'].')'.'<br>';
+                                $point2 = null;
+                            }
+                            if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
+                                    && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
+                                $datas3[$count][$d][$i]['staff_id'] = $data['StaffSchedule']['staff_id'];
+                                $datas3[$count][$d][$i]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
+                                $datas3[$count][$d][$i]['point'] = setPoint($point2, $count);
+
+                                $i++;
+                            }
+                        }
+                        // ポイント順、ID順に並び替え
+                        if (!empty($datas3[$count][$d])) {
+                            foreach ($datas3[$count][$d] as $key => $value){
+                                $key_point[$key] = $value['point'];
+                                $key_staff_id[$key] = $value['staff_id'];
+                            }
+                            if (!array_multisort($key_point, SORT_DESC ,$key_staff_id , SORT_ASC , $datas3[$count][$d])) {
+                                $this->log($key_point, LOG_DEBUG);
+                                $this->log($key_staff_id, LOG_DEBUG);
+                            }
+                            // 初期化
+                            $key_point = null;
+                            $key_staff_id = null;
+
+                            // 優先順に表示
+                            $flag3 = false;
+                            $flag2 = false;
+                            foreach ($datas3[$count][$d] as $key => $value){
+                                if ($value['point'] == 3) {
+                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                        echo $value['name'].' ('.$value['point'].')';
+                                        echo '</div>';
+                                    $flag3 = true;
+                                } elseif ($flag3 == false && $value['point'] == 2) {
+                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                        echo $value['name'].' ('.$value['point'].')';
+                                        echo '</div>';
+                                        $flag2 = true;
+                                } elseif (($flag3 == false && $flag2 == false) && $value['point'] == 1) {
+                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                        echo $value['name'].' ('.$value['point'].')';
+                                        echo '</div>';
+                                } else {
+                                    //echo $value['staff_id'].'('.$value['point'].')'.'<br>';
+                                }
                             }
                         }
                     }
@@ -433,7 +444,7 @@
     <div style='margin-left: 10px;'>
 <button type="button" id="button-create" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">保存</button>
     &nbsp;&nbsp;
-<?php print($this->Form->submit('確定する', array('id'=>'button-create', 'name'=>'save','div' => false))); ?>
+<?php print($this->Form->submit('確定する', array('id'=>'button-create', 'name'=>'confirm','div' => false))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <?php print($this->Html->link('前回保存時まで戻す', 'javascript:void(0);', array('id'=>'button-delete', 'style'=>'' , 'onclick'=>'window.location.reload();'))); ?>
     &nbsp;&nbsp;

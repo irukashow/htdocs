@@ -86,7 +86,7 @@ input[type=checkbox] {
 </style>
 <div id="page2" data-role="page">
         <div data-role="header" data-theme="c">
-                <h1>スケジュール</h1>
+                <h1>シフト希望</h1>
                 <!--
                 <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
                 -->

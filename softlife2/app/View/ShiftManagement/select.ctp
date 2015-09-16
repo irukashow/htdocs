@@ -60,7 +60,7 @@ onload = function() {
         </tr>
         <?php if (!empty($datas2)) { ?>
         <?php foreach ($datas2 as $key=>$data2) { ?>
-        <tr>
+        <tr style="background-color: #ddffff;">
             <td align="center" style="width:15%;">
             <?=$data2['StaffMaster']['id']; ?>
                 <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">

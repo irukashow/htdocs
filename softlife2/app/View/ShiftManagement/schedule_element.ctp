@@ -322,6 +322,14 @@ function Mclk(Cell) {
 }
 var startrow = 24;
 function Mdblclk(Cell) {
+  var divs = "";
+ for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
+    if (i == 0) {
+         divs = "&s1=" + Cell.getElementsByTagName("DIV")[0].id;
+    } else {
+         divs = divs + "&s" + (i+1) + "=" + Cell.getElementsByTagName("DIV")[i].id;       
+     }
+ }
     if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 1) {
         return false;
     }
@@ -331,7 +339,7 @@ function Mdblclk(Cell) {
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
     window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex)
-            +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>','スタッフ選択','width=800,height=600,scrollbars=yes');
+            +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=600,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
       // イベントリスナーaddEventListener,attachEventメソッド

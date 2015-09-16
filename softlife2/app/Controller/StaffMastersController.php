@@ -473,6 +473,17 @@ class StaffMastersController extends AppController {
                     $page = 1;
                 }
                 $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => $page));
+            // 完全削除
+            } elseif (isset($this->request->data['complete_delete'])) {
+                $id_array = array_keys($this->request->data['complete_delete']);
+                $id = $id_array[0];
+                if ($this->StaffMaster->delete($id)) {
+                    // ログ書き込み
+                    $this->setSMLog($username, $selected_class, $this->request->data['StaffMaster']['staff_id'], $this->request->data['StaffMaster']['staff_name'], $flag, 60, $this->request->clientIp()); // 完全削除コード:60
+                    // 成功
+                    $this->Session->setFlash($this->request->data['StaffMaster']['staff_name'].'さんのデータを完全に削除しました。');
+                    $this->redirect(array('action' => 'profile', $flag, $staff_id, 'page' => 1));
+                }
             } 
         } else {
             

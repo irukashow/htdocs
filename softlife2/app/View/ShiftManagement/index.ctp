@@ -259,7 +259,6 @@ $(function() {
 
 <!-- 機能紹介 -->
 <script type="text/javascript">
-/**
 $(function() {
     //alert('制作中です');
   // 2ダイアログ機能を適用
@@ -272,7 +271,6 @@ $(function() {
 　　　}
   });
 });
-**/
 </script>
 <div id="dialog" title="シフト管理の紹介" style="display: none">
 <p style="font-size: 90%;">

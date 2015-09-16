@@ -25,7 +25,7 @@
     font-size: 150%;
     font-weight: bold;
     font-family: メイリオ;
-    color:red;
+    color:#ffffcc;
     background-color: #e0e7e7;
 }
 </style>
@@ -141,7 +141,8 @@ window.onload = function(){
                         </tr>
                     </table>
                     <?php if ($flag == 1) { ?>
-                    <input type="submit" id="complete-delete" name="complete_delete" value="★★★ 完 全 削 除 ★★★">
+                    <?php $comment1 = '完全削除するとデータが完全に消去されます。\n本当に実行しますか？'; ?>
+                    <input type="submit" id="complete-delete" name="complete_delete[<?=$data['StaffMaster']['id'] ?>]" value="★★★ 完 全 削 除 ★★★" onclick="return confirm('<?=$comment1 ?>');">
                     <?php } ?>
                     <!-- 左項目１ -->
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
