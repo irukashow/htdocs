@@ -67,7 +67,8 @@ $(function() {
 		$(this).children('ul').hide();
 	});
 });
-</script>  
+</script>
+
 </head>
 <body>
 <!-- ヘッダ部分 -->

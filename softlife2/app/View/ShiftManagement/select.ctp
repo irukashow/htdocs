@@ -15,6 +15,25 @@ function setBgcolor($point) {
     }
     return $ret;
 }
+// 紹介可能職種コード（カンマ区切り）から職種名称
+function setShokushu($shokushu_ids, $list_arr) {
+    $ret = '';
+    if (empty($shokushu_ids)) {
+        return $ret;
+    }
+    $shokushu_arr = explode(',', $shokushu_ids);
+    foreach($shokushu_arr as $key=>$value) {
+        if (empty($value)) {
+            continue;
+        }
+        if (empty($ret)) {
+            $ret = trim(mb_convert_kana($list_arr[$value], "s", 'UTF-8'));
+        } else {
+            $ret = $ret.', '.trim(mb_convert_kana($list_arr[$value], "s", 'UTF-8'));
+        }
+    }
+    return $ret;
+}
 ?>
 <script>
 onload = function() {
@@ -56,7 +75,7 @@ onload = function() {
    <!-- 選択中スタッフ -->
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
         <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>選択中スタッフ</th>
+            <th colspan="3" style='background:#99ccff;text-align: center;'>保存済スタッフ</th>
         </tr>
         <?php if (!empty($datas2)) { ?>
         <?php foreach ($datas2 as $key=>$data2) { ?>
@@ -74,7 +93,7 @@ onload = function() {
         <?php } ?>
         <?php } else { ?>
         <tr align="center">
-            <td colspan="3">選択済みのデータはありません</td>
+            <td colspan="3">保存済スタッフのデータはありません。</td>
         </tr>
         <?php } ?>
     </table>
@@ -185,11 +204,11 @@ onload = function() {
     <div class="scroll_div">
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;' _fixedhead="rows:2; cols:1">
         <tr>
-            <th colspan="3" style='background:#ccffff;text-align: center;'>追加スタッフ検索</th>
+            <th colspan="4" style='background:#ccffff;text-align: center;'>追加スタッフ検索</th>
         </tr>
         <tr style="background-color: #ccffff;">
             <td style='text-align: center;' style="width:15%;">氏　名</td>
-            <td align="center" style="width:75%;">
+            <td align="center" colspan="2" style="width:75%;">
                 <?php echo $this->Form->input('search_name',array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'漢字、もしくは、ひらがな', 'style'=>'width:95%;padding:3px;')); ?>
             </td>
             <td align="center" style="width:10%;">
@@ -203,6 +222,9 @@ onload = function() {
             <td align="left" style="padding: 0 10px 0 10px;">
                 <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
             </td>
+            <td align="left" style="padding: 0 10px 0 10px;width: 50%;">
+                <?=setShokushu($data1['StaffMaster']['shokushu_shoukai'], $shokushu_arr); ?>
+            </td>
             <td align="center">
                 <?php echo $this->Form->submit('選択', 
                         array('name' => 'select['.$data1['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:3px 15px 3px 15px;')); ?>
@@ -211,7 +233,7 @@ onload = function() {
         <?php } ?>
         <?php } else { ?>
         <tr>
-            <td colspan="3" align="center">該当するデータはありません。</td>
+            <td colspan="4" align="center">該当するデータはありません。</td>
         </tr>
         <?php } ?>
     </table>

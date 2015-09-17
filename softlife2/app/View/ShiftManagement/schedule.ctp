@@ -1,8 +1,9 @@
 <?php require 'schedule_element.ctp'; ?>
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
+<?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
 <!-- 見出し１ -->
-<div id='headline' style="padding:10px 10px 10px 10px;">
+<div id='headline' style="padding:5px 10px 5px 10px;">
     ★ シフト管理
     &nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/index" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
@@ -11,21 +12,27 @@
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/test2" target="" onclick=''><font Style="font-size:95%;">稼働表ベース表テスト</font></a>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/test" target="" onclick=''><font Style="font-size:95%;">稼働表技術テスト</font></a>
+    <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
+    <input type="submit" name="assignment" value="シフト自動割付" id="button-create" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');">
+        &nbsp;
+        <input type="button" id="button-create" class="<?='blinking' ?>" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">
+        &nbsp;
+    <input type="submit" name="check_duplication" value="重複チェック" 
+           style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="alert('制作前');return false;">
 </div>
 <!-- 見出し１ END -->
 
 <div style="width:<?=setWidth($col) ?>px;margin-top: 0px;<?=$font_normal ?>;">
-    <?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
     <table border='1' cellspacing="0" cellpadding="3" style="width:98%;margin-top: -5px;border-spacing: 0px;background-color: white;">
             <tr align="center">
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                     <td style='background-color: #006699;color: white;'>
-                        <font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月 稼働表】</font>
-                        <?php $comment = '【注意！】いままで保存した当月のシフトは消去されます。\n自動割付を実行しますか？'; ?>
-                        <input type="submit" name="assignment" value="シフト自動割付" id="button-create" onclick="return window.confirm('<?=$comment ?>');">
+                        <font style='font-size: 110%;'>
+                            <a href="#" class="" style="color: white; text-decoration: none;" onclick="location.reload();">【<?php echo $y ?>年<?php echo $m ?>月 稼働表】</a>
+                        </font>
+                        <input type="hidden" name="month" value="<?=$y.'-'.$m ?>">
                     </td>
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
             </tr>
@@ -65,6 +72,7 @@
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.case_id',array('type'=>'hidden', 'value'=>setData($datas2,'case_id',$count,$record))); ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.order_id',array('type'=>'hidden', 'value'=>setData($datas2,'order_id',$count,$record))); ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_num',array('type'=>'hidden','value'=>setData($datas2,'shokushu_num',$count,$record))); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_id',array('type'=>'hidden','value'=>setData($datas2,'shokushu_id',$count,$record))); ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.username', array('type'=>'hidden', 'value' => $username)); ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                 </td>
@@ -115,7 +123,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">待ち合わせ</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('WorkTable.0.juchuu_cal',
+                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
                             array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;')); ?>
                 </td>
                 <?php } ?>
@@ -140,7 +148,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">クリーニング</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('WorkTable.0.juchuu_cal',
+                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
                             array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -153,7 +161,7 @@
                 <td rowspan="2" style='background-color: #e8ffff;'>単価</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -161,7 +169,7 @@
             <tr id="OrderDetail11">
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -170,7 +178,7 @@
                 <td rowspan="1" style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -182,7 +190,7 @@
                 <td style='background-color: #e8ffff;'>時給</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -191,7 +199,7 @@
                 <td style='background-color: #e8ffff;'>基本日給</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -200,7 +208,7 @@
                 <td style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -209,7 +217,7 @@
                 <td style='background-color: #e8ffff;'>研修中（時給）</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;'>
-                    \ <?php echo $this->Form->input('WorkTable.'.$count.'.kyuuyo_cal',
+                    \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
@@ -260,7 +268,7 @@
             <tr id="">
                 <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: #ffffcc;'>
+                <td style='background-color: #ffffcc;vertical-align: top;'>
                     <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
                     <input type="button" value="スタッフ選択" 
                            onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
@@ -358,7 +366,7 @@
                     <?php
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
-                                $this->log($data_staffs[$d][$count+1], LOG_DEBUG);
+                                //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $data_staff) {
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
                                     echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
@@ -368,7 +376,7 @@
                         }
                     ?>
                     <?php
-                    $i = 0;
+                    $j = 0;
                     if (!empty($request_staffs)) {
                         foreach ($request_staffs as $data) {
                             $point = $data['StaffSchedule']['point'];
@@ -379,11 +387,11 @@
                             }
                             if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
                                     && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
-                                $datas3[$count][$d][$i]['staff_id'] = $data['StaffSchedule']['staff_id'];
-                                $datas3[$count][$d][$i]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
-                                $datas3[$count][$d][$i]['point'] = setPoint($point2, $count);
+                                $datas3[$count][$d][$j]['staff_id'] = $data['StaffSchedule']['staff_id'];
+                                $datas3[$count][$d][$j]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
+                                $datas3[$count][$d][$j]['point'] = setPoint($point2, $count);
 
-                                $i++;
+                                $j++;
                             }
                         }
                         // ポイント順、ID順に並び替え
@@ -403,6 +411,7 @@
                             // 優先順に表示
                             $flag3 = false;
                             $flag2 = false;
+                            $flag1 = false;
                             foreach ($datas3[$count][$d] as $key => $value){
                                 if ($value['point'] == 3) {
                                         echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
@@ -415,6 +424,11 @@
                                         echo '</div>';
                                         $flag2 = true;
                                 } elseif (($flag3 == false && $flag2 == false) && $value['point'] == 1) {
+                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
+                                        echo $value['name'].' ('.$value['point'].')';
+                                        echo '</div>';
+                                        $flag1 = true;
+                                } elseif (($flag3 == false && $flag2 == false && $flag1 == false) && $value['point'] == 0) {
                                         echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
                                         echo $value['name'].' ('.$value['point'].')';
                                         echo '</div>';
@@ -442,17 +456,17 @@
 </div>
     
     <div style='margin-left: 10px;'>
-<button type="button" id="button-create" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">保存</button>
+<button type="button" id="button-create" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">保 存</button>
     &nbsp;&nbsp;
-<?php print($this->Form->submit('確定する', array('id'=>'button-create', 'name'=>'confirm','div' => false))); ?>
+<?php print($this->Form->submit('★ 確定する ★', array('id'=>'button-create', 'name'=>'confirm','div' => false, 'style' => 'padding: 10px 15px;font-size: 110%;'))); ?>
+    &nbsp;&nbsp;
+<?php print($this->Form->submit('EXCEL出力', array('id'=>'', 'name'=>'output_excel','div' => false, 'onclick'=>'alert("工事中");return false;'))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php print($this->Html->link('前回保存時まで戻す', 'javascript:void(0);', array('id'=>'button-delete', 'style'=>'' , 'onclick'=>'window.location.reload();'))); ?>
+<?php $comment2 = '【注意！】いままで保存した当月のシフトデータは消去されます。\nシフトの全クリアを実行しますか？'; ?>
+<?php print($this->Form->submit('シフトの全クリア', array('id'=>'button-delete', 'name'=>'all_clear', 'div'=>false, 'onclick'=>'return window.confirm(\''.$comment2.'\');'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Html->link('ページを戻る', 'javascript:void(0);', array('id'=>'button-delete', 'style'=>'padding:8px;', 
     'onclick'=>'deleteCookie("edit");location.href="'.ROOTDIR.'/ShiftManagement/index"'))); ?>
     </div>
-<div style="margin-top: 5px;">
-    ※「前回保存時まで戻す」は、保存していない分をキャンセルすることを指す。[F5]でも同様の動作をします。
-</div>
 <?php echo $this->Form->end(); ?>  
 </div>
