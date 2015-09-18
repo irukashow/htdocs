@@ -17,7 +17,7 @@
     <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
     <input type="submit" name="assignment" value="シフト自動割付" id="button-create" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');">
         &nbsp;
-        <input type="button" id="button-create" class="<?='blinking' ?>" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">
+        <input type="button" id="button-create" class="" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">
         &nbsp;
     <input type="submit" name="check_duplication" value="重複チェック" 
            style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="alert('制作前');return false;">

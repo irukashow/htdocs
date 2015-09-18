@@ -211,15 +211,15 @@ class ShiftManagementController extends AppController {
         $list_premonth = null;
         // 案件名の取得
         $conditions1 = array('class'=>$selected_class);
-        $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1, 'order' => array('sequence', 'id')));
+        $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1, 'order' => array('sequence')));
         $this->set('getCasename', $getCasename);
-        //$this->log($getCasename, LOG_DEBUG);
+        $this->log($getCasename, LOG_DEBUG);
         // 取引先の取得
         $list_customer = $this->Customer->find('list', array('fields'=>array('id', 'corp_name'), 'conditions' => $conditions1));
         $this->set('list_customer', $list_customer);
         //$this->log($list_customer, LOG_DEBUG);
         // 事業主の取得
-        $result1 = $this->CaseManagement->find('all', array('conditions' => $conditions1));
+        $result1 = $this->CaseManagement->find('all', array('conditions' => $conditions1, 'order' => array('sequence')));
         //$this->log($result1, LOG_DEBUG);
         $datas1 = null;
         foreach ($result1 as $key=>$value) {
@@ -243,37 +243,37 @@ class ShiftManagementController extends AppController {
         $this->set('list_entrepreneur', $datas1);
         // 依頼主
         $result1 = $this->CaseManagement->find('all', array(
-            'fields'=>array('id', 'client'), 'conditions' => $conditions1));
+            'fields'=>array('id', 'client'), 'conditions' => $conditions1, 'order' => array('sequence')));
         //$this->log($result1, LOG_DEBUG);
-        $datas2 = null;
+        $datas22 = null;
         foreach ($result1 as $value) {
             if (empty($value['CaseManagement']['client'])) {
-                $datas2[$value['CaseManagement']['id']] = '';
+                $datas22[$value['CaseManagement']['id']] = '';
                 continue;
             }
-            $datas2[$value['CaseManagement']['id']] = $list_customer[$value['CaseManagement']['client']];
+            $datas22[$value['CaseManagement']['id']] = $list_customer[$value['CaseManagement']['client']];
         }
-        $this->set('list_client', $datas2);
-        //$this->log($datas2, LOG_DEBUG);
+        $this->set('list_client', $datas22);
+        //$this->log($datas22, LOG_DEBUG);
         // 指揮命令者・担当者
         $conditions2 = array('class'=>$selected_class);
         $this->CaseManagement->virtualFields['director2'] = 'CONCAT(position, "：", director)';
-        $list_director = $this->CaseManagement->find('list', array('fields' => array('id', 'director2'), 'conditions' => $conditions2));
+        $list_director = $this->CaseManagement->find('list', array('fields' => array('id', 'director2'), 'conditions' => $conditions2, 'order' => array('sequence')));
         $this->set('list_director', $list_director);
         // 住所
-        $list_address = $this->CaseManagement->find('list', array('fields' => array('id', 'address'), 'conditions' => $conditions2));
+        $list_address = $this->CaseManagement->find('list', array('fields' => array('id', 'address'), 'conditions' => $conditions2, 'order' => array('sequence')));
         $this->set('list_address', $list_address);
         // TEL
-        $list_telno = $this->CaseManagement->find('list', array('fields' => array('id', 'telno'), 'conditions' => $conditions2));
+        $list_telno = $this->CaseManagement->find('list', array('fields' => array('id', 'telno'), 'conditions' => $conditions2, 'order' => array('sequence')));
         $this->set('list_telno', $list_telno);
         // FAX
-        $list_faxno = $this->CaseManagement->find('list', array('fields' => array('id', 'faxno'), 'conditions' => $conditions2));
+        $list_faxno = $this->CaseManagement->find('list', array('fields' => array('id', 'faxno'), 'conditions' => $conditions2, 'order' => array('sequence')));
         $this->set('list_faxno', $list_faxno);
         // 請求先担当者
         $this->CaseManagement->virtualFields['tantou2'] = 'CONCAT(Customer.corp_name, "<br>", Customer.tantou)';
         $option = array();
         $option['fields'] = array('CaseManagement.id', 'tantou2'); 
-        //$option['order'] = array('OrderInfoDetail.case_id' => 'asc', 'OrderInfoDetail.order_id' => 'asc', 'OrderInfoDetail.shokushu_num' => 'asc');
+        $option['order'] = array('CaseManagement.sequence' => 'asc');
         $option['conditions'] = array('CaseManagement.class'=>$selected_class); 
         $option['joins'] = array(
         array(
@@ -289,7 +289,7 @@ class ShiftManagementController extends AppController {
         // 請求書締日
         $option = array();
         $option['fields'] = array('CaseManagement.id', 'Customer.bill_cutoff'); 
-        //$option['order'] = array('OrderInfoDetail.case_id' => 'asc', 'OrderInfoDetail.order_id' => 'asc', 'OrderInfoDetail.shokushu_num' => 'asc');
+        $option['order'] = array('CaseManagement.sequence' => 'asc');
         $option['conditions'] = array('CaseManagement.class'=>$selected_class); 
         $option['joins'] = array(
         array(
@@ -333,336 +333,6 @@ class ShiftManagementController extends AppController {
         $month = ltrim($month, '0');
         $this->set('year', $year);
         $this->set('month', ltrim($month, '0'));
-        
-        // post時の処理
-        if ($this->request->is('post') || $this->request->is('put')) {
-            $data = $this->request->data;
-            $this->log($data, LOG_DEBUG);
-            /** シフト自動割付 **/
-            if (isset($data['assignment'])) {
-                /**
-                 *  シフト希望スタッフのポイント
-                 */
-                $conditions6 = array(
-                    'StaffSchedule.class'=>$selected_class, 
-                    'work_date >= '=>$year.'-'.$month.'-01',
-                    'work_date <= '=>$year.'-'.$month.'-31',
-                    'OR'=>array(array('work_flag'=>1), array('work_flag'=>2))
-                    );
-                $request_staffs = $this->StaffSchedule->find('all', array('conditions'=>$conditions6, 'order'=>array('staff_id')));
-                //$this->log($request_staffs, LOG_DEBUG);
-                if (empty($request_staffs)) {
-                    $this->Session->setFlash('【情報】スタッフからのシフト希望がないので、割付できません。');
-                    $this->redirect(array('?date='.$this->request->query('date')));
-                }
-
-                $conditions7 = array(
-                    'class'=>$selected_class, 
-                    'month'=>$year.'-'.$month.'-01',
-                    );
-                $datas5 = $this->WkShift->find('all', array('conditions'=>$conditions7));
-                //$this->log($datas5, LOG_DEBUG);
-
-                foreach($request_staffs as $key=>$data6) {
-                    $id = $data6['StaffSchedule']['id'];
-                    $staff_id = $data6['StaffSchedule']['staff_id'];
-                    $point = null;
-                    foreach($datas5 as $col=>$data5) {
-                        $point[$col] = 0;
-                        // 推奨スタッフに一致する場合、ポイント＋２
-                        if (!empty($data5['WkShift']['recommend_staff'])) {
-                            $recommends = explode(',', $data5['WkShift']['recommend_staff']);
-                            //$this->log($recommends, LOG_DEBUG);
-                            if (in_array($staff_id, $recommends)) {
-                                $point[$col] = 2;
-                            }
-                        }
-                        // 前月スタッフに一致する場合、ポイント＋１
-                        if (!empty($data5['WkShift']['pre_month'])) {
-                            $pre_month = explode(',', $data5['WkShift']['pre_month']);
-                            if (in_array($staff_id, $pre_month)) {
-                                $point[$col] = $point[$col] + 1;
-                            } 
-                        }
-                    }
-                    //$this->log($point, LOG_DEBUG);
-                    // ポイントの更新
-                    $point = implode(',', $point);
-                    //$this->log($point, LOG_DEBUG);
-                    $data6 = array('point'=>$point);
-                    $this->StaffSchedule->id = $id;
-                    $this->StaffSchedule->save($data6);
-                    
-                }
-                // スタッフのスケジュールデータ
-                $joins = array(
-                array(
-                    'type' => 'LEFT',   //LEFT, INNER, OUTER
-                    'table' => 'staff_'.$selected_class,
-                    'alias' => 'StaffMaster',    //下でPost.user_idと書くために
-                    'conditions' => array('StaffSchedule.staff_id = StaffMaster.id')
-                    ),
-                );
-                $request_staffs2 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei'), 
-                    'conditions'=>$conditions6, 'joins'=>$joins, 'order'=>array('staff_id')));
-                $this->log($request_staffs2, LOG_DEBUG);
-                $this->set('request_staffs', $request_staffs2 );
-                /**
-                 *  稼働表テーブルの該当月分の作成
-                 */
-                $col = sizeof($data['WorkTable']);
-                for ($i=1; $i<=$col; $i++) {
-                    for ($d=1; $d<=31; $d++) {
-                        $data2[$i]['column'] = $i;
-                        $data2[$i]['class'] = $selected_class;
-                        $data2[$i]['username'] = $username;
-                        $data2[$i]['month'] = $year.'-'.$month.'-01';
-                        //$data2[$i]['d'.$d] = $data['WorkTable'][$i]['staff_id'];
-                        $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
-                        $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
-                        $data2[$i]['shokushu_num'] = $data['WorkTable'][$i]['shokushu_num'];
-                        $data2[$i]['shokushu_id'] = $data['WorkTable'][$i]['shokushu_id'];
-                    }
-                }
-                // データがなければ処理停止
-                /**
-                if (empty($data2)) {
-                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
-                    return;
-                }
-                 * 
-                 */
-                // 該当月を削除
-                $param = array('class' => $selected_class, 'month' => $year.'-'.$month.'-01');
-                if ($this->WorkTable->deleteAll($param)) {
-                    // データを登録する
-                    if ($this->WorkTable->saveAll($data2)) {
-                        //$this->Session->setFlash('保存を完了しました。');
-                        // セッション削除
-                        $this->Session->delete('staff_cell');
-                        // シフト編集モード
-                        //$this->Session->write('edit', $data['edit']);
-                        //$this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
-                    } else {
-
-                    }
-                }
-                
-            /** 保存 **/
-            } elseif (isset($data['mode'])) {
-                $col = $data['col'];
-                for ($i=1; $i<=$col; $i++) {
-                    for ($d=1; $d<=31; $d++) {
-                        if (empty($data[$d.'_'.$i])) {
-                            continue;
-                        }
-                        $data2[$i]['column'] = $i;
-                        $data2[$i]['class'] = $selected_class;
-                        $data2[$i]['username'] = $username;
-                        $data2[$i]['month'] = $data['month'];
-                        $data2[$i]['d'.$d] = $data[$d.'_'.$i];
-                        $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
-                        $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
-                        $data2[$i]['shokushu_num'] = $data['WorkTable'][$i]['shokushu_num'];
-                    }
-                }
-                // データがなければ処理停止
-                if (empty($data2)) {
-                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
-                    return;
-                }
-                // 該当月を削除
-                $param = array('class' => $selected_class, 'month' => $data['month']);
-                if ($this->WorkTable->deleteAll($param)) {
-                    // データを登録する
-                    if ($this->WorkTable->saveAll($data2)) {
-                        $this->Session->setFlash('【情報】保存を完了しました。');
-                        // セッション削除
-                        $this->Session->delete('staff_cell');
-                        // シフト編集モード
-                        //$this->Session->write('edit', $data['edit']);
-                        //$this->set('edit', $data['edit']);
-                        //$this->log('$edit='.$data['edit']);
-                        $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
-                    } else {
-
-                    }
-                }
-            /** シフトの全クリア **/
-            } elseif (isset($this->request->data['all_clear'])) {
-                // 該当月を削除
-                $param = array('class' => $selected_class, 'month' => $data['month'].'-01');
-                if ($this->WorkTable->deleteAll($param)) {
-                    // 成功
-                    $this->Session->setFlash('【情報】シフトを全クリアしました。');
-                    // セッション削除
-                    $this->Session->delete('staff_cell');
-                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
-                }
-            // 所属の変更
-            } elseif (isset($this->request->data['class'])) {
-                $this->selected_class = $this->request->data['class'];
-                //$this->Session->setFlash($class);
-                $this->set('selected_class', $this->selected_class);
-                $this->Session->write('selected_class', $this->selected_class);
-                // テーブル変更
-                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
-                $this->redirect(array('page' => 1));  
-            // 表示件数の変更
-            } elseif (isset($this->request->data['limit'])) {
-                $limit = $this->request->data['limit'];
-                $this->set('limit', $limit);
-                $this->redirect(array('limit' => $limit));
-            } else {
-
-            }
-        /**
-         * ここからGETの処理
-         */
-        } elseif ($this->request->is('get')) {
-            // セッション保存データ
-            // セッション削除
-            //$this->Session->delete('staff_cell');
-            // スタッフIDをカンマ区切りにする
-            $staff_cell = $this->Session->read('staff_cell');
-            //$this->log($staff_cell, LOG_DEBUG);
-            $staff_cell2 = null;
-            if (!empty($staff_cell) && $staff_cell[0][0] == $year.'-'.$month) {
-                for($i=1; $i<=31; $i++) {
-                    for($j=1; $j<=200; $j++) {
-                        if (empty($staff_cell[$j][$i])) {
-                            continue;
-                        }
-                        $staff_cell2[$j][$i] = implode(',', $staff_cell[$j][$i]);
-                    }
-                }
-                //$this->log($staff_cell2, LOG_DEBUG);
-                $this->set('staff_cell', $staff_cell2);
-            } else {
-                for($i=1; $i<=200; $i++) {
-                    $conditions1 = array('class'=>$selected_class, 'month'=>$year.'-'.$month.'-01', 'column'=>$i);
-                    $results= $this->WorkTable->find('first', array('conditions'=>$conditions1));
-                    //$this->log($results, LOG_DEBUG);
-                    if (empty($results)) {
-                        continue;
-                    }
-                    for($d=1; $d<=31; $d++) {
-                        $staff_ids[$d][$i] = $results['WorkTable']['d'.$d];
-                        if (!empty($results['WorkTable']['d'.$d])) {
-                            $staff_ids2[$d][$i] = explode(',', $results['WorkTable']['d'.$d]);
-                            $staff_ids3[$d][$i] = $results['WorkTable']['d'.$d];
-                        }
-                    }
-                }
-
-                $this->set('staff_ids', $staff_ids);
-                $staff_cell = $staff_ids2;
-                $staff_cell[0][0] = $year.'-'.$month;     // 該当月セット
-                $this->Session->write('staff_cell', $staff_cell);
-                $this->set('staff_cell', $staff_ids3);
-                //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
-            }
-
-            // 氏名のセット
-            if (empty($staff_cell)) {
-                $this->set('data_staffs', null);
-            } else {
-                for($d=1; $d<=31; $d++) {
-                    for($i=1; $i<200; $i++) {
-                        if (empty($staff_cell[$d][$i])) {
-                            continue;
-                        }
-                        foreach ($staff_cell[$d][$i] as $key=>$staff_id) {
-                            $conditions1 = array('id'=>$staff_id);
-                            $data_staffs[$d][$i][$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name_sei', 'name_mei'), 'conditions'=>$conditions1));
-                        }
-                    }
-                }
-                $this->set('data_staffs', $data_staffs);
-                //$this->log($data_staffs, LOG_DEBUG);
-                // セッション削除
-                //$this->Session->delete('staff_cell');
-            }
-        } else {
-            // DBの保存データ
-            // 指定月の取得
-            if (!empty($this->request->query('date'))) {
-                $date = $this->request->query('date');
-                //$this->log($date, LOG_DEBUG);
-                $date_arr = explode('-',$date);
-                $year = $date_arr[0];
-                $month = $date_arr[1];
-            } else {
-                $year = date('Y', strtotime('+1 month'));
-                $month = date('n', strtotime('+1 month'));
-            }
-            $month = ltrim($month, '0');
-            $this->set('year', $year);
-            $this->set('month', ltrim($month, '0'));
-            
-            // セッション削除
-            //$this->Session->delete('staff_cell');
-            // スタッフIDをカンマ区切りにする
-            $staff_cell = $this->Session->read('staff_cell');
-            //$this->log($staff_cell, LOG_DEBUG);
-            $staff_cell2 = null;
-            if (!empty($staff_cell) && $staff_cell[0][0] == $month) {
-                for($i=1; $i<=31; $i++) {
-                    for($j=1; $j<=200; $j++) {
-                        if (empty($staff_cell[$j][$i])) {
-                            continue;
-                        }
-                        $staff_cell2[$j][$i] = implode(',', $staff_cell[$j][$i]);
-                    }
-                }
-                //$this->log($staff_cell2, LOG_DEBUG);
-                $this->set('staff_cell', $staff_cell2);
-            } else {
-                for($i=1; $i<=200; $i++) {
-                    $conditions1 = array('class'=>$selected_class, 'month'=>$month.'-01', 'column'=>$i);
-                    $results= $this->WorkTable->find('first', array('conditions'=>$conditions1));
-                    //$this->log($results, LOG_DEBUG);
-                    if (empty($results)) {
-                        continue;
-                    }
-                    for($d=1; $d<=31; $d++) {
-                        $staff_ids[$d][$i] = $results['WorkTable']['d'.$d];
-                        if (!empty($results['WorkTable']['d'.$d])) {
-                            $staff_ids2[$d][$i] = explode(',', $results['WorkTable']['d'.$d]);
-                            $staff_ids3[$d][$i] = $results['WorkTable']['d'.$d];
-                        }
-                    }
-                }
-
-                $this->set('staff_ids', $staff_ids);
-                $staff_cell = $staff_ids2;
-                $staff_cell[0][0] = $month;     // 該当月セット
-                $this->Session->write('staff_cell', $staff_cell);
-                $this->set('staff_cell', $staff_ids3);
-                //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
-            }
-            
-            // データ
-            if (empty($staff_cell)) {
-                $this->set('data_staffs', null);
-            } else {
-                for($row=1; $row<=31; $row++) {
-                    for($col=1; $col<200; $col++) {
-                        if (empty($staff_cell[$row][$col])) {
-                            continue;
-                        }
-                        foreach ($staff_cell[$row][$col] as $key=>$staff_id) {
-                            $conditions1 = array('id'=>$staff_id);
-                            $data_staffs[$row][$col][$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name_sei', 'name_mei'), 'conditions'=>$conditions1));
-                        }
-                    }
-                }
-                $this->set('data_staffs', $data_staffs);
-                //$this->log($data_staffs, LOG_DEBUG);
-                // セッション削除
-                //$this->Session->delete('staff_cell');
-            }
-        }
         // 登録していた値をセット
         // 登録データのセット
         //$conditions1 = array('id' => $order_id, 'case_id' => $case_id);
@@ -672,13 +342,13 @@ class ShiftManagementController extends AppController {
         // 案件あたりの職種数
         $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
         $datas = $this->OrderCalender->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
-            'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('case_id', 'order_id')));
+            'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('sequence', 'case_id', 'order_id')));
         $this->set('datas', $datas);
         //$this->log($datas, LOG_DEBUG);
         // 職種以下
         $option = array();
         $option['fields'] = array('OrderInfoDetail.*', 'OrderCalender.*'); 
-        $option['order'] = array('OrderInfoDetail.case_id' => 'asc', 'OrderInfoDetail.order_id' => 'asc', 'OrderInfoDetail.shokushu_num' => 'asc');
+        $option['order'] = array('OrderCalender.sequence' => 'asc', 'OrderInfoDetail.case_id' => 'asc', 'OrderInfoDetail.order_id' => 'asc', 'OrderInfoDetail.shokushu_num' => 'asc');
         $option['conditions'] = array('OrderInfoDetail.class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month); 
         $option['joins'] = array(
         array(
@@ -691,6 +361,7 @@ class ShiftManagementController extends AppController {
         // オーダー入力欄以下
         $datas2 = $this->OrderInfoDetail->find('all', $option);
         $this->set('datas2', $datas2);
+        //$this->log($datas2, LOG_DEBUG);
         $data_wk = null;
 
         // 前月のスタッフ
@@ -761,6 +432,342 @@ class ShiftManagementController extends AppController {
         if (empty($request_staffs)) {
             $this->set('request_staffs', null );
         }
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $data = $this->request->data;
+            //$this->log($data, LOG_DEBUG);
+            /** シフト自動割付 **/
+            if (isset($data['assignment'])) {
+                /**
+                 *  シフト希望スタッフのポイント
+                 */
+                $conditions6 = array(
+                    'StaffSchedule.class'=>$selected_class, 
+                    'work_date >= '=>$year.'-'.$month.'-01',
+                    'work_date <= '=>$year.'-'.$month.'-31',
+                    'OR'=>array(array('work_flag'=>1), array('work_flag'=>2))
+                    );
+                $request_staffs = $this->StaffSchedule->find('all', array('conditions'=>$conditions6, 'order'=>array('staff_id')));
+                //$this->log($request_staffs, LOG_DEBUG);
+                if (empty($request_staffs)) {
+                    $this->Session->setFlash('【情報】スタッフからのシフト希望がないので、割付できません。');
+                    $this->redirect(array('?date='.$this->request->query('date')));
+                }
+
+                for($i=0; $i<$record; $i++) {
+                    $conditions7 = array(
+                        'class'=>$selected_class, 
+                        'month'=>$year.'-'.$month.'-01',
+                        'order_id'=>$datas2[$i]['OrderInfoDetail']['order_id'],
+                        'shokushu_num'=>$datas2[$i]['OrderInfoDetail']['shokushu_num'],
+                        );
+                    $datas5[$i] = $this->WkShift->find('first', array('conditions'=>$conditions7));
+                }
+                //$this->log($datas5, LOG_DEBUG);
+
+                foreach($request_staffs as $key=>$data6) {
+                    $id = $data6['StaffSchedule']['id'];
+                    $staff_id = $data6['StaffSchedule']['staff_id'];
+                    $point = null;
+                    foreach($datas5 as $col=>$data5) {
+                        $point[$col] = 0;
+                        // 推奨スタッフに一致する場合、ポイント＋２
+                        if (!empty($data5['WkShift']['recommend_staff'])) {
+                            $recommends = explode(',', $data5['WkShift']['recommend_staff']);
+                            //$this->log($recommends, LOG_DEBUG);
+                            if (in_array($staff_id, $recommends)) {
+                                $point[$col] = 2;
+                            }
+                        }
+                        // 前月スタッフに一致する場合、ポイント＋１
+                        if (!empty($data5['WkShift']['pre_month'])) {
+                            $pre_month = explode(',', $data5['WkShift']['pre_month']);
+                            if (in_array($staff_id, $pre_month)) {
+                                $point[$col] = $point[$col] + 1;
+                            } 
+                        }
+                    }
+                    //$this->log($point, LOG_DEBUG);
+                    // ポイントの更新
+                    $point = implode(',', $point);
+                    //$this->log($point, LOG_DEBUG);
+                    $data6 = array('point'=>$point);
+                    $this->StaffSchedule->id = $id;
+                    $this->StaffSchedule->save($data6);
+                    
+                }
+                // スタッフのスケジュールデータ
+                $joins = array(
+                array(
+                    'type' => 'LEFT',   //LEFT, INNER, OUTER
+                    'table' => 'staff_'.$selected_class,
+                    'alias' => 'StaffMaster',    //下でPost.user_idと書くために
+                    'conditions' => array('StaffSchedule.staff_id = StaffMaster.id')
+                    ),
+                );
+                $request_staffs2 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei'), 
+                    'conditions'=>$conditions6, 'joins'=>$joins, 'order'=>array('staff_id')));
+                //$this->log($request_staffs2, LOG_DEBUG);
+                $this->set('request_staffs', $request_staffs2 );
+                /**
+                 *  稼働表テーブルの該当月分の作成
+                 */
+                $col = sizeof($data['WorkTable']);
+                for ($i=1; $i<=$col; $i++) {
+                    for ($d=1; $d<=31; $d++) {
+                        $data2[$i]['column'] = $i;
+                        $data2[$i]['class'] = $selected_class;
+                        $data2[$i]['username'] = $username;
+                        $data2[$i]['month'] = $year.'-'.$month.'-01';
+                        //$data2[$i]['d'.$d] = $data['WorkTable'][$i]['staff_id'];
+                        $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
+                        $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
+                        $data2[$i]['shokushu_num'] = $data['WorkTable'][$i]['shokushu_num'];
+                        $data2[$i]['shokushu_id'] = $data['WorkTable'][$i]['shokushu_id'];
+                    }
+                }
+                // データがなければ処理停止
+                /**
+                if (empty($data2)) {
+                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                    return;
+                }
+                 * 
+                 */
+                // 該当月を削除
+                $param = array('class' => $selected_class, 'month' => $year.'-'.$month.'-01');
+                if ($this->WorkTable->deleteAll($param)) {
+                    // データを登録する
+                    if ($this->WorkTable->saveAll($data2)) {
+                        //$this->Session->setFlash('保存を完了しました。');
+                        // セッション削除
+                        $this->Session->delete('staff_cell');
+                        // シフト編集モード
+                        //$this->Session->write('edit', $data['edit']);
+                        //$this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                    } else {
+
+                    }
+                }
+                
+            /** 保存 **/
+            } elseif (isset($data['mode'])) {
+                $col = $data['col'];
+                for ($i=1; $i<=$col; $i++) {
+                    for ($d=1; $d<=31; $d++) {
+                        if (empty($data[$d.'_'.$i])) {
+                            continue;
+                        }
+                        $data2[$i]['column'] = $i;
+                        $data2[$i]['class'] = $selected_class;
+                        $data2[$i]['username'] = $username;
+                        $data2[$i]['month'] = $data['month'];
+                        $data2[$i]['d'.$d] = $data[$d.'_'.$i];
+                        $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
+                        $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
+                        $data2[$i]['shokushu_num'] = $data['WorkTable'][$i]['shokushu_num'];
+                        $data2[$i]['shokushu_id'] = $data['WorkTable'][$i]['shokushu_id'];
+                    }
+                }
+                // データがなければ処理停止
+                if (empty($data2)) {
+                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                    return;
+                }
+                // 該当月を削除
+                $param = array('class' => $selected_class, 'month' => $data['month']);
+                if ($this->WorkTable->deleteAll($param)) {
+                    // データを登録する
+                    if ($this->WorkTable->saveAll($data2)) {
+                        $this->Session->setFlash('【情報】保存を完了しました。');
+                        // セッション削除
+                        $this->Session->delete('staff_cell');
+                        // シフト編集モード
+                        //$this->Session->write('edit', $data['edit']);
+                        //$this->set('edit', $data['edit']);
+                        //$this->log('$edit='.$data['edit']);
+                        $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                    } else {
+
+                    }
+                }
+            /** シフトの全クリア **/
+            } elseif (isset($this->request->data['all_clear'])) {
+                // 該当月を削除
+                $param = array('class' => $selected_class, 'month' => $data['month'].'-01');
+                if ($this->WorkTable->deleteAll($param)) {
+                    // 成功
+                    $this->Session->setFlash('【情報】シフトを全クリアしました。');
+                    // セッション削除
+                    $this->Session->delete('staff_cell');
+                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                }
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit));
+            } else {
+
+            }
+        /**
+         * ここからGETの処理
+         */
+        } elseif ($this->request->is('get')) {
+            // セッション保存データ
+            // セッション削除
+            //$this->Session->delete('staff_cell');
+            // スタッフIDをカンマ区切りにする
+            $staff_cell = $this->Session->read('staff_cell');
+            $this->log($staff_cell, LOG_DEBUG);
+            $staff_cell2 = null;
+            if (!empty($staff_cell) && $staff_cell[0][0] == $year.'-'.$month) {
+                for($i=1; $i<=31; $i++) {
+                    for($j=1; $j<=200; $j++) {
+                        if (empty($staff_cell[$j][$i])) {
+                            continue;
+                        }
+                        $staff_cell2[$j][$i] = implode(',', $staff_cell[$j][$i]);
+                    }
+                }
+                $this->log('ここ', LOG_DEBUG);
+                //$this->log($staff_cell2, LOG_DEBUG);
+                $this->set('staff_cell', $staff_cell2);
+            } else {
+                for($i=1; $i<$record+1; $i++) {
+                    $conditions1 = array('class'=>$selected_class, 'month'=>$year.'-'.$month.'-01', 
+                        'order_id'=>$datas2[$i-1]['OrderInfoDetail']['order_id'], 'shokushu_num'=>$datas2[$i-1]['OrderInfoDetail']['shokushu_num']);
+                    $results= $this->WorkTable->find('first', array('conditions'=>$conditions1));
+                    $this->log($results, LOG_DEBUG);
+                    if (empty($results)) {
+                        continue;
+                    }
+                    for($d=1; $d<=31; $d++) {
+                        $staff_ids[$d][$i] = $results['WorkTable']['d'.$d];
+                        if (!empty($results['WorkTable']['d'.$d])) {
+                            $staff_ids2[$d][$i] = explode(',', $results['WorkTable']['d'.$d]);
+                            $staff_ids3[$d][$i] = $results['WorkTable']['d'.$d];
+                        }
+                    }
+                }
+
+                $this->set('staff_ids', $staff_ids);
+                $staff_cell = $staff_ids2;
+                $staff_cell[0][0] = $year.'-'.$month;     // 該当月セット
+                $this->Session->write('staff_cell', $staff_cell);
+                $this->set('staff_cell', $staff_ids3);
+                //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
+            }
+            // 氏名のセット
+            if (empty($staff_cell)) {
+                $this->set('data_staffs', null);
+            } else {
+                for($d=1; $d<=31; $d++) {
+                    for($i=1; $i<200; $i++) {
+                        if (empty($staff_cell[$d][$i])) {
+                            continue;
+                        }
+                        foreach ($staff_cell[$d][$i] as $key=>$staff_id) {
+                            $conditions1 = array('id'=>$staff_id);
+                            $data_staffs[$d][$i][$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name_sei', 'name_mei'), 'conditions'=>$conditions1));
+                        }
+                    }
+                }
+                $this->set('data_staffs', $data_staffs);
+                //$this->log($data_staffs, LOG_DEBUG);
+                // セッション削除
+                //$this->Session->delete('staff_cell');
+            }
+        } else {
+            // DBの保存データ
+            // 指定月の取得
+            if (!empty($this->request->query('date'))) {
+                $date = $this->request->query('date');
+                //$this->log($date, LOG_DEBUG);
+                $date_arr = explode('-',$date);
+                $year = $date_arr[0];
+                $month = $date_arr[1];
+            } else {
+                $year = date('Y', strtotime('+1 month'));
+                $month = date('n', strtotime('+1 month'));
+            }
+            $month = ltrim($month, '0');
+            $this->set('year', $year);
+            $this->set('month', ltrim($month, '0'));
+            
+            // セッション削除
+            //$this->Session->delete('staff_cell');
+            // スタッフIDをカンマ区切りにする
+            $staff_cell = $this->Session->read('staff_cell');
+            //$this->log($staff_cell, LOG_DEBUG);
+            $staff_cell2 = null;
+            if (!empty($staff_cell) && $staff_cell[0][0] == $month) {
+                for($i=1; $i<=31; $i++) {
+                    for($j=1; $j<=200; $j++) {
+                        if (empty($staff_cell[$j][$i])) {
+                            continue;
+                        }
+                        $staff_cell2[$j][$i] = implode(',', $staff_cell[$j][$i]);
+                    }
+                }
+                //$this->log($staff_cell2, LOG_DEBUG);
+                $this->set('staff_cell', $staff_cell2);
+            } else {
+                for($i=1; $i<$record+1; $i++) {
+                    $conditions1 = array('class'=>$selected_class, 'month'=>$month.'-01', 'order_id'=>$datas2[$i-1]['OrderInfoDetail']['order_id'], 'shokushu_num'=>$datas2[$i-1]['OrderInfoDetail']['shokushu_num']);
+                    $results= $this->WorkTable->find('first', array('conditions'=>$conditions1));
+                    //$this->log($results, LOG_DEBUG);
+                    if (empty($results)) {
+                        continue;
+                    }
+                    for($d=1; $d<=31; $d++) {
+                        $staff_ids[$d][$i] = $results['WorkTable']['d'.$d];
+                        if (!empty($results['WorkTable']['d'.$d])) {
+                            $staff_ids2[$d][$i] = explode(',', $results['WorkTable']['d'.$d]);
+                            $staff_ids3[$d][$i] = $results['WorkTable']['d'.$d];
+                        }
+                    }
+                }
+
+                $this->set('staff_ids', $staff_ids);
+                $staff_cell = $staff_ids2;
+                $staff_cell[0][0] = $month;     // 該当月セット
+                $this->Session->write('staff_cell', $staff_cell);
+                $this->set('staff_cell', $staff_ids3);
+                //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
+            }
+            
+            // データ
+            if (empty($staff_cell)) {
+                $this->set('data_staffs', null);
+            } else {
+                for($row=1; $row<=31; $row++) {
+                    for($col=1; $col<200; $col++) {
+                        if (empty($staff_cell[$row][$col])) {
+                            continue;
+                        }
+                        foreach ($staff_cell[$row][$col] as $key=>$staff_id) {
+                            $conditions1 = array('id'=>$staff_id);
+                            $data_staffs[$row][$col][$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name_sei', 'name_mei'), 'conditions'=>$conditions1));
+                        }
+                    }
+                }
+                $this->set('data_staffs', $data_staffs);
+                //$this->log($data_staffs, LOG_DEBUG);
+                // セッション削除
+                //$this->Session->delete('staff_cell');
+            }
+        }
     }
     
     
@@ -804,7 +811,7 @@ class ShiftManagementController extends AppController {
     /**
      * 設定
      */
-    public function setting() {
+    public function setting($id = null, $id2 = null, $row =null, $direction = null) {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -830,10 +837,67 @@ class ShiftManagementController extends AppController {
         $this->set('selected_class', $selected_class);
         $data_staffs = null;
         // テーブルの設定
-        $this->StaffMaster->setSource('staff_'.$selected_class);
-        $this->WorkTable->setSource('work_tables');
-        
-        
+        //$this->StaffMaster->setSource('staff_'.$selected_class);
+        //$this->WorkTable->setSource('work_tables');
+        // レコード数
+        $option = array(
+            'conditions' => array('class' => $selected_class),
+            'limit' => '30',
+            'order' => array('sequence' => 'asc', 'id' => 'asc'));
+        $record = $this->CaseManagement->find('count', $option);
+        $this->set('record', $record);
+        //$this->log($record, LOG_DEBUG);
+
+        $this->log($this->request->data, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->CaseManagement->saveAll($this->request->data['CaseManagement']);
+            $this->Session->setFlash('【情報】背景色の登録が完了しました。');
+        } elseif ($this->request->is('get')) {
+            // 順序の変更
+            if ($direction == 'up') {
+                if ($row == 1) {
+                    return;
+                }
+                // $idを$row-1
+                $data = array('CaseManagement' => array('id' => $id, 'sequence' => $row-1));
+                $fields = array('sequence');
+                $this->CaseManagement->save($data, false, $fields);
+                $data_2 = array('sequence' => $row-1);
+                $condtion = array( 'case_id' => $id );
+                $this->OrderCalender->updateAll($data_2, $condtion);
+                // $id2を$row
+                $data2 = array('CaseManagement' => array('id' => $id2, 'sequence' => $row));
+                $fields2 = array('sequence');
+                $this->CaseManagement->save($data2, false, $fields2);
+                $data2_2 = array('sequence' => $row);
+                $condtion2 = array( 'case_id' => $id2 );
+                $this->OrderCalender->updateAll($data2_2, $condtion2);
+            } elseif ($direction == 'down') {
+                if ($row == $record) {
+                    return;
+                }
+                // $idを$row+1
+                $data = array('CaseManagement' => array('id' => $id, 'sequence' => $row+1));
+                $fields = array('sequence');
+                $this->CaseManagement->save($data, false, $fields);
+                $data_2 = array('sequence' => $row+1);
+                $condtion = array( 'case_id' => $id );
+                $this->OrderCalender->updateAll($data_2, $condtion);
+                // $id2を$row
+                $data2 = array('CaseManagement' => array('id' => $id2, 'sequence' => $row));
+                $fields2 = array('sequence');
+                $this->CaseManagement->save($data2, false, $fields2);
+                $data2_2 = array('sequence' => $row);
+                $condtion2 = array( 'case_id' => $id2 );
+                $this->OrderCalender->updateAll($data2_2, $condtion2);
+            }
+        } else {
+
+        }
+        // 案件マスタ
+        $this->paginate = $option;
+        $this->set('datas', $this->paginate('CaseManagement'));
     }
     
     /**
