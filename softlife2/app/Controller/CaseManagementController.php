@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster');
+    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster', 'WorkTable');
     
     public $components = array('RequestHandler');
     
@@ -288,7 +288,6 @@ class CaseManagementController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $datas = $this->paginate('CaseManagement', $conditions3);
             $this->set('datas', $datas);
-            
         } else {
             /**
             $this->log('ここ', LOG_DEBUG);
@@ -352,8 +351,16 @@ class CaseManagementController extends AppController {
             }
             //$this->log($result, LOG_DEBUG);
             $this->set('order_update_date', $result);
+            // シフト入力の更新日
+            foreach($datas as $key=>$data) {
+                $conditions3 = array('case_id'=>$data['CaseManagement']['id']);
+                $result2[$key] = $this->WorkTable->find('first', array('conditions'=>$conditions3, 'order'=>array('modified'=>'desc')));
+            }
+            $this->log($result2, LOG_DEBUG);
+            $this->set('shift_update_date', $result2);
         } else {
             $this->set('order_update_date', null);
+            $this->set('shift_update_date', null);
         }
              
     }
@@ -574,9 +581,11 @@ class CaseManagementController extends AppController {
         $this->set('line3', '');
         $this->set('station3', '');
         $this->Session->write('insert_billing', 0);
+        $data_billing = null;
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
             if (isset($this->request->data['submit'])) {
                 // モデルの状態をリセットする
                 //$this->CaseManagement->create();
@@ -667,6 +676,7 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
                 // 依頼主
                 if (!empty($this->request->data['CaseManagement']['client'])) {
+                    /**
                     // 登録する内容を設定
                     $data = array('CaseManagement' => 
                         array('id' => $this->request->data['CaseManagement']['id'], 
@@ -679,6 +689,18 @@ class CaseManagementController extends AppController {
                         $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
                         $data_client = $this->Customer->find('first', array('conditions' => $condition1));
                         $this->set('data_client', $data_client);
+                    }
+                     * 
+                     */
+                    // 新規・更新登録
+                    if ($this->CaseManagement->save($this->request->data)) {
+                        // 成功
+                        $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
+                        $data_client = $this->Customer->find('first', array('conditions' => $condition1));
+                        $this->set('data_client', $data_client);
+                        if ($koushin_flag == 0) {
+                            $case_id = $this->CaseManagement->getLastInsertID();
+                        }
                     }
                 }
                 
@@ -695,6 +717,9 @@ class CaseManagementController extends AppController {
                         $data = array('CaseManagement' => 
                             array('id' => $this->request->data['CaseManagement']['id'], 
                                 'billing_destination'.($i+1) => $this->request->data['CaseManagement']['billing_destination'.($i+1)]));
+                        if (empty($case_id)) {
+                            $case_id = $this->request->data['CaseManagement']['id'];
+                        }
                         // 登録する項目（フィールド指定）
                         $fields = array('billing_destination'.($i+1)); 
                         // 更新登録
@@ -712,6 +737,7 @@ class CaseManagementController extends AppController {
                     //$this->log($data_billing, LOG_DEBUG);
                 }
                 $this->set('data_billing', $data_billing);
+                $this->log($data_billing, LOG_DEBUG);
                 
                 $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
             // 登録削除
@@ -882,7 +908,6 @@ class CaseManagementController extends AppController {
                     $this->request->data['OrderCalender'][$i]['month'] = $this->request->data['month'];
                 }
                 $data3 = $this->request->data['OrderCalender'];
-                $this->log($datas, LOG_DEBUG);
                 // データを登録する（オーダー詳細）
                 //$this->OrderInfoDetail->create(); 
                 if ($this->OrderCalender->saveAll($data3)) {
@@ -897,9 +922,33 @@ class CaseManagementController extends AppController {
                     for($i=0; $i<$row; $i++) {
                         $this->Session->delete('staff_id-'.$order_id.'_'.$i);
                     }
+                    // スケジュールが空の職種レコードを削除
+                    $conditions3 = array('class'=>$selected_class, 'order_id'=>$order_id);
+                    $datas3 = $this->OrderCalender->find('all', array('conditions'=>$conditions3));
+                    $this->log($datas3, LOG_DEBUG);
+                    $val1 = 0;
+                    foreach($datas3 as $j=>$data3) {
+                        for ($d=1; $d<=31; $d++) {
+                            if ($d == 1) {
+                                $val1 = $data3['OrderCalender']['d'.$d];
+                            } else {
+                                $val1 = $val1 + $data3['OrderCalender']['d'.$d];
+                            }
+                        }
+                        if ($val1 == 0) {
+                            $this->log('からのカラム：'.$data3['OrderCalender']['id'], LOG_DEBUG);
+                            $this->OrderCalender->delete($data3['OrderCalender']['id']);
+                        }
+                    }
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録完了しました。');
-                    $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
+                    $date = $this->request->query('date');
+                    if (empty($date)) {
+                        $date2 = null;
+                    } else {
+                        $date2 = '?date='.$date;
+                    }
+                    $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id, $date2));
                 } else {
                     $this->log($this->OrderCalender->getDataSource()->getLog(), LOG_DEBUG);
                     $this->Session->setFlash('【エラー】登録時にエラーが発生しました。(0002)');

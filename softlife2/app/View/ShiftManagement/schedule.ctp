@@ -1,4 +1,13 @@
 <?php require 'schedule_element.ctp'; ?>
+<?php
+    if ($flag == 0) {
+        $disabled = '';
+        $button_type2 = 'button-create';
+    } else {
+        $disabled = 'disabled';
+        $button_type2 = 'button-delete';
+    }
+?>
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
@@ -6,7 +15,7 @@
 <div id='headline' style="padding:5px 10px 5px 10px;">
     ★ シフト管理
     &nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/index" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[シフト作成]</font></b>        <!-- alert("制作中");return false; -->
     &nbsp;
@@ -15,12 +24,12 @@
     <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
     &nbsp;
     <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
-    <input type="submit" name="assignment" value="シフト自動割付" id="button-create" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');">
+    <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
         &nbsp;
-        <input type="button" id="button-create" class="" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">
+        <input type="button" id="<?=$button_type2 ?>" class="" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
         &nbsp;
     <input type="submit" name="check_duplication" value="重複チェック" 
-           style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="alert('制作前');return false;">
+           style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="alert('制作前');return false;" <?=$disabled ?>>
 </div>
 <!-- 見出し１ END -->
 
@@ -53,11 +62,12 @@
             <tr>
                 <th style='background:#99ccff;text-align: center;width:120px;height: 30px;' colspan="2">
                     <a href="#" onclick="setHidden();">
-                        <span id="ActiveDisplay" onclick="">シフト編集</span>
+                        <span id="ActiveDisplay" onclick="">【シフト編集】</span>
                     </a>
                 </th>
                 <?php foreach ($datas as $key=>$data){ ?>
-                <th class="demo" id="case_<?=$data['OrderCalender']['case_id'] ?>" style='background:#99ccff;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <th id="case_<?=$data['OrderCalender']['case_id'] ?>" 
+                    style='background:#99ccff;text-align: center;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
                 <?php } ?>
@@ -456,9 +466,24 @@
 </div>
     
     <div style='margin-left: 10px;'>
-<button type="button" id="button-create" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);">保 存</button>
+<button type="button" id="<?=$button_type2 ?>" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>保 存</button>
     &nbsp;&nbsp;
-<?php print($this->Form->submit('★ 確定する ★', array('id'=>'button-create', 'name'=>'confirm','div' => false, 'style' => 'padding: 10px 15px;font-size: 110%;'))); ?>
+<?php
+    if ($flag == 0) {
+        $commet2 = '★ 確定する ★';
+        $commet3 = '【注意！】当月シフトを確定しますか？';
+        $button_type = 'button-release';
+    } elseif ($flag == 1) {
+        $commet2 = '★ 確定解除 ★';
+        $commet3 = '【注意！】当月のシフト確定を解除しますか？';
+        $button_type = 'button-release';
+    } else {
+        $commet2 = 'エラー';
+        $button_type = '';
+    }
+?>
+<?php print($this->Form->submit($commet2, array('id'=>$button_type, 'name'=>'confirm','div' => false, 
+    'style' => 'padding: 10px 15px;font-size: 110%;', 'onclick' => 'return window.confirm("'.$commet3.'");'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('EXCEL出力', array('id'=>'', 'name'=>'output_excel','div' => false, 'onclick'=>'alert("工事中");return false;'))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

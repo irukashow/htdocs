@@ -146,7 +146,7 @@ function doSubmit() {
     </td>  
     <td align="center"><?php echo $data['CaseManagement']['id']; ?></td>
     <td>
-        <div class="demo<?=$key ?>" style="padding: 5px;">
+        <div class="demo<?=$key ?>" style="padding: 5px;background-color: <?=$data['CaseManagement']['bgcolor'] ?>;color: <?=$data['CaseManagement']['color'] ?>;">
         <?php echo $data['CaseManagement']['case_name']; ?>
         </div>
     </td>
@@ -159,6 +159,11 @@ function doSubmit() {
     <?php } ?>
   </tr>
   <?php endforeach; ?>
+  <?php if (count($datas) == 0) { ?>
+  <tr>
+      <td colspan="4" align="center" style="background-color: #fff9ff;">登録している案件データがありません。</td>
+  </tr>
+  <?php } ?>
 </table>
 <!--- 職種マスタ管理 END --->
 <div style="clear:both;"></div>

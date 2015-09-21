@@ -4,6 +4,10 @@
 <?php
 // 優先順位で色分け
 function setBgcolor($point) {
+    if (empty($point)) {
+        $ret = 'white';
+        return $ret;
+    }
     if ($point == 3) {
         $ret = '#ff99cc';
     } elseif ($point == 2) {

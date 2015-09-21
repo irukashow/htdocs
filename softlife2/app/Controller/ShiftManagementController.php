@@ -53,7 +53,8 @@ class ShiftManagementController extends AppController {
         } elseif (isset ($date)) {
             $month = str_replace('-', '', $date);
         } else {
-            $month = date('Ym');
+            //$month = date('Ym');
+            $month = date('Ym', strtotime('+1 month'));
         }
         $this->set('month', $month);
         //$this->log($month, LOG_DEBUG);
@@ -213,7 +214,12 @@ class ShiftManagementController extends AppController {
         $conditions1 = array('class'=>$selected_class);
         $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1, 'order' => array('sequence')));
         $this->set('getCasename', $getCasename);
-        $this->log($getCasename, LOG_DEBUG);
+        //$this->log($getCasename, LOG_DEBUG);
+        // 案件背景色の取得
+        $list_bgcolor = $this->CaseManagement->find('list', array('fields'=>array('id', 'bgcolor'), 'conditions' => $conditions1));
+        $this->set('list_bgcolor', $list_bgcolor);
+        $list_color = $this->CaseManagement->find('list', array('fields'=>array('id', 'color'), 'conditions' => $conditions1));
+        $this->set('list_color', $list_color);
         // 取引先の取得
         $list_customer = $this->Customer->find('list', array('fields'=>array('id', 'corp_name'), 'conditions' => $conditions1));
         $this->set('list_customer', $list_customer);
@@ -283,9 +289,8 @@ class ShiftManagementController extends AppController {
             'conditions' => array('CaseManagement.billing_destination1 = Customer.id')
             ),
         ); 
-        $datas = $this->CaseManagement->find('list', $option);
-        //$this->log($datas, LOG_DEBUG);
-        $this->set('list_bill', $datas);
+        $datas8 = $this->CaseManagement->find('list', $option);
+        $this->set('list_bill', $datas8);
         // 請求書締日
         $option = array();
         $option['fields'] = array('CaseManagement.id', 'Customer.bill_cutoff'); 
@@ -340,7 +345,7 @@ class ShiftManagementController extends AppController {
         $col = $this->OrderCalender->find('count', array('conditions' => $conditions1));
         $this->set('col', $col);
         // 案件あたりの職種数
-        $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
+        //$conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
         $datas = $this->OrderCalender->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
             'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('sequence', 'case_id', 'order_id')));
         $this->set('datas', $datas);
@@ -361,13 +366,13 @@ class ShiftManagementController extends AppController {
         // オーダー入力欄以下
         $datas2 = $this->OrderInfoDetail->find('all', $option);
         $this->set('datas2', $datas2);
-        //$this->log($datas2, LOG_DEBUG);
+        $this->log($datas2, LOG_DEBUG);
         $data_wk = null;
 
         // 前月のスタッフ
         $m = date('Y-m-d', strtotime('-1 month', strtotime($year.'-'.$month.'-01')));
         //$this->log($m, LOG_DEBUG);
-        $datas3 = null;$datas4 = null;
+        $datas3 = null;$datas4 = null;$ret = null;
         foreach($datas2 as $key=>$data) {
             $conditions2 = array('class'=>$selected_class, 'order_id'=>$data['OrderInfoDetail']['order_id'], 
                 'shokushu_num'=>$data['OrderInfoDetail']['shokushu_num'], 'month' => $m);
@@ -382,8 +387,8 @@ class ShiftManagementController extends AppController {
             }
             // 推奨スタッフ
             foreach ($list_staffs2[$data['OrderInfoDetail']['order_id']][$data['OrderInfoDetail']['shokushu_num']] as $key2=>$value) {
-                if (empty($value)) {
-                    continue;
+                if (empty($value['StaffMaster']['id'])) {
+                    $value['StaffMaster']['id'] = '';
                 }
                 if ($key2 == 0) {
                     $ret[$key] = $value['StaffMaster']['id'];
@@ -391,6 +396,7 @@ class ShiftManagementController extends AppController {
                     $ret[$key] = $ret[$key].','.$value['StaffMaster']['id'];
                 }
             }
+            //$this->log($ret, LOG_DEBUG);
             if (empty($datas3[$key])) {
                 $list_premonth[$key] = null;
                 // ワークテーブル配列
@@ -432,16 +438,31 @@ class ShiftManagementController extends AppController {
         if (empty($request_staffs)) {
             $this->set('request_staffs', null );
         }
-        
+        // 編集確定フラグ
+        $conditions5 = array('class' => $selected_class, 'month' => $year.'-'.$month.'-01');
+        $data3 = $this->WorkTable->find('first', array('conditions' => $conditions5));
+        if (!empty($data3)) {
+            $flag = $data3['WorkTable']['flag'];
+        } else {
+            $flag = 0;
+        }
+        $this->set('flag', $flag);
+        // 案件の表示順の更新処理
+        $conditions7 = array('class' => $selected_class);
+        $datas5 = $this->CaseManagement->find('all', array('fields'=>array('id', 'sequence'), 'conditions' => $conditions7));
+        $this->log($datas5, LOG_DEBUG);
+        foreach($datas5 as $data5) {
+            $data = array('sequence' => $data5['CaseManagement']['sequence']);
+            $condtion2 = array('case_id' => $data5['CaseManagement']['id'] );
+            $this->OrderCalender->updateAll($data, $condtion2);
+        }
+
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $data = $this->request->data;
             //$this->log($data, LOG_DEBUG);
             /** シフト自動割付 **/
             if (isset($data['assignment'])) {
-                /**
-                 *  シフト希望スタッフのポイント
-                 */
                 $conditions6 = array(
                     'StaffSchedule.class'=>$selected_class, 
                     'work_date >= '=>$year.'-'.$month.'-01',
@@ -453,49 +474,7 @@ class ShiftManagementController extends AppController {
                 if (empty($request_staffs)) {
                     $this->Session->setFlash('【情報】スタッフからのシフト希望がないので、割付できません。');
                     $this->redirect(array('?date='.$this->request->query('date')));
-                }
-
-                for($i=0; $i<$record; $i++) {
-                    $conditions7 = array(
-                        'class'=>$selected_class, 
-                        'month'=>$year.'-'.$month.'-01',
-                        'order_id'=>$datas2[$i]['OrderInfoDetail']['order_id'],
-                        'shokushu_num'=>$datas2[$i]['OrderInfoDetail']['shokushu_num'],
-                        );
-                    $datas5[$i] = $this->WkShift->find('first', array('conditions'=>$conditions7));
-                }
-                //$this->log($datas5, LOG_DEBUG);
-
-                foreach($request_staffs as $key=>$data6) {
-                    $id = $data6['StaffSchedule']['id'];
-                    $staff_id = $data6['StaffSchedule']['staff_id'];
-                    $point = null;
-                    foreach($datas5 as $col=>$data5) {
-                        $point[$col] = 0;
-                        // 推奨スタッフに一致する場合、ポイント＋２
-                        if (!empty($data5['WkShift']['recommend_staff'])) {
-                            $recommends = explode(',', $data5['WkShift']['recommend_staff']);
-                            //$this->log($recommends, LOG_DEBUG);
-                            if (in_array($staff_id, $recommends)) {
-                                $point[$col] = 2;
-                            }
-                        }
-                        // 前月スタッフに一致する場合、ポイント＋１
-                        if (!empty($data5['WkShift']['pre_month'])) {
-                            $pre_month = explode(',', $data5['WkShift']['pre_month']);
-                            if (in_array($staff_id, $pre_month)) {
-                                $point[$col] = $point[$col] + 1;
-                            } 
-                        }
-                    }
-                    //$this->log($point, LOG_DEBUG);
-                    // ポイントの更新
-                    $point = implode(',', $point);
-                    //$this->log($point, LOG_DEBUG);
-                    $data6 = array('point'=>$point);
-                    $this->StaffSchedule->id = $id;
-                    $this->StaffSchedule->save($data6);
-                    
+                    return;
                 }
                 // スタッフのスケジュールデータ
                 $joins = array(
@@ -550,7 +529,6 @@ class ShiftManagementController extends AppController {
 
                     }
                 }
-                
             /** 保存 **/
             } elseif (isset($data['mode'])) {
                 $col = $data['col'];
@@ -591,6 +569,28 @@ class ShiftManagementController extends AppController {
                     } else {
 
                     }
+                }
+            /** シフトの確定 **/
+            } elseif (isset($this->request->data['confirm'])) {
+                if ($flag == 0) {
+                    $flag2 = 1;
+                    $commet = '【情報】当月シフトを確定しました。';
+                } else {
+                    $flag2 = 0;
+                    $commet = '【情報】当月シフトの確定解除を行いました。';
+                }
+                // 該当月を確定
+                $data4 = array(
+                    'flag' => $flag2,
+                    'modified' => "'" . date("Y-m-d H:i:s") . "'",
+                );
+                $conditions8 = array('class' => $selected_class, 'month' => $data['month'].'-01');
+                if ($this->WorkTable->updateAll($data4, $conditions8)) {
+                    // 成功
+                    $this->Session->setFlash($commet);
+                    // セッション削除
+                    //$this->Session->delete('staff_cell');
+                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
                 }
             /** シフトの全クリア **/
             } elseif (isset($this->request->data['all_clear'])) {
@@ -640,7 +640,7 @@ class ShiftManagementController extends AppController {
                         $staff_cell2[$j][$i] = implode(',', $staff_cell[$j][$i]);
                     }
                 }
-                $this->log('ここ', LOG_DEBUG);
+                //$this->log('ここ', LOG_DEBUG);
                 //$this->log($staff_cell2, LOG_DEBUG);
                 $this->set('staff_cell', $staff_cell2);
             } else {
@@ -768,6 +768,64 @@ class ShiftManagementController extends AppController {
                 //$this->Session->delete('staff_cell');
             }
         }
+        /**
+         *  シフト希望スタッフのポイント
+         */
+        $conditions6 = array(
+            'StaffSchedule.class'=>$selected_class, 
+            'work_date >= '=>$year.'-'.$month.'-01',
+            'work_date <= '=>$year.'-'.$month.'-31',
+            'OR'=>array(array('work_flag'=>1), array('work_flag'=>2))
+            );
+        $request_staffs = $this->StaffSchedule->find('all', array('conditions'=>$conditions6, 'order'=>array('staff_id')));
+        //$this->log($request_staffs, LOG_DEBUG);
+        /**
+        if (empty($request_staffs)) {
+            $this->Session->setFlash('【情報】スタッフからのシフト希望がないので、割付できません。');
+            $this->redirect(array('?date='.$this->request->query('date')));
+        }
+         * 
+         */
+        for($i=0; $i<$record; $i++) {
+            $conditions7 = array(
+                'class'=>$selected_class, 
+                'month'=>$year.'-'.$month.'-01',
+                'order_id'=>$datas2[$i]['OrderInfoDetail']['order_id'],
+                'shokushu_num'=>$datas2[$i]['OrderInfoDetail']['shokushu_num'],
+                );
+            $datas5[$i] = $this->WkShift->find('first', array('conditions'=>$conditions7));
+        }
+        //$this->log($datas5, LOG_DEBUG);
+        foreach($request_staffs as $key=>$data6) {
+            $id = $data6['StaffSchedule']['id'];
+            $staff_id = $data6['StaffSchedule']['staff_id'];
+            $point = null;
+            foreach($datas5 as $col=>$data5) {
+                $point[$col] = 0;
+                // 推奨スタッフに一致する場合、ポイント＋２
+                if (!empty($data5['WkShift']['recommend_staff'])) {
+                    $recommends = explode(',', $data5['WkShift']['recommend_staff']);
+                    //$this->log($recommends, LOG_DEBUG);
+                    if (in_array($staff_id, $recommends)) {
+                        $point[$col] = 2;
+                    }
+                }
+                // 前月スタッフに一致する場合、ポイント＋１
+                if (!empty($data5['WkShift']['pre_month'])) {
+                    $pre_month = explode(',', $data5['WkShift']['pre_month']);
+                    if (in_array($staff_id, $pre_month)) {
+                        $point[$col] = $point[$col] + 1;
+                    } 
+                }
+            }
+            //$this->log($point, LOG_DEBUG);
+            // ポイントの更新
+            $point = implode(',', $point);
+            //$this->log($point, LOG_DEBUG);
+            $data6 = array('point'=>$point);
+            $this->StaffSchedule->id = $id;
+            $this->StaffSchedule->save($data6);
+        }
     }
     
     
@@ -847,6 +905,7 @@ class ShiftManagementController extends AppController {
         $record = $this->CaseManagement->find('count', $option);
         $this->set('record', $record);
         //$this->log($record, LOG_DEBUG);
+        // 
 
         $this->log($this->request->data, LOG_DEBUG);
         // post時の処理
@@ -864,14 +923,14 @@ class ShiftManagementController extends AppController {
                 $fields = array('sequence');
                 $this->CaseManagement->save($data, false, $fields);
                 $data_2 = array('sequence' => $row-1);
-                $condtion = array( 'case_id' => $id );
+                $condtion = array('case_id' => $id );
                 $this->OrderCalender->updateAll($data_2, $condtion);
                 // $id2を$row
                 $data2 = array('CaseManagement' => array('id' => $id2, 'sequence' => $row));
                 $fields2 = array('sequence');
                 $this->CaseManagement->save($data2, false, $fields2);
                 $data2_2 = array('sequence' => $row);
-                $condtion2 = array( 'case_id' => $id2 );
+                $condtion2 = array('case_id' => $id2 );
                 $this->OrderCalender->updateAll($data2_2, $condtion2);
             } elseif ($direction == 'down') {
                 if ($row == $record) {
@@ -882,14 +941,14 @@ class ShiftManagementController extends AppController {
                 $fields = array('sequence');
                 $this->CaseManagement->save($data, false, $fields);
                 $data_2 = array('sequence' => $row+1);
-                $condtion = array( 'case_id' => $id );
+                $condtion = array('case_id' => $id );
                 $this->OrderCalender->updateAll($data_2, $condtion);
                 // $id2を$row
                 $data2 = array('CaseManagement' => array('id' => $id2, 'sequence' => $row));
                 $fields2 = array('sequence');
                 $this->CaseManagement->save($data2, false, $fields2);
                 $data2_2 = array('sequence' => $row);
-                $condtion2 = array( 'case_id' => $id2 );
+                $condtion2 = array('case_id' => $id2 );
                 $this->OrderCalender->updateAll($data2_2, $condtion2);
             }
         } else {
@@ -1715,7 +1774,11 @@ class ShiftManagementController extends AppController {
             $recommend_staff2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
         }
         foreach ($recommend_staff2 as $key => $value){
-          $key_id[$key] = $value['StaffMaster']['id'];
+            if (empty($value['StaffMaster']['id'])) {
+                $key_id[$key] = '';
+            } else {
+                $key_id[$key] = $value['StaffMaster']['id'];
+            }
         }
         array_multisort($key_id , SORT_ASC , $recommend_staff2);
         $this->set('recommend_staff2', $recommend_staff2);
@@ -1760,7 +1823,11 @@ class ShiftManagementController extends AppController {
             foreach ($datas3 as $key => $value){
                 $key_staff_id[$key] = $value['StaffSchedule']['staff_id'];
                 $point_arr = explode(',', $value['StaffSchedule']['point']);
-                $key_point[$key] = $point_arr[$cell_col-1];
+                if (empty($point_arr[$cell_col-1])) {
+                    $key_point[$key] = 0;
+                } else {
+                    $key_point[$key] = $point_arr[$cell_col-1];
+                }
             }
             array_multisort ( $key_point , SORT_DESC , $key_staff_id , SORT_ASC , $datas3 );
             $this->set('request_staffs', $datas3 );

@@ -29,7 +29,7 @@
     echo $this->Html->script('script');
     //echo $this->Html->script('jquery.blockUI');
     echo $this->Html->css('evol.colorpicker.min');
-    //echo $this->Html->css('jquery.timepicker');
+    echo $this->Html->css('staffmaster');
     echo $this->Html->css('style_1');
 ?>
 
@@ -174,6 +174,23 @@ function setPoint($array, $column) {
     }
     return $ret;
 }
+// 案件名称の背景色の指定
+function setBGColor($case_id, $list_array) {
+    $ret = $list_array[$case_id];
+    if (empty($ret)) {
+        $ret = '99ccff';
+    }
+    return $ret;
+}
+// 案件名称の文字色の指定
+function setColor($case_id, $list_array) {
+    $ret = $list_array[$case_id];
+    if (empty($ret)) {
+        $ret = 'black';
+    }
+    return $ret;
+}
+
 ?>
 <?php
     /** 番号のマークをセット **/
@@ -330,7 +347,9 @@ function Mdblclk(Cell) {
          divs = divs + "&s" + (i+1) + "=" + Cell.getElementsByTagName("DIV")[i].id;       
      }
  }
-    if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 1) {
+    if (Cell.parentNode.rowIndex == 0) {
+        location.href = "<?=ROOTDIR ?>/ShiftManagement/setting";
+    } else if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 1) {
         return false;
     }
     // class名が「redips-drag t1」以外ならばNG

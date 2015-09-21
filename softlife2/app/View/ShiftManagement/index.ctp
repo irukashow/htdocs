@@ -3,8 +3,13 @@
 ?>
 <?php
 	// 初期値
+/**
 	$y = date('Y');
 	$m = date('n');
+ * 
+ */
+    $y = date('Y', strtotime('+1 month'));
+    $m = date('n', strtotime('+1 month'));
 		
 	// 日付の指定がある場合
 	if(!empty($_GET['date'])){
@@ -89,13 +94,13 @@ $(function() {
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule" target="" id="shift" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/test2" target="" onclick=''><font Style="font-size:95%;">稼働表ベース表テスト</font></a>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/test" target="" onclick=''><font Style="font-size:95%;">稼働表技術テスト</font></a>
+
 </div>
 <!-- 見出し１ END -->
 

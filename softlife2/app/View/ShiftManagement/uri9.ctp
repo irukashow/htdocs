@@ -56,6 +56,9 @@ $(function() {
     <a href="<?=ROOTDIR ?>/ShiftManagement/schedule" target=""><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[勤務実績]</font></b>
+    &nbsp;
+    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
+    &nbsp;
 </div>
 <!-- 見出し１ END -->
 
