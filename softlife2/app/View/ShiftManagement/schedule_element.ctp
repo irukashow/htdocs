@@ -369,6 +369,7 @@ try{
   }
 </script>
 <script>
+/** 保存処理 **/
 function doAccount(year, month, mode) {
     var myTbl = document.getElementById('table1');
     var form = document.getElementById('form');
@@ -396,58 +397,60 @@ function doAccount(year, month, mode) {
     }
     form.appendChild(input);
     
-    // 保存モードの場合
-    if (mode == 1) {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'hidden');
-        input.setAttribute('name', 'mode');
-        input.setAttribute('value', 1);
-        form.appendChild(input);
-        for (var i=startrow; i<myTbl.rows.length; i++) {
-            for (var j=1; j<myTbl.rows[i].cells.length; j++) {
-                var val = [];
-                Cell = myTbl.rows[i].cells[j];
-                if (Cell.innerHTML.length == 0) {
-                    continue;
+    // 保存モードの場合(mode=1)
+    // 保存＆チェックモードの場合(mode=2)
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'mode');
+    input.setAttribute('value', mode);
+    form.appendChild(input);
+    for (var i=startrow; i<myTbl.rows.length; i++) {
+        for (var j=1; j<myTbl.rows[i].cells.length; j++) {
+            var val = [];
+            Cell = myTbl.rows[i].cells[j];
+            if (Cell.innerHTML.length == 0) {
+                continue;
+            }
+            for(k=0; k<Cell.getElementsByTagName("DIV").length; k++) {
+                // コピーの文字列を削る
+                var str = Cell.getElementsByTagName("DIV")[k].id;
+                var index = str.indexOf("c");
+                if (index != -1) {
+                    str = str.substring(0, index);
                 }
-                for(k=0; k<Cell.getElementsByTagName("DIV").length; k++) {
-                    if (k == 0) {
-                        val = Cell.getElementsByTagName("DIV")[0].id;
-                    } else {
-                        val = val + "," + Cell.getElementsByTagName("DIV")[k].id;
-                    }
-                }
-                if (val.length > 0) {
-                    var input = document.createElement('input');
-                    input.setAttribute('type', 'hidden');
-                    input.setAttribute('name', (i-(startrow-1))+'_'+(j));
-                    input.setAttribute('value', val);
-                    form.appendChild(input);
+                if (k == 0) {
+                    val = str;
+                } else {
+                    val = val + "," + str;
                 }
             }
-        }
-        // 背景色
-        for (var j=1; j<myTbl.rows[0].cells.length; j++) {
-            Cell = myTbl.rows[0].cells[j];
-            val1 = Cell.style.backgroundColor;
-            val2 = Cell.style.color;
-            var input = document.createElement('input');
-            input.setAttribute('type', 'hidden');
-            input.setAttribute('name', 'bgcolor_'+j);
-            input.setAttribute('value', val1);
-            form.appendChild(input);
-            var input = document.createElement('input');
-            input.setAttribute('type', 'hidden');
-            input.setAttribute('name', 'color_'+j);
-            input.setAttribute('value', val2);
-            form.appendChild(input);
+            if (val.length > 0) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'hidden');
+                input.setAttribute('name', (i-(startrow-1))+'_'+(j));
+                input.setAttribute('value', val);
+                form.appendChild(input);
+            }
         }
     }
     form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule');
     form.setAttribute('method', 'post');
     form.submit();
 }
+// 確定処理
+function doCommit(msg, year, month) {
+    if (window.confirm(msg)) {
+        doAccount(year, month, 3);
+    }
+    
+}
 </script>
+<script>
+$('#help01').mouseover(function() {
+  alert("シフトに推奨するスタッフです。");
+});
+</script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
 <script src="<?=ROOTDIR ?>/js/jquery-hex-colorpicker.js"></script>

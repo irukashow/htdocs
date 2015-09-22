@@ -28,8 +28,8 @@
         &nbsp;
         <input type="button" id="<?=$button_type2 ?>" class="" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
         &nbsp;
-    <input type="submit" name="check_duplication" value="重複チェック" 
-           style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="alert('制作前');return false;" <?=$disabled ?>>
+    <input type="button" name="check_duplication" value="重複チェック" id="button-release"
+           style="cursor: pointer;border:1px solid black;padding: 10px 10px;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 2);" <?=$disabled ?>>
 </div>
 <!-- 見出し１ END -->
 
@@ -276,7 +276,7 @@
                 <?php } ?>
             </tr>
             <tr id="">
-                <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
+                <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ[<span id="help01">?</span>]</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;vertical-align: top;'>
                     <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
@@ -457,6 +457,14 @@
                     $i++; //カウント値（曜日カウンター）+1
                 }
             ?>
+            <tr style="">
+                <td class="redips-trash" style='background-color: #999999;color: white;' colspan="2">削除</td>
+                <?php for ($count=0; $count<$col; $count++){ ?>
+                <td class="redips-trash" style='background-color: #999999;color: white;'>
+                    <?php echo $count+1; ?>
+                </td>
+                <?php } ?>
+            </tr>
             <!-- カレンダー部分 END -->
             </tbody>
         </table>
@@ -482,8 +490,8 @@
         $button_type = '';
     }
 ?>
-<?php print($this->Form->submit($commet2, array('id'=>$button_type, 'name'=>'confirm','div' => false, 
-    'style' => 'padding: 10px 15px;font-size: 110%;', 'onclick' => 'return window.confirm("'.$commet3.'");'))); ?>
+<?php print($this->Form->submit($commet2, array('type'=>'button', 'id'=>$button_type, 'name'=>'confirm','div' => false, 'label'=>false,
+    'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$y.','.sprintf("%02d", $m).', 2);'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('EXCEL出力', array('id'=>'', 'name'=>'output_excel','div' => false, 'onclick'=>'alert("工事中");return false;'))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

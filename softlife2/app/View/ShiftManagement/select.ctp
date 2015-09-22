@@ -192,12 +192,34 @@ onload = function() {
             </td>
         </tr>
         <?php } ?>
-        <?php if($flag == 1) { ?>
-        <tr align="center" style="background:white;">
-            <td colspan="3">該当するデータはありません。</td>
+        <?php } ?>
+        <!-- シフト希望スタッフ（条件付き） -->
+        <?php if (!empty($request_staffs2)) { ?>
+        <?php foreach ($request_staffs2 as $key=>$data) { ?>
+        <?php
+            if (empty($data)) {
+                $flag = 1;
+                continue;
+            }
+        ?>
+        <?php $point_arr = explode(',', $data['StaffSchedule']['point']); ?>
+        <tr style="background:<?=setBgcolor($point_arr[$col-1]) ?>;">
+            <td align="center" style="width:15%;">
+            <?=$data['StaffSchedule']['staff_id']; ?>
+                <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffSchedule']['staff_id']; ?>">
+            </td>
+            <td align="left" style="width:75%;padding:0px 10px 0px 10px;">
+                <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)
+                【条件あり】<?=$data['StaffSchedule']['conditions']; ?>
+            </td>
+            <td align="center" style="">
+                <?php echo $this->Form->submit('選択', 
+                        array('name' => 'select['.$data['StaffSchedule']['staff_id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+            </td>
         </tr>
         <?php } ?>
-        <?php } else { ?>
+        <?php } ?>
+        <?php if($flag == 2) { ?>
         <tr align="center" style="background:white;">
             <td colspan="3">該当するデータはありません。</td>
         </tr>

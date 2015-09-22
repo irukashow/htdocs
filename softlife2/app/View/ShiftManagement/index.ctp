@@ -115,7 +115,7 @@ $(function() {
         </tr>
 </table>
 <!-- ページネーション -->
-<div class="pageNav03" style="margin-top:5px; margin-bottom: 30px;">
+<div class="pageNav03" style="margin-top:5px; margin-bottom: 0px;">
 <?php
 	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
 	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
@@ -123,6 +123,10 @@ $(function() {
 	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
+    &nbsp;&nbsp;
+    <span style="padding-top: 0px;border-style: none;">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule','案件登録','width=1200,height=800,scrollbars=yes');" id='button-create'>手入力</a>
+    </span>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
@@ -137,9 +141,9 @@ $(function() {
 <div style="clear:both;"></div>
 <!-- シフト希望表本体 -->
 <div style="width:100%;overflow-x:scroll;">
-<table border='1' cellspacing="0" cellpadding="3" style="margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+<table border='1' cellspacing="0" cellpadding="3" style="margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
     <tr style="background-color: #cccccc;">
-        <td align="center" colspan="3">スタッフ</td>
+        <td align="center" colspan="4">スタッフ</td>
 <?php
     // 1日の曜日を取得
     $wd1 = date("w", mktime(0, 0, 0, $m, 1, $y));
@@ -154,7 +158,7 @@ $(function() {
     </tr>
     <tr>
         <td align="center" style="background-color: #cccccc;">ID</td>
-        <td align="center" style="background-color: #cccccc;">氏名</td>
+        <td align="center" style="background-color: #cccccc;" colspan="2">氏名</td>
         <td align="center" style="background-color: #cccccc;">職種</td>
 <?php
     $d = 1;
@@ -181,7 +185,7 @@ $(function() {
     </tr>
     <tr style="background-color: #ffffcc;">
         <td align="center"></td>
-        <td align="left">
+        <td align="left" colspan="2">
             <?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名（漢字 or かな）', 'style' => 'width:95%;font-size:90%;')); ?>
         </td>
         <td align="left">
@@ -206,6 +210,9 @@ $(function() {
             <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data1['StaffSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
         <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
             </a>
+        </td>
+        <td align="center">
+            <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule/<?=$data1['StaffSchedule']['staff_id']; ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
         </td>
         <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffMaster']['shokushu_shoukai'], $list_shokushu); ?></td>
 <?php
@@ -236,7 +243,8 @@ $(function() {
                 } elseif ($data2['StaffSchedule']['work_flag'] == 1) {
                     echo "<td align=\"center\" style='".$style."'>○</td>";
                 } elseif($data2['StaffSchedule']['work_flag'] == 2) {
-                    echo "<td align=\"center\" style='".$style."'>△<br><font style='font-size:70%;'>".$data2['StaffSchedule']['conditions']."</font></td>";
+                    $comment3 = 'alert("【シフト条件】\n'.$data2['StaffSchedule']['conditions'].'");';
+                    echo "<td align=\"center\" style='".$style."'><a href='#' title='".$data2['StaffSchedule']['conditions']."' onclick='".$comment3."'>△</a></td>";
                 }
                 $nodata = false;
             }
