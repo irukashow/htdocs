@@ -605,8 +605,10 @@ function changeColor(col, day, flag) {
 <?php echo $this->Form->submit('(3) 登録する', array('name' => 'register2','div' => false, 'onclick' => 'form1.submit();form2.submit();')); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<!--
     &nbsp;&nbsp;
 <?php print($this->Html->link('ﾌﾟﾛﾌｨｰﾙ', $_SESSION['cm_profile_url'], array('id'=>'button-create', 'style'=>'padding:10px;'))); ?> 
+-->
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

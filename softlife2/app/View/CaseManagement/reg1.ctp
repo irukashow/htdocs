@@ -98,7 +98,9 @@ $(function() {
             </tr>
             <!-- 依頼主 -->
             <tr>
-                <td style='background-color: #e8ffff;width:10%;' rowspan="5">依頼主<br><a href="<?=ROOTDIR ?>/CaseManagement/register_customer/0/0">[新規追加]</a></td>
+                <td style='background-color: #e8ffff;width:10%;' rowspan="5">依頼主<br>
+                    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');">[新規登録]</a>
+                </td>
                 <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
                 <td>
                     <table>
@@ -168,7 +170,10 @@ $(function() {
             </tr>
             <!-- 依頼主 END -->
             <tr>
-                <td colspan="2" style='background-color: #e8ffff;width:20%;'>事業主<br><font style="font-size: 90%;">※仕様上10個まで設定可能</font></td>
+                <td colspan="2" style='background-color: #e8ffff;width:20%;'>
+                    事業主<br><font style="font-size: 90%;">※仕様上10個まで設定可能</font><br>
+                    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');">[新規登録]</a>
+                </td>
                 <td>
                     <table width="100%">
                         <tr>
@@ -398,7 +403,8 @@ $(function() {
             <?php if ($insert_billing == 1) { ?>
             <tr>
                 <td style='background-color: #e8ffff;width:10%;' rowspan="6">
-                    請求先<?=setNum($j+1); ?>
+                    請求先<?=setNum($j+1); ?><br>
+                    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');">[新規登録]</a>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;'>企業名<br>部署・担当者</td>
                 <td>
@@ -415,7 +421,7 @@ $(function() {
                         <tr>
                             <td>
                                 <?php echo $this->Form->input('billing_busho'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
-                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>  
+                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?> 様
                             </td>
                         </tr>                                              
                     </table>

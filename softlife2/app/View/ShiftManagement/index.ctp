@@ -69,23 +69,6 @@ window.onload = function(){
 }
   //-->
 </script>
-<!-- for Datepicker -->
-<link type="text/css" rel="stylesheet"
-  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
-<script type="text/javascript"
-  src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script type="text/javascript"
-  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-<!--1国際化対応のライブラリをインポート-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/i18n/jquery-ui-i18n.min.js"></script>
-<script type="text/javascript">
-$(function() {
-  // 2日本語を有効化
-  $.datepicker.setDefaults($.datepicker.regional['ja']);
-  // 3日付選択ボックスを生成
-  $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
-});
-</script>
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
@@ -94,7 +77,7 @@ $(function() {
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
     &nbsp;

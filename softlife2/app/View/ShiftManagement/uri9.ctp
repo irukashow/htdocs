@@ -53,7 +53,7 @@ $(function() {
     &nbsp;&nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/index" target="" onclick=''><font Style="font-size:95%;">スタッフシフト希望</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule" target=""><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule" target="" class="load"><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[勤務実績]</font></b>
     &nbsp;
@@ -62,7 +62,7 @@ $(function() {
 </div>
 <!-- 見出し１ END -->
 
-<?php echo $this->Form->create('CaseManagement', array('name' => 'form')); ?>
+<?php echo $this->Form->create('TimeCard', array('name' => 'form')); ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
@@ -181,7 +181,7 @@ $(function() {
   <?php foreach ($datas as $data): ?>
   <tr>
     <td align="center">
-        <?php $case_id = $data['CaseManagement']['id']; ?>
+        <?php $case_id = $data['TimeCard']['id']; ?>
         <?php echo $case_id; ?>
     </td>
     <td align="center" style="font-size: 90%;"></td>

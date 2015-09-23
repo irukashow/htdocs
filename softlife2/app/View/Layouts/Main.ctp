@@ -34,11 +34,14 @@
   <title>
     <?php echo $title_for_layout; ?>
   </title>
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/sunny/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
   <?php
    // echo $this->Html->meta('icon');
     echo $this->Html->meta('favicon.ico','/favicon.ico',array('type' => 'icon'));
     echo $this->Html->css('main');
-    //echo $this->Html->css( 'page');
+    echo $this->Html->script('jquery.blockUI');
     //echo $this->Html->css( 'Style');
     //echo $this->Html->css( 'Style_SP');
     //echo $this->Html->css( 'jquery-ui-1.10.3.custom');
@@ -51,10 +54,6 @@
     
     echo $scripts_for_layout;
   ?>
-<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/sunny/jquery-ui.css" rel="stylesheet" />
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <!--
 <script type="text/javascript">google.load("jquery", "1.7");</script>
@@ -68,6 +67,62 @@ $(function() {
 	});
 });
 </script>
+<script type="text/javascript">
+$(document).ready(function() { 
+  $('.check').click(function() {
+    $.blockUI({
+      message: '処理中...少々お待ちください。',
+      css: {
+        border: 'none',
+        padding: '10px',
+        backgroundColor: 'white',
+        opacity: .5,
+        color: 'black'
+      },
+      overlayCSS: {
+        backgroundColor: '#000',
+        opacity: 0.6
+      }
+    });
+    setTimeout($.unblockUI, 10000);
+  });
+  $('.load').click(function() {
+    $.blockUI({
+      message: '<?=$this->Html->image('busy.gif'); ?> ロード中...少々お待ちください。',
+      css: {
+        border: 'none',
+        padding: '10px',
+        backgroundColor: 'white',
+        opacity: .5,
+        color: 'black'
+      },
+      overlayCSS: {
+        backgroundColor: '#000',
+        opacity: 0.6
+      }
+    });
+    setTimeout($.unblockUI, 10000);
+  });
+  $('.load2').change(function() {
+    $.blockUI({
+      message: '<?=$this->Html->image('busy.gif'); ?> ロード中...少々お待ちください。',
+      css: {
+        border: 'none',
+        padding: '10px',
+        backgroundColor: 'white',
+        opacity: .5,
+        color: 'black'
+      },
+      overlayCSS: {
+        backgroundColor: '#000',
+        opacity: 0.6
+      }
+    });
+    setTimeout($.unblockUI, 10000);
+  });
+  
+}); 
+</script> 
 
 </head>
 <body>

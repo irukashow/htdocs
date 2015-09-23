@@ -25,9 +25,10 @@
     //echo $this->Html->script('jquery.timepicker');
     echo $this->Html->script('fixed_midashi');
     echo $this->Html->script('jquery.tablefix');
-    echo $this->Html->script('redips-drag-min');
+    if ($flag == 0) {
+        echo $this->Html->script('redips-drag-min');
+    }
     echo $this->Html->script('script');
-    //echo $this->Html->script('jquery.blockUI');
     echo $this->Html->css('evol.colorpicker.min');
     echo $this->Html->css('staffmaster');
     echo $this->Html->css('style_1');
@@ -213,7 +214,6 @@ function setColor($case_id, $list_array) {
 <script>
 onload = function() {
     FixedMidashi.create();
-    REDIPS.drag.dropMode = 'multiple';
     var width = 1200;
     // ヘッダを隠す
     document.getElementById("header").style.display = 'none';
@@ -225,14 +225,17 @@ onload = function() {
     }
     // 待機マーク
     $(function() {
+        /**
         //ページの読み込みが完了したのでアニメーションはフェードアウトさせる
         $("#loading").fadeOut();
         //ページの表示準備が整ったのでコンテンツをフェードインさせる
         $("#table1").fadeIn();
+        **/
     });
     //getCELL();
+    edit = getCookie("edit");
     // シフト編集モードのセット
-    if (getCookie("edit") == 1) {
+    if (edit == 1) {
         for(i=1; i<=18; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
         }
@@ -241,6 +244,7 @@ onload = function() {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
         }
     }
+    REDIPS.drag.dropMode = 'multiple';
 }
 </script>
 <script>
@@ -257,15 +261,17 @@ function setHidden() {
     target = document.getElementById("ActiveDisplay");
     if (document.getElementById("OrderDetail1").style.display == 'none') {
         for(i=1; i<=18; i++) {
-            document.getElementById("OrderDetail"+i).style.display = 'table-row';
-            document.cookie = "edit=0;";
+            document.getElementById("OrderDetail"+i).style.display = 'table-row'; 
         }
+        deleteCookie("edit");
+        document.cookie = "edit=0;";
         //target.innerHTML = '<span>シフト編集</span>';
     } else {
         for(i=1; i<=18; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
-            document.cookie = "edit=1;";
         }
+        deleteCookie("edit");
+        document.cookie = "edit=1;";
         //target.innerHTML = '<span>全表示</span>';
     }
 }
@@ -386,6 +392,12 @@ function doAccount(year, month, mode) {
     input.setAttribute('name', 'col');
     input.setAttribute('value', <?=$col ?>);
     form.appendChild(input);
+    // フラグ
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'flag');
+    input.setAttribute('value', <?=$flag ?>);
+    form.appendChild(input);
     // シフト編集モード
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
@@ -451,8 +463,10 @@ $('#help01').mouseover(function() {
 });
 </script>
 
+<!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+-->
 <script src="<?=ROOTDIR ?>/js/jquery-hex-colorpicker.js"></script>
 <link rel="stylesheet" href="<?=ROOTDIR ?>/css/jquery-hex-colorpicker.css" />
 
@@ -499,4 +513,44 @@ $(document).ready(function() {
     0% {opacity:0;}
     100% {opacity:1;}
 }
+</style>
+
+<style type="text/css">
+/* 基本のテーブル定義 */
+table.t {border:1px solid   #000000;border-collapse:collapse;table-layout:fixed;font-size:16px}
+table.t td{border:1px solid #000000;height:16px;}
+table.t th{border:1px solid #000000;font-size:16px}
+table.t th{background-color:#FFBB88;color:#000000;}
+table.t tr:nth-child(odd)  td{background-color:#C8C8E8;color:#000000;}
+table.t tr:nth-child(even) td{background-color:#E8E8FF;color:#000000;}
+/*
+  データ域        90×3+110 = 380
+  ＋スクロール域  +16       = 396
+  ＋垂直ヘッダ    +90       = 486
+  スクロール範囲      (w×h) 280×130
+  バー付データ部サイズ(w×h) 296×145  (バー　v16:h15)
+  ヘッダを含むサイズ  (w×h) 386×167  (ヘッダ１行18px)
+ */
+[name="T"] {width:360px;}
+[name="T"]  th{width:90px}
+[name="T"]  td{width:90px}
+[name="T"]  th:nth-child(4){width:110px}
+[name="T"]  td:nth-child(4){width:110px}
+[name="TV"] th{width:90px}
+
+#header_h {
+   position: absolute;left:90px;top:0px;
+   width:280px;
+   overflow-x:hidden;overflow-y:hidden;
+   }
+#header_v {
+   position: absolute;left:0px;top:22px;
+   width:90px;height:130px; 
+   overflow-x:hidden;overflow-y:hidden;
+   }
+#data {
+   position: absolute;left:90px;top:22px;
+   overflow-x:scroll;overflow-y:scroll;
+   width:296px;height:145px;
+   }
 </style>

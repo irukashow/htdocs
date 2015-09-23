@@ -1,7 +1,6 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
-
 <?php require('index_element.ctp'); ?>
 <style>
 #loading{
@@ -221,7 +220,12 @@ function doSubmit(value, flag) {
     <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>"><?php echo $tantou_user; ?></td>
     <td align="left" style="font-size: 90%;" rowspan="<?=$row ?>">
         <?php 
-            echo $data['CaseManagement']['address'].'<br>'; 
+            if (!empty($data['CaseManagement']['work_place'])) {
+                echo '<span style="font-size:110%;font-weight:bold;">'.$data['CaseManagement']['work_place'].'</span><br>'; 
+            }
+            if (!empty($data['CaseManagement']['address'])) {
+                echo $data['CaseManagement']['address'].'<br>'; 
+            }
             if (!empty($data['CaseManagement']['telno'])) {
                 echo $data['CaseManagement']['telno'].'<br>'; 
             }

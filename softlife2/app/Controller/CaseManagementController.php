@@ -609,7 +609,7 @@ class CaseManagementController extends AppController {
                     $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
 
                 } else {
-                    $this->Session->setFlash('登録時にエラーが発生しました。');
+                    $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
                 }
             // 事業主追加
             } elseif (isset($this->request->data['insert_entrepreneur'])) {
@@ -627,17 +627,22 @@ class CaseManagementController extends AppController {
                     }
                 }
                 if ($flag) {
-                    $this->Session->setFlash('事業主が既に存在します。');
+                    $this->Session->setFlash('【エラー】事業主が既に存在します。');
                     $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
                     return;
                 }
                 // 登録する内容を設定
-                $data = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 
+                $data2 = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 'class' => $selected_class,
+                    'case_name' => $this->request->data['CaseManagement']['case_name'], 'username' => $this->request->data['CaseManagement']['username'], 
+                    'contract_type' => $this->request->data['CaseManagement']['contract_type'], 
                     'entrepreneur'.($count_entrepreneur+1) => $this->request->data['CaseManagement']['entrepreneur']));
                 // 登録する項目（フィールド指定）
-                $fields = array('entrepreneur'.($count_entrepreneur+1)); 
+                $fields = array('case_name','class', 'username','contract_type','entrepreneur'.($count_entrepreneur+1)); 
                 // 更新登録
-                $this->CaseManagement->save($data, false, $fields);
+                $this->CaseManagement->save($data2, false, $fields);
+                if ($case_id == 0) {
+                    $case_id = $this->CaseManagement->getLastInsertID();
+                }
                 $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
             // 事業主の削除
             } elseif (isset($this->request->data['delete_entrepreneur'])) {
@@ -803,7 +808,7 @@ class CaseManagementController extends AppController {
         );
         // 職種マスタ配列
         $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
         $this->set('list_shokushu', $list_shokushu);
         // その他
         $username = $this->Auth->user('username');
