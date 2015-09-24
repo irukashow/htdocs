@@ -29,8 +29,8 @@ body {
 	background-color: #ffffcc;
         color: black;
 	text-align: left;
-	padding: 5px;
-	font-size: 12px;
+	padding: 3px;
+	font-size: 11px;
 	width: 100px;
 	/* round corners for FF, Chrome, Safari (except IE) */
 	-moz-border-radius: 10px;

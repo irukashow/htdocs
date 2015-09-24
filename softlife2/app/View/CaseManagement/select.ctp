@@ -28,6 +28,7 @@ onload = function() {
 <?php echo $this->Form->create('StaffMaster', array('name'=>'form')); ?>
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+<?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display:none;')); ?>
     
     <!-- 選択済みスタッフ -->
     <table border='1' cellspacing="0" cellpadding="2" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>

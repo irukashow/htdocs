@@ -29,7 +29,7 @@
         echo $this->Html->script('redips-drag-min');
     }
     echo $this->Html->script('script');
-    echo $this->Html->css('evol.colorpicker.min');
+    //echo $this->Html->css('evol.colorpicker.min');
     echo $this->Html->css('staffmaster');
     echo $this->Html->css('style_1');
 ?>
@@ -126,9 +126,9 @@ function setPMStaff($count, $datas) {
         asort($datas[$count]);
         foreach ($datas[$count] as $value) {
             if (empty($ret)) {
-                $ret = $value['StaffMaster']['name'].'('.$value['StaffMaster']['id'].')';
+                $ret = $value['StaffMaster']['name'];
             } else {
-                $ret = $ret.'<br>'.$value['StaffMaster']['name'].'('.$value['StaffMaster']['id'].')';
+                $ret = $ret.'<br>'.$value['StaffMaster']['name'];
             }
         }
     }
@@ -210,19 +210,53 @@ function setColor($case_id, $list_array) {
         return $ret;
     }
 ?>
+<?php
+    if ($flag == 0) {
+        $disabled = '';
+        $button_type2 = 'button-create';
+        $button_type3 = 'button-release';
+    } else {
+        $disabled = 'disabled';
+        $button_type2 = 'button-delete';
+        $button_type3 = 'button-delete';
+    }
+?>
+<?php
+    // 確定表示
+    function displayCommit($flag) {
+        if ($flag == 1) {
+            $ret = "確定";
+        } else {
+            $ret = "未確定";
+        }
+        return $ret;
+    }
+    // 確定スタイル
+    function commitStyle($flag) {
+        if ($flag == 1) {
+            $color = 'background-color:#ff0000;color:white;';
+        } else {
+            $color = 'background-color:#006699;color:white;';
+        }
+        return $color;
+    }
+?>
 
 <script>
 onload = function() {
-    FixedMidashi.create();
+    //FixedMidashi.create();
     var width = 1200;
     // ヘッダを隠す
     document.getElementById("header").style.display = 'none';
+    document.getElementById("footer").style.display = 'none';
     //document.getElementById("menu_table").style.display = 'none';
+    /**
     if (120+<?=$col ?>*120+20 > width) {
         document.body.style.width = '<?=120+$col*120+20 ?>px';
     } else {
         document.body.style.width = width + 'px';
     }
+        **/
     // 待機マーク
     $(function() {
         /**
@@ -238,10 +272,12 @@ onload = function() {
     if (edit == 1) {
         for(i=1; i<=18; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
+            document.getElementById("OrderDetail0_"+i).style.display = 'none';
         }
     } else {
         for(i=1; i<=18; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
+            document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
         }
     }
     REDIPS.drag.dropMode = 'multiple';
@@ -261,14 +297,20 @@ function setHidden() {
     target = document.getElementById("ActiveDisplay");
     if (document.getElementById("OrderDetail1").style.display == 'none') {
         for(i=1; i<=18; i++) {
-            document.getElementById("OrderDetail"+i).style.display = 'table-row'; 
+            var id1 = "OrderDetail"+i;
+            var id2 = "OrderDetail0_"+i;
+            document.getElementById(id1).style.display = 'table-row'; 
+            document.getElementById(id2).style.display = 'table-row'; 
         }
         deleteCookie("edit");
         document.cookie = "edit=0;";
         //target.innerHTML = '<span>シフト編集</span>';
     } else {
         for(i=1; i<=18; i++) {
-            document.getElementById("OrderDetail"+i).style.display = 'none';
+            var id1 = "OrderDetail"+i;
+            var id2 = "OrderDetail0_"+i;
+            document.getElementById(id1).style.display = 'none';
+            document.getElementById(id2).style.display = 'none';
         }
         deleteCookie("edit");
         document.cookie = "edit=1;";
@@ -495,26 +537,92 @@ $(document).ready(function() {
       width: auto;
       margin-top: 5px;
   }
-/* 点滅 */
-.blinking{
-	-webkit-animation:blink 0.5s ease-in-out infinite alternate;
-    -moz-animation:blink 0.5s ease-in-out infinite alternate;
-    animation:blink 0.5s ease-in-out infinite alternate;
+</style>
+<!--
+<style type="text/css">
+/* 外枠 */
+div.x_data_area {
+  width: 1200px;
+  height: auto;
+  overflow-x: hidden; /* floatさせた要素を内包しているため指定 */
+  overflow-y: hidden; 
+  border-right: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  border-left: 1px solid #CCC;
 }
-@-webkit-keyframes blink{
-    0% {opacity:0;}
-    100% {opacity:1;}
+
+/* ロック部分 */
+div.lock_box {
+  float: left;
+  width: 120px;
+  //height: 800px;
+  overflow-x: hidden; /* floatさせた要素を内包しているため指定 */
+  overflow-y: hidden; 
 }
-@-moz-keyframes blink{
-    0% {opacity:0;}
-    100% {opacity:1;}
+
+/* 横スクロール部分 */
+div.x_scroll_box {
+  float: left;
+  width: 1060px;
+  height: auto;
+  border-left: 1px solid #CCC;
+  overflow-y: scroll; /* 縦スクロール非表示 */
+  overflow-x: scroll; /* 横スクロール */
 }
-@keyframes blink{
-    0% {opacity:0;}
-    100% {opacity:1;}
+
+/* テーブル */
+.width300 {
+  width: 300px;
+}
+
+.width2500 {
+  width: 2500px;
+}
+
+table.data {
+  table-layout: fixed; /* 内容を固定 */
+  border-collapse: separate;
+  border-spacing: 0; /* tableのcellspacing="0"の代わり */
+}
+
+table.data th,
+table.data td {
+  padding: 2px;
+  border-right: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+
+table.data th.r_none,
+table.data td.r_none {
+  border-right: none; /* 右ボーダーの重なりを防止 */
+}
+
+table.data th {
+  border-top: 1px solid #CCC;
+  background: #EEF1F4;
+}
+
+table.data th,
+table.data td {
+  overflow: hidden; /* データが幅を超えたとき非表示に */
+  white-space: nowrap; /* データの折り返しを防止 */
+}
+
+table.data td p {
+  margin: 0; /* 余分なマージンを消去 */
+}
+
+/* IE6 */
+table.data {
+  _border-collapse: collapse; /* IE6がborder-spacing: 0;に対応していないので */
+}
+
+/* IE7 */
+*:first-child+html table.data {
+  border-collapse: collapse; /* IE7がborder-spacing: 0;に対応していないので */
 }
 </style>
-
+-->
 <style type="text/css">
 /* 基本のテーブル定義 */
 table.t {border:1px solid   #000000;border-collapse:collapse;table-layout:fixed;font-size:16px}
@@ -539,18 +647,21 @@ table.t tr:nth-child(even) td{background-color:#E8E8FF;color:#000000;}
 [name="TV"] th{width:90px}
 
 #header_h {
-   position: absolute;left:90px;top:0px;
+   position: absolute;left:120px;top:0px;
    width:280px;
    overflow-x:hidden;overflow-y:hidden;
    }
 #header_v {
-   position: absolute;left:0px;top:22px;
-   width:90px;height:130px; 
-   overflow-x:hidden;overflow-y:hidden;
+   position: absolute;left:0px;top:0px;
+   width:120px;
+   height:632px; 
+   overflow-x:hidden;
+   overflow-y:hidden;
    }
 #data {
-   position: absolute;left:90px;top:22px;
+   position: absolute;left:120px;top:0px;
    overflow-x:scroll;overflow-y:scroll;
-   width:296px;height:145px;
+   width:92%;
+   height:650px;
    }
 </style>
