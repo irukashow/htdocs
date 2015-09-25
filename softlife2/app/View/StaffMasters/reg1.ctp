@@ -40,6 +40,15 @@ function affixZero(int) {
 	if (int < 10) int = "0" + int;
 	return "" + int;
 }
+
+/**
+ * ひらがなをカタカナに変換
+ */
+function setKataKana(element, target) {
+    element.value = element.value.replace(/[ぁ-ん]/g, function(s) {
+       return String.fromCharCode(s.charCodeAt(0) + 0x60);
+    });    
+}
 </script>
 
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
@@ -97,8 +106,9 @@ function affixZero(int) {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>氏名（フリガナ）</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('name_sei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
-                    <?php echo $this->Form->input('name_mei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
+                    <?php echo $this->Form->input('name_sei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;', 'onchange'=>'setKataKana(this, this);')); ?>
+                    <?php echo $this->Form->input('name_mei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;', 'onchange'=>'setKataKana(this, this);')); ?>
+                    <span style="font-size: 80%;">※ひらがなで入力しても、自動的にカタカナに変換いたします。</span>
                 </td>
             </tr>
             <tr>
@@ -175,7 +185,7 @@ function affixZero(int) {
                 </td>
             </tr> 
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１（携帯：必須）</td>
+                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１<br>（携帯：必須）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>

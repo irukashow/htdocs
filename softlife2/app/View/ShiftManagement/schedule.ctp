@@ -1,33 +1,35 @@
 <?php require 'schedule_element.ctp'; ?>
-
 <!--
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 -->
 <?php echo $this->Form->create('WorkTable', array('name'=>'frm', 'id'=>'form')); ?> 
 <!-- 見出し１ -->
-<div id='headline' style="padding:5px 10px 5px 10px;">
-    ★ シフト管理
-    &nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
-    &nbsp;
-    <b><font Style="font-size:95%;color: yellow;">[シフト作成]</font></b>        <!-- alert("制作中");return false; -->
-    &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
-    &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
-    &nbsp;
-    <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
-    <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
+<div id='headline' style="padding:4px 10px 4px 10px;">
+    <div style="float: left;padding-top: 5px;">
+        ★ シフト管理
+        &nbsp;&nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
         &nbsp;
-        <input type="button" id="<?=$button_type2 ?>" class="check" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
+        <b><font Style="font-size:95%;color: yellow;">[シフト作成]</font></b>        <!-- alert("制作中");return false; -->
         &nbsp;
-    <input type="button" name="check_duplication" value="重複チェック" id="<?=$button_type3 ?>" class="check"
-           style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 2);" <?=$disabled ?>>
-    &nbsp;&nbsp;&nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
+        &nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
+        &nbsp;
+    </div>
     <div style="float:right;padding-top: 1px;">
+        <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
+        <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
+            &nbsp;
+            <input type="button" id="<?=$button_type2 ?>" class="check" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
+            &nbsp;
+        <input type="button" name="check_duplication" value="重複チェック" id="<?=$button_type3 ?>" class="check"
+               style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 2);" <?=$disabled ?>>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="text" value="<?=displayCommit($flag); ?>" 
                style="text-align: center;width: 100px;font-size: 110%;margin-right:30px;font-family: メイリオ;<?=commitStyle($flag); ?>" disabled="disabled">
     </div>
+    <div style="clear:both;"></div>
 </div>
 <!-- 見出し１ END -->
 
@@ -39,7 +41,7 @@
     }
     $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); 
 ?>
-<div style="width:100%;height:720px;margin-top: 0px;<?=$font_normal ?>;">
+<div id="main" style="width:100%;height:720px;margin-top: 0px;<?=$font_normal ?>;">
     <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: -5px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
@@ -65,18 +67,33 @@
     
     <!-- 外枠 -->      
     <div id="redips-drag" class="x_data_area" style="position: relative;margin-top: 5px;margin-bottom: 10px;height: 90%;">
+        <!-- ロック部分（左上） -->
+        <table class=t  style="width:120px;height:51px;position:absolute;left:0px;top:0px;table-layout: fixed;text-align: center;">
+            <tr>
+                <th style='background:#99ccff;text-align: center;width:120px;height: 50px;font-size: 80%;' colspan="2">
+                    <a href="#" onclick="setHidden();">
+                        <span id="ActiveDisplay" onclick="">【表示切り替え】</span>
+                    </a>
+                </th>
+            </tr>
+        </table>
         <!-- ロック部分（上） -->
         <div id="header_h">
-            <table border='1' cellspacing="0" cellpadding="5" class="data" 
-                   style="background-color: #e8ffff;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;font-size: 90%;">
-                <col style="width: 25px;" />
-                <col style="width: 95px;" />
+            <table border='1' cellspacing="0" cellpadding="5" id=""
+                   style="width:<?=$col*120 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;font-size: 90%;">
+                <colgroup> 
+                  <?php for ($count=0; $count<$col; $count++){ ?>
+                  <col style='width:120px;'>
+                  <?php } ?>
+                </colgroup>
                 <tr>
-                    <th style="height:36px;text-align: center;background:#99ccff;">
-                        <a href="#" onclick="setHidden();">
-                            <span id="ActiveDisplay" onclick="">【表示切り替え】</span>
-                        </a>
+                    <?php foreach ($datas as $key=>$data){ ?>
+                    <th id="case_<?=$data['OrderCalender']['case_id'] ?>" 
+                        style='background:#99ccff;text-align: center;height: 36px;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;
+                        color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                     </th>
+                    <?php } ?>
                 </tr>
             </table>
         </div>
@@ -86,15 +103,8 @@
                    style="background-color: #e8ffff;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;font-size: 90%;">
                 <col style="width: 25px;" />
                 <col style="width: 95px;" />
-                <tr>
-                    <th colspan="2" style="height:36px;text-align: center;background:#99ccff;">
-                        <a href="#" onclick="setHidden();">
-                            <span id="ActiveDisplay" onclick="">【表示切り替え】</span>
-                        </a>
-                    </th>
-                </tr>
                 <tr id="OrderDetail0_1">
-                    <td colspan="2" style="height:54px;text-align: center;">事業主</td>
+                    <td colspan="2" style="height:57px;text-align: center;">事業主</td>
                 </tr>
             <tr id="OrderDetail0_2">
                 <td colspan="2" style="height:30px;text-align: center;">販売会社</td>
@@ -109,7 +119,7 @@
                 <td colspan="2" style="height:50px;text-align: center;">現場連絡先</td>
             </tr>
             <tr id="OrderDetail0_6">
-                <td colspan="2" style="height:50px;text-align: center;">待ち合わせ</td>
+                <td colspan="2" style="height:67px;text-align: center;">待ち合わせ</td>
             </tr>
             <tr id="OrderDetail0_7">
                 <td colspan="2" style="height:50px;text-align: center;">請求先担当者</td>
@@ -123,12 +133,12 @@
             <!-- 受注 -->
             <tr id="OrderDetail0_10">
                 <td rowspan="3" style='background-color: #e8ffff;height:81px;'></td>
-                <td rowspan="2" style='background-color: #e8ffff;height:54px;'>単価</td>
+                <td rowspan="2" style='background-color: #e8ffff;height:56px;'>単価</td>
             </tr>
             <tr id="OrderDetail0_11">
             </tr>
             <tr id="OrderDetail0_12">
-                <td rowspan="1" style='background-color: #e8ffff;height:27px;'>残業／ｈ</td>
+                <td rowspan="1" style='background-color: #e8ffff;height:25px;'>残業／ｈ</td>
             </tr>
             <!-- 受注 END -->
             <!-- 給与 -->
@@ -147,42 +157,21 @@
             </tr>
             <!-- 給与 END -->
                 <tr>
-                    <td colspan="2" style="height:30px;text-align: center;">職種</td>
+                    <td colspan="2" style="height:30px;text-align: center;" id="message">職種</td>
                 </tr>
             <tr id="OrderDetail0_17">
-                <td style='background-color: #e8ffff;height:56px;' colspan="2">勤務時間</td>
+                <td style='background-color: #e8ffff;height:70px;' colspan="2">勤務時間</td>
             </tr>
             <tr id="OrderDetail0_18">
                 <td style='background-color: #e8ffff;height:30px;' colspan="2">休憩時間</td>
             </tr>
                 <tr>
-                    <td colspan="2" style="height:72px;text-align: center;">推奨スタッフ</td>
+                    <td colspan="2" style="height:75px;text-align: center;">推奨スタッフ</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="height:50px;text-align: center;">前月スタッフ</td>
                 </tr>
                 <tr>
-                    <!-- カレンダー月指定 -->
-                    <td rowspan="1" align="center" style='background-color: #e8ffff;' colspan="2">
-                        <?php
-                            $year_arr = array();
-                            $year_arr = array('1999'=>'1999');
-                            for($j=2000; $j<2100; $j++) {
-                                $year_arr += array($j => $j); 
-                            }
-                        ?>
-                        <?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
-                            'value'=>$year, 'style'=>'text-align: left;', 
-                            'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>年<br>
-                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
-                        <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
-                        <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                            'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>月
-                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
-                    </td>
-                    <!-- カレンダー月指定 END -->
-                </tr>
-                <tr style="">
                     <td class="redips-trash" style='background-color: #999999;color: white;height:25px;' colspan="2">削除</td>
                 </tr>
                 <?php
@@ -242,6 +231,32 @@
                 <tr style="">
                     <td class="redips-trash" style='background-color: #999999;color: white;height:25px;' colspan="2">削除</td>
                 </tr>
+                <tr>
+                    <td colspan="2" style="height:30px;text-align: center;">予定稼働人数</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height:30px;text-align: center;">売上見込み合計</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height:30px;text-align: center;">人件費見込み合計</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height:30px;text-align: center;background-color: #ffecde;">物件別売上見込み</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height:40px;text-align: center;background-color: #99ccff;"><b>交通費について<br>（ｲﾚｷﾞｭﾗｰ別途）</b></td>
+                </tr>
+                <tr>
+                    <td rowspan="1" align="center" style='background-color: #e8ffff;height:165px;' colspan="2">
+                        備考
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="height:30px;text-align: center;">契約書</td>
+                </tr>
+                <tr>
+                    <td rowspan="3" colspan="2" style="height:75px;"></td>
+                </tr>
             </table>
         </div>
         <!-- /ロック部分 -->
@@ -249,30 +264,12 @@
         <div class="x_scroll_box" id="data">  
         <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
-               style="width:<?=120+$col*120 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
+               style="width:<?=$col*120 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
             <colgroup> 
-              <col style='width:25px;'>
-              <col style='width:95px;'>
               <?php for ($count=0; $count<$col; $count++){ ?>
               <col style='width:120px;'>
               <?php } ?>
             </colgroup>
-            <thead>
-            <tr>
-                <th style='background:#99ccff;text-align: center;width:120px;height: 36px;' colspan="2">
-                    <a href="#" onclick="setHidden();">
-                        <span id="ActiveDisplay" onclick="">【シフト編集】</span>
-                    </a>
-                </th>
-                <?php foreach ($datas as $key=>$data){ ?>
-                <th id="case_<?=$data['OrderCalender']['case_id'] ?>" 
-                    style='background:#99ccff;text-align: center;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;
-                    color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
-                </th>
-                <?php } ?>
-            </tr>
-            </thead>
             <tbody>
                 <!--
             <tr style="">
@@ -291,75 +288,66 @@
             </tr>
                 -->
             <tr id="OrderDetail1">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">事業主</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='background:#ffffcc;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='background:#ffffcc;text-align: center;height:57px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_entrepreneur[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail2">
-                <td style='background-color: #e8ffff;height:30px;' colspan="2">販売会社</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_client[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail3">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">指揮命令者/<br>担当者</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>様
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail4">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">現場住所</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_address[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail5">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">現場連絡先</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo 'TEL:'.NZ($list_telno[$data['OrderCalender']['case_id']]); ?><br>
                 <?php echo 'FAX:'.NZ($list_faxno[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail6">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">待ち合わせ</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:67px;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
                             array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail7">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">請求先担当者</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_bill[$data['OrderCalender']['case_id']]); ?> 様
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail8">
-                <td style='background-color: #e8ffff;height:30px;' colspan="2">請求書締日</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_cutoff[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail9">
-                <td style='background-color: #e8ffff;height:30px;' colspan="2">クリーニング</td>
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
                             array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;width:95%;')); ?>
                 </td>
@@ -369,10 +357,8 @@
             <?php $list1 = array('1'=>'時間', '2'=>'日払', '3'=>'月払'); ?>
             <?php $list2 = array('1'=>'有', '0'=>'無'); ?>
             <tr id="OrderDetail10">
-                <td rowspan="3" style='background-color: #e8ffff;height:75px;'></td>
-                <td rowspan="2" style='background-color: #e8ffff;height:50px;'>単価</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
@@ -380,16 +366,15 @@
             </tr>
             <tr id="OrderDetail11">
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail12">
-                <td rowspan="1" style='background-color: #e8ffff;height:25px;'>残業／ｈ</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
@@ -398,56 +383,51 @@
             <!-- 受注 END -->
             <!-- 給与 -->
             <tr id="OrderDetail13">
-                <td rowspan="4" style='background-color: #e8ffff;height:100px;'>ス<br>タ<br>ッ<br>フ<br>分</td>
-                <td style='background-color: #e8ffff;height:25px;'>時給</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail14">
-                <td style='background-color: #e8ffff;'>基本日給</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail15">
-                <td style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail16">
-                <td style='background-color: #e8ffff;'>研修中（時給）</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: white;'>
+                <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <!-- 給与 END -->
+            <!-- 職種 -->
             <tr>
-                <td style='width:80px;background-color: #e8ffff;height:30px;' colspan="2" id="message">職種</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: #ffffcc;'>
+                <td style='background-color: #ffffcc;height:30px;'>
                     <?php echo $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]; ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 勤務時間 -->
             <tr id="OrderDetail17">
-                <td style='background-color: #e8ffff;height:30px;' colspan="2">勤務時間</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: #ffffcc;'>
+                <td style='background-color: #ffffcc;height:70px;'>
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
                     <?php if (empty($datas2) || empty($datas2[$count])) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
@@ -464,24 +444,22 @@
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
-                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
+                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;font-size:90%;', 'rows'=>2)); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail18">
-                <td style='background-color: #e8ffff;height:30px;' colspan="2">休憩時間</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: #ffffcc;'>
+                <td style='background-color: #ffffcc;height:30px;'>
                     <?php echo setData($datas2,'resttime_from',$count,$record); ?>&nbsp;～
                     <?php echo setData($datas2,'resttime_to',$count,$record); ?>
                 </td>
                 <?php } ?>
             </tr>
             <tr id="">
-                <td style='background-color: #e8ffff;height:50px;' colspan="2">推奨スタッフ[<span id="help01">?</span>]</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style='background-color: #ffffcc;vertical-align: top;font-size: 90%;'>
-                    <div style="overflow-x: hidden;overflow-y: scroll;height:50px;">
+                <td style='background-color: #ffffcc;vertical-align: top;font-size: 90%;height:75px;'>
+                    <div style="overflow-x: hidden;overflow-y: scroll;height:50px;" title="<?php echo br2nl(setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']])); ?>">
                         <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
                     </div>
                     <input type="button" value="スタッフ選択" 
@@ -491,46 +469,17 @@
                 <?php } ?>
             </tr>
             <tr id="">
-                <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;vertical-align: top;font-size: 90%;'>
-                    <div style="overflow-x: hidden;overflow-y: scroll;height:50px;">
+                    <div style="overflow-x: hidden;overflow-y: scroll;height:50px;" title="<?php echo br2nl(setPMStaff($count, $list_premonth)); ?>">
                     <?php echo setPMStaff($count, $list_premonth); ?>
                     </div>
                 </td>
                 <?php } ?>
             </tr>
-            <tr>
-                <!-- カレンダー月指定 -->
-                <td rowspan="1" align="center" style='background-color: #e8ffff;' colspan="2">
-                    <?php
-                        $year_arr = array();
-                        $year_arr = array('1999'=>'1999');
-                        for($j=2000; $j<2100; $j++) {
-                            $year_arr += array($j => $j); 
-                        }
-                    ?>
-                    <?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
-                        'value'=>$year, 'style'=>'text-align: left;', 
-                        'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>年<br>
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
-                    <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
-                    <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                        'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>月
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
-                </td>
-                <!-- カレンダー月指定 END -->
-                <?php for ($count=0; $count<$col; $count++){ ?>
-                <td align='left' style='background-color: #e8ffff;'>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;', 'rows'=>2)); ?>
-                </td>
-                <?php } ?>
-            </tr>
             <tr style="">
-                <td class="redips-trash" style='background-color: #999999;color: white;height:20px;' colspan="2">削除</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td class="redips-trash" style='background-color: #999999;color: white;'>
+                <td class="redips-trash" style='background-color: #999999;color: white;height:25px;'>
                     <?php echo $count+1; ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.case_id',array('type'=>'hidden', 'value'=>setData($datas2,'case_id',$count,$record))); ?>
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.order_id',array('type'=>'hidden', 'value'=>setData($datas2,'order_id',$count,$record))); ?>
@@ -564,23 +513,28 @@
 
                     // 日付セル作成とスタイルシートの挿入
                     echo '<tr style="'.$style2.';">';
-                    echo '<td align="center" style="color:'.$style.';background-color: #e8ffff;height:30px;" colspan="2">'.$m.'/'.$d.'('.$weekday[$i].')';
-                    if ($i==0 || $i==6) {
-                        echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
-                    } else {
-                        echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';
-                    }
+                    $kadou[] = NULL;
                     for ($count=0; $count<$col; $count++){
                         if (empty($datas2) || empty($datas2[$count])) {
                             $class_name = 'redips-mark';
+                            if (empty($kadou[$count])) {
+                                $kadou[$count] = 0;
+                            }
                         } elseif ($datas2[$count]['OrderCalender']['d'.$d] == 0) {
                             $class_name = 'redips-mark';
+                            if (empty($kadou[$count])) {
+                                $kadou[$count] = 0;
+                            }
                         } elseif ($datas2[$count]['OrderCalender']['d'.$d] == 1) {
                             $class_name = '';
+                            if (empty($kadou[$count])) {
+                                $kadou[$count] = 1;
+                            } else {
+                                $kadou[$count] += 1;
+                            }
                         }
-                    echo '</td>';
             ?>
-                <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>">
+                <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>" style="height:30px;">
                     <?php if (!empty($class_name)) { ?>
                     <?php echo ''; ?>
                     <?php } else { ?>
@@ -591,7 +545,10 @@
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
-                                foreach($data_staffs[$d][$count+1] as $data_staff) {
+                                foreach($data_staffs[$d][$count+1] as $key=>$data_staff) {
+                                    if ($key > 0) {
+                                        break;
+                                    }
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
                                     echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
                                     echo '</div>';
@@ -637,6 +594,9 @@
                             $flag2 = false;
                             $flag1 = false;
                             foreach ($datas3[$count][$d] as $key => $value){
+                                if ($key > 0) {
+                                    break;
+                                }
                                 if ($value['point'] == 3) {
                                         echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
                                         echo $value['name'].' ('.$value['point'].')';
@@ -672,14 +632,79 @@
                 }
             ?>
             <tr style="">
-                <td class="redips-trash" style='background-color: #999999;color: white;height:20px;' colspan="2">削除</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td class="redips-trash" style='background-color: #999999;color: white;'>
+                <td class="redips-trash" style='background-color: #999999;color: white;height:25px;'>
                     <?php echo $count+1; ?>
                 </td>
                 <?php } ?>
             </tr>
             <!-- カレンダー部分 END -->
+            <!-- 予定稼働人数 -->
+            <tr>
+                <?php for ($count=0; $count<$col; $count++){ ?>
+                <td style="background-color: white;height:30px;text-align: right;padding-right: 10px;">
+                    <?=$kadou[$count] ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 売上見込み合計 -->
+            <tr>
+                <?php for ($count=0; $count<$col; $count++){ ?>
+                <td style="background-color: white;height:30px;">
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 人件費見込み合計 -->
+            <tr>
+                <?php for ($count=0; $count<$col; $count++){ ?>
+                <td style="background-color: white;height:30px;">
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 物件別売上見込み -->
+            <tr>
+                <?php foreach ($datas as $data){ ?>
+                <td style="background-color: #ffecde;height:30px;" colspan="<?=$data[0]['cnt'] ?>">
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 交通費について -->
+            <tr>
+                <?php for ($count=0; $count<$col; $count++){ ?>
+                <td style="background-color: white;height:40px;">
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 備考 -->
+            <tr>
+                <?php for ($count=0; $count<$col; $count++){ ?>
+                <td align='left' style='background-color: white;height:165px;'>
+                    <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 契約書 -->
+            <tr>
+                <?php foreach ($datas as $data){ ?>
+                <td style="background-color: white;height:30px;" colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'text-align: left;width: 95%;')); ?>
+                </td>
+                <?php } ?>
+            </tr>
+            <!-- 合計 -->
+            <tr style="background-color:white;">
+                <td colspan="2" algin="center" style="font-size:110%;height:30px;background-color: #ffccff;">今月の売上見込み</td>
+                <td colspan="2" algin="center" style="font-size:110%;background-color: #ffcccc;">人件費見込み合計</td>
+            <?php if ($col > 4) { ?>
+                <td colspan="<?=$col-4 ?>" rowspan="2"style="background-color: white;"></td>
+            </tr>
+            <?php } ?>
+            <tr style="background-color:white;">
+                <td colspan="2" algin="center" style="font-size:130%;height:40px;">\999,999,999</td>
+                <td colspan="2" algin="center" style="font-size:130%;">\999,999,999</td>
+            </tr>
             </tbody>
         </table>
         </div>
@@ -690,7 +715,7 @@
 <script type="text/javascript">
 function $E(name){ return document.getElementById(name); }
 function scroll(){
-   //$E("header_h").scrollLeft= $E("data").scrollLeft;// データ部のスクロールをヘッダに反映
+   $E("header_h").scrollLeft= $E("data").scrollLeft;// データ部のスクロールをヘッダに反映
    $E("header_v").scrollTop = $E("data").scrollTop;// データ部のスクロールをヘッダに反映
    }
 $E("data").onscroll=scroll;

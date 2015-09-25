@@ -209,6 +209,14 @@ function setColor($case_id, $list_array) {
         } 
         return $ret;
     }
+/*
+ * BR タグを改行コードに変換する
+ */
+function br2nl($string)
+{
+    // 大文字・小文字を区別しない
+    return preg_replace('/<br[[:space:]]*\/?[[:space:]]*>/i', "\n", $string);
+}
 ?>
 <?php
     if ($flag == 0) {
@@ -350,6 +358,9 @@ function deleteCookie( $cookieName ){
 </script>
 <script language="javascript">
 function getCELL() {
+    if (<?=$flag ?> == 1) {
+        return false;
+    }
  var myTbl = document.getElementById('table1');
     // trをループ。rowsコレクションで,行位置取得。
 　for (var i=0; i<myTbl.rows.length; i++) {
@@ -385,7 +396,7 @@ function Mclk(Cell) {
         Ms1.innerText=Cell.innerHTML;
         Ms1.textContent=Cell.innerHTML;
 }
-var startrow = 24;
+var startrow = 22;
 function Mdblclk(Cell) {
   var divs = "";
  for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
@@ -397,7 +408,7 @@ function Mdblclk(Cell) {
  }
     if (Cell.parentNode.rowIndex == 0) {
         location.href = "<?=ROOTDIR ?>/ShiftManagement/setting";
-    } else if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 1) {
+    } else if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 0) {
         return false;
     }
     // class名が「redips-drag t1」以外ならばNG
@@ -405,7 +416,7 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex)
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex+1)
             +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=600,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
@@ -459,7 +470,7 @@ function doAccount(year, month, mode) {
     input.setAttribute('value', mode);
     form.appendChild(input);
     for (var i=startrow; i<myTbl.rows.length; i++) {
-        for (var j=1; j<myTbl.rows[i].cells.length; j++) {
+        for (var j=0; j<myTbl.rows[i].cells.length; j++) {
             var val = [];
             Cell = myTbl.rows[i].cells[j];
             if (Cell.innerHTML.length == 0) {
@@ -481,7 +492,7 @@ function doAccount(year, month, mode) {
             if (val.length > 0) {
                 var input = document.createElement('input');
                 input.setAttribute('type', 'hidden');
-                input.setAttribute('name', (i-(startrow-1))+'_'+(j));
+                input.setAttribute('name', (i-(startrow-1))+'_'+(j+1));
                 input.setAttribute('value', val);
                 form.appendChild(input);
             }
@@ -648,20 +659,41 @@ table.t tr:nth-child(even) td{background-color:#E8E8FF;color:#000000;}
 
 #header_h {
    position: absolute;left:120px;top:0px;
-   width:280px;
+   width:89.6%;
    overflow-x:hidden;overflow-y:hidden;
    }
 #header_v {
-   position: absolute;left:0px;top:0px;
-   width:120px;
-   height:632px; 
+   position: absolute;left:0px;top:50px;
+   width:122px;
+   height:582px; 
    overflow-x:hidden;
    overflow-y:hidden;
    }
 #data {
-   position: absolute;left:120px;top:0px;
+   position: absolute;left:120px;top:50px;
    overflow-x:scroll;overflow-y:scroll;
-   width:92%;
-   height:650px;
+   width:91%;
+   height:600px;
    }
+</style>
+<script type="text/javascript">
+jQuery(function() {
+  // 2ツールチップ機能を適用
+  jQuery('#main').tooltip({
+      content: function() {
+          var name = $(this).data('name');
+          return name;
+      }
+  });
+});
+</script>
+<style>
+  .ui-tooltip {
+    font-family: Osaka-mono, "Osaka-等幅", "ＭＳ ゴシック", monospace;
+    font-size: 90%;
+    width: 80px;
+    word-wrap: break-word;
+    border-radius: 6px;
+    background: #FEFFED;
+  }
 </style>

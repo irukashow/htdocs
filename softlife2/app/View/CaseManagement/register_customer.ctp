@@ -19,6 +19,16 @@ $(function() {
   $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
 });
 </script>
+<script>
+/**
+ * カタカナをひらがなに変換
+ */
+function setHiraKana(element) {
+    element.value = element.value.replace(/[ァ-ン]/g, function(s) {
+       return String.fromCharCode(s.charCodeAt(0) - 0x60);
+    });    
+}
+</script>
 
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 
@@ -45,7 +55,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>企業名（かな）</td>
                 <td colspan="2">
-                    <?php echo $this->Form->input('corp_name_kana',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:70%;')); ?>
+                    <?php echo $this->Form->input('corp_name_kana',array('label'=>false,'div'=>false,'maxlength'=>'50','style'=>'width:70%;', 'onchange'=>'setHiraKana(this)')); ?>
                     （『株式会社』を除く）
                 </td>
             </tr>
