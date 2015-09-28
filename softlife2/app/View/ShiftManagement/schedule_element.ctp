@@ -408,7 +408,7 @@ function Mdblclk(Cell) {
  }
     if (Cell.parentNode.rowIndex == 0) {
         location.href = "<?=ROOTDIR ?>/ShiftManagement/setting";
-    } else if (Cell.parentNode.rowIndex < startrow || Cell.cellIndex < 0) {
+    } else if (Cell.parentNode.rowIndex < startrow || Cell.parentNode.rowIndex > startrow+31 || Cell.cellIndex < 0) {
         return false;
     }
     // class名が「redips-drag t1」以外ならばNG
@@ -515,6 +515,44 @@ $('#help01').mouseover(function() {
   alert("シフトに推奨するスタッフです。");
 });
 </script>
+<script>
+    // 売上見込み合計
+    function calUri1(source, column) {
+        source_yen = source.value;
+        r_num = document.getElementById("running_num"+column).value;
+        if (source_yen == null || source_yen.length == 0) {
+            source_yen = 0;
+        }
+        cal_result = source_yen*r_num;
+        document.getElementById('uri1_'+column).value = separate(cal_result);
+    }
+    // 人件費見込み合計
+    function calJinkenhi1(source, column) {
+        source_yen = source.value;
+        r_num = document.getElementById("running_num"+column).value;
+        if (source_yen == null || source_yen.length == 0) {
+            source_yen = 0;
+        }
+        cal_result = source_yen*r_num;
+        document.getElementById('jinkenhi1_'+column).value = separate(cal_result);
+    }
+    // カンマ入れる
+    function separate(num){
+        // 文字列にする
+        num = String(num);
+
+        var len = num.length;
+
+        // 再帰的に呼び出すよ
+        if(len > 3){
+            // 前半を引数に再帰呼び出し + 後半3桁
+            return separate(num.substring(0,len-3))+','+num.substring(len-3);
+        } else {
+            return num;
+        }
+    }
+</script>
+
 
 <!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -549,91 +587,6 @@ $(document).ready(function() {
       margin-top: 5px;
   }
 </style>
-<!--
-<style type="text/css">
-/* 外枠 */
-div.x_data_area {
-  width: 1200px;
-  height: auto;
-  overflow-x: hidden; /* floatさせた要素を内包しているため指定 */
-  overflow-y: hidden; 
-  border-right: 1px solid #CCC;
-  border-bottom: 1px solid #CCC;
-  border-left: 1px solid #CCC;
-}
-
-/* ロック部分 */
-div.lock_box {
-  float: left;
-  width: 120px;
-  //height: 800px;
-  overflow-x: hidden; /* floatさせた要素を内包しているため指定 */
-  overflow-y: hidden; 
-}
-
-/* 横スクロール部分 */
-div.x_scroll_box {
-  float: left;
-  width: 1060px;
-  height: auto;
-  border-left: 1px solid #CCC;
-  overflow-y: scroll; /* 縦スクロール非表示 */
-  overflow-x: scroll; /* 横スクロール */
-}
-
-/* テーブル */
-.width300 {
-  width: 300px;
-}
-
-.width2500 {
-  width: 2500px;
-}
-
-table.data {
-  table-layout: fixed; /* 内容を固定 */
-  border-collapse: separate;
-  border-spacing: 0; /* tableのcellspacing="0"の代わり */
-}
-
-table.data th,
-table.data td {
-  padding: 2px;
-  border-right: 1px solid #CCC;
-  border-bottom: 1px solid #CCC;
-}
-
-table.data th.r_none,
-table.data td.r_none {
-  border-right: none; /* 右ボーダーの重なりを防止 */
-}
-
-table.data th {
-  border-top: 1px solid #CCC;
-  background: #EEF1F4;
-}
-
-table.data th,
-table.data td {
-  overflow: hidden; /* データが幅を超えたとき非表示に */
-  white-space: nowrap; /* データの折り返しを防止 */
-}
-
-table.data td p {
-  margin: 0; /* 余分なマージンを消去 */
-}
-
-/* IE6 */
-table.data {
-  _border-collapse: collapse; /* IE6がborder-spacing: 0;に対応していないので */
-}
-
-/* IE7 */
-*:first-child+html table.data {
-  border-collapse: collapse; /* IE7がborder-spacing: 0;に対応していないので */
-}
-</style>
--->
 <style type="text/css">
 /* 基本のテーブル定義 */
 table.t {border:1px solid   #000000;border-collapse:collapse;table-layout:fixed;font-size:16px}

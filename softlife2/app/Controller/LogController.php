@@ -112,6 +112,22 @@ class LogController extends AppController {
         //$this->paginate['joins'] = null;
     }
     
+    // シフト管理履歴
+    public function shift_log() {
+        // レイアウト関係
+        $this->layout = "log";
+        $this->set("title_for_layout", $this->title_for_layout);
+        $this->set("headline", 'シフト管理履歴');
+        // テーブルの設定
+        $this->LoginLogs->setSource('shift_logs');
+        // 項目配列セット
+        $this->set('data_item', $this->getValue());
+        
+        $this->set('datas', $this->paginate('LoginLogs'));
+        //$this->log($this->LoginLogs->getDataSource()->getLog(), LOG_DEBUG);
+        //$this->paginate['joins'] = null;
+    }
+    
     // 項目マスタ
     public function getValue(){
         $conditions = null;

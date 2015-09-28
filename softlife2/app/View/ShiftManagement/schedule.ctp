@@ -157,7 +157,10 @@
             </tr>
             <!-- 給与 END -->
                 <tr>
-                    <td colspan="2" style="height:30px;text-align: center;" id="message">職種</td>
+                    <td colspan="2" style="height:30px;text-align: center;">
+                        職種
+                        <div id="message" style="display: none;"></div>
+                    </td>
                 </tr>
             <tr id="OrderDetail0_17">
                 <td style='background-color: #e8ffff;height:70px;' colspan="2">勤務時間</td>
@@ -241,10 +244,10 @@
                     <td colspan="2" style="height:30px;text-align: center;">人件費見込み合計</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="height:30px;text-align: center;background-color: #ffecde;">物件別売上見込み</td>
+                    <td colspan="2" style="height:40px;text-align: center;background-color: #ffecde;">物件別売上見込み</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="height:40px;text-align: center;background-color: #99ccff;"><b>交通費について<br>（ｲﾚｷﾞｭﾗｰ別途）</b></td>
+                    <td colspan="2" style="height:50px;text-align: center;background-color: #99ccff;"><b>交通費について<br>（ｲﾚｷﾞｭﾗｰ別途）</b></td>
                 </tr>
                 <tr>
                     <td rowspan="1" align="center" style='background-color: #e8ffff;height:165px;' colspan="2">
@@ -323,14 +326,16 @@
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 待ち合わせ -->
             <tr id="OrderDetail6">
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;height:67px;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;')); ?>
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3', 'style'=>'text-align: left;font-size:90%;width: 95%;')); ?>
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 請求先担当者 -->
             <tr id="OrderDetail7">
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
@@ -345,6 +350,7 @@
                 </td>
                 <?php } ?>
             </tr>
+            <!-- クリーニング -->
             <tr id="OrderDetail9">
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
@@ -360,7 +366,7 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 'onchange'=>'calUri1(this,'.$count.')')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -368,7 +374,7 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -376,25 +382,27 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <!-- 受注 END -->
             <!-- 給与 -->
+            <!-- 時給（スタッフ分） -->
             <tr id="OrderDetail13">
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;')); ?>
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 基本日給（スタッフ分） -->
             <tr id="OrderDetail14">
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 'onchange'=>'calJinkenhi1(this,'.$count.')')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -402,7 +410,7 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -410,7 +418,7 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -546,9 +554,12 @@
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $key=>$data_staff) {
+                                    /**
                                     if ($key > 0) {
                                         break;
                                     }
+                                     * 
+                                     */
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
                                     echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
                                     echo '</div>';
@@ -644,6 +655,7 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style="background-color: white;height:30px;text-align: right;padding-right: 10px;">
                     <?=$kadou[$count] ?>
+                    <input type="hidden" id="running_num<?=$count?>" value="<?=$kadou[$count] ?>">
                 </td>
                 <?php } ?>
             </tr>
@@ -651,6 +663,8 @@
             <tr>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style="background-color: white;height:30px;">
+                    <?php echo $this->Form->input('OrderInfoDetail.0.uri1',
+                            array('type'=>'text','id'=>'uri1_'.$count,'div'=>false,'label'=>false,'style'=>'text-align: right;width: 95%;', 'disabled')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -658,20 +672,25 @@
             <tr>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style="background-color: white;height:30px;">
+                    <?php echo $this->Form->input('OrderInfoDetail.0.uri1',
+                            array('type'=>'text','id'=>'jinkenhi1_'.$count,'div'=>false,'label'=>false,'style'=>'text-align: right;width: 95%;', 'disabled')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <!-- 物件別売上見込み -->
             <tr>
                 <?php foreach ($datas as $data){ ?>
-                <td style="background-color: #ffecde;height:30px;" colspan="<?=$data[0]['cnt'] ?>">
+                <td style="background-color: #ffecde;height:40px;" colspan="<?=$data[0]['cnt'] ?>">
+                    売上見込み合計*職種
                 </td>
                 <?php } ?>
             </tr>
             <!-- 交通費について -->
             <tr>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style="background-color: white;height:40px;">
+                <td style="background-color: white;height:50px;">
+                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'2','style'=>'text-align: left;width: 95%;font-size:90%;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -680,7 +699,7 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td align='left' style='background-color: white;height:165px;'>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
+                        array('type'=>'textarea','div'=>false,'label'=>false, 'style'=>'width:100px;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -689,7 +708,7 @@
                 <?php foreach ($datas as $data){ ?>
                 <td style="background-color: white;height:30px;" colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'text-align: left;width: 95%;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'text-align: left;width: 95%;font-size:90%;')); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -702,8 +721,8 @@
             </tr>
             <?php } ?>
             <tr style="background-color:white;">
-                <td colspan="2" algin="center" style="font-size:130%;height:40px;">\999,999,999</td>
-                <td colspan="2" algin="center" style="font-size:130%;">\999,999,999</td>
+                <td colspan="2" algin="center" style="font-size:130%;height:40px;">物件別売上見込み*全案件</td>
+                <td colspan="2" algin="center" style="font-size:130%;">人件費見込み合計*全案件</td>
             </tr>
             </tbody>
         </table>

@@ -69,6 +69,7 @@ onload = function() {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 0px;">
+        <legend style="font-size: 150%;color: red;">スタッフ選択 ( <?=$month ?>月<?=$day ?>日 (<?=$week ?>) )</legend>
 
 <div style="font-size: 90%;margin-bottom: 0px;">
 <?php echo $this->Form->create('StaffMaster', array('name'=>'form')); ?>
@@ -77,7 +78,7 @@ onload = function() {
 <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display:none;')); ?>
     
    <!-- 選択中スタッフ -->
-    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 0px;border-spacing: 0px;'>
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>保存済スタッフ</th>
         </tr>

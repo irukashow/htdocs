@@ -140,6 +140,17 @@
                     <?php echo $this->Html->link('▶現場責任者専用サイト履歴', '/log/work'); ?>
                 </td>
                 <td>
+                    <?php echo $this->Html->link('▶シフト入力履歴', '/log/shift_log'); ?>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    
+                </td>
+                <td>
+                </td>
+                <td>
                 </td>
                 <td></td>
             </tr>

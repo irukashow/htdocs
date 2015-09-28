@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class ShiftManagementController extends AppController {
-    public $uses = array('StaffSchedule' ,'WorkTable' ,'Item', 'User', 'TimeCard',
+    public $uses = array('StaffSchedule' ,'WorkTable' ,'Item', 'User', 'TimeCard', 'ShiftLog',
         'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'Customer', 'WkShift');
     public $title_for_layout = "シフト管理 - 派遣管理システム";
     
@@ -565,6 +565,8 @@ class ShiftManagementController extends AppController {
                     if ($this->WorkTable->saveAll($data2)) {
                         if ($mode == 1) {
                             $this->Session->setFlash('【情報】保存を完了しました。');
+                            // ログ書き込み
+                            $this->setShiftLog($username, $selected_class, '', 11);
                         }
                         // セッション削除
                         $this->Session->delete('staff_cell');
@@ -587,25 +589,33 @@ class ShiftManagementController extends AppController {
                                 // チェック処理
                                 if ($mode == 3) {
                                     $commet2 = '確定できません。';
+                                    $status = 25;
                                 } else {
                                     $commet2 = '';
+                                    $status = 22;
                                 }
                                 if ($this->array_isunique($check_arr) != false) {
                                     $data9 = $this->StaffMaster->find('first', array('conditions'=>array('id'=>key($this->array_isunique($check_arr)))));
                                     $this->Session->setFlash('【エラー】'.date('n', strtotime($data['month'])).'/'.$d.'に'.$data9['StaffMaster']['name_sei'].$data9['StaffMaster']['name_mei'].'さんが重複しています。'.$commet2);
                                     $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                                    // ログ書き込み
+                                    $this->setShiftLog($username, $selected_class, '', $status);
                                     return;
                                 }
                             }
                             if ($mode == 2) {
                                 $this->Session->setFlash('【情報】重複はありません。');
+                                // ログ書き込み
+                                $this->setShiftLog($username, $selected_class, '', 12);
                             } elseif ($mode == 3) {
                                 if ($data['flag'] == 0) {
                                     $flag2 = 1;
                                     $commet = '【情報】当月シフトを確定しました。';
+                                    $status = 15;
                                 } else {
                                     $flag2 = 0;
                                     $commet = '【情報】当月シフトの確定解除を行いました。';
+                                    $status = 16;
                                 }
                                 // 該当月を確定
                                 $data4 = array(
@@ -617,6 +627,8 @@ class ShiftManagementController extends AppController {
                                     //$this->log($this->WorkTable->getDataSource()->getLog(), LOG_DEBUG);
                                     // 成功
                                     $this->Session->setFlash($commet);
+                                    // ログ書き込み
+                                    $this->setShiftLog($username, $selected_class, '', $status);
                                     // セッション削除
                                     //$this->Session->delete('staff_cell');
                                     //$this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
@@ -629,6 +641,7 @@ class ShiftManagementController extends AppController {
                     }
                 }  
             /** シフトの確定 **/
+                /**
             } elseif (isset($this->request->data['confirm'])) {
                 if ($flag == 0) {
                     $flag2 = 1;
@@ -650,6 +663,8 @@ class ShiftManagementController extends AppController {
                     //$this->Session->delete('staff_cell');
                     $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
                 }
+                 * 
+                 */
             /** シフトの全クリア **/
             } elseif (isset($this->request->data['all_clear'])) {
                 // 該当月を削除
@@ -1117,7 +1132,10 @@ class ShiftManagementController extends AppController {
             // 登録
             } elseif (isset($this->request->data['commit'])) {
                 if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
-                    $this->log($this->request->data['StaffSchedule'], LOG_DEBUG);
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $datas = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    // ログ書き込み
+                    $this->setShiftLog($username, $selected_class, 'シフト希望：'.$datas['StaffMaster']['name'].'('.$staff_id.')', 1);
                     $this->Session->setFlash('【情報】シフト希望を登録いたしました。');
                     $this->redirect(array('action'=>'input_schedule', $staff_id, '?date='.$date));
                 }
@@ -1175,7 +1193,16 @@ class ShiftManagementController extends AppController {
         }
         // 列番号（１はじまり）
         $this->set('col', $cell_col);
-        
+        // 日付
+        $this->set('year', date('Y', strtotime($month)));
+        $this->set('month', date('n', strtotime($month)));
+        $this->set('day', $cell_row);
+        $date = $month.'-'.$cell_row;
+        $datetime = new DateTime($date);
+        $week = array("日", "月", "火", "水", "木", "金", "土");
+        $w = (int)$datetime->format('w');
+        $this->set('week', $week[$w]);
+
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
@@ -1203,16 +1230,13 @@ class ShiftManagementController extends AppController {
             } elseif (isset($this->request->data['select'])) {
                 $id_array = array_keys($this->request->data['select']);
                 $id = $id_array[0];
-                // 選択は５つまで
-                /**
-                $session_id = $this->Session->read('staff_id');
-                if (count($session_id) == 5) {
-                    $this->Session->setFlash('【エラー】選択できるのは5つまでです。');
-                    $this->redirect(array('action' => 'select', $order_id ));
+                // 選択は1つまで
+                //$session_id = $this->Session->read('staff_cell');
+                if (!empty($this->request->data['staff_id40'])) {
+                    $this->Session->setFlash('【エラー】選択できるのは1つだけです。');
+                    $this->redirect(array('action'=>'select', $order_id, $col, $cell_row, $cell_col, $shokushu_num, '?date='.$month));
                     return;
                 }
-                 * 
-                 */
                 // セッション格納
                 if (empty($staff_cell[$cell_row][$cell_col])) {
                     $staff_cell[$cell_row][$cell_col][0] = $id;
@@ -1405,5 +1429,17 @@ class ShiftManagementController extends AppController {
             }else{
                     return false;
             }
+    }
+    
+    /** シフト作成ログ書き込み **/
+    public function setShiftLog($username, $class, $remarks, $status) {
+        // 登録する内容を設定
+        $data = array('ShiftLog' => array('username' => $username, 'class' => $class, 'remarks' => $remarks, 'status' => $status, 'ip_address' => $this->request->clientIp()));
+        // 登録する項目（フィールド指定）
+        $fields = array('username', 'class', 'remarks', 'status', 'ip_address');
+        // 新規登録
+        $ret = $this->ShiftLog->save($data, false, $fields);
+        
+        return $ret;
     }
 }

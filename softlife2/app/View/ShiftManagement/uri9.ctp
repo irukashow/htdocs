@@ -277,5 +277,4 @@ $(function() {
 ?>
  </div>
 <!--- スタッフマスタ本体 END --->
-
 <?php echo $this->Form->end(); ?>
