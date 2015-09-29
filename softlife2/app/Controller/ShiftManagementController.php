@@ -349,7 +349,6 @@ class ShiftManagementController extends AppController {
         $col = $this->OrderCalender->find('count', array('conditions' => $conditions1));
         $this->set('col', $col);
         // 案件あたりの職種数
-        //$conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
         $datas = $this->OrderCalender->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
             'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('sequence', 'case_id', 'order_id')));
         $this->set('datas', $datas);
@@ -370,7 +369,7 @@ class ShiftManagementController extends AppController {
         // オーダー入力欄以下
         $datas2 = $this->OrderInfoDetail->find('all', $option);
         $this->set('datas2', $datas2);
-        //$this->log($datas2, LOG_DEBUG);
+        $this->log($datas2, LOG_DEBUG);
         $data_wk = null;
 
         // 前月のスタッフ

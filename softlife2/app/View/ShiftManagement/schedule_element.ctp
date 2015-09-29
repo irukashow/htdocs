@@ -191,7 +191,90 @@ function setColor($case_id, $list_array) {
     }
     return $ret;
 }
-
+// 時給（受注）
+function setHMoney($count, $data_array) {
+    $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']);
+    if ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] != 1) {
+        $ret = 0;
+    }
+    return $ret;
+}
+// 日給（受注）
+function setDMoney($count, $data_array) {
+    $ret = 0;
+    if ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] == 1) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']*setWorktime($count, $data_array) );
+    } elseif ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] == 2) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']);
+    }
+    return $ret;
+}
+// 残業代（受注）
+function setZMoney($count, $data_array) {
+    $ret = 0;
+    if ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] == 1) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']*1.25);
+    }
+    return $ret;
+}
+// 売上見込み合計	
+function setUriSum($count, $data_array, $kadou_num) {
+    $ret = number_format(str_replace(',', '', setDMoney($count, $data_array))*$kadou_num);
+    return $ret;
+}
+// 日給（給与）
+function setDMoney2($count, $data_array) {
+    $ret = 0;
+    if ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 1) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']*setWorktime($count, $data_array));
+    } elseif ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 2) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']);
+    }
+    return $ret;
+}
+// 時給（給与）
+function setHMoney2($count, $data_array) {
+    $ret = 0;
+    if ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 1) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']);
+    }
+    return $ret;
+}
+// 残業代（給与）
+function setZMoney2($count, $data_array) {
+    $ret = 0;
+    if ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 1) {
+        $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']*1.25);
+    }
+    return $ret;
+}
+// 人件費見込み合計	
+function setJinkenhiSum($count, $data_array, $kadou_num) {
+    $ret = number_format(str_replace(',', '', setDMoney2($count, $data_array))*$kadou_num);
+    return $ret;
+}
+// 実働労働時間
+function setWorktime($count, $data_array) {
+    // 値の取得
+    $worktime_from = $data_array[$count]['OrderInfoDetail']['worktime_from'];
+    $worktime_to = $data_array[$count]['OrderInfoDetail']['worktime_to'];
+    $resttime_from = $data_array[$count]['OrderInfoDetail']['resttime_from'];
+    $resttime_to = $data_array[$count]['OrderInfoDetail']['resttime_to'];
+    // 空ならば抜ける
+    if (empty($worktime_from) || empty($worktime_to) || empty($resttime_from) || empty($resttime_to)) {
+        return '0';
+    }
+    // 勤務時間
+    $worktime_from2 = explode(':', $worktime_from);
+    $worktime_to2 = explode(':', $worktime_to);
+    // 休憩時間
+    $resttime_from2 = explode(':', $resttime_from);
+    $resttime_to2 = explode(':', $resttime_to);
+    
+    $ret = $worktime_to2[0] + abs($worktime_to2[1])/60 - $worktime_from2[0] - abs($worktime_from2[1])/60;
+    $ret = $ret - ($resttime_to2[0] + abs($resttime_to2[1])/60 - $resttime_from2[0] - abs($resttime_from2[1])/60);
+    return $ret;
+}
 ?>
 <?php
     /** 番号のマークをセット **/

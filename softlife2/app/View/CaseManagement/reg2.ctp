@@ -344,9 +344,11 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_from',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record))); ?>&nbsp;～
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record))); ?>
+                    ～
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',
                             array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record))); ?>
+                    <span style="color:red;">※例 9:00</span>
                 </td>
                 <?php } ?>
             </tr>
@@ -358,6 +360,7 @@ function changeColor(col, day, flag) {
                         array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_from',$count,$record))); ?>&nbsp;～
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_to',
                         array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_to',$count,$record))); ?>
+                        <span style="color:red;">※例 12:30</span>
                 </td>
                 <?php } ?>
             </tr>
