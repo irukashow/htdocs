@@ -369,7 +369,7 @@ class ShiftManagementController extends AppController {
         // オーダー入力欄以下
         $datas2 = $this->OrderInfoDetail->find('all', $option);
         $this->set('datas2', $datas2);
-        $this->log($datas2, LOG_DEBUG);
+        //$this->log($datas2, LOG_DEBUG);
         $data_wk = null;
 
         // 前月のスタッフ
@@ -463,7 +463,7 @@ class ShiftManagementController extends AppController {
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $data = $this->request->data;
-            //$this->log($data, LOG_DEBUG);
+            $this->log($data, LOG_DEBUG);
             /** シフト自動割付 **/
             if (isset($data['assignment'])) {
                 $conditions6 = array(
@@ -560,8 +560,12 @@ class ShiftManagementController extends AppController {
                 // 該当月を削除
                 $param = array('class' => $selected_class, 'month' => $data['month']);
                 if ($this->WorkTable->deleteAll($param)) {
-                    // データを登録する
+                    // データを登録する（シフト情報）
                     if ($this->WorkTable->saveAll($data2)) {
+                        // 職種ごとの金額計算の情報
+                        if (!$this->OrderCalender->saveAll($this->request->data['OrderCalender'])) {
+                            $this->Session->setFlash('【エラー】保存に失敗しました。');
+                        }
                         if ($mode == 1) {
                             $this->Session->setFlash('【情報】保存を完了しました。');
                             // ログ書き込み
@@ -571,7 +575,7 @@ class ShiftManagementController extends AppController {
                         $this->Session->delete('staff_cell');
                         // 重複チェック
                         if ($mode == 2 || $mode == 3) {
-                            $this->log($data2, LOG_DEBUG);
+                            //$this->log($data2, LOG_DEBUG);
                             for ($d=1; $d<=31; $d++) {
                                 $check_arr = null;
                                 $value_arr = null;
@@ -636,7 +640,7 @@ class ShiftManagementController extends AppController {
                         }
                         $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
                     } else {
-
+                        $this->Session->setFlash('【エラー】保存に失敗しました。');
                     }
                 }  
             /** シフトの確定 **/

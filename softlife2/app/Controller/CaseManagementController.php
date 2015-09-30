@@ -472,7 +472,11 @@ class CaseManagementController extends AppController {
             } 
         } elseif ($this->request->is('get')) {
             // ページ引数
-            $page = $this->params['named']['page'];
+            if (empty($this->params['named']['page'])) {
+                $page = 1;
+            } else {
+                $page = $this->params['named']['page'];
+            }
             $this->set('page', $page);
             // 指定月
             if (!empty($this->request->query('year'))) {

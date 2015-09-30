@@ -253,6 +253,16 @@ function setJinkenhiSum($count, $data_array, $kadou_num) {
     $ret = number_format(str_replace(',', '', setDMoney2($count, $data_array))*$kadou_num);
     return $ret;
 }
+// 今月の売上見込み
+function setUriMSum($col, $data_array, $kadou_num) {
+    $ret = 0;
+    for ($count=0; $count<$col; $count++) {
+        $ret += str_replace(',', '', setDMoney($count, $data_array))*$kadou_num;
+    }
+    return number_format($ret);
+}
+// 人件費見込み合計
+
 // 実働労働時間
 function setWorktime($count, $data_array) {
     // 値の取得
@@ -295,8 +305,7 @@ function setWorktime($count, $data_array) {
 /*
  * BR タグを改行コードに変換する
  */
-function br2nl($string)
-{
+function br2nl($string) {
     // 大文字・小文字を区別しない
     return preg_replace('/<br[[:space:]]*\/?[[:space:]]*>/i', "\n", $string);
 }

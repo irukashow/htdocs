@@ -177,6 +177,30 @@ function changeColor(col, day, flag) {
         document.getElementById("Cell"+col+"D"+day).style.background = '#ffffcc';
     }
 }
+/****************************************************************
+* 機　能： 入力された値が時間でHH:MM形式になっているか調べる
+* 引　数： str　入力された値
+* 戻り値： 正：true　不正：false
+****************************************************************/
+function ckTime(str) {
+    // 正規表現による書式チェック
+    if(!str.match(/^\d{2}\:\d{2}$/)){
+        return false;
+    }
+    var vHour = str.substr(0, 2) - 0;
+    var vMinutes = str.substr(3, 2) - 0;
+    if(vHour >= 0 && vHour <= 24 && vMinutes >= 0 && vMinutes <= 59){
+        return true;
+    }else{
+    }
+}
+// エラーメッセージの表示
+function doAlert(str, element) {
+    if (!ckTime(str)) {
+        alert("時刻の入力形式が不正です。");
+        element.focus();
+    }
+}
 </script>
 <style type="text/css" media="screen">
   div.scroll_div { 
@@ -344,10 +368,13 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_from',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record))); ?>
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,
+                                'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record), 'onchange'=>'doAlert(this.value, this)'));
+                    ?>
                     ～
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record))); ?>
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,
+                                'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record), 'onchange'=>'doAlert(this.value, this)')); ?>
                     <span style="color:red;">※例 9:00</span>
                 </td>
                 <?php } ?>
@@ -357,9 +384,11 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_from',$count,$record))); ?>&nbsp;～
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 
+                            'value'=>setData($datas2,'resttime_from',$count,$record), 'onchange'=>'doAlert(this.value, this)')); ?>&nbsp;～
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_to',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_to',$count,$record))); ?>
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 
+                            'value'=>setData($datas2,'resttime_to',$count,$record), 'onchange'=>'doAlert(this.value, this)')); ?>
                         <span style="color:red;">※例 12:30</span>
                 </td>
                 <?php } ?>
@@ -372,7 +401,7 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_shiharai',
-                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'value'=>setData($datas2,'juchuu_shiharai',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'default' => 1, 'value'=>setData($datas2,'juchuu_shiharai',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -388,7 +417,7 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_koutsuuhi',
-                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'value'=>setData($datas2,'juchuu_koutsuuhi',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'default' => 1, 'value'=>setData($datas2,'juchuu_koutsuuhi',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -454,7 +483,7 @@ function changeColor(col, day, flag) {
                         }
                     ?>
                     <input type="button" value="スタッフ選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>?s1=<?=NZ($staff_id)[0] ?>&s2=<?=NZ($staff_id)[1] ?>&s3=<?=NZ($staff_id)[2] ?>&s4=<?=NZ($staff_id)[3] ?>&s5=<?=NZ($staff_id)[4] ?>',
+                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>',
                                 'スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
                 <?php } ?>
