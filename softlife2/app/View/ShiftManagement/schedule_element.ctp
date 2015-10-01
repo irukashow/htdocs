@@ -248,6 +248,16 @@ function setZMoney2($count, $data_array) {
     }
     return $ret;
 }
+// 研修中（給与）
+function setTrMoney2($count, $data_array) {
+    $ret = 0;
+    if (is_null($data_array[$count]['OrderCalender']['staff_money_tr'])) {
+        $ret = '1,000';
+    } else {
+        $ret = number_format(str_replace(',', '', $data_array[$count]['OrderCalender']['staff_money_tr']));
+    }
+    return $ret;
+}
 // 人件費見込み合計	
 function setJinkenhiSum($count, $data_array, $kadou_num) {
     $ret = number_format(str_replace(',', '', setDMoney2($count, $data_array))*$kadou_num);

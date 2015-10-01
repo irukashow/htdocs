@@ -417,7 +417,7 @@ function doAlert(str, element) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_koutsuuhi',
-                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'default' => 1, 'value'=>setData($datas2,'juchuu_koutsuuhi',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'value'=>setData($datas2,'juchuu_koutsuuhi',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -436,7 +436,7 @@ function doAlert(str, element) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_shiharai',
-                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'value'=>setData($datas2,'kyuuyo_shiharai',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'default' => 1, 'value'=>setData($datas2,'kyuuyo_shiharai',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>

@@ -349,10 +349,10 @@ class ShiftManagementController extends AppController {
         $col = $this->OrderCalender->find('count', array('conditions' => $conditions1));
         $this->set('col', $col);
         // 案件あたりの職種数
-        $datas = $this->OrderCalender->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
+        $datas = $this->OrderCalender->find('all', array('fields'=>array('*', 'count(case_id) as cnt'), 
             'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('sequence', 'case_id', 'order_id')));
         $this->set('datas', $datas);
-        //$this->log($datas, LOG_DEBUG);
+        $this->log($datas, LOG_DEBUG);
         // 職種以下
         $option = array();
         $option['fields'] = array('OrderInfoDetail.*', 'OrderCalender.*'); 
@@ -566,6 +566,23 @@ class ShiftManagementController extends AppController {
                         if (!$this->OrderCalender->saveAll($this->request->data['OrderCalender'])) {
                             $this->Session->setFlash('【エラー】保存に失敗しました。');
                         }
+                        // 時給の更新
+                        foreach ($this->request->data['OrderCalender'] as $key => $value) {
+                            if ($value['staff_money_h'] == 0 || $value['staff_money_h'] == 0) {
+                                continue;
+                            }
+                            $data7 = array('juchuu_shiharai' => 1, 'juchuu_money'=>str_replace(',','',$value['juchuu_money_h']), 
+                                'kyuuyo_shiharai' => 1, 'kyuuyo_money'=>str_replace(',','',$value['staff_money_h']));
+                            $conditions8 = array('class' => $value['class'], 'order_id' => $value['order_id'], 'shokushu_num' => $value['shokushu_num']);
+                            $result = $this->OrderInfoDetail->find('first', array('conditions'=>$conditions8));
+                            if (empty($result['OrderInfoDetail']['kyuuyo_money']) && empty($result['OrderInfoDetail']['kyuuyo_money'])) {
+                                if ($this->OrderInfoDetail->updateAll($data7, $conditions8)) {
+                                    $this->Session->setFlash('【エラー】保存に失敗しました。');
+                                }
+                            }
+                        }
+                        $this->log($this->OrderInfoDetail->getDataSource()->getLog(), LOG_DEBUG);
+                        // 「保存」の場合
                         if ($mode == 1) {
                             $this->Session->setFlash('【情報】保存を完了しました。');
                             // ログ書き込み

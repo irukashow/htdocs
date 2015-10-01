@@ -132,7 +132,7 @@
             </tr>
             <!-- 受注 -->
             <tr id="OrderDetail0_10">
-                <td rowspan="3" style='background-color: #e8ffff;height:81px;'></td>
+                <td rowspan="3" style='background-color: #e8ffff;height:81px;'>請<br>求<br>分</td>
                 <td rowspan="2" style='background-color: #e8ffff;height:56px;'>単価</td>
             </tr>
             <tr id="OrderDetail0_11">
@@ -247,7 +247,7 @@
                     <td colspan="2" style="height:40px;text-align: center;background-color: #ffecde;">物件別売上見込み</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="height:50px;text-align: center;background-color: #99ccff;"><b>交通費について<br>（ｲﾚｷﾞｭﾗｰ別途）</b></td>
+                    <td colspan="2" style="height:85px;text-align: center;background-color: #99ccff;"><b>交通費について<br>（ｲﾚｷﾞｭﾗｰ別途）</b></td>
                 </tr>
                 <tr>
                     <td rowspan="1" align="center" style='background-color: #e8ffff;height:165px;' colspan="2">
@@ -336,7 +336,8 @@
                 ?>
                 <td style='text-align: center;background-color: white;height:67px;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderCalender.'.$from.'.appointment',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3', 'style'=>'text-align: left;font-size:90%;width: 95%;')); ?>
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3', 
+                                'value'=>NZ($data['OrderCalender']['appointment']), 'style'=>'text-align: left;font-size:90%;width: 95%;')); ?>
                 </td>
                 <?php
                         $total_col += $data[0]['cnt'];
@@ -368,7 +369,8 @@
                 ?>
                 <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderCalender.'.$from.'.cleanning',
-                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;width:95%;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false, 
+                                'value'=>NZ($data['OrderCalender']['cleanning']), 'style'=>'text-align: center;width:95%;')); ?>
                 </td>
                 <?php
                         $total_col += $data[0]['cnt'];
@@ -433,11 +435,13 @@
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 研修中（スタッフ分） -->
             <tr id="OrderDetail16">
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.staff_money_tr',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,
+                                'style'=>'width:90px;text-align: right;', 'value'=>setTrMoney2($count, $datas2))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -686,7 +690,7 @@
                 <td style="background-color: white;height:30px;">
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.uriage',
                             array('type'=>'text','id'=>'uri1_'.$count,'div'=>false,'label'=>false,
-                                'value'=>setUriSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 85%;', 'disabled')); ?>
+                                'value'=>setUriSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 80%;', 'disabled')); ?>
                     <input type="hidden" name="data[OrderCalender][<?=$count ?>][uriage]" value="<?=setUriSum($count, $datas2, $kadou[$count]) ?>">
                 </td>
                 <?php } ?>
@@ -697,7 +701,7 @@
                 <td style="background-color: white;height:30px;">
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.jinkenhi',
                             array('type'=>'text','id'=>'jinkenhi1_'.$count,'div'=>false,'label'=>false,
-                                'value'=>setJinkenhiSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 85%;', 'disabled')); ?>
+                                'value'=>setJinkenhiSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 80%;', 'disabled')); ?>
                     <input type="hidden" name="data[OrderCalender][<?=$count ?>][jinkenhi]" value="<?=setJinkenhiSum($count, $datas2, $kadou[$count]) ?>">
                 </td>
                 <?php } ?>
@@ -725,7 +729,7 @@
                             array('type'=>'text','id'=>'jinkenhi1_'.$count,'div'=>false,'label'=>false,
                                 'value'=>number_format($ret), 'style'=>'text-align:right;font-size:14px;background-color: #ffecde; width:'.$width.';', 'disabled'));
                     ?>
-                    <input type="hidden" name="data[OrderCalender][<?=$count ?>][uriage_case]" value="<?=number_format($ret) ?>">
+                    <input type="hidden" name="data[OrderCalender][<?=$from ?>][uriage_case]" value="<?=number_format($ret) ?>">
                 </td>
                 <?php
                         $total_col += $data[0]['cnt'];
@@ -735,20 +739,40 @@
             <!-- 交通費について -->
             <tr>
                 <?php for ($count=0; $count<$col; $count++){ ?>
-                <td style="background-color: white;height:50px;">
+                <td style="background-color: white;height:85px;">
+                    <?php
+                        if (is_null($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'])) {
+                            //echo '交通費支給：不明';
+                        } elseif ($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'] == 0) {
+                            echo '交通費支給：なし';
+                        } elseif ($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'] == 1) {
+                            echo '交通費支給：あり';
+                        } else {
+                            //echo '交通費支給：不明';
+                        }
+                    ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.koutsuuhi',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'2','style'=>'text-align: left;width: 95%;font-size:90%;')); ?>
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3',
+                                'value'=>$datas2[$count]['OrderCalender']['koutsuuhi'], 'style'=>'text-align: left;width: 95%;font-size:90%;')); ?>
                 </td>
                 <?php } ?>
             </tr>
             <!-- 備考 -->
             <tr>
-                <?php for ($count=0; $count<$col; $count++){ ?>
-                <td align='left' style='background-color: white;height:165px;'>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
-                        array('type'=>'textarea','div'=>false,'label'=>false, 'style'=>'width:100px;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
+                <?php
+                    $total_col = 0;
+                    foreach ($datas as $key=>$data){
+                        $from = $total_col;
+                ?>
+                <td align='left' style='background-color:white;height:165px;' colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.remarks',
+                        array('type'=>'textarea','div'=>false,'label'=>false, 
+                            'value'=>$data['OrderCalender']['remarks'], 'style'=>'width:90%;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
                 </td>
-                <?php } ?>
+                <?php
+                        $total_col += $data[0]['cnt'];
+                    } 
+                ?>
             </tr>
             <!-- 契約書 -->
             <tr>
@@ -759,7 +783,8 @@
                 ?>
                 <td style="background-color: white;height:30px;" colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $this->Form->input('OrderCalender.'.$from.'.contract',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'text-align:left;width: 95%;font-size:90%;')); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,
+                                'value'=>$data['OrderCalender']['contract'], 'style'=>'text-align:center;width: 95%;font-size:90%;')); ?>
                 </td>
                 <?php
                         $total_col += $data[0]['cnt'];
