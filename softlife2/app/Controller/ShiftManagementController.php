@@ -311,6 +311,22 @@ class ShiftManagementController extends AppController {
         $list_cutoff = $this->CaseManagement->find('list', $option);
         //$this->log($datas, LOG_DEBUG);
         $this->set('list_cutoff', $list_cutoff);
+        // 請求書請求日
+        $option = array();
+        $option['fields'] = array('CaseManagement.id', 'Customer.bill_arrival'); 
+        $option['order'] = array('CaseManagement.sequence' => 'asc');
+        $option['conditions'] = array('CaseManagement.class'=>$selected_class); 
+        $option['joins'] = array(
+        array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'customer',
+            'alias' => 'Customer',    //下でPost.user_idと書くために
+            'conditions' => array('CaseManagement.billing_destination1 = Customer.id')
+            ),
+        ); 
+        $bill_arrival = $this->CaseManagement->find('list', $option);
+        //$this->log($datas, LOG_DEBUG);
+        $this->set('bill_arrival', $bill_arrival);
         // 推奨スタッフ
         for ($i=1; $i<=20; $i++) {
             $results = $this->OrderInfo->find('all', array('fields'=>array('id', 'staff_ids'.$i)));
@@ -464,6 +480,7 @@ class ShiftManagementController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             $data = $this->request->data;
             $this->log($data, LOG_DEBUG);
+            $this->log('ここまで', LOG_DEBUG);
             /** シフト自動割付 **/
             if (isset($data['assignment'])) {
                 $conditions6 = array(
@@ -568,20 +585,23 @@ class ShiftManagementController extends AppController {
                         }
                         // 時給の更新
                         foreach ($this->request->data['OrderCalender'] as $key => $value) {
-                            if ($value['staff_money_h'] == 0 || $value['staff_money_h'] == 0) {
+                            /**
+                            if ($value['juchuu_money_h'] == 0 || $value['staff_money_h'] == 0) {
                                 continue;
                             }
+                             * 
+                             */
                             $data7 = array('juchuu_shiharai' => 1, 'juchuu_money'=>str_replace(',','',$value['juchuu_money_h']), 
-                                'kyuuyo_shiharai' => 1, 'kyuuyo_money'=>str_replace(',','',$value['staff_money_h']));
+                                'kyuuyo_shiharai' => 1, 'kyuuyo_money'=>str_replace(',','',$value['staff_money_h']), 'modified'=>'"'.date("Y-m-d H:i:s").'"');
                             $conditions8 = array('class' => $value['class'], 'order_id' => $value['order_id'], 'shokushu_num' => $value['shokushu_num']);
-                            $result = $this->OrderInfoDetail->find('first', array('conditions'=>$conditions8));
-                            if (empty($result['OrderInfoDetail']['kyuuyo_money']) && empty($result['OrderInfoDetail']['kyuuyo_money'])) {
+                            //$result = $this->OrderInfoDetail->find('first', array('conditions'=>$conditions8));
+                            //if (empty($result['OrderInfoDetail']['kyuuyo_money']) && empty($result['OrderInfoDetail']['kyuuyo_money'])) {
                                 if ($this->OrderInfoDetail->updateAll($data7, $conditions8)) {
                                     $this->Session->setFlash('【エラー】保存に失敗しました。');
                                 }
-                            }
+                            //}
                         }
-                        $this->log($this->OrderInfoDetail->getDataSource()->getLog(), LOG_DEBUG);
+                        //$this->log($this->OrderInfoDetail->getDataSource()->getLog(), LOG_DEBUG);
                         // 「保存」の場合
                         if ($mode == 1) {
                             $this->Session->setFlash('【情報】保存を完了しました。');

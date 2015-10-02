@@ -18,8 +18,10 @@
         &nbsp;
     </div>
     <div style="float:right;padding-top: 1px;">
+        <input type="button" name="cal" value="金額計算" id="" class="check" style="margin-left: 50px;border:1px solid black;cursor: pointer;padding: 5px 15px;" onclick="" <?=$disabled ?>>
+            &nbsp;&nbsp;&nbsp;
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
-        <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
+        <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
             &nbsp;
             <input type="button" id="<?=$button_type2 ?>" class="check" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
             &nbsp;
@@ -103,6 +105,9 @@
                    style="background-color: #e8ffff;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;font-size: 90%;">
                 <col style="width: 25px;" />
                 <col style="width: 95px;" />
+                <tr id="OrderDetail0_0">
+                    <td colspan="2" style="height:30px;text-align: center;">担当</td>
+                </tr>
                 <tr id="OrderDetail0_1">
                     <td colspan="2" style="height:57px;text-align: center;">事業主</td>
                 </tr>
@@ -126,6 +131,9 @@
             </tr>
             <tr id="OrderDetail0_8">
                 <td colspan="2" style="height:30px;text-align: center;">請求書締日</td>
+            </tr>
+            <tr id="OrderDetail0_19">
+                <td colspan="2" style="height:30px;text-align: center;">請求書郵送日</td>
             </tr>
             <tr id="OrderDetail0_9">
                 <td colspan="2" style="height:30px;text-align: center;">クリーニング</td>
@@ -255,6 +263,9 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="2" style="height:30px;text-align: center;">注意事項</td>
+                </tr>
+                <tr>
                     <td colspan="2" style="height:30px;text-align: center;">契約書</td>
                 </tr>
                 <tr>
@@ -290,6 +301,23 @@
                 <?php } ?>
             </tr>
                 -->
+            <tr id="OrderDetail0">
+                <?php 
+                    $total_col = 0;
+                    foreach ($datas as $key=>$data){
+                        $from = $total_col;
+                        //$to = $total_col + $data[0]['cnt'] - 1;
+                ?>
+                <td style='background:white;text-align: center;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.tantou',
+                            array('type'=>'text','div'=>false,'label'=>false, 
+                                'value'=>NZ($data['OrderCalender']['tantou']), 'style'=>'text-align: left;width:95%;')); ?>
+                </td>
+                <?php
+                        $total_col += $data[0]['cnt'];
+                    } 
+                ?>
+            </tr>
             <tr id="OrderDetail1">
                 <?php foreach ($datas as $data){ ?>
                 <td style='background:#ffffcc;text-align: center;height:57px;' colspan="<?=$data[0]['cnt'] ?>">
@@ -359,6 +387,13 @@
                 </td>
                 <?php } ?>
             </tr>
+            <tr id="OrderDetail19">
+                <?php foreach ($datas as $data){ ?>
+                <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo NZ($bill_arrival[$data['OrderCalender']['case_id']]); ?>
+                </td>
+                <?php } ?>
+            </tr>
             <!-- クリーニング -->
             <tr id="OrderDetail9">
                 <?php 
@@ -385,7 +420,8 @@
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.juchuu_money_d',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 
-                                'onchange'=>'calUri1(this,'.$count.')', 'value'=>setDMoney($count, $datas2))); ?>
+                                //'onchange'=>'calUri1(this,'.$count.')', 
+                                'value'=>setDMoney($count, $datas2))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -393,7 +429,8 @@
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.juchuu_money_h',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 'value'=>setHMoney($count, $datas2))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 
+                                'value'=>setHMoney($count, $datas2))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -422,7 +459,9 @@
                 <td style='background-color: white;height:25px;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.staff_money_d',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 
-                                'value'=>setDMoney2($count, $datas2), 'onchange'=>'calJinkenhi1(this,'.$count.')')); ?>
+                                'value'=>setDMoney2($count, $datas2),
+                                //'onchange'=>'calJinkenhi1(this,'.$count.')'
+                                )); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -768,6 +807,23 @@
                     <?php echo $this->Form->input('OrderCalender.'.$from.'.remarks',
                         array('type'=>'textarea','div'=>false,'label'=>false, 
                             'value'=>$data['OrderCalender']['remarks'], 'style'=>'width:90%;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
+                </td>
+                <?php
+                        $total_col += $data[0]['cnt'];
+                    } 
+                ?>
+            </tr>
+            <!-- 注意事項 -->
+            <tr>
+                <?php
+                    $total_col = 0;
+                    foreach ($datas as $key=>$data){
+                        $from = $total_col;
+                ?>
+                <td style="background-color: white;height:30px;" colspan="<?=$data[0]['cnt'] ?>">
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.caution',
+                            array('type'=>'text','div'=>false,'label'=>false,
+                                'value'=>$data['OrderCalender']['caution'], 'style'=>'text-align:left;width: 95%;font-size:90%;')); ?>
                 </td>
                 <?php
                         $total_col += $data[0]['cnt'];

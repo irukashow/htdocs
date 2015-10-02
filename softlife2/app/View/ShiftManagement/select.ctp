@@ -85,14 +85,28 @@ onload = function() {
         <?php if (!empty($datas2)) { ?>
         <?php foreach ($datas2 as $key=>$data2) { ?>
         <tr style="background-color: #ddffff;">
-            <td align="center" style="width:15%;">
+            <td align="center" style="width:20%;">
             <?=$data2['StaffMaster']['id']; ?>
                 <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
             </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="left" style="width:70%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
             <td align="center">
                 <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
                     'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" style="padding-top:5px;">
+                <input type="checkbox" name="data[StaffMaster][appointment]" value="1" style="margin-left: 20px;vertical-align: -5px;">
+                <font style="margin-left:-30px;">待ち合わせ</font>
+            </td>
+            <td align="center">
+                <?php echo $this->Form->input('appointment_memo',
+                        array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'待ち合わせメモ', 'style'=>'width:95%;padding:3px;')); ?>
+            </td>
+            <td align="center">
+                <?php echo $this->Form->submit('登録', array('id'=>'button-create', 
+                    'name' => 'register['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:4px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
@@ -103,71 +117,8 @@ onload = function() {
         <?php } ?>
     </table>
    
-    <!-- 推奨スタッフ -->
-    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
-        <!--
-        <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>（１）推奨スタッフ</th>
-        </tr>
-        <?php if (!empty($recommend_staff2)) { ?>
-        <?php foreach ($recommend_staff2 as $key=>$data2) { ?>
-        <tr style="background:#ffccff;">
-            <td align="center" style="width:15%;">
-            <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id1<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
-            </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
-            <td align="center" style="width:20%;">
-                <?php echo $this->Form->submit('選択', 
-                        array('name' => 'select['.$data2['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
-            </td>
-        </tr>
-        <?php } ?>
-        <?php } else { ?>
-        <tr align="center" style="background:#ffccff;">
-            <td colspan="3">該当するデータはありません。</td>
-        </tr>
-        <?php } ?>
-        -->
-    <!-- 前月スタッフ -->
-    <!--
-        <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>（２）前月スタッフ</th>
-        </tr>
-        <?php $flag = 0; ?>
-        <?php if (!empty($premonth_staff2)) { ?>
-        <?php foreach ($premonth_staff2 as $key=>$data) { ?>
-        <?php
-            if (empty($data)) {
-                $flag = 1;
-                continue;
-            }
-        ?>
-        <tr style="background:#ffffcc;">
-            <td align="center" style="width:15%;">
-            <?=$data['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id2<?=$key ?>" value="<?=$data['StaffMaster']['id']; ?>">
-            </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name']; ?></td>
-            <td align="center" style="">
-                <?php echo $this->Form->submit('選択', 
-                        array('name' => 'select['.$data['StaffMaster']['id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
-            </td>
-        </tr>
-        <?php } ?>
-        <?php if($flag == 1) { ?>
-        <tr align="center" style="background:#ffffcc;">
-            <td colspan="3">該当するデータはありません。</td>
-        </tr>
-        <?php } ?>
-        <?php } else { ?>
-        <tr align="center" style="background:#ffffcc;">
-            <td colspan="3">該当するデータはありません。</td>
-        </tr>
-        <?php } ?>
-        -->
-        
     <!-- シフト希望スタッフ -->
+    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>シフト希望スタッフ</th>
         </tr>
@@ -182,11 +133,11 @@ onload = function() {
         ?>
         <?php $point_arr = explode(',', $data['StaffSchedule']['point']); ?>
         <tr style="background:<?=setBgcolor($point_arr[$col-1]) ?>;">
-            <td align="center" style="width:15%;">
+            <td align="center" style="width:20%;">
             <?=$data['StaffSchedule']['staff_id']; ?>
                 <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffSchedule']['staff_id']; ?>">
             </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)</td>
+            <td align="left" style="width:70%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)</td>
             <td align="center" style="">
                 <?php echo $this->Form->submit('選択', 
                         array('name' => 'select['.$data['StaffSchedule']['staff_id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
@@ -205,11 +156,11 @@ onload = function() {
         ?>
         <?php $point_arr = explode(',', $data['StaffSchedule']['point']); ?>
         <tr style="background:<?=setBgcolor($point_arr[$col-1]) ?>;">
-            <td align="center" style="width:15%;">
+            <td align="center" style="width:20%;">
             <?=$data['StaffSchedule']['staff_id']; ?>
                 <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffSchedule']['staff_id']; ?>">
             </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;">
+            <td align="left" style="width:70%;padding:0px 10px 0px 10px;">
                 <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)
                 【条件あり】<?=$data['StaffSchedule']['conditions']; ?>
             </td>
@@ -226,7 +177,7 @@ onload = function() {
         </tr>
         <?php } ?>
     </table>
-    
+
     <!-- スタッフ検索 -->
     <div class="scroll_div">
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;' _fixedhead="rows:2; cols:1">
@@ -234,8 +185,8 @@ onload = function() {
             <th colspan="4" style='background:#ccffff;text-align: center;'>追加スタッフ検索</th>
         </tr>
         <tr style="background-color: #ccffff;">
-            <td style='text-align: center;' style="width:15%;">氏　名</td>
-            <td align="center" colspan="2" style="width:75%;">
+            <td style='text-align: center;' style="width:20%;">氏　名</td>
+            <td align="center" colspan="2" style="width:70%;">
                 <?php echo $this->Form->input('search_name',array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'漢字、もしくは、ひらがな', 'style'=>'width:95%;padding:3px;')); ?>
             </td>
             <td align="center" style="width:10%;">

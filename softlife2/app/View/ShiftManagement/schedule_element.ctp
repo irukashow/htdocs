@@ -406,7 +406,7 @@ function setCalender(year, month) {
 function setHidden() {
     target = document.getElementById("ActiveDisplay");
     if (document.getElementById("OrderDetail1").style.display == 'none') {
-        for(i=1; i<=18; i++) {
+        for(i=0; i<=19; i++) {
             var id1 = "OrderDetail"+i;
             var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'table-row'; 
@@ -416,7 +416,7 @@ function setHidden() {
         document.cookie = "edit=0;";
         //target.innerHTML = '<span>シフト編集</span>';
     } else {
-        for(i=1; i<=18; i++) {
+        for(i=0; i<=19; i++) {
             var id1 = "OrderDetail"+i;
             var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'none';
@@ -498,7 +498,7 @@ function Mclk(Cell) {
         Ms1.innerText=Cell.innerHTML;
         Ms1.textContent=Cell.innerHTML;
 }
-var startrow = 22;
+var startrow = 24;
 function Mdblclk(Cell) {
   var divs = "";
  for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
