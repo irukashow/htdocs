@@ -222,6 +222,11 @@ window.onload = function(){
                 <tr>
                     <td style='background-color: #e8ffff;width:20%;'>指揮命令者・役職</td>
                     <td style='width:70%;'>
+                        <?php
+                            if (!empty($data_director)) {
+                                echo $data_director['Customer']['corp_name'].'<br>';
+                            }
+                        ?>
                             <?=$data['CaseManagement']['director'] ?>　<?=$data['CaseManagement']['position'] ?>
                     </td>
                 </tr>

@@ -405,11 +405,15 @@ class CaseManagementController extends AppController {
         // 担当者
         $condition0 = array('username' => $datas[0]['CaseManagement']['username']);
         $data = $this->User->find('first', array('conditions' => $condition0));
-        $this->set('contact', $data['User']['name_sei'].' '.$data['User']['name_mei']);
+        $this->set('contact', $data['User']['busho_name'].'　'.$data['User']['name_sei'].' '.$data['User']['name_mei']);
         // 依頼主データ
         $condition1 = array('id' => $datas[0]['CaseManagement']['client']);
         $data_client = $this->Customer->find('first', array('conditions' => $condition1));
         $this->set('data_client', $data_client);
+        // 依頼主データ
+        $condition3 = array('id' => $datas[0]['CaseManagement']['director_corp']);
+        $data_director = $this->Customer->find('first', array('conditions' => $condition3));
+        $this->set('data_director', $data_director);
         // 請求先データ
         for($i=0; $i<10 ;$i++) {
             $condition2 = array('id' => $datas[0]['CaseManagement']['billing_destination'.($i+1)]);
@@ -606,12 +610,14 @@ class CaseManagementController extends AppController {
                     $this->set('data_billing', $data_billing);
                      * 
                      */
+                    if ($koushin_flag == 0) {
+                        $case_id = $this->CaseManagement->getLastInsertID();
+                    }
                     // ログ書き込み
                     $this->setCaseLog($username, $selected_class, $case_id, $this->request->data['CaseManagement']['case_name'], 0, 11, $this->request->clientIp()); // 案件基本情報登録コード:11
                     // 登録完了メッセージ
                     $this->Session->setFlash('登録しました。');
                     $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
-
                 } else {
                     $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
                 }
@@ -682,7 +688,7 @@ class CaseManagementController extends AppController {
                     // 成功
                     $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
                 }
-            } elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_billing'])) {
+            } elseif (isset($this->request->data['select_client']) || isset($this->request->data['select_director_corp']) || isset($this->request->data['select_billing'])) {
                 // 依頼主
                 if (!empty($this->request->data['CaseManagement']['client'])) {
                     /**
@@ -707,6 +713,20 @@ class CaseManagementController extends AppController {
                         $condition1 = array('id' => $this->request->data['CaseManagement']['client']);
                         $data_client = $this->Customer->find('first', array('conditions' => $condition1));
                         $this->set('data_client', $data_client);
+                        if ($koushin_flag == 0) {
+                            $case_id = $this->CaseManagement->getLastInsertID();
+                        }
+                    }
+                }
+                
+                // 指揮命令者の会社
+                if (!empty($this->request->data['CaseManagement']['select_director_corp'])) {
+                    // 新規・更新登録
+                    if ($this->CaseManagement->save($this->request->data)) {
+                        // 成功
+                        $condition1 = array('id' => $this->request->data['CaseManagement']['director_corp']);
+                        $data_director = $this->Customer->find('first', array('conditions' => $condition1));
+                        $this->set('data_director', $data_director);
                         if ($koushin_flag == 0) {
                             $case_id = $this->CaseManagement->getLastInsertID();
                         }

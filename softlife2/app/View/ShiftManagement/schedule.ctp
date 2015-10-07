@@ -18,8 +18,6 @@
         &nbsp;
     </div>
     <div style="float:right;padding-top: 1px;">
-        <input type="button" name="cal" value="金額計算" id="" class="check" style="margin-left: 50px;border:1px solid black;cursor: pointer;padding: 5px 15px;" onclick="" <?=$disabled ?>>
-            &nbsp;&nbsp;&nbsp;
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
         <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
             &nbsp;
@@ -106,7 +104,7 @@
                 <col style="width: 25px;" />
                 <col style="width: 95px;" />
                 <tr id="OrderDetail0_0">
-                    <td colspan="2" style="height:30px;text-align: center;">担当</td>
+                    <td colspan="2" style="height:30px;text-align: center;">弊社担当</td>
                 </tr>
                 <tr id="OrderDetail0_1">
                     <td colspan="2" style="height:57px;text-align: center;">事業主</td>
@@ -335,7 +333,12 @@
             <tr id="OrderDetail3">
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>様
+                    <?php
+                        if (!empty($list_director_corp) && !empty($list_director_corp[$data['OrderCalender']['case_id']])) {
+                            echo $list_director_corp[$data['OrderCalender']['case_id']].'<br>';
+                        }
+                    ?>
+                <?php echo ltrim(NZ($list_director[$data['OrderCalender']['case_id']]), '：'); ?> 様
                 </td>
                 <?php } ?>
             </tr>

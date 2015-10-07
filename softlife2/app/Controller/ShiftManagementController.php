@@ -265,6 +265,20 @@ class ShiftManagementController extends AppController {
         }
         $this->set('list_client', $datas22);
         //$this->log($datas22, LOG_DEBUG);
+        // 指揮命令者・担当者の企業名
+        $result2 = $this->CaseManagement->find('all', array(
+            'fields'=>array('id', 'director_corp'), 'conditions' => $conditions1, 'order' => array('sequence')));
+        //$this->log($result2, LOG_DEBUG);
+        $datas23 = null;
+        foreach ($result2 as $value) {
+            if (empty($value['CaseManagement']['director_corp'])) {
+                $datas23[$value['CaseManagement']['id']] = '';
+                continue;
+            }
+            $datas23[$value['CaseManagement']['id']] = $list_customer[$value['CaseManagement']['director_corp']];
+        }
+        $this->set('list_director_corp', $datas23);
+        //$this->log($datas23, LOG_DEBUG);
         // 指揮命令者・担当者
         $conditions2 = array('class'=>$selected_class);
         $this->CaseManagement->virtualFields['director2'] = 'CONCAT(position, "：", director)';

@@ -249,8 +249,23 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>指揮命令者・役職</td>
                 <td>
+                    <table>
+                        <tr>
+                            <td width="95%">
+                    <?php echo $this->Form->input('director_corp',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'指揮命令者の企業名を選択してください', 
+                        'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
+                            </td>
+                            <td>
+                    <?php echo $this->Form->submit('選 択',array('div'=>'display: inline; ', 'name'=>'select_director_corp', 'id'=>'button-create', 'label'=>false)); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
                     <?php echo $this->Form->input('director',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '指揮命令者','style'=>'width:30%;')); ?>様
                     <?php echo $this->Form->input('position',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '役職','style'=>'width:30%;')); ?>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
