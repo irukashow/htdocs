@@ -110,10 +110,10 @@
                     <td colspan="2" style="height:57px;text-align: center;">事業主</td>
                 </tr>
             <tr id="OrderDetail0_2">
-                <td colspan="2" style="height:30px;text-align: center;">販売会社</td>
+                <td colspan="2" style="height:36px;text-align: center;">販売会社</td>
             </tr>
             <tr id="OrderDetail0_3">
-                <td colspan="2" style="height:50px;text-align: center;">指揮命令者/<br>担当者</td>
+                <td colspan="2" style="height:55px;text-align: center;">指揮命令者/<br>担当者</td>
             </tr>
             <tr id="OrderDetail0_4">
                 <td colspan="2" style="height:50px;text-align: center;">現場住所</td>
@@ -125,7 +125,7 @@
                 <td colspan="2" style="height:67px;text-align: center;">待ち合わせ</td>
             </tr>
             <tr id="OrderDetail0_7">
-                <td colspan="2" style="height:50px;text-align: center;">請求先担当者</td>
+                <td colspan="2" style="height:56px;text-align: center;">請求先担当者</td>
             </tr>
             <tr id="OrderDetail0_8">
                 <td colspan="2" style="height:30px;text-align: center;">請求書締日</td>
@@ -316,6 +316,7 @@
                     } 
                 ?>
             </tr>
+            <!-- 事業主 -->
             <tr id="OrderDetail1">
                 <?php foreach ($datas as $data){ ?>
                 <td style='background:#ffffcc;text-align: center;height:57px;' colspan="<?=$data[0]['cnt'] ?>">
@@ -323,16 +324,18 @@
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 販売会社 -->
             <tr id="OrderDetail2">
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;height:30px;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:36px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_client[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
+            <!-- 指揮命令者/担当者 -->
             <tr id="OrderDetail3">
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:55px;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php
                         if (!empty($list_director_corp) && !empty($list_director_corp[$data['OrderCalender']['case_id']])) {
                             echo $list_director_corp[$data['OrderCalender']['case_id']].'<br>';
@@ -378,7 +381,7 @@
             <!-- 請求先担当者 -->
             <tr id="OrderDetail7">
                 <?php foreach ($datas as $data){ ?>
-                <td style='text-align: center;background-color: white;height:50px;' colspan="<?=$data[0]['cnt'] ?>">
+                <td style='text-align: center;background-color: white;height:56px;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_bill[$data['OrderCalender']['case_id']]); ?> 様
                 </td>
                 <?php } ?>
@@ -645,7 +648,8 @@
                                 $point2 = null;
                             }
                             if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
-                                    && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
+                                    //&& chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])
+                                    ) {
                                 $datas3[$count][$d][$j]['staff_id'] = $data['StaffSchedule']['staff_id'];
                                 $datas3[$count][$d][$j]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
                                 $datas3[$count][$d][$j]['point'] = setPoint($point2, $count);

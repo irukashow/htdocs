@@ -403,9 +403,13 @@ class CaseManagementController extends AppController {
         $this->set('datas', $datas);
         $this->log($datas, LOG_DEBUG);
         // 担当者
-        $condition0 = array('username' => $datas[0]['CaseManagement']['username']);
-        $data = $this->User->find('first', array('conditions' => $condition0));
-        $this->set('contact', $data['User']['busho_name'].'　'.$data['User']['name_sei'].' '.$data['User']['name_mei']);
+        if (empty($datas[0]['CaseManagement']['username'])) {
+            $this->set('contact', '');
+        } else {
+            $condition0 = array('username' => $datas[0]['CaseManagement']['username']);
+            $data = $this->User->find('first', array('conditions' => $condition0));
+            $this->set('contact', $data['User']['busho_name'].'　'.$data['User']['name_sei'].' '.$data['User']['name_mei']);
+        }
         // 依頼主データ
         $condition1 = array('id' => $datas[0]['CaseManagement']['client']);
         $data_client = $this->Customer->find('first', array('conditions' => $condition1));
@@ -1081,15 +1085,24 @@ class CaseManagementController extends AppController {
                 $this->set('datas2', $datas2);
                 //$this->log($datas2, LOG_DEBUG);
             }
-            // カレンダー部分のデータ・セット
-            $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-            $datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions));
-            $this->set('datas1', $datas1);
-            //$this->log($datas1, LOG_DEBUG);
+            // レコード数
             $record = $this->OrderInfo->find('count', $option);
             $this->set('record', $record);
-            //$this->set('y', date('Y'));
-            //$this->set('m', date('n')+1);
+            // カレンダー部分のデータ・セット
+            //$conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
+            //$datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions, 'order'=>array('shokushu_num')));
+            for ($i=0; $i<20; $i++) {
+                $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 
+                    'OrderCalender.year' => $year, 'OrderCalender.month' => $month, 'OrderCalender.shokushu_num' => $i+1);
+                $result3 = $this->OrderCalender->find('first', array('conditions'=>$conditions));
+                if (empty($result3)) {
+                    $datas1[$i] = null;
+                } else {
+                    $datas1[$i] = $result3;
+                }
+            }
+            $this->set('datas1', $datas1);
+            $this->log($datas1, LOG_DEBUG);
             
             // スタッフ選択の値を渡す
             $results = null;

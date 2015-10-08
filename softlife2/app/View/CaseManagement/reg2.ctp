@@ -596,7 +596,7 @@ function doAlert(str, element) {
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
                                         'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
-                        <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month) { ?>
+                        <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month ) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
                                         'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
@@ -604,6 +604,7 @@ function doAlert(str, element) {
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas1[$count]['OrderCalender']['d'.$d],
                                         'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
+                        <input type="hidden" name="shokushu_num" value="<?=$datas1[$count]['OrderCalender']['shokushu_num'] ?>">
                         <?php } ?>
                         
                     </div>
