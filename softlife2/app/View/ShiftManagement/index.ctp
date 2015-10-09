@@ -108,7 +108,7 @@ window.onload = function(){
 ?>
     &nbsp;&nbsp;
     <span style="padding-top: 0px;border-style: none;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule','案件登録','width=1200,height=800,scrollbars=yes');" id='button-create'>手入力</a>
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');" id='button-create'>手入力</a>
     </span>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>

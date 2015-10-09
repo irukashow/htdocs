@@ -38,6 +38,8 @@
         <div style="margin-top: 10px;">
             <?php echo $this->Form->submit('設定する', array('name' => 'submit','div' => false)); ?>
                 &nbsp;&nbsp;
+            <?php echo $this->Form->submit('初期化', array('name' => 'initiation','div' => false, 'id' => 'button-create')); ?>
+                &nbsp;&nbsp;
             <?php print($this->Html->link('戻　る', 'index', array('id'=>'button-delete', 'onclick' => 'javascript:window.history.back(-1);return false;'))); ?>
                 &nbsp;&nbsp;
             <?php print($this->Html->link('閉 じ る', 'javascript:void(0)', array('id'=>'button-delete', 'onclick' => 'javascript:window.close();'))); ?>

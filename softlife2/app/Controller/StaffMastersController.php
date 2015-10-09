@@ -113,7 +113,7 @@ class StaffMastersController extends AppController {
         //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
-        $conditions0 = array('item' => 16);
+        $conditions0 = array('item' => 17);
         $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
         $this->set('list_shokushu', $list_shokushu);
         // 表示件数の初期値
@@ -577,6 +577,8 @@ class StaffMastersController extends AppController {
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            //$this->log($this->request->data['StaffMaster']['birthday']['year'].$this->request->data['StaffMaster']['birthday']['month'].$this->request->data['StaffMaster']['birthday']['day'], LOG_DEBUG);
             if (isset($this->request->data['submit'])) {
                 // 都道府県の名称のセット
                 if (!empty($this->request->data['StaffMaster']['address1'])) {
@@ -584,13 +586,17 @@ class StaffMastersController extends AppController {
                     $result = $this->Item->find('first', array('conditions' => $conditions));
                     $this->request->data['StaffMaster']['address1_2'] = $result['Item']['value'];
                 }
-                // モデルの状態をリセットする
-                //$this->StaffMaster->create();
                 // データを登録する
                 if ($this->StaffMaster->save($this->request->data)) {
                     if ($koushin_flag == 0 || is_null($koushin_flag)) {
                         // 新規登録したIDを取得
                         $id = $this->StaffMaster->getLastInsertID();
+                        // スタッフアカウントとパスワードの設定
+                        $birthday = $this->request->data['StaffMaster']['birthday']['year'].$this->request->data['StaffMaster']['birthday']['month'].$this->request->data['StaffMaster']['birthday']['day'];
+                        $data = array('StaffMaster' => array('id' => $id, 'account' => $selected_class.$id, 
+                            'password' => $birthday));
+                        $fields = array('account', 'password');
+                        $this->StaffMaster->save($data, false, $fields);
                         // ログ書き込み
                         $this->setSMLog($username, $selected_class, $id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 9, 1, $this->request->clientIp()); // 新規登録１コード:1
                     } elseif ($koushin_flag == 1) {
@@ -1051,19 +1057,29 @@ class StaffMastersController extends AppController {
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->request->data['StaffMaster']['password'] != $this->request->data['StaffMaster']['password2']) {
-                $this->Session->setFlash(__('パスワードが一致しません。'));
-                return;
-            } else {
-                // データを登録する
-                $this->StaffMaster->save($this->request->data);
-                //$this->log($this->request->data, LOG_DEBUG);
-                $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
-                            9, 7, $this->request->clientIp()); // パスワードコード:7 
-                $this->Session->setFlash(__('パスワードは変更されました。'));
+            if (isset($this->request->data['submit'])) {
+                if ($this->request->data['StaffMaster']['password'] != $this->request->data['StaffMaster']['password2']) {
+                    $this->Session->setFlash(__('パスワードが一致しません。'));
+                    return;
+                } else {
+                    // データを登録する
+                    $this->StaffMaster->save($this->request->data);
+                    //$this->log($this->request->data, LOG_DEBUG);
+                    $this->setSMLog($username, $selected_class, $staff_id, $this->request->data['StaffMaster']['name_sei'].' '.$this->request->data['StaffMaster']['name_mei'], 
+                                9, 7, $this->request->clientIp()); // パスワードコード:7 
+                    $this->Session->setFlash(__('パスワードは変更されました。'));
 
-                // indexに移動する
-                $this->redirect($this->request->referer());
+                    // indexに移動する
+                    $this->redirect($this->request->referer());
+                }
+            } elseif (isset($this->request->data['initiation'])) {
+                $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$staff_id)));
+                $data2 = array('StaffMaster' => array('id' => $staff_id, 'password' => str_replace('-', '', $data['StaffMaster']['birthday'])));
+                $fields = array('password');
+                if ($this->StaffMaster->save($data2, false, $fields)) {
+                    $this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->Session->setFlash(__('【情報】パスワードは初期化されました。'));
+                }
             }
         } else {
             $this->request->data = $this->StaffMaster->read(null, $staff_id);    

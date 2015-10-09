@@ -26,6 +26,10 @@ class StaffMaster extends AppModel {
                 'rule' => 'notEmpty',
                 'message' => '氏名（名）を入力してください。'
         ),
+        'birthday' =>  array(
+                'rule' => 'notEmpty',
+                'message' => '誕生日を入力してください。'
+        ),
         'zipcode1' =>  array(
             'rule' => 'numeric',
             'required' => false,

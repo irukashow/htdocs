@@ -122,7 +122,7 @@
             </tr>
             <tr>
                 <td>
-                    <?php echo $this->Html->link('▶現場責任者アカウント', '/client/index'); ?>
+                    <?php echo $this->Html->link('▶スタッフアカウント', '/admin/staff_account'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶スタッフ専用サイト履歴', '/log/staff_login'); ?>
@@ -134,7 +134,7 @@
             </tr>
             <tr>
                 <td>
-                    
+                    <?php echo $this->Html->link('▶現場責任者アカウント', '/client/index'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶現場責任者専用サイト履歴', '/log/work'); ?>

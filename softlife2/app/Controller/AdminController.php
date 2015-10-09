@@ -13,7 +13,7 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class AdminController extends AppController {
-    public $uses = array('VersionRemarks', 'AdminInfo', 'User', 'Item');
+    public $uses = array('VersionRemarks', 'AdminInfo', 'User', 'Item', 'StaffMaster');
 
     public function index() {
         /* 管理権限がある場合 */
@@ -164,6 +164,69 @@ class AdminController extends AppController {
             }
         }
         
+    }
+    
+    /**
+     * スタッフアカウント
+     */
+    public function staff_account() {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout","スタッフアカウント - 派遣管理システム");
+        $this->set("header_for_layout","派遣管理システム");
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', 'active');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);  
+        $username = $this->Auth->user('username');
+        $this->set('username', $username);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+            
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (isset($this->request->data['initiation'])) {
+                // 初期化
+                $sql = 'update staff_'.$selected_class.' set account = CONCAT('.$selected_class.', id)';
+                $this->StaffMaster->query($sql);
+                $passwordHasher = new SimplePasswordHasher();
+                $datas = $this->StaffMaster->find('all');
+                foreach ($datas as $data) {
+                    $sql = '';
+                    $sql = ' update staff_'.$selected_class.' set password = "'.$passwordHasher->hash(str_replace('-', '', $data['StaffMaster']['birthday'])).'"';
+                    $sql .= ' WHERE id = '.$data['StaffMaster']['id'];
+                    $this->StaffMaster->query($sql);
+                }
+                $this->Session->setFlash('【情報】初期化が完了しました。');
+                $this->redirect(array(''));
+            } elseif (isset($this->request->data['class'])) {
+                // 属性の変更
+                $class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $class);
+                $this->Session->write('selected_class', $class);
+                $this->redirect(array(''));
+            }
+        } else {
+            // ページネーション
+            $this->set('datas', $this->paginate('StaffMaster'));
+        }
     }
 
 }
