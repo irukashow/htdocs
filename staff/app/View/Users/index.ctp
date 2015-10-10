@@ -22,14 +22,14 @@
             <!---トップリストビュー----------------------------->
             <ul data-role="listview">
                 <li class="toplist_news">
-                    <a href="http://sumaho-design.com/" target="_blank">
-                            <p>2015-09-01</p>
-                            年末調整についてのお知らせ。詳細はこちら
-                    </a>
+                        <p>2015-11-01</p>
+                        スタッフ専用サイトを開設いたしました。
                 </li>
                 <li class="toplist_news">
-                        <p>2015-08-21</p>
-                        ホームページをリニューアルしました。
+                    <a href="http://softlife.co.jp/" target="_blank">
+                        <p>2015-10-10</p>
+                        ホームページをリニューアル中です。
+                    </a>
                 </li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule#page3"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>

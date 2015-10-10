@@ -855,6 +855,7 @@
                 ?>
             </tr>
             <!-- 月の合計 -->
+            <?php if (!empty($datas) && !empty($datas2)) { ?>
             <tr style="background-color:white;">
                 <td colspan="2" algin="center" style="font-size:110%;height:30px;background-color: #ffccff;">今月の売上見込み</td>
                 <td colspan="2" algin="center" style="font-size:110%;background-color: #ffcccc;">人件費見込み合計</td>
@@ -888,6 +889,7 @@
                     <input type="hidden" name="data[OrderCalender][0][jinnkenhi_monthly]" value="<?=number_format($ret2) ?>">
                 </td>
             </tr>
+            <?php } ?>
             </tbody>
         </table>
         </div>

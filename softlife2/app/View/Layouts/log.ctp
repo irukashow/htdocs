@@ -31,8 +31,10 @@
     <div id="header">
         <table style="width: 100%;height: 40px;" border="0">
             <tr>
-                <td style="width:350px;float:left;padding-top: 7px;">
-                    <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif"></a>
+                <td style="width:150px;padding-top: 10px;">
+                    <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/rogo2.png"></a>
+                </td>
+                <td style="width:400px;float:left;padding-top: 11px;">
                     <font size="3" style="vertical-align: 8px;">
                         <?php echo HEADER; ?>
                     </font>

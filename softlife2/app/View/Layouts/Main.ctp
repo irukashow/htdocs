@@ -131,9 +131,11 @@ $(document).ready(function() {
     <div id="header">
         <table id="header_table" style="width: 100%;" border="0" style="">
             <tr>
+                <td style="width:150px;padding-top: 0px;">
+                    <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/rogo2.png"></a>
+                </td>
                 <td style="width:350px;font-family: Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;">
-                    <a href="<?=ROOTDIR ?>/users/"><img src="<?=ROOTDIR ?>/img/logo.gif"></a>
-                    <font size="3" style="vertical-align: 8px;">
+                    <font size="3" style="vertical-align: 6px;">
                         <?php echo HEADER; ?>
                     </font>
                 </td>
@@ -166,6 +168,7 @@ $(document).ready(function() {
                         </li>
                     </ul>
                 </td>
+            </tr>
         </table>
     </div>
       <div style="clear:none;"></div>

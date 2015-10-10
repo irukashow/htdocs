@@ -375,7 +375,7 @@ function doAlert(str, element) {
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',
                             array('type'=>'text','id'=>'time','div'=>false,'label'=>false,
                                 'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record), 'onchange'=>'doAlert(this.value, this)')); ?>
-                    <span style="color:red;">※例 9:00</span>
+                    <span style="color:red;">※例 09:00</span>
                 </td>
                 <?php } ?>
             </tr>

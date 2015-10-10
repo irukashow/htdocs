@@ -1,5 +1,4 @@
 
-
 <!--シフト希望入力ページ-->
 <div id="schedule_input" data-role="page">
     <div data-role="header" data-theme="c">

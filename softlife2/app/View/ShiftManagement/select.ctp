@@ -42,6 +42,7 @@ function setShokushu($shokushu_ids, $list_arr) {
 <script>
 onload = function() {
     FixedMidashi.create();
+    document.getElementById('content').style.padding = '20px 10px';
     document.getElementById('StaffMasterSearchName').focus();
 }
 </script>
@@ -52,6 +53,18 @@ onload = function() {
       height: auto;
 <?php } else { ?>
       height: 200px;
+<?php } ?>
+      width: 100%;
+      margin-top: 5px;
+  }
+</style>
+<style type="text/css" media="screen">
+  div.scroll_div2 { 
+      overflow: auto;
+<?php if (empty($datas)) { ?>
+      height: auto;
+<?php } else { ?>
+      height: 400px;
 <?php } ?>
       width: 100%;
       margin-top: 5px;
@@ -69,9 +82,13 @@ onload = function() {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 0px;">
-        <legend style="font-size: 150%;color: red;">スタッフ選択 ( <?=$month ?>月<?=$day ?>日 (<?=$week ?>) )</legend>
+        <div style="font-size: 150%;color: red;float: left;">スタッフ選択 ～ <?=$month ?>月<?=$day ?>日 (<?=$week ?>) ～</div>
+        <div style='float:right;'>
+        <?php print($this->Form->submit('完　了', array('id'=>'button-create', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+        </div>
+        <div style="clear:both;"></div>
 
-<div style="font-size: 90%;margin-bottom: 0px;">
+<div style="font-size: 90%;margin-bottom: 0px;margin-top: 5px;">
 <?php echo $this->Form->create('StaffMaster', array('name'=>'form')); ?>
 <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $selected_class)); ?>
@@ -118,9 +135,10 @@ onload = function() {
     </table>
    
     <!-- シフト希望スタッフ -->
-    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+    <div class="scroll_div2" style="height: 300px;">
+    <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;' _fixedhead="rows:1;">
         <tr>
-            <th colspan="3" style='background:#99ccff;text-align: center;'>シフト希望スタッフ</th>
+            <th colspan="4" style='background:#99ccff;text-align: center;'>シフト希望スタッフ</th>
         </tr>
         <?php $flag = 0; ?>
         <?php if (!empty($request_staffs)) { ?>
@@ -137,8 +155,13 @@ onload = function() {
             <?=$data['StaffSchedule']['staff_id']; ?>
                 <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffSchedule']['staff_id']; ?>">
             </td>
-            <td align="left" style="width:70%;padding:0px 10px 0px 10px;"><?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)</td>
-            <td align="center" style="">
+            <td align="left" style="padding: 0 10px 0 10px;width: 35%;">
+            <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)
+            </td>
+            <td align="left" style="padding: 0 10px 0 10px;width: 35%;">
+                <?=setShokushu($data['StaffMaster']['shokushu_shoukai'], $shokushu_arr); ?>
+            </td>
+            <td align="center" style="width: 10%;">
                 <?php echo $this->Form->submit('選択', 
                         array('name' => 'select['.$data['StaffSchedule']['staff_id'].']', 'id' => 'button-create', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
@@ -160,9 +183,12 @@ onload = function() {
             <?=$data['StaffSchedule']['staff_id']; ?>
                 <input type="hidden" name="staff_id3<?=$key ?>" value="<?=$data['StaffSchedule']['staff_id']; ?>">
             </td>
-            <td align="left" style="width:70%;padding:0px 10px 0px 10px;">
-                <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)
-                【条件あり】<?=$data['StaffSchedule']['conditions']; ?>
+            <td align="left" style="width:35%;padding:0px 10px 0px 10px;">
+                <?=$data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?> (<?=$point_arr[$col-1]; ?>)<br>
+                <span style="color:red;font-weight: bold;text-shadow: 1px 1px 3px white,-1px 1px 3px white,1px -1px 3px white,-1px -1px 3px white;">【条件あり】<?=$data['StaffSchedule']['conditions']; ?></span>
+            </td>
+            <td align="left" style="padding: 0 10px 0 10px;width: 35%;">
+                <?=setShokushu($data['StaffMaster']['shokushu_shoukai'], $shokushu_arr); ?>
             </td>
             <td align="center" style="">
                 <?php echo $this->Form->submit('選択', 
@@ -173,10 +199,11 @@ onload = function() {
         <?php } ?>
         <?php if($flag == 2) { ?>
         <tr align="center" style="background:white;">
-            <td colspan="3">該当するデータはありません。</td>
+            <td colspan="4">該当するデータはありません。</td>
         </tr>
         <?php } ?>
     </table>
+    </div>
 
     <!-- スタッフ検索 -->
     <div class="scroll_div">

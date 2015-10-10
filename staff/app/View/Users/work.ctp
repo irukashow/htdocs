@@ -4,9 +4,8 @@
             <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
     </div>			
     <div data-role="content">
-        <b>勤務関連</b>
-        <p>以下の変更ができます。</p>
-        <input type="button" value="１．タイムカード" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/work_timecard"'>
+        <p>以下の入力ができます。</p>
+        <input type="button" value="１．タイムカード" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
         <input type="button" value="２．給与確認" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#salary"'>
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
@@ -21,6 +20,16 @@
         <?=FOOTER ?>
     </div>
 </div>
+<!-- 制作中 -->
+<div id="message" data-role="dialog">
+     <div data-role="header">
+         <h1 id="dlog_title">　　メッセージ</h1>
+     </div>
+     <div data-role="content">
+         <p id="dlog_content">現在、制作中です。</p>
+     </div>
+ </div>
+<!-- 制作中 END -->
 
 <!--ダイアログメニュー-->
 <?php require('dialog_menu.ctp'); ?>

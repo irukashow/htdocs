@@ -93,7 +93,11 @@ window.onload = function(){
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
+                <td style='background-color: #006699;color: white;cursor: pointer;'>
+                    <a style='font-size: 110%;color:white;' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/index?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
+                        【<?php echo $y ?>年<?php echo $m ?>月】
+                    </a>
+                </td>
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
@@ -124,7 +128,8 @@ window.onload = function(){
 <div style="clear:both;"></div>
 <!-- シフト希望表本体 -->
 <div style="width:100%;overflow-x:scroll;">
-<table border='1' cellspacing="0" cellpadding="3" style="margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+<table border='1' cellspacing="0" cellpadding="3" 
+       style="margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;background-color: white;table-layout: fixed;">
     <tr style="background-color: #cccccc;">
         <td align="center" colspan="4">スタッフ</td>
 <?php
@@ -138,9 +143,10 @@ window.onload = function(){
         $d++;
     }
 ?>
+        <td align="center" rowspan="2"><?php echo $this->Paginator->sort('StaffSchedule.created','登録日時', array('escape' => false));?></td>
     </tr>
     <tr>
-        <td align="center" style="background-color: #cccccc;">ID</td>
+        <td align="center" style="background-color: #cccccc;"><?php echo $this->Paginator->sort('StaffSchedule.staff_id','ID', array('escape' => false));?></td>
         <td align="center" style="background-color: #cccccc;" colspan="2">氏名</td>
         <td align="center" style="background-color: #cccccc;">職種</td>
 <?php
@@ -183,6 +189,7 @@ window.onload = function(){
         $d++;
     } 
 ?>
+        <td></td>
     </tr>
     <?php foreach($datas1 as $key => $data1) { ?>
     <tr>
@@ -239,6 +246,7 @@ window.onload = function(){
         $d++;
     }
 ?>
+        <td style="font-size: 90%;"><?=$data2['StaffSchedule']['modified']; ?></td>
     </tr>        
     <?php } ?>
 <?php if (count($datas1) == 0) { ?>

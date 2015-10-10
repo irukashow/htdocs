@@ -622,13 +622,13 @@ class UsersController extends AppController {
         $class = array('11', '12', '21', '22', '31', '32');
         
         // 初期値設定
-        //$this->StaffMaster->virtualFields = array('full_name' => "CONCAT(name_sei , ' ', name_mei)");
-        //$this->set('datas', $this->StaffMaster->find('list', array('fields' => array('username', 'full_name'))));
-        $flag = false;
+        $flag = 0;
+        $this->set('flag', $flag);
         
         $this->log($this->request->data, LOG_DEBUG);
         // ログイン認証
     	if ($this->request->is('post') || $this->request->is('put')) {
+            $flag = 1;
             foreach ($class as $cls) {
                 // テーブルの設定
                 $this->StaffMaster->setSource('staff_'.$cls);
@@ -645,7 +645,7 @@ class UsersController extends AppController {
                     // ログイン処理成功
                     $this->Session->setFlash('認証に成功しました。');
                     $this->log('認証に成功しました。', LOG_DEBUG);
-                    $flag = true;
+                    $flag = 0;
                     // 所属をセッションに
                     $this->Session->write('class', $cls);
                     // ログイン履歴
@@ -661,9 +661,10 @@ class UsersController extends AppController {
 
                 }
             }
-            if ($flag == false) {
+            if ($flag == 1) {
                 // ログイン処理失敗
                 $this->Session->setFlash('アカウントもしくはパスワードに誤りがあります。');
+                $this->set('flag', $flag);
                 $this->log('認証に失敗しました。', LOG_DEBUG);
             }
         }

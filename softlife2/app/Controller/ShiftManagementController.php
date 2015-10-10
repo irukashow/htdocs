@@ -81,7 +81,7 @@ class ShiftManagementController extends AppController {
             )
         );
         $options = array(
-            'fields'=> array('StaffSchedule.staff_id', 'StaffMaster.name_sei', 'StaffMaster.name_mei', 'StaffMaster.shokushu_shoukai'),
+            'fields'=> array('StaffSchedule.staff_id', 'StaffMaster.name_sei', 'StaffMaster.name_mei', 'StaffMaster.name_sei2', 'StaffMaster.shokushu_shoukai'),
             'conditions' => array(
                 'StaffSchedule.class' => $selected_class,
                 'StaffSchedule.work_date >=' => $month.'01',
@@ -521,7 +521,8 @@ class ShiftManagementController extends AppController {
                     'conditions' => array('StaffSchedule.staff_id = StaffMaster.id')
                     ),
                 );
-                $request_staffs2 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei'), 
+                $request_staffs2 = $this->StaffSchedule->find('all', 
+                        array('fields'=>array('StaffSchedule.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei', 'StaffMaster.shokushu_shoukai'), 
                     'conditions'=>$conditions6, 'joins'=>$joins, 'order'=>array('staff_id')));
                 //$this->log($request_staffs2, LOG_DEBUG);
                 $this->set('request_staffs', $request_staffs2 );
@@ -1166,7 +1167,8 @@ class ShiftManagementController extends AppController {
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     $datas = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$staff_id)));
                     // ログ書き込み
-                    $this->setShiftLog($username, $selected_class, 'シフト希望：'.$datas['StaffMaster']['name'].'('.$staff_id.')', 1);
+                    $this->setShiftLog($username, $selected_class, 
+                            'シフト希望：'.$datas['StaffMaster']['name'].'('.$staff_id.') '.  str_replace('-', '年', $date).'月分', 1);
                     $this->Session->setFlash('【情報】シフト希望を登録いたしました。');
                     $this->redirect(array('action'=>'input_schedule', $staff_id, '?date='.$date));
                 }
@@ -1371,7 +1373,7 @@ class ShiftManagementController extends AppController {
             'conditions' => array('StaffSchedule.staff_id = StaffMaster.id')
             ),
         );
-        $datas3 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*','StaffMaster.name_sei','StaffMaster.name_mei'), 
+        $datas3 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*','StaffMaster.name_sei','StaffMaster.name_mei','StaffMaster.shokushu_shoukai'), 
             'conditions'=>$conditions6, 'joins'=>$joins));
         //$this->log($datas3, LOG_DEBUG);
         if (!empty($datas3)) {
@@ -1396,7 +1398,7 @@ class ShiftManagementController extends AppController {
             //'FIND_IN_SET('.$shokushu_id.', shokushu_id)',
             'work_flag'=>2
             );
-        $datas4 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*','StaffMaster.name_sei','StaffMaster.name_mei'), 
+        $datas4 = $this->StaffSchedule->find('all', array('fields'=>array('StaffSchedule.*','StaffMaster.name_sei','StaffMaster.name_mei','StaffMaster.shokushu_shoukai'), 
             'conditions'=>$conditions7, 'joins'=>$joins));
         if (!empty($datas4)) {
             $key_point = null;

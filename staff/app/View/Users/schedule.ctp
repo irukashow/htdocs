@@ -1,4 +1,20 @@
-<?php require('calender.ctp'); ?>
+<?php
+	// 初期値
+	$y = date('Y', strtotime('+1 month'));
+	$m = date('n', strtotime('+1 month'));
+		
+	// 日付の指定がある場合
+	if(!empty($_GET['date']))
+	{
+		$arr_date = explode('-', $_GET['date']);
+		
+		if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
+		{
+			$y = (int)$arr_date[0];
+			$m = (int)$arr_date[1];
+		}
+	}
+?>
 <?php
     function setFlag($val) {
         if ($val == 1) {
@@ -255,8 +271,9 @@ input[type=checkbox] {
             <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
     </div>			
     <div data-role="content">
+        <p>以下の入力ができます。</p>
         <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#page2"'>
-        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#page4"'>
+        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#dialog"'>
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
         </div> 
@@ -265,12 +282,21 @@ input[type=checkbox] {
             <a href="#page3">
                 <?php echo $this->Html->image('pagetop.png'); ?>
             </a>
-    </div>			
+    </div>
     <div id="footer">
         <?=FOOTER ?>
     </div>
 </div>
-
+<!-- 制作中 -->
+<div id="dialog" data-role="dialog">
+     <div data-role="header">
+         <h1 id="dlog_title">　　メッセージ</h1>
+     </div>
+     <div data-role="content">
+         <p id="dlog_content">現在、制作中です。</p>
+     </div>
+ </div>
+<!-- 制作中 END -->
 <div id="page4" data-role="page">
         <div data-role="header" data-theme="c">
                 <h1>確定スケジュール</h1>

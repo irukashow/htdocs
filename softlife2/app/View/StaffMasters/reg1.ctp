@@ -49,6 +49,25 @@ function setKataKana(element, target) {
        return String.fromCharCode(s.charCodeAt(0) + 0x60);
     });    
 }
+/**
+ * 生年月日が本日日付のままであるとアラート
+ */
+function chkBirthday() {
+    ret = true;
+    //今日の日付データを変数hidukeに格納
+    var today = new Date(); 
+    
+    if (document.getElementById('StaffMasterBirthdayYear').value == today.getFullYear()) {
+        ret = false;
+    }
+    
+    // エラーならアラート
+    if (ret == false) {
+        alert("【エラー】生年月日を正しく指定してください。");
+        document.getElementById('StaffMasterBirthdayYear').focus();
+    }
+    return ret;
+}
 </script>
 
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
@@ -69,7 +88,7 @@ function setKataKana(element, target) {
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
-<?php echo $this->Form->create('StaffMaster'); ?>
+<?php echo $this->Form->create('StaffMaster', array('onsubmit'=>'return chkBirthday();')); ?>
 <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $staff_id)); ?>
         <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
 
@@ -97,14 +116,14 @@ function setKataKana(element, target) {
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>氏名</td>
+                <td style='background-color: #e8ffff;width:20%;'>氏名<span style="color: red;margin-left: 3px;vertical-align: -3px;">*</span></td>
                 <td colspan="2">
                     <?php echo $this->Form->input('name_sei',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
                     <?php echo $this->Form->input('name_mei',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>氏名（フリガナ）</td>
+                <td style='background-color: #e8ffff;width:20%;'>氏名（フリガナ）<span style="color: red;margin-left: 3px;vertical-align: -3px;">*</span></td>
                 <td colspan="2">
                     <?php echo $this->Form->input('name_sei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;', 'onchange'=>'setKataKana(this, this);')); ?>
                     <?php echo $this->Form->input('name_mei2',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;', 'onchange'=>'setKataKana(this, this);')); ?>
@@ -121,7 +140,7 @@ function setKataKana(element, target) {
                 </td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>生年月日</td>
+                <td style='background-color: #e8ffff;width:20%;'>生年月日<span style="color: red;margin-left: 3px;vertical-align: -3px;">*</span></td>
                 <td colspan="2">
                     <?php echo $this->Form->input('birthday',array('label'=>false,'div'=>false,'dateFormat' => 'YMD', 'maxYear' => date('Y'), 'minYear' => date('Y')-100, 'monthNames' => false, 'onchange'=>'calculateAge();')); ?>
                     &nbsp;&nbsp;&nbsp;<input id="age" style="width: 30px;text-align: right;border:none;">&nbsp;歳
@@ -173,7 +192,7 @@ function setKataKana(element, target) {
             </tr>
             <!-- 住所 End -->
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>電話番号１（携帯）</td>
+                <td style='background-color: #e8ffff;width:20%;'>電話番号１（携帯・スマホ）</td>
                 <td colspan="2">
                     <?php echo $this->Form->input('telno1',array('label'=>false,'div'=>false,'style'=>'width:20%;')); ?>
                 </td>
@@ -185,7 +204,7 @@ function setKataKana(element, target) {
                 </td>
             </tr> 
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１<br>（携帯：必須）</td>
+                <td style='background-color: #e8ffff;width:20%;'>メールアドレス１<br>（携帯・スマホ）<span style="color: red;margin-left: 3px;vertical-align: -3px;">*</span></td>
                 <td colspan="2">
                     <?php echo $this->Form->input('email1',array('label'=>false,'div'=>false,'style'=>'width:60%;')); ?>
                 </td>
