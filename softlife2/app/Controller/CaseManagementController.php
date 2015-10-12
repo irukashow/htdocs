@@ -446,6 +446,24 @@ class CaseManagementController extends AppController {
             }
         }
         $this->set('entrepreneur', $entrepreneur);
+        // 販売会社
+        $distributor = '';
+        for($i=0; $i<10; $i++) {
+            $condition3 = array('id' => $datas[0]['CaseManagement']['distributor'.($i+1)]);
+            $data1 = $this->Customer->find('first', array('conditions' => $condition3));
+            $this->log($data1, LOG_DEBUG);
+            if (!empty($data1)) {
+                $distributor1 = $data1['Customer']['corp_name'];
+                if (empty($distributor)) {
+                    $distributor = $distributor1;
+                } else {
+                    $distributor .= '<br>'.$distributor1;
+                }
+            } else {
+                $distributor1 = '';
+            }
+        }
+        $this->set('distributor', $distributor);
         // 請求先の数
         $count2 = 0;
         $count_billing = 0;
@@ -557,6 +575,15 @@ class CaseManagementController extends AppController {
             }
         }
         $count_entrepreneur = $count;
+        // 販売会社の数
+        $count1 = 0;
+        $count_distributor = 0;
+        for ($i=0; $i < 10; $i++) {
+            if (!empty($data['CaseManagement']['distributor'.($i+1)])) {
+                $count1 = $i+1;
+            }
+        }
+        $count_distributor = $count1;
         // 請求先の数
         $count2 = 0;
         $count_billing = 0;
@@ -666,6 +693,52 @@ class CaseManagementController extends AppController {
                 $data = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 'entrepreneur'.$i => null, 'kubun2_'.$i => 0));
                 // 登録する項目（フィールド指定）
                 $fields = array('entrepreneur'.$i, 'kubun2_'.$i); 
+                // 更新登録
+                if ($this->CaseManagement->save($data, false, $fields)) {
+                    // 成功
+                    $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                }
+            // 販売会社の追加
+            } elseif (isset($this->request->data['insert_distributor'])) {
+                // 重複チェック
+                $flag = false;
+                $condition1 = array('id' => $case_id);
+                $data = $this->CaseManagement->find('first', array('conditions'=>$condition1));
+                //$this->log($data, LOG_DEBUG);
+                for ($j=0; $j<10; $j++) {
+                    if (empty($data['CaseManagement']['distributor'.($j+1)])) {
+                        continue;
+                    }
+                    if ($this->request->data['CaseManagement']['distributor'] == $data['CaseManagement']['distributor'.($j+1)]) {
+                        $flag = true;
+                    }
+                }
+                if ($flag) {
+                    $this->Session->setFlash('【エラー】販売会社が既に存在します。');
+                    $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+                    return;
+                }
+                // 登録する内容を設定
+                $data2 = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 'class' => $selected_class,
+                    'case_name' => $this->request->data['CaseManagement']['case_name'], 'username' => $this->request->data['CaseManagement']['username'], 
+                    'contract_type' => $this->request->data['CaseManagement']['contract_type'], 
+                    'distributor'.($count_distributor+1) => $this->request->data['CaseManagement']['distributor']));
+                // 登録する項目（フィールド指定）
+                $fields = array('case_name','class', 'username','contract_type','distributor'.($count_distributor+1)); 
+                // 更新登録
+                $this->CaseManagement->save($data2, false, $fields);
+                if ($case_id == 0) {
+                    $case_id = $this->CaseManagement->getLastInsertID();
+                }
+                $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
+            // 販売会社の削除
+            } elseif (isset($this->request->data['delete_distributor'])) {
+                $i_array = array_keys($this->request->data['delete_distributor']);
+                $i = $i_array[0];
+                // 登録する内容を設定
+                $data = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 'distributor'.$i => null));
+                // 登録する項目（フィールド指定）
+                $fields = array('distributor'.$i); 
                 // 更新登録
                 if ($this->CaseManagement->save($data, false, $fields)) {
                     // 成功

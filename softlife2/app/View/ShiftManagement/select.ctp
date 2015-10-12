@@ -106,20 +106,49 @@ onload = function() {
             <?=$data2['StaffMaster']['id']; ?>
                 <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
             </td>
-            <td align="left" style="width:70%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="left" style="width:70%;padding:0px 10px 0px 10px;">
+            <?php
+                echo '<span style="font-size:120%;">'.$data2['StaffMaster']['name'].'</span>'; 
+                if (!empty($datas22[$key]['StaffSchedule']['conditions'])) {
+                    echo '<span style="color:red;margin-left:10px;">【条件あり】'.$datas22[$key]['StaffSchedule']['conditions'].'</span>';
+                }
+            ?>
+            </td>
             <td align="center">
                 <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
                     'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
         <tr>
-            <td align="center" style="padding-top:5px;">
-                <input type="checkbox" name="data[StaffMaster][appointment]" value="1" style="margin-left: 20px;vertical-align: -5px;">
+            <?php
+                if (empty($data_ap)) {
+                    $checked = '';
+                    $bgcolor = '';
+                } elseif (empty($data_ap['WorkTable']['ap'.$day])) {
+                    $checked = '';
+                    $bgcolor = '';
+                } else{
+                    $checked = 'checked';
+                    $bgcolor = 'background-color:rgb(255, 204, 102);';
+                }
+            ?>
+            <td align="center" style="padding-top:5px;<?=$bgcolor ?>">
+                <input type="checkbox" name="data[StaffMaster][appointment]" value="1" style="margin-left: 20px;vertical-align: -5px;" <?=$checked ?>>
                 <font style="margin-left:-30px;">待ち合わせ</font>
             </td>
             <td align="center">
-                <?php echo $this->Form->input('appointment_memo',
-                        array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'待ち合わせメモ', 'style'=>'width:95%;padding:3px;')); ?>
+                <?php
+                    if (empty($data_ap['WorkTable']['ap'.$day])) {
+                        $memo = '';
+                    } elseif ($data_ap['WorkTable']['ap'.$day] == 1) {
+                        $memo = '';
+                    } else {
+                        $memo = $data_ap['WorkTable']['ap'.$day];
+                    }
+                    echo $this->Form->input('appointment_memo',
+                        array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'待ち合わせメモ', 
+                            'style'=>'width:95%;padding:3px;', 'value'=>$memo)); 
+                ?>
             </td>
             <td align="center">
                 <?php echo $this->Form->submit('登録', array('id'=>'button-create', 
@@ -133,6 +162,7 @@ onload = function() {
         </tr>
         <?php } ?>
     </table>
+   <span style="font-size: 90%;">※待ち合わせは、シフトの保存を行ってから入力してください。</span>
    
     <!-- シフト希望スタッフ -->
     <div class="scroll_div2" style="height: 300px;">
@@ -249,5 +279,8 @@ onload = function() {
     </div>
 <?php echo $this->Form->end(); ?>        
     </fieldset>
-
 </div>
+        
+        <?php
+print_r($datas2);
+        ?>

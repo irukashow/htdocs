@@ -191,6 +191,12 @@ window.onload = function(){
                     </td>
                 </tr>
                 <tr>
+                    <td style='background-color: #e8ffff;width:20%;' colspan="2">販売会社</td>
+                    <td style='width:70%;'>
+                            <?php echo $distributor; ?>
+                    </td>
+                </tr>
+                <tr>
                     <td style='background-color: #e8ffff;width:20%;' colspan="2">開始日</td>
                     <td style='width:70%;'><?=$data['CaseManagement']['start_date'] ?></td>
                 </tr>
@@ -227,7 +233,7 @@ window.onload = function(){
                                 echo $data_director['Customer']['corp_name'].'<br>';
                             }
                         ?>
-                            <?=$data['CaseManagement']['director'] ?>　<?=$data['CaseManagement']['position'] ?>
+                            <?=$data['CaseManagement']['director'] ?>　<?=$data['CaseManagement']['position'] ?> 様
                     </td>
                 </tr>
                 <tr>

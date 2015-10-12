@@ -21,7 +21,7 @@
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
         <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
             &nbsp;
-            <input type="button" id="<?=$button_type2 ?>" class="check" value="保 存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
+            <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
             &nbsp;
         <input type="button" name="check_duplication" value="重複チェック" id="<?=$button_type3 ?>" class="check"
                style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 2);" <?=$disabled ?>>
@@ -328,7 +328,7 @@
             <tr id="OrderDetail2">
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;height:36px;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_client[$data['OrderCalender']['case_id']]); ?>
+                <?php echo NZ($list_distributor[$data['OrderCalender']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -620,17 +620,19 @@
                     <span id="<?=setData($datas2,'order_id',$count,$record) ?>"></span>
                     <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
                     <?php
+                        // 待ち合わせ
+                        $order_id = setData($datas2,'order_id',$count,$record);
+                        $shokushu_num = setData($datas2,'shokushu_num',$count,$record);
+                        if (empty($data_aps[$order_id][$shokushu_num][$d])) {
+                            $style = '';
+                        } else {
+                            $style = 'background-color:#ffcc66;';
+                        }
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $key=>$data_staff) {
-                                    /**
-                                    if ($key > 0) {
-                                        break;
-                                    }
-                                     * 
-                                     */
-                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'">';
                                     echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
                                     echo '</div>';
                                 }
@@ -908,7 +910,7 @@ $E("data").onscroll=scroll;
     
     <div style='margin-left: 10px;'>
     <button type="button" id="<?=$button_type2 ?>" style="cursor: pointer;border:1px solid black;" class="check" 
-            onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>保 存</button>
+            onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>一時保存</button>
     &nbsp;&nbsp;
 <?php
     if ($flag == 0) {

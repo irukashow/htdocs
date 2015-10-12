@@ -169,6 +169,7 @@ $(function() {
                 </td>
             </tr>
             <!-- 依頼主 END -->
+            <!-- 事業主 -->
             <tr>
                 <td colspan="2" style='background-color: #e8ffff;width:20%;'>
                     事業主<br><font style="font-size: 90%;">※仕様上10個まで設定可能</font><br>
@@ -201,6 +202,48 @@ $(function() {
                             <td>
                                 <?php echo $this->Form->submit('削 除',array('div'=>'display: inline;', 
                                     'name'=>'delete_entrepreneur['.($i+1).']','id'=>'button-delete', 'label'=>false, 'style'=>'padding:5px 10px 5px 10px;')); ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    </table>
+                    
+                </td>
+            </tr>
+            <!-- 販売会社 -->
+            <tr>
+                <td colspan="2" style='background-color: #e8ffff;width:20%;'>
+                    販売会社<br><font style="font-size: 90%;">※仕様上10個まで設定可能</font><br>
+                    <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/0','新規登録','width=1200,height=800,scrollbars=yes');">[新規登録]</a>
+                </td>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td width="90%" colspan="2">
+                    <?php echo $this->Form->input('distributor',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'販売会社を選択してください', 
+                        'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
+                            </td>
+                            <td>
+                                <?php echo $this->Form->submit('追 加',array('div'=>'display: inline; ', 'name'=>'insert_distributor','id'=>'button-create', 'label'=>false)); ?>
+                            </td>
+                        </tr>
+                        <?php for($i=0; $i < 10; $i++) { ?>
+                        <?php 
+                            if (empty($data['CaseManagement']['distributor'.($i+1)])) {
+                                continue;
+                            }
+                        ?>
+                        <tr>
+                            <td width="75%">
+                                <?php echo $customer_array[$data['CaseManagement']['distributor'.($i+1)]]; ?>
+                            </td>
+                            <td>
+                                <!--
+                        <?php echo $this->Form->input('kubun3_'.($i+1),array('type'=>'checkbox', 'label'=>'請求先', 'style'=>'')); ?>
+                                -->
+                            </td>
+                            <td>
+                                <?php echo $this->Form->submit('削 除',array('div'=>'display: inline;', 
+                                    'name'=>'delete_distributor['.($i+1).']','id'=>'button-delete', 'label'=>false, 'style'=>'padding:5px 10px 5px 10px;')); ?>
                             </td>
                         </tr>
                         <?php } ?>
