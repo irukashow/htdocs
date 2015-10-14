@@ -81,7 +81,7 @@ window.onload = function(){
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
     &nbsp;
 
 </div>
@@ -251,7 +251,7 @@ window.onload = function(){
     <?php } ?>
 <?php if (count($datas1) == 0) { ?>
 <tr>
-    <td colspan="34" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
+    <td colspan="36" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
 </tr>
 <?php } ?>
 </table>

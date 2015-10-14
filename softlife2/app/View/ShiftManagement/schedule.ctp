@@ -14,7 +14,7 @@
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
         &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">設定</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
         &nbsp;
     </div>
     <div style="float:right;padding-top: 1px;">
@@ -633,7 +633,7 @@
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $key=>$data_staff) {
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'">';
-                                    echo $data_staff['StaffMaster']['name_sei'].$data_staff['StaffMaster']['name_mei'];
+                                    echo $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
                                     echo '</div>';
                                 }
                             }
@@ -653,7 +653,7 @@
                                     //&& chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])
                                     ) {
                                 $datas3[$count][$d][$j]['staff_id'] = $data['StaffSchedule']['staff_id'];
-                                $datas3[$count][$d][$j]['name'] = $data['StaffMaster']['name_sei'].$data['StaffMaster']['name_mei'];
+                                $datas3[$count][$d][$j]['name'] = $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'];
                                 $datas3[$count][$d][$j]['point'] = setPoint($point2, $count);
 
                                 $j++;

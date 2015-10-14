@@ -372,7 +372,7 @@ class ShiftManagementController extends AppController {
             foreach ($results as $result) {
                 $list_staffs[$result['OrderInfo']['id']][$i] = explode(',', $result['OrderInfo']['staff_ids'.$i]);
                 foreach($list_staffs[$result['OrderInfo']['id']][$i] as $j=>$staff_id) {
-                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, "", name_mei)';
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     $list_staffs2[$result['OrderInfo']['id']][$i][$j] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
                 }
             }
@@ -483,7 +483,8 @@ class ShiftManagementController extends AppController {
         // 待ち合わせ
         $data_aps = null;
         $conditions3 = array('month'=>$year.'-'.$month.'-01', 'class'=>$selected_class);
-        $datas9 = $this->WorkTable->find('all', array('conditons'=>$conditions3));
+        $datas9 = $this->WorkTable->find('all', array('conditions'=>$conditions3));
+        //$this->log($this->WorkTable->getDataSource()->getLog(), LOG_DEBUG);
         foreach($datas9 as $data9) {
             $order_id = $data9['WorkTable']['order_id'];
             $shokushu_num = $data9['WorkTable']['shokushu_num'];
@@ -492,6 +493,7 @@ class ShiftManagementController extends AppController {
             }
         }
         $this->set('data_aps', $data_aps);
+        //$this->log($data_aps, LOG_DEBUG);
 
         if (!empty($data_wk)) {
             // 既存ワークデータ削除（該当月）

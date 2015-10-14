@@ -219,8 +219,8 @@ class StaffMastersController extends AppController {
                 }
                 // 職種で絞り込み
                 if (!empty($this->data['StaffMaster']['search_shokushu'])){
-                    $search_tantou = $this->data['StaffMaster']['search_shokushu'];
-                    $conditions2 += array('StaffMaster.shokushu_shoukai LIKE ' => '%'.$search_tantou.'%');
+                    $search_shokushu = $this->data['StaffMaster']['search_shokushu'];
+                    $conditions2 += array('FIND_IN_SET('.$search_shokushu.', shokushu_shoukai)');
                 } 
                 // 都道府県
                 if (!empty($this->data['StaffMaster']['search_area'])){
@@ -374,7 +374,7 @@ class StaffMastersController extends AppController {
         //$this->log($this->StaffMaster->useTable);
         $this->StaffMemo->setSource('staff_memos');
         // 職種マスタ配列
-        $conditions1 = array('item' => 16);
+        $conditions1 = array('item' => 17);
         $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
         $this->set('list_shokushu', $list_shokushu); 
         //$this->log($list_shokushu, LOG_DEBUG);        
@@ -650,7 +650,7 @@ class StaffMastersController extends AppController {
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
         // 職種マスタ配列
-        $conditions2 = array('item' => 16);
+        $conditions2 = array('item' => 17);
         $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions2));
         $this->set('list_shokushu', $list_shokushu); 
         $this->set('staff_id', $staff_id); 
@@ -1137,7 +1137,7 @@ class StaffMastersController extends AppController {
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
-        $conditions0 = array('item' => 16);
+        $conditions0 = array('item' => 17);
         $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
         $this->set('list_shokushu', $list_shokushu);
         // 表示件数の初期値
@@ -1342,7 +1342,7 @@ class StaffMastersController extends AppController {
         //$this->log($this->StaffMaster->useTable);
         $this->StaffMemo->setSource('staff_memos');
         // 職種マスタ配列
-        $conditions1 = array('item' => 16);
+        $conditions1 = array('item' => 17);
         $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions1));
         $this->set('list_shokushu', $list_shokushu); 
         //$this->log($list_shokushu, LOG_DEBUG);        
