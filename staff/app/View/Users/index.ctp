@@ -7,6 +7,20 @@
         <div class="logo">
             <?php echo $this->Html->image('logo.gif', array('style'=>'width: 50%;')); ?>
         </div>
+    <?php
+        if ($class == '11') {
+            $area = '関西';
+        } elseif ($class == '21') {
+            $area = '関東';
+        } elseif ($class == '31') {
+            $area = '中部';
+        } else {
+            $area = '？';
+        }
+    ?>
+    <div style='float: left;font-size:80%;padding-top: 3px;'>
+        【<?=$area ?>エリア】
+    </div>
     <div style='float: right;'>
         ようこそ、<?= $name ?> さん！
     </div>

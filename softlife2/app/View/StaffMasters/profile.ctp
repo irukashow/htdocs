@@ -83,7 +83,7 @@ window.onload = function(){
                                     <font style='font-size: 150%;'>
                                         <?=$data['StaffMaster']['name_sei'] ?>&nbsp;<?=$data['StaffMaster']['name_mei'] ?>&nbsp;
                                         <?=  getAge(str_replace('-','',$data['StaffMaster']['birthday'])) ?>歳&nbsp;&nbsp;
-                                    </font>    
+                                    </font>
                                 </div>
                                 <div style="vertical-align: 0px;float: left;"><?=getGender($data['StaffMaster']['gender']) ?></div>
                                 <div style="clear:both;"></div>
@@ -207,23 +207,7 @@ window.onload = function(){
                             <td style='width:70%;'><?=$data['StaffMaster']['training_date_kibou'] ?></td>
                         </tr>
                     </table>
-                    
-                    <!-- 左項目４ -->
-                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
-                        <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>最寄駅①</td>
-                            <td style='width:70%;'><?=getStation($data['StaffMaster']['s1_1']) ?></td>
-                        </tr>
-                        <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>最寄駅②</td>
-                            <td style='width:70%;'><?=getStation($data['StaffMaster']['s1_2']) ?></td>
-                        </tr>
-                        <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>最寄駅③</td>
-                            <td style='width:70%;'><?=getStation($data['StaffMaster']['s1_3']) ?></td>
-                        </tr>
-                    </table>                    
-                    
+
                     <!-- 左項目５ -->
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>
@@ -245,6 +229,22 @@ window.onload = function(){
                             <td style='width:70%;'><?=$data['StaffMaster']['birthday'] ?></td>
                         </tr>
                     </table>  
+                    
+                    <!-- 左項目４ -->
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
+                        <tr>
+                            <td style='background-color: #e8ffff;width:30%;'>最寄駅①</td>
+                            <td style='width:70%;'><?=getStation($data['StaffMaster']['s1_1']) ?></td>
+                        </tr>
+                        <tr>
+                            <td style='background-color: #e8ffff;width:30%;'>最寄駅②</td>
+                            <td style='width:70%;'><?=getStation($data['StaffMaster']['s1_2']) ?></td>
+                        </tr>
+                        <tr>
+                            <td style='background-color: #e8ffff;width:30%;'>最寄駅③</td>
+                            <td style='width:70%;'><?=getStation($data['StaffMaster']['s1_3']) ?></td>
+                        </tr>
+                    </table>                    
                     
                     <!-- 左項目６ -->
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">

@@ -380,12 +380,12 @@ onload = function() {
     edit = getCookie("edit");
     // シフト編集モードのセット
     if (edit == 1) {
-        for(i=1; i<=18; i++) {
+        for(i=0; i<=19; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
             document.getElementById("OrderDetail0_"+i).style.display = 'none';
         }
     } else {
-        for(i=1; i<=18; i++) {
+        for(i=0; i<=19; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
             document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
         }

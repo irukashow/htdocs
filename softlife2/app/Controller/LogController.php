@@ -93,6 +93,8 @@ class LogController extends AppController {
         $this->set("title_for_layout", $this->title_for_layout);
         $this->set("headline", 'スタッフ専用サイト履歴');
         $this->paginate = array('order' => array('id' => 'desc'));
+        $list_area = array('1'=>'大阪', '2'=>'東京', '3'=>'名古屋', ''=>'');
+        $this->set('list_area', $list_area);
         $this->set('datas', $this->paginate('StaffLoginLog'));
     }
     

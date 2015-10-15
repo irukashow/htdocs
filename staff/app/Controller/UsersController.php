@@ -37,6 +37,7 @@ class UsersController extends AppController {
             $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
             $this->set('name', $name);
             $class = $this->Session->read('class');
+            $this->set('class', $class);
             if (empty($class)) {
                 $this->redirect('logout');
             }

@@ -723,6 +723,20 @@ class ShiftManagementController extends AppController {
                                     $flag2 = 1;
                                     $commet = '【情報】当月シフトを確定しました。';
                                     $status = 15;
+                                    // シフト確定のお知らせメール
+                                    $email = new CakeEmail('system');                        // インスタンス化
+                                    $email->from(array('system@softlife.biz' => '㈱ソフトライフ'));  // 送信元
+                                    $email->to(array('yokoi-masahiro@softlife.co.jp', 'crossroads.2009@gmail.com'));                      // 送信先
+                                    $email->subject('【派遣管理システム】シフト確定のお知らせ（自動送信メール）');                      // メールタイトル
+                                    if ($selected_class = 11) {
+                                        $area = '大阪';
+                                    } elseif ($selected_class = 21) {
+                                        $area = '東京';
+                                    } elseif ($selected_class = 31) {
+                                        $area = '名古屋';
+                                    }
+                                    $text = $area.'の'.date('Y年n月度', strtotime($data['month'])).'のシフトを確定いたしました。';
+                                    $email->send($text);                             // メール本文送信
                                 } else {
                                     $flag2 = 0;
                                     $commet = '【情報】当月シフトの確定解除を行いました。';
@@ -1250,6 +1264,14 @@ class ShiftManagementController extends AppController {
         $this->set('datas3', $datas3);
         //$this->log($datas3, LOG_DEBUG);
         
+    }
+
+    /**
+     * 稼働表出力
+     */
+    public function output_excel() {
+        // レイアウト関係
+        $this->layout = "excel";
     }
     
     // スタッフの選択（小画面）

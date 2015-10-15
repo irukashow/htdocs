@@ -1,17 +1,15 @@
-<?php
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.View.Emails.text
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
-?>
-<?php echo $content; ?>
+-----------------------------------------
+このメールは、「ソフトライフ大阪」より自動送信されています。
+-----------------------------------------
+ 
+<?php echo $content_for_layout;?>
+ 
+-----------------------------------------
+株式会社ソフトライフ　大阪本社
+ 
+〒530-0001
+大阪市北区梅田一丁目12番17号
+梅田スクエアビルディング（11階）
+TEL：06-6450-8080 　 FAX：06-6450-8184
+Email：haken_osaka@softlife.biz　URL：http://www.softlife.co.jp/
+-----------------------------------------

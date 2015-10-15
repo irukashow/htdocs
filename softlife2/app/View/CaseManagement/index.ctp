@@ -138,8 +138,8 @@ function doSubmit(value, flag) {
 <!--- スタッフマスタ本体 START --->
 <table id="staff_master" border="1" width="100%" cellspacing="0" cellpadding="5" bordercolor="#333333" align="center" style="font-size: 90%;margin: 0px 0px 5px 0px;">
   <tr style="font-size: 100%;margin-top: -10px;">
-      <th rowspan="2"><?php echo $this->Paginator->sort('no',"No.");?></th>
-    <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('id','案件名<br>依頼主<br>（事業主）', array('escape' => false));?></th>
+      <th rowspan="2"><?php echo $this->Paginator->sort('id',"案件ID");?></th>
+    <th rowspan="2" style="width:15%;"><?php echo $this->Paginator->sort('case_name','案件名<br>依頼主<br>（事業主）', array('escape' => false));?></th>
     <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('name_sei','契約形態', array('escape' => false));?></th>
     <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('age','開始日<br>終了日', array('escape' => false));?></th>
     <th rowspan="2" style="width:5%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>

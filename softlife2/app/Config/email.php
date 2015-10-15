@@ -45,6 +45,16 @@ class EmailConfig {
 		//'charset' => 'utf-8',
 		//'headerCharset' => 'utf-8',
 	);
+
+        // システムから送信
+        public $system = array(
+            'host' => 'softlife.xsrv.jp',
+            'port' => 587,
+            'username' => 'system@softlife.biz', // ユーザ名
+            'password' => 'softlife',           // パスワード
+            'transport' => 'Smtp',
+            'tls' => true
+        );
         
         // Gmailを例
         public $gmail = array(
@@ -54,7 +64,7 @@ class EmailConfig {
             'password' => 'softlife',           // パスワード
             'transport' => 'Smtp'
         );
-
+        
 	public $smtp = array(
 		'transport' => 'Smtp',
 		'from' => array('site@localhost' => 'My Site'),

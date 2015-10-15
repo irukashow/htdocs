@@ -137,7 +137,7 @@
                     <?php echo $this->Html->link('▶現場責任者アカウント', '/client/index'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶現場責任者専用サイト履歴', '/log/work'); ?>
+                    <?php echo $this->Html->link('▶現場責任者専用サイト履歴', '#'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶シフト入力履歴', '/log/shift_log'); ?>

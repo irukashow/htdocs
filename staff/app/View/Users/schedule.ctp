@@ -101,8 +101,19 @@ input[type=checkbox] {
 }
 </style>
 <div id="page2" data-role="page">
+        <?php
+            if ($class == '11') {
+                $area = '関西';
+            } elseif ($class == '21') {
+                $area = '関東';
+            } elseif ($class == '31') {
+                $area = '中部';
+            } else {
+                $area = '？';
+            }
+        ?>
         <div data-role="header" data-theme="c">
-                <h1>シフト希望</h1>
+            <h1>シフト希望<span style="font-size: 90%;margin-left: 5px;">（<?=$area ?>エリア）</span></h1>
                 <!--
                 <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
                 -->
