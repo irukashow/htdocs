@@ -15,8 +15,7 @@
     if(!empty($_GET['date'])){
         $arr_date = explode('-', $_GET['date']);
 
-        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
-        {
+        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])) {
                 $y = (int)$arr_date[0];
                 $m = (int)$arr_date[1];
         }
@@ -38,6 +37,22 @@ function setShokushu($shokushu_ids, $list_shokushu) {
             $ret = trim(mb_convert_kana($list_shokushu[$id], 's'));
         } else {
             $ret = $ret.', '.trim(mb_convert_kana($list_shokushu[$id], 's'));
+        }
+    }
+    return $ret;
+}
+// 案件
+function setCase($case_ids, $list_case2) {
+    //$case_id = explode(',', $case_ids);
+    $ret = '';
+    foreach ($case_ids as $id) {
+        if (empty($id)) {
+            continue;
+        }
+        if (empty($ret)) {
+            $ret = mb_strimwidth(trim(mb_convert_kana($list_case2[$id], 's')), 0, 20, '…');
+        } else {
+            $ret = $ret.'<br>'.mb_strimwidth(trim(mb_convert_kana($list_case2[$id], 's')), 0, 20, '…');
         }
     }
     return $ret;
@@ -75,11 +90,11 @@ window.onload = function(){
 <div id='headline' style="padding:10px 10px 10px 10px;">
     ★ シフト管理
     &nbsp;&nbsp;
-    <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">スタッフシフト希望</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">確定シフト</font></a>        <!-- alert("制作中");return false; -->
+    <b><font Style="font-size:95%;color: yellow;">[確定シフト]</font></b>
     &nbsp;
     <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
     &nbsp;
@@ -90,17 +105,17 @@ window.onload = function(){
 <!-- 見出し１ END -->
 
 <!-- 月の指定 -->
-<?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
+<?php echo $this->Form->create('WkSchedule', array('name' => 'form')); ?>
 <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display: none;')); ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
-                <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
+                <td><a href="<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                 <td style='background-color: #006699;color: white;cursor: pointer;'>
-                    <a style='font-size: 110%;color:white;' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/index?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
+                    <a style='font-size: 110%;color:white;' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
                         【<?php echo $y ?>年<?php echo $m ?>月】
                     </a>
                 </td>
-                <td><a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                <td><a href="<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
 <!-- ページネーション -->
@@ -113,9 +128,6 @@ window.onload = function(){
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
     &nbsp;&nbsp;
-    <span style="padding-top: 0px;border-style: none;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');" id='button-create'>手入力</a>
-    </span>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
@@ -129,11 +141,19 @@ window.onload = function(){
  </div>
 <div style="clear:both;"></div>
 <!-- シフト希望表本体 -->
-<div style="width:100%;overflow-x:scroll;">
+<div style="overflow-x:scroll;">
 <table border='1' cellspacing="0" cellpadding="3" 
-       style="margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;background-color: white;table-layout: fixed;">
+       style="margin-top: 2px;margin-bottom: 10px;border-spacing: 0px;background-color: white;table-layout: fixed;width:<?=70+120+100+150+40*31 ?>px;">
+    <colgroup width="70"></colgroup>
+    <colgroup width="120"></colgroup>
+    <colgroup width="100"></colgroup>
+    <colgroup width="150"></colgroup>
+    <?php for ($d=1; $d<=31; $d++) { ?>
+    <colgroup width="40"></colgroup>
+    <?php } ?>
+    <thead>
     <tr style="background-color: #cccccc;">
-        <td align="center" colspan="4">スタッフ</td>
+        <td align="center" colspan="4" style="width:300px;">スタッフ</td>
 <?php
     // 1日の曜日を取得
     $wd1 = date("w", mktime(0, 0, 0, $m, 1, $y));
@@ -141,16 +161,16 @@ window.onload = function(){
     $d = 1;
     while (checkdate($m, $d, $y)) {
         $wd2 = date("w", mktime(0, 0, 0, $m, $d, $y));
-        echo '<td align="center" style="width:10px;">'.$week[$wd2].'</td>';
+        echo '<td align="center" style="width:30px;">'.$week[$wd2].'</td>';
         $d++;
     }
 ?>
-        <td align="center" rowspan="2"><?php echo $this->Paginator->sort('StaffSchedule.created','登録日時', array('escape' => false));?></td>
     </tr>
     <tr>
-        <td align="center" style="background-color: #cccccc;"><?php echo $this->Paginator->sort('StaffSchedule.staff_id','ID', array('escape' => false));?></td>
-        <td align="center" style="background-color: #cccccc;" colspan="2">氏名</td>
-        <td align="center" style="background-color: #cccccc;">職種</td>
+        <td align="center" style="background-color: #cccccc;width:100px;"><?php echo $this->Paginator->sort('WkSchedule.id','ID', array('escape' => false));?></td>
+        <td align="center" style="background-color: #cccccc;width:100px;">氏名</td>
+        <td align="center" style="background-color: #cccccc;width:100px;">職種</td>
+        <td align="center" style="background-color: #cccccc;width:100px;"><?php echo $this->Paginator->sort('WkSchedule.case_id','担当案件', array('escape' => false));?></td>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {
@@ -176,13 +196,18 @@ window.onload = function(){
     </tr>
     <tr style="background-color: #ffffcc;">
         <td align="center"></td>
-        <td align="left" colspan="2">
-            <?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名（漢字 or かな）', 'style' => 'width:95%;font-size:90%;')); ?>
+        <td align="left">
+            <?php echo $this->Form->input('search_name', array('type'=>'text', 'label' => false, 'placeholder'=>'氏名（漢字 or かな）', 'style' => 'width:90%;font-size:90%;')); ?>
         </td>
         <td align="left">
           <?php echo $this->Form->input('search_shokushu', 
-                  array('type'=>'select', 'label' => false, 'style' => 'width:95%;font-size:90%;', 
+                  array('type'=>'select', 'label' => false, 'style' => 'width:90%;font-size:90%;', 
                       'empty' => array('' => '職種を選んでください'), 'options' => $list_shokushu, 'onchange' => 'form.submit();')); ?>
+        </td>
+        <td align="left">
+          <?php echo $this->Form->input('search_case', 
+                  array('type'=>'select', 'label' => false, 'style' => 'width:90%;font-size:90%;', 
+                      'empty' => array('' => '案件を選んでください'), 'options' => $list_case2, 'onchange' => 'form.submit();')); ?>
         </td>
 <?php
     $d = 1;
@@ -191,22 +216,29 @@ window.onload = function(){
         $d++;
     } 
 ?>
-        <td></td>
     </tr>
-    <?php foreach($datas1 as $key => $data1) { ?>
-    <tr>
+    </thead>
+    <tbody>
+    <?php foreach($datas2 as $key => $data2) { ?>
+    <?php
+        $bgcolor_row = '';
+        if ($key%2 == 1) {
+            $bgcolor_row = 'background-color:#e7e8e3;'; 
+        }
+    ?>
+    <tr style="<?=$bgcolor_row ?>">
         <td align="center" style="padding: 0px 10px;">
-            <?=$data1['StaffSchedule']['staff_id']; ?>
+            <?=$data2['WkSchedule']['id']; ?>
         </td>
         <td align="left" style="padding: 0px 10px;">
-            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data1['StaffSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
-        <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
+            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data2['WkSchedule']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+                <?=$data2['WkSchedule']['name']; ?>
             </a>
         </td>
-        <td align="center">
-            <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule/<?=$data1['StaffSchedule']['staff_id']; ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
+        <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data2['WkSchedule']['shokushu_id'], $list_shokushu) ?></td>
+        <td align="left" style="padding: 0px 10px;font-size: 80%;">
+            <?=setCase($case_ids[$data2['WkSchedule']['id']], $list_case2) ?>
         </td>
-        <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffMaster']['shokushu_shoukai'], $list_shokushu); ?></td>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {
@@ -227,6 +259,18 @@ window.onload = function(){
         //$style = $style.'font-weight: bold;';
         // 予定ありかどうか
         $nodata = true;
+        
+        $datas1 = $data_schedules[$data2['WkSchedule']['id']];
+        foreach($datas1 as $key2=>$data1) {
+            if ($d == $key2) {
+                $case_name = $list_case[$data1['case_id']]['case_name'];
+                echo '<td align="center" style="font-size:90%;background-color:'.$list_case[$data1['case_id']]['bgcolor'].';color:'.$list_case[$data1['case_id']]['color'].'">';
+                echo '<a href="#" onclick="alert(\'【案件名】'.$case_name.'\')" title="'.$case_name.'">'.mb_substr($list_case[$data1['case_id']]['case_name'], 0, 2).'</a>';
+                echo '</td>';
+                $nodata = false;
+            } 
+        }
+        /**
         foreach ($datas2[$key] as $data2) {
             if ($y.'-'.sprintf("%02d", $m).'-'.sprintf("%02d", $d) == $data2['StaffSchedule']['work_date']) {
                 // 出力
@@ -241,6 +285,8 @@ window.onload = function(){
                 $nodata = false;
             }
         }
+         * 
+         */
        if ($nodata) {
             echo "<td align=\"center\" style='".$style."'>"."</td>";
         }
@@ -248,41 +294,17 @@ window.onload = function(){
         $d++;
     }
 ?>
-        <td style="font-size: 90%;"><?=$data2['StaffSchedule']['modified']; ?></td>
     </tr>        
     <?php } ?>
-<?php if (count($datas1) == 0) { ?>
+<?php if (empty($datas1) || count($datas1) == 0) { ?>
 <tr>
     <td colspan="36" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
 </tr>
 <?php } ?>
+</tbody>
 </table>
 <!-- カレンダー END-->
 </div>
-
 <!--- スタッフマスタ本体 END --->
 <?php echo $this->Form->end(); ?>
 
-<!-- 機能紹介 -->
-<script type="text/javascript">
-    /**
-$(function() {
-    //alert('制作中です');
-  // 2ダイアログ機能を適用
-  $('#dialog').dialog({
-    modal: true,
-    buttons: {
-　　　　"OK": function(){
-　　　　$(this).dialog('close');
-　　　　}
-　　　}
-  });
-});
-**/
-</script>
-<div id="dialog" title="シフト管理の紹介" style="display: none">
-<p style="font-size: 90%;">
-    この機能を使って、各案件のシフト決めや勤怠管理、給与管理が可能になります。<br>
-    <br>
-    ※ただいま<font color="red">制作中</font>です。</p>
-</div>

@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  */
 class ShiftManagementController extends AppController {
     public $uses = array('StaffSchedule' ,'WorkTable' ,'Item', 'User', 'TimeCard', 'ShiftLog',
-        'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'Customer', 'WkShift');
+        'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'Customer', 'WkShift', 'WkSchedule');
     public $title_for_layout = "シフト管理 - 派遣管理システム";
     
     public function index($date = null) {
@@ -1003,7 +1003,206 @@ class ShiftManagementController extends AppController {
             $this->StaffSchedule->save($data6);
         }
     }
-    
+ 
+    /**
+     * 確定シフト（スタッフ別）
+     */
+    public function schedule2($date = null) {
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', 'active');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_shokushu', $list_shokushu);
+        // その他
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $user_name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $user_name); 
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        $this->WorkTable->setSource('work_tables');
+        // 引数の受け取り
+        if (isset($this->params['named']['limit'])) {
+            $limit = $this->params['named']['limit'];
+        } else {
+            $limit = '10';
+        }
+        // 月の取得
+        if (isset($this->request->query['date'])) {
+            $date2 = $this->request->query['date'];
+            $month = str_replace('-', '', $this->request->query['date']);
+        } elseif (isset ($date)) {
+            $month = str_replace('-', '', $date);
+            $date2 = date('Y-m', strtotime($date.'01'));
+        } else {
+            //$month = date('Ym');
+            $month = date('Ym', strtotime('+1 month'));
+            $date2 = date('Y-m', strtotime('+1 month'));
+        }
+        $this->set('month', $month);
+        $this->set('date2', $date2);
+        //$this->log($month, LOG_DEBUG);
+        // 表示件数の初期値
+        $this->set('limit', $limit);
+        // 案件情報
+        $conditions0 = array('class'=>$selected_class);
+        $datas1 = $this->CaseManagement->find('all', array('conditions'=>$conditions0));
+        foreach($datas1 as $key=>$data1) {
+            $list_case[$data1['CaseManagement']['id']] = array('case_name'=>$data1['CaseManagement']['case_name'],
+                'bgcolor'=>$data1['CaseManagement']['bgcolor'],'color'=>$data1['CaseManagement']['color']);
+        }
+        $this->set('list_case', $list_case);
+        // 案件リスト
+        $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions0, 'order'=>array('sequence'=>'asc')));
+        $this->set('list_case2', $list_case2);
+        // スタッフの抽出条件
+        $joins = array(
+            array(
+                'type' => 'left',// innerもしくはleft
+                'table' => 'staff_'.$selected_class,
+                'alias' => 'StaffMaster',
+                'conditions' => array(
+                    'WkSchedule.id = StaffMaster.id',
+                )    
+            )
+        );
+        $options = array(
+            /**
+            'fields'=> array('StaffSchedule.staff_id', 'StaffMaster.name_sei', 'StaffMaster.name_mei', 'StaffMaster.name_sei2', 'StaffMaster.shokushu_shoukai'),
+            'conditions' => array(
+                'StaffSchedule.class' => $selected_class,
+                'StaffSchedule.work_date >=' => $month.'01',
+                'StaffSchedule.work_date <= ' => $month.'31',
+                ),
+             * 
+             */
+            'conditions' => array(1=>1),
+            'limit' => $limit,
+            //'group' => array('staff_id'),
+            'joins' => $joins
+        );
+        // スタッフの抽出実行
+        $conditions3 = array('WorkTable.class' => $selected_class, 'WorkTable.month =' => $month.'01');
+        $datas3 = $this->WorkTable->find('all', array('conditions'=>$conditions3));
+        $data_schedules = null;
+        $case_ids = null;
+        foreach ($datas3 as $key=>$data) {
+            for ($d=1; $d<=31; $d++) {
+                if (empty($data['WorkTable']['d'.$d])) {
+                    continue;
+                }
+                if (empty($data_schedules[$key][0])) {
+                    $data4 = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$data['WorkTable']['d'.$d])));
+                    $data_schedules[$data['WorkTable']['d'.$d]][0] = array('id'=>$data['WorkTable']['d'.$d], 
+                        'name'=>$data4['StaffMaster']['name_sei'].' '.$data4['StaffMaster']['name_mei'], 
+                        'name2'=>$data4['StaffMaster']['name_sei2'].' '.$data4['StaffMaster']['name_mei2'], 
+                        //'case_id'=>$data['WorkTable']['case_id'],
+                        'shokushu_id'=>$data['WorkTable']['shokushu_id']);
+                }
+                $data_schedules[$data['WorkTable']['d'.$d]][$d] = array('case_id'=>$data['WorkTable']['case_id'], 
+                    'order_id'=>$data['WorkTable']['order_id'], 'shokushu_num'=>$data['WorkTable']['shokushu_num'],
+                    'day'=>$d, 'staff_id'=>$data['WorkTable']['d'.$d],
+                    'shokushu_id'=>$data['WorkTable']['shokushu_id'], 'appointment'=>$data['WorkTable']['ap'.$d]);
+                // シフトに含まれる案件
+                $case_ids[$data['WorkTable']['d'.$d]][] = $data['WorkTable']['case_id'];
+            }
+        }
+        foreach ($case_ids as $key=>$value) {
+            $case_ids[$key] = array_unique($case_ids[$key]);
+        }
+        $this->log($case_ids, LOG_DEBUG);
+        $this->set('case_ids', $case_ids);
+        // 担当案件のセット
+        foreach ($data_schedules as $key=>$data) {
+            $data_schedules[$key][0]['case_id'] = implode(',', $case_ids[$key]);
+        }
+        // スタッフIDでソート
+        ksort($data_schedules);
+        //$this->log($data_schedules, LOG_DEBUG);
+        $this->set('data_schedules', $data_schedules);
+        // ワークテーブルに保存
+        $this->WkSchedule->query('TRUNCATE wk_schedules;');
+        foreach ($data_schedules as $data) {
+            $this->WkSchedule->save($data[0]);
+        }
+
+        // POSTの場合
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            $conditions2 = null;
+            if (isset($this->data['search'])) {
+                // 氏名での検索
+                if (!empty($this->data['WkSchedule']['search_name'])){
+                    $search_name = $this->data['WkSchedule']['search_name'];
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    }
+                    // ひらがな（カタカナ）での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2) LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $options['conditions'] += array('OR'=>array($conditions1, $conditions2));
+                }
+            // 職種
+            } elseif (!empty($this->data['WkSchedule']['search_shokushu'])){
+                $search_shokushu = $this->data['WkSchedule']['search_shokushu'];
+                $options['conditions'] += array('shokushu_id' => $search_shokushu);
+            // 案件
+            } elseif (!empty($this->data['WkSchedule']['search_case'])){
+                $search_case = $this->data['WkSchedule']['search_case'];
+                $options['conditions'] += array('FIND_IN_SET('.$search_case.', WkSchedule.case_id)');
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1, $month));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit, $month));
+            }
+            // ページネーションの実行
+            //$this->request->params['named']['page'] = 1;
+            $this->paginate = $options;
+            $this->log($options, LOG_DEBUG);
+            $datas2 = $this->paginate('WkSchedule');
+            $this->set('datas2', $datas2);
+        } else {
+            // ページネーション
+            $this->paginate = $options;
+            $datas2 = $this->paginate('WkSchedule');
+            //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+            $this->set('datas2', $datas2);
+        }
+        
+    }
     
     /**
      * 売上給与一覧ページ
@@ -1038,7 +1237,16 @@ class ShiftManagementController extends AppController {
         $this->set('selected_class', $selected_class);
         // データ
         $this->set('datas', $this->paginate('TimeCard'));
-        
+        $this->log($this->request->data, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->CaseManagement->saveAll($this->request->data['CaseManagement']);
+            $this->Session->setFlash('【情報】背景色の登録が完了しました。');
+        } elseif ($this->request->is('get')) {
+            
+        } else {
+            
+        }
         
     }
     
