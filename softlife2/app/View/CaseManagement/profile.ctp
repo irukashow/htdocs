@@ -108,7 +108,7 @@ window.onload = function(){
             <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 0px;margin-bottom: 10px;border-spacing: 0px;">
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;' colspan="2">案件名称</td>
-                    <td style='width:70%;'><?=$data['CaseManagement']['case_name'] ?></td>
+                    <td style='width:70%;background-color: #ffffcc;font-weight: bold;'><?=$data['CaseManagement']['case_name'] ?></td>
                 </tr>
                 <tr>
                     <td style='background-color: #e8ffff;width:30%;' colspan="2">担当者（所属 氏名）</td>

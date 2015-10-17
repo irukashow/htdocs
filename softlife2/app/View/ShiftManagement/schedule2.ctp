@@ -43,9 +43,9 @@ function setShokushu($shokushu_ids, $list_shokushu) {
 }
 // 案件
 function setCase($case_ids, $list_case2) {
-    //$case_id = explode(',', $case_ids);
+    $case_id = explode(',', $case_ids);
     $ret = '';
-    foreach ($case_ids as $id) {
+    foreach ($case_id as $id) {
         if (empty($id)) {
             continue;
         }
@@ -228,16 +228,16 @@ window.onload = function(){
     ?>
     <tr style="<?=$bgcolor_row ?>">
         <td align="center" style="padding: 0px 10px;">
-            <?=$data2['WkSchedule']['id']; ?>
+            <?=$data2['WkSchedule']['staff_id']; ?>
         </td>
         <td align="left" style="padding: 0px 10px;">
-            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data2['WkSchedule']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data2['WkSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
                 <?=$data2['WkSchedule']['name']; ?>
             </a>
         </td>
         <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data2['WkSchedule']['shokushu_id'], $list_shokushu) ?></td>
         <td align="left" style="padding: 0px 10px;font-size: 80%;">
-            <?=setCase($case_ids[$data2['WkSchedule']['id']], $list_case2) ?>
+            <?=setCase($data2['WkSchedule']['case_id'], $list_case2) ?>
         </td>
 <?php
     $d = 1;
@@ -257,19 +257,17 @@ window.onload = function(){
             $style = $style.'font-weight: bold;background-color: #ffffcc;color:green;';
         }
         //$style = $style.'font-weight: bold;';
-        // 予定ありかどうか
-        $nodata = true;
-        
-        $datas1 = $data_schedules[$data2['WkSchedule']['id']];
-        foreach($datas1 as $key2=>$data1) {
-            if ($d == $key2) {
-                $case_name = $list_case[$data1['case_id']]['case_name'];
-                echo '<td align="center" style="font-size:90%;background-color:'.$list_case[$data1['case_id']]['bgcolor'].';color:'.$list_case[$data1['case_id']]['color'].'">';
-                echo '<a href="#" onclick="alert(\'【案件名】'.$case_name.'\')" title="'.$case_name.'">'.mb_substr($list_case[$data1['case_id']]['case_name'], 0, 2).'</a>';
-                echo '</td>';
-                $nodata = false;
-            } 
+        // スケジュールの表示
+        if (empty($data2['WkSchedule']['c'.$d])) {
+            echo "<td align=\"center\" style='".$style."'>"."</td>";
+        } else {
+            $case_id = explode(',', $data2['WkSchedule']['c'.$d])[0];
+            $case_name = $list_case[$case_id]['case_name'];
+            echo '<td align="center" style="font-size:90%;background-color:'.$list_case[$case_id]['bgcolor'].';color:'.$list_case[$case_id]['color'].'">';
+            echo '<a href="#" onclick="alert(\'【案件名】'.$case_name.'\')" title="'.$case_name.'">'.mb_substr($list_case[$case_id]['case_name'], 0, 2).'</a>';
+            echo '</td>';
         }
+
         /**
         foreach ($datas2[$key] as $data2) {
             if ($y.'-'.sprintf("%02d", $m).'-'.sprintf("%02d", $d) == $data2['StaffSchedule']['work_date']) {
@@ -287,16 +285,13 @@ window.onload = function(){
         }
          * 
          */
-       if ($nodata) {
-            echo "<td align=\"center\" style='".$style."'>"."</td>";
-        }
 
         $d++;
     }
 ?>
     </tr>        
     <?php } ?>
-<?php if (empty($datas1) || count($datas1) == 0) { ?>
+<?php if (empty($datas2) || count($datas2) == 0) { ?>
 <tr>
     <td colspan="36" align="center" style="background-color: #fff9ff;">表示するデータはありません。</td>
 </tr>

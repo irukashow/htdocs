@@ -12,6 +12,8 @@
         &nbsp;
         <b><font Style="font-size:95%;color: yellow;">[シフト作成]</font></b>        <!-- alert("制作中");return false; -->
         &nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">確定シフト</font></a>        <!-- alert("制作中");return false; -->
+        &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
