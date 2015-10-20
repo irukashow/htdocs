@@ -1,3 +1,4 @@
+<?php require('holiday.ctp'); ?>
 <?php
     // 初期値
     //$y = date('Y');
@@ -16,6 +17,9 @@
                     $m = (int)$arr_date[1];
             }
     }
+
+    // 祝日取得
+    $national_holiday = japan_holiday($y);
 ?>
 <?php
     //echo $this->Html->script( 'tools');

@@ -69,16 +69,16 @@ class StaffMaster extends AppModel {
             'message' => '身長は半角数字で入力して下さい。'
         ),
         'per_week' =>  array(
-            'rule' => 'numeric',
+            'rule' => 'isHalfLetter',
             'required' => false,
             'allowEmpty' => true,
-            'message' => '希望勤務回数（週）は半角数字で入力して下さい。'
+            'message' => '希望勤務回数（週）は半角文字で入力して下さい。'
         ),
         'per_month' =>  array(
-            'rule' => 'numeric',
+            'rule' => 'isHalfLetter',
             'required' => false,
             'allowEmpty' => true,
-            'message' => '希望勤務回数（月）は半角数字で入力して下さい。'
+            'message' => '希望勤務回数（月）は半角文字で入力して下さい。'
         ),
         'bank_kouza_num' =>  array(
             'rule' => 'numeric',

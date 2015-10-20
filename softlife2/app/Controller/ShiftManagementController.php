@@ -1096,7 +1096,7 @@ class ShiftManagementController extends AppController {
         if (isset($this->params['named']['limit'])) {
             $limit = $this->params['named']['limit'];
         } else {
-            $limit = '10';
+            $limit = '20';
         }
         // 月の取得
         if (isset($this->request->query['date'])) {
@@ -1210,6 +1210,131 @@ class ShiftManagementController extends AppController {
         
     }
     
+    /**
+     * スタッフ別スケジュール
+     */
+    public function check_schedule($staff_id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 初期セット
+        $username = $this->Auth->user('username').' '.$this->Auth->user('name_mei');
+        $this->set('username', $username);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->set('datas1', null);
+        if (empty($staff_id)) {
+            //$staff_id = $this->Session->read('schedule_staff'); 
+        }
+        $this->set('staff_id', $staff_id);
+        $datas2 = null;
+        //$this->Session->write('staff_cell', $staff_cell);
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $shokushu_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('shokushu_arr', $shokushu_arr);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        // 該当月
+        if (!empty($this->request->query('date'))) {
+            $date = $this->request->query('date');
+            //$this->log($date, LOG_DEBUG);
+            $date_arr = explode('-',$date);
+            $year = $date_arr[0];
+            $month = $date_arr[1];
+        } else {
+            $year = date('Y', strtotime('+1 month'));
+            $month = date('n', strtotime('+1 month'));
+            $date = $year.'-'.$month;
+        }
+        $this->set('date', $date);
+        // 案件リスト
+        $conditions1 = array('class'=>$selected_class);
+        $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions1, 'order'=>array('sequence'=>'asc')));
+        $list_case2 += array(''=>'');
+        $this->set('list_case2', $list_case2);
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            //$this->log($this->request->data, LOG_DEBUG);
+            // 検索
+            if (isset($this->request->data['search'])) {
+                $search_name = $this->data['StaffSchedule']['search_name'];
+                if (!empty($search_name)) {
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    }
+                    // ひらがなでの検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2) LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $datas1 = $this->StaffMaster->find('all', array('conditions'=>array('OR'=>array($conditions1, $conditions2)), 'order'=>array('id')));
+                    //$this->log($this->StaffMaster->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->set('datas1', $datas1);
+                }
+            // 選択
+            } elseif (isset($this->request->data['select'])) {
+                $id_array = array_keys($this->request->data['select']);
+                $id = $id_array[0];
+                // 選択は一つだけ
+                $staff_id = $this->Session->read('schedule_staff');
+                if (count($staff_id) == 1) {
+                    $this->Session->setFlash('【エラー】すでにスタッフが選択されています。');
+                    $this->redirect(array('action' => 'input_schedule', $staff_id ));
+                    return;
+                }
+                // セッション格納
+                $this->Session->write('schedule_staff', $id);
+                // 選択中スタッフ
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                $datas2 = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$id)));
+                $this->set('datas2', $datas2);
+                //$this->log($datas2, LOG_DEBUG);
+                $this->redirect(array('action'=>'input_schedule', $id));
+            // 消去
+            } elseif (isset($this->request->data['erasure'])) {
+                // セッション削除
+                $this->Session->delete('schedule_staff');
+                $this->redirect(array('action'=>'input_schedule'));
+            // 登録
+            } elseif (isset($this->request->data['commit'])) {
+                if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $datas = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    // ログ書き込み
+                    $this->setShiftLog($username, $selected_class, 
+                            'シフト希望：'.$datas['StaffMaster']['name'].'('.$staff_id.') '.  str_replace('-', '年', $date).'月分', 1);
+                    $this->Session->setFlash('【情報】シフト希望を登録いたしました。');
+                    $this->redirect(array('action'=>'input_schedule', $staff_id, '?date='.$date));
+                }
+            } else {
+                
+            }
+        } elseif ($this->request->is('get')) {
+
+        } else {
+            
+        }
+        
+        // 選択済みスタッフ
+        //$staff_id = $this->Session->read('schedule_staff');
+        $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $data2 = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$staff_id)));
+        $this->set('data2', $data2);
+        //$this->log($data2, LOG_DEBUG);
+        // 登録済みデータ
+        $conditions3 = array('staff_id'=>$staff_id, 'class'=>$selected_class, 'month'=>$year.'-'.$month.'-01');
+        $datas3 = $this->WkSchedule->find('all', array('conditions'=>$conditions3));
+        $this->set('datas3', $datas3);
+        $this->log($datas3, LOG_DEBUG);
+        
+    }
+
     /**
      * 売上給与一覧ページ
      */

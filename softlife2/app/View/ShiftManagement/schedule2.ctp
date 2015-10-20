@@ -1,13 +1,9 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
+<?php require('holiday.ctp'); ?>
 <?php
 	// 初期値
-/**
-	$y = date('Y');
-	$m = date('n');
- * 
- */
     $y = date('Y', strtotime('+1 month'));
     $m = date('n', strtotime('+1 month'));
 		
@@ -24,6 +20,8 @@
         $m = substr($month, 4, 2);
         $m = ltrim($m, '0');
     }
+    // 祝日取得
+    $national_holiday = japan_holiday($y);
 ?>
 <?php
 function setShokushu($shokushu_ids, $list_shokushu) {
@@ -175,7 +173,7 @@ window.onload = function(){
     $d = 1;
     while (checkdate($m, $d, $y)) {
         // 日付出力（土日祝には色付け）
-        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0) {
+        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
         } elseif(date("w", mktime(0, 0, 0, $m, $d, $y)) == 6) {
                 $style = 'color:blue;';
@@ -231,13 +229,15 @@ window.onload = function(){
             <?=$data2['WkSchedule']['staff_id']; ?>
         </td>
         <td align="left" style="padding: 0px 10px;">
-            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data2['WkSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
+            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data2['WkSchedule']['staff_id']; ?>/profile','スタッフ確認','width=1200,height=900,scrollbars=yes');" class="link_prof">
                 <?=$data2['WkSchedule']['name']; ?>
             </a>
         </td>
         <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data2['WkSchedule']['shokushu_id'], $list_shokushu) ?></td>
         <td align="left" style="padding: 0px 10px;font-size: 80%;">
+            <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/check_schedule/<?php echo $data2['WkSchedule']['staff_id']; ?>?date=<?=$date2 ?>','シフト確認','width=1200,height=800,scrollbars=yes');return false;">
             <?=setCase($data2['WkSchedule']['case_id'], $list_case2) ?>
+            </a>
         </td>
 <?php
     $d = 1;

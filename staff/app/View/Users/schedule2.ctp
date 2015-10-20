@@ -19,7 +19,6 @@
     // 祝日取得
     $national_holiday = japan_holiday($y);
 ?>
-
 <?php
     function setFlag($val) {
         if ($val == 1) {
@@ -105,20 +104,21 @@ input[type=checkbox] {
     vertical-align: middle;
 }
 </style>
-<div id="page2" data-role="page">
-        <?php
-            if ($class == '11') {
-                $area = '関西';
-            } elseif ($class == '21') {
-                $area = '関東';
-            } elseif ($class == '31') {
-                $area = '中部';
-            } else {
-                $area = '？';
-            }
-        ?>
+
+<div id="page1" data-role="page">
+<?php
+    if ($class == '11') {
+        $area = '関西';
+    } elseif ($class == '21') {
+        $area = '関東';
+    } elseif ($class == '31') {
+        $area = '中部';
+    } else {
+        $area = '？';
+    }
+?>
         <div data-role="header" data-theme="c">
-            <h1>シフト希望<span style="font-size: 90%;margin-left: 5px;">（<?=$area ?>エリア）</span></h1>
+                <h1>確定スケジュール<span style="font-size: 90%;margin-left: 5px;">（<?=$area ?>エリア）</span></h1>
                 <!--
                 <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
                 -->
@@ -128,43 +128,27 @@ input[type=checkbox] {
             <!--- シフト希望表 --->
             <!-- カレンダー -->
         <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
-            
+        <?php
+            if (empty($data2)) {
+                $bgcolor = 'white';
+            } else {
+                $bgcolor = '#ffffcc';
+            }
+        ?>
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
                     <tr align="center">
-                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false">&lt; 前の月</a></td>
-                            <td><div style="font-size:130%;">【<?php echo $y ?>年<?php echo $m ?>月】</div></td>
-                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false">次の月 &gt;</a></td>
+                            <td><a href="<?=ROOTDIR ?>/users/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false">&lt; 前の月</a></td>
+                            <td style="background-color: <?=$bgcolor ?>;"><div style="font-size:130%;">【<?php echo $y ?>年<?php echo $m ?>月】</div></td>
+                            <td><a href="<?=ROOTDIR ?>/users/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false">次の月 &gt;</a></td>
                     </tr>
             </table>
 
-            <!-- 選択 -->
-            <div data-role="fieldcontain">
-                <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                    <input type="checkbox" name="SelectAll" id="SelectAll">
-                    <label for="SelectAll">全選択・全解除</label> 
-                    <input type="checkbox" name="SelectHoliday" id="SelectHoliday">
-                    <label for="SelectHoliday">土日祝選択・解除</label> 
-                </fieldset>
-            </div>
-            <!-- 選択 END -->
-            <!-- 制御 -->
-            <div data-role="fieldcontain">
-              <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                <input type="radio" name="number" id="n1" value="1" />
-                <label for="n1">◎：可能</label>
-                <input type="radio" name="number" id="n2" value="2" />
-                <label for="n2">△：条件付き</label>
-                <input type="radio" name="number" id="n3" value="0" />
-                <label for="n3">✕：不可</label>
-              </fieldset>
-            </div>
-            <!-- 制御 END -->
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
                 <tr align="center" style="background-color: #cccccc;">
                     <th style="width:10%">日付</th>
-                    <th style="width:10%">選択</th>
-                    <th style="width:10%">勤務可能</th>
-                    <th style="width:30%">条件（△の場合）</th>
+                    <th style="width:30%">案件</th>
+                    <th style="width:10%">職種</th>
+                    <th style="width:30%">備考</th>
                 </tr>
         <?php
             // 曜日の配列作成
@@ -183,7 +167,7 @@ input[type=checkbox] {
                     $i = 0;
                 }
             //-------------スタイルシート設定-----------------------------------
-                if( $i == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))]) ){ //日曜日の文字色
+                if( $i == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
                     $style = "#C30";
                 }
                 else if( $i == 6 ){ //土曜日の文字色
@@ -201,7 +185,16 @@ input[type=checkbox] {
                 }
             //-------------スタイルシート設定終わり-----------------------------
                 $selected_date = $y.'-'.sprintf('%02d', $m).'-'.sprintf('%02d', $d);
-                if (!empty($data[$d])) {
+                if (!empty($data2)) {
+                    if (empty($data2['WkSchedule']['c'.$d])) {
+                        $value = null;
+                    } else {
+                        $value = explode(',', $data2['WkSchedule']['c'.$d]);
+                    }
+                    // 予定が入っていれば背景色を変える
+                    if (!empty($value)) {
+                        $style2 = "background: #ffccff;";
+                    }
                     // 日付セル作成とスタイルシートの挿入
                     echo '<tr style="'.$style2.';">';
                     echo '<td align="center" style="color:'.$style.';">'.$d.'('.$weekday[$i].')';
@@ -210,23 +203,33 @@ input[type=checkbox] {
                     } else {
                         echo '<input type="hidden" id="Holiday'.$d.'" value="0">';
                     }
-                    echo $this->Form->input('StaffSchedule.'.$d.'.id', array('type'=>'hidden', 'value'=>$data[$d]['id']));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $class));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => $id));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.shokushu_id', array('type'=>'hidden', 'value' => $shokushu_id));
+                    echo $this->Form->input('WkSchedule.'.$d.'.id', array('type'=>'hidden', 'value'=>$data2['WkSchedule']['id']));
+                    echo $this->Form->input('WkSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $class));
+                    echo $this->Form->input('WkSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => $id));
+                    echo '</td>';
+                    echo '<td align="left" style="padding-left:5px;">';
+                    if (empty($value)) {
+                        echo '';
+                    } else {
+                        echo $list_case2[$value[0]]; 
+                    } 
                     echo '</td>';
                     echo '<td align="center">';
-                    //echo '<label>';
-                    echo '<input type="checkbox" name="data[StaffSchedule]['.$d.'][check]" id="check'.$d.'">';
-                    //echo '</label>';
+                    if (empty($value)) {
+                        echo '';
+                    } else {
+                        echo $shokushu_arr[$value[3]]; 
+                    } 
                     echo '</td>';
-                    $list_work = array('0'=>'✕', '1'=>'◎','2'=>'△'); 
-                    echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.work_flag', array('type'=>'select', 'id'=>'work_flag'.$d , 'value'=>$data[$d]['work_flag'], 'legend'=>false,
-                        'label'=>false, 'div'=>false,'style'=>'font-weight:bold;','data-mini'=>'true', 'options'=>$list_work));   
-                    echo '</td>';
-                    echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;','style'=>'font-size:90%;','data-inline'=>'true', 'value'=>$data[$d]['conditions']));
+                    echo '<td align="left" style="padding-left:5px;">';
+                    if (empty($value[4])) {
+                        $appointment = '';
+                    } elseif ($value[4] == 1) {
+                        $appointment = '待ち合わせ';
+                    } else {
+                        $appointment = '待ち合わせ（'.$value[4].'）';
+                    }
+                    echo $appointment;
                     echo '</td>';
                     echo '</tr>';
                 } else {
@@ -238,24 +241,16 @@ input[type=checkbox] {
                     } else {
                         echo '<input type="hidden" id="Holiday'.$d.'" value="0">';
                     }
-                    echo $this->Form->input('StaffSchedule.'.$d.'.id', array('type'=>'hidden'));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $class));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => $id));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.work_date', array('type'=>'hidden', 'value' => $selected_date));
-                    echo $this->Form->input('StaffSchedule.'.$d.'.shokushu_id', array('type'=>'hidden', 'value' => $shokushu_id));
+                    echo $this->Form->input('WkSchedule.'.$d.'.id', array('type'=>'hidden'));
+                    echo $this->Form->input('WkSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $class));
+                    echo $this->Form->input('WkSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => $id));
+                    echo $this->Form->input('WkSchedule.'.$d.'.work_date', array('type'=>'hidden', 'value' => $selected_date));
+                    echo '</td>';
+                    echo '<td align="center">'; 
+                    echo '</td>';
+                    echo '<td align="center">'; 
                     echo '</td>';
                     echo '<td align="center">';
-                    //echo '<label>';
-                    echo '<input type="checkbox" name="data[StaffSchedule]['.$d.'][check]" id="check'.$d.'">';
-                    //echo '</label>';
-                    echo '</td>';
-                    $list_work = array('0'=>'✕', '1'=>'◎','2'=>'△'); 
-                    echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.work_flag', array('type'=>'select', 'id'=>'work_flag'.$d, 'legend'=>false,
-                        'label'=>false, 'div'=>false,'style'=>'font-weight:bold;','data-mini'=>'true', 'options'=>$list_work));
-                    echo '</td>';
-                    echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;','style'=>'font-size:90%;','data-inline'=>'true'));
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -266,7 +261,6 @@ input[type=checkbox] {
             </table>
             <!-- カレンダー END-->
             <div style='float:left;'>
-                <input type="submit" value="登　録" data-theme="e" data-icon="check" data-inline="true">
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="<?=ROOTDIR ?>/users/schedule#page3";'>
             </div>  
             <?php echo $this->Form->end(); ?>
@@ -280,41 +274,6 @@ input[type=checkbox] {
             <?=FOOTER ?>
         </div>
 </div>
-
-<div id="page3" data-role="page">
-    <div data-role="header" data-theme="c">
-            <h1>スケジュール<span style="font-size: 90%;margin-left: 5px;">（<?=$area ?>エリア）</span></h1>
-            <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
-    </div>			
-    <div data-role="content">
-        <p>以下の入力ができます。</p>
-        <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#page2"'>
-        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule2#page1"'>
-        <div style='float:left;'>       
-            <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
-        </div> 
-    </div>
-    <div class="pagetop">
-            <a href="#page3">
-                <?php echo $this->Html->image('pagetop.png'); ?>
-            </a>
-    </div>
-    <div id="footer">
-        <?=FOOTER ?>
-    </div>
-</div>
-<!-- 制作中 -->
-<!--
-<div id="dialog" data-role="dialog">
-     <div data-role="header">
-         <h1 id="dlog_title">　　メッセージ</h1>
-     </div>
-     <div data-role="content">
-         <p id="dlog_content">現在、制作中です。</p>
-     </div>
- </div>
--->
-<!-- 制作中 END -->
 
 <!--ダイアログメニュー-->
 <?php require('dialog_menu.ctp'); ?>

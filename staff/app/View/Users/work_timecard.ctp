@@ -1,4 +1,23 @@
-<?php require('calender.ctp'); ?>
+<?php require('holiday.ctp'); ?>
+<?php
+    // 初期値
+    $y = date('Y');
+    $m = date('n');
+
+    // 日付の指定がある場合
+    if(!empty($date1)) {
+            $arr_date = explode('-', $date1);
+
+            if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
+            {
+                    $y = (int)$arr_date[0];
+                    $m = (int)$arr_date[1];
+            }
+    }
+
+    // 祝日取得
+    $national_holiday = japan_holiday($y);
+?>
 <?php
     function setStatus($val) {
         if ($val == '1') {
@@ -12,7 +31,7 @@
     }
 
 ?>
-<div id="timecard" data-role="page">
+<div id="timecard" data-role="page" data-url="<?=ROOTDIR ?>/users/work_timecard?date=<?=$date1 ?>">
     <div data-role="header" data-theme="c">
             <h1>タイムカード</h1>
             <!-- class="ui-btn-right" -->
@@ -24,17 +43,24 @@
     <div data-role="content" style="font-size: 70%;">
         <?php echo $this->Form->create('TimeCard', array('name' => 'form')); ?>
         <?php echo $this->Form->input('staff_id', array('type'=>'hidden', 'value' => $id)); ?> 
+        <?php
+            if (empty($data2)) {
+                $bgcolor = 'white';
+            } else {
+                $bgcolor = '#ffffcc';
+            }
+        ?>
         <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;font-size:120%;">
                 <tr align="center">
                         <td><a href="<?=ROOTDIR ?>/users/work_timecard?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                        <td>
+                        <td style="background-color: <?=$bgcolor ?>;">
                             <b><a href="#" onclick="location.reload();">【<?php echo $y ?>年<?php echo $m ?>月】</a></b>
                         </td>
                         <td><a href="<?=ROOTDIR ?>/users/work_timecard?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
                 </tr>
         </table>
         
-        <table border="1" cellspacing="0" cellpadding="5" width="100%" style="width:100%;margin-top: 5px;">
+        <table border="1" cellspacing="0" cellpadding="2" width="100%" style="width:100%;margin-top: 5px;">
             <tr>
                 <td style='background-color: #e8ffff;width:10%;'>日付</td>
                 <td style='background-color: #e8ffff;width:10%;'>状況</td>
@@ -64,7 +90,7 @@
                 }
 
             //-------------スタイルシート設定-----------------------------------
-                if( $i == 0 ){ //日曜日の文字色
+                if( $i == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
                     $style = "#C30";
                 }
                 else if( $i == 6 ){ //土曜日の文字色
@@ -78,10 +104,19 @@
                 // 今日の日付の場合、背景色追加
                 if( $y == date('Y') && $m == date('m') && $d == date('d') ){
                     $style2 = "background: #ffffcc;";
+                // シフト日の場合
+                } elseif (!empty ($data2['WkSchedule']['c'.$d])) {
+                    $style2 = "background: #ffccff;";
                 } else {
                     $style2 = '';
                 }
             //-------------スタイルシート設定終わり-----------------------------
+                // シフトの有無
+                if (empty ($data2['WkSchedule']['c'.$d])) {
+                    $work_flag = 0;
+                } else {
+                    $work_flag = 1;
+                }
                 $selected_date = $y.'-'.sprintf('%02d', $m).'-'.sprintf('%02d', $d);
                 if (!empty($data[$d])) {
                     if ($data[$d]['work_date'] == $selected_date) {
@@ -92,7 +127,7 @@
                         echo '<td align="center">'.$data[$d]['start_time_h'].':'.$data[$d]['start_time_m'].'</td>';
                         echo '<td align="center">'.$data[$d]['end_time_h'].':'.$data[$d]['end_time_m'].'</td>';
                         echo '<td align="center">'.$data[$d]['rest_time_from_h'].':'.$data[$d]['rest_time_from_m'].'～'.$data[$d]['rest_time_to_h'].':'.$data[$d]['rest_time_to_m'].'</td>';
-                        if ($data[$d]['status'] == 2) {
+                        if ($data[$d]['status'] == 2 || $work_flag == 0) {
                             echo '<td align="center"></td>';
                         } else {
                             echo '<td align="center"><input type="submit" name="input['.$selected_date.']" data-theme="e" data-icon="edit" data-iconpos="notext"></td>';
@@ -109,7 +144,11 @@
                     echo '<td align="center"></td>';
                     echo '<td align="center"></td>';
                     echo '<td align="center"></td>';
-                    echo '<td align="center"><input type="submit" name="input['.$selected_date.']" data-theme="e" data-icon="edit" data-iconpos="notext"></td>';
+                    if ($work_flag == 0) {
+                        echo '<td align="center"></td>';
+                    } else {
+                        echo '<td align="center"><input type="submit" name="input['.$selected_date.']" data-theme="e" data-icon="edit" data-iconpos="notext"></td>';
+                    }
                     echo '</tr>';
                 }
                 $i++; //カウント値（曜日カウンター）+1

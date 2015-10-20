@@ -16,8 +16,7 @@
 	}
  
 	// 祝日の取得の関数
-	function japan_holiday($y = '')
-	{
+	function japan_holiday($y = '') {
 	    // カレンダーID
 	    $calendar_id = urlencode('japanese__ja@holiday.calendar.google.com');
 	

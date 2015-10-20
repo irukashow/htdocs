@@ -160,6 +160,10 @@ $(function() {
                     ?>
                 </td>
                 <td colspan="1" style="vertical-align: top;">
+                    <!--
+                    <input type="hidden" name="data[StaffMaster][para2]" value="">
+                    <input type="hidden" name="data[StaffMaster][para3]" value="">
+                    -->
                     <!-- その他ファイルドラッグ＆ドロップ -->
                     <input type="file" id="extra_file" name="upfile[]" size="30" multiple onchange="countCheck(this, document.getElementById('StaffMasterFileCount'));sizeCheck(this);" style="
                         border: 2px dotted #000000;
@@ -184,7 +188,11 @@ $(function() {
                             echo $this->Form->input( 'delete_4', array('type' => 'hidden','value'=>'0'));
                             echo $this->Form->input( 'delete_5', array('type' => 'hidden','value'=>'0'));
                             echo $this->Form->input( 'file_count', array('type' => 'hidden','value'=>'0'));
+                            echo $this->Form->input( 'para2', array('type' => 'hidden','value'=>''));
+                            echo $this->Form->input( 'para3', array('type' => 'hidden','value'=>''));
                         } else {
+                            echo $this->Form->input( 'para2', array('type' => 'hidden','value'=>$files));
+                            echo $this->Form->input( 'para3', array('type' => 'hidden','value'=>$files_2));
                             echo '<table border="0" width="100%">';
                             $file_array = explode(',', $files);
                             $file_array_2 = explode(',', $files_2);
@@ -294,7 +302,7 @@ $(function() {
                     </select> 
                 </td>
             </tr>
-            <tr style="">
+            <tr style="display:none;">
                 <td style='background-color: #e8ffff;'colspan="2">最寄駅<br>（ｲﾝﾎﾟｰﾄﾃﾞｰﾀより）</td>
                 <td colspan="5">
                     <?php echo $this->Form->input('para1',array('type'=>'text','div'=>false,'label'=>false, 'style'=>'width:70%;text-align: left;')); ?>
@@ -337,10 +345,11 @@ $(function() {
 		</td>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>希望勤務回数</td>
-                <td>週<?php echo $this->Form->input('per_week',array('type'=>'text','div'=>false,'maxlength'=>'1','label'=>false,'style'=>'width:50px;')); ?>回
+                <td style='background-color: #e8ffff;width:20%;'>希望勤務回数<br><span style="font-size: 90%;color: red;">※半角文字（例. 2~3）</span></td>
+                <td>週<?php echo $this->Form->input('per_week',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:40px;')); ?>回
                     &nbsp;／&nbsp;
-                    月<?php echo $this->Form->input('per_month',array('type'=>'text','div'=>false,'maxlength'=>'2','label'=>false,'style'=>'width:50px;')); ?>回</td>
+                    月<?php echo $this->Form->input('per_month',array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:60px;')); ?>回
+                </td>
                 <td style='background-color: #e8ffff;width:20%;'>役割</td>
                 <td>
                 <?php

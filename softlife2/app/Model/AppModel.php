@@ -30,4 +30,8 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+    public function isHalfLetter($data) {
+        $str = current($data);
+        return preg_match('/^[\x21-\x7E]*$/', $str);
+    }
 }

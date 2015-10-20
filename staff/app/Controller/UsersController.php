@@ -1,7 +1,7 @@
 <?php
-
 class UsersController extends AppController {
-        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 'TimeCard', 'StaffSchedule', 'StaffLoginLog', 'StaffLog');
+        public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 
+            'TimeCard', 'StaffSchedule', 'StaffLoginLog', 'StaffLog', 'WkSchedule', 'CaseManagement');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         /****認証周り*****/
@@ -289,7 +289,7 @@ class UsersController extends AppController {
         }
         
 	/**
-	 * スケジュール
+	 * スケジュール（シフト希望）
 	 */
 	public function schedule(){
             // レイアウト関係
@@ -312,6 +312,16 @@ class UsersController extends AppController {
             $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
             $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
             $this->set('shokushu_id', $shokushu_id);
+            // 登録していた値をセット
+            if (empty($this->request->query['date'])) {
+                $date1 = date('Y-m');
+                $date2 = null;
+            } else {
+                $date2 = $this->request->query['date'];
+                $date1 = $date2;
+            }
+            $this->Session->write('date2', $date2);
+            $this->set('date1', $date1);
 
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
@@ -323,22 +333,12 @@ class UsersController extends AppController {
                     //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
                     // スタッフのシフト希望登録履歴
                     //　
-                    $this->redirect(array('controller' => 'users', 'action' => 'schedule'));
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1));
                 } else {
                     $this->log('エラーが発生しました。', LOG_DEBUG);
                 }
             } elseif ($this->request->is('get')) {
                 //$this->log($this->request->data, LOG_DEBUG);
-                // 登録していた値をセット
-                if (empty($this->request->query['date'])) {
-                    $date1 = date('Y-m');
-                    $date2 = null;
-                } else {
-                    $date2 = $this->request->query['date'];
-                    $date1 = $date2;
-                }
-                $this->Session->write('date2', $date2);
-
                 for ($i=1; $i<=31; $i++) {
                     $data[$i] = $this->StaffSchedule->find('first', 
                             array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
@@ -348,6 +348,77 @@ class UsersController extends AppController {
                 }
                 //$this->log($data, LOG_DEBUG);
                 $this->set('data', $data);
+            } else {
+                
+            }
+        }
+        
+	/**
+	 * スケジュール（確定シフト）
+	 */
+	public function schedule2(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+                return;
+            }
+            $this->set('class', $class);
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            $this->WkSchedule->setSource('wk_schedules');
+            // 職種IDのセット
+            $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+            $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
+            $this->set('shokushu_id', $shokushu_id);
+            // 職種マスタ配列
+            $conditions0 = array('item' => 17);
+            $shokushu_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+            $this->set('shokushu_arr', $shokushu_arr);
+            // 案件リスト
+            $conditions1 = array('class'=>$class);
+            $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions1, 'order'=>array('sequence'=>'asc')));
+            $list_case2 += array(''=>'');
+            $this->set('list_case2', $list_case2);
+        
+            // 登録していた値をセット
+            if (empty($this->request->query['date'])) {
+                $date1 = date('Y-m');
+                $date2 = null;
+            } else {
+                $date2 = $this->request->query['date'];
+                $date1 = $date2;
+            }
+            $this->Session->write('date2', $date2);
+            $this->set('date1', $date1);
+
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
+                $this->log($this->request->data['StaffSchedule'], LOG_DEBUG);
+                
+                // データを登録する
+                if ($this->WkSchedule->saveAll($this->request->data['StaffSchedule'])) {
+                    //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+                    // スタッフのシフト希望登録履歴
+                    //　
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1));
+                } else {
+                    $this->log('エラーが発生しました。', LOG_DEBUG);
+                }
+            } elseif ($this->request->is('get')) {
+                //$this->log($this->request->data, LOG_DEBUG);
+                $data2 = $this->WkSchedule->find('first', 
+                        array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'month'=>$date1.'-01')));
+                $this->log($data2, LOG_DEBUG);
+                $this->set('data2', $data2);
             } else {
                 
             }
@@ -448,7 +519,7 @@ class UsersController extends AppController {
 	/**
 	 * 勤務関連（タイムカード）
 	 */
-	public function work_timecard(){
+	public function work_timecard($date = null){
             // レイアウト関係
             $this->layout = "main";
             $this->set("title_for_layout",$this->title_for_layout);
@@ -466,7 +537,7 @@ class UsersController extends AppController {
             
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
-                //$this->log($this->request->data, LOG_DEBUG);
+                $this->log($this->request->data, LOG_DEBUG);
                 if (isset($this->request->data['input'])) {
                     $date_array = array_keys($this->request->data['input']);
                     $selected_date = $date_array[0];
@@ -475,15 +546,20 @@ class UsersController extends AppController {
                 }
             } else {
                 // 保存データの抽出
-                if (empty($this->request->query['date'])) {
-                    $date1 = date('Y').'-'.date('m');
+                if (!empty ($date)) {
+                    $date1 = $date;
                     $date2 = null;
-                } else {
+                } elseif (!empty($this->request->query['date'])) {
                     $date2 = $this->request->query['date'];
                     $date1 = $date2;
+                } else {
+                    $date1 = date('Y').'-'.date('m');
+                    $date2 = null;
                 }
+                $this->set('date1', $date1);
+                $this->log($date1, LOG_DEBUG);
                 $this->Session->write('date2', $date2);
-
+                // タイムシートの保存済の情報
                 for ($i=1; $i<=31; $i++) {
                     $data[$i] = $this->TimeCard->find('first', 
                             array('fields'=>array('*'), 'conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
@@ -491,7 +567,12 @@ class UsersController extends AppController {
                         $data[$i] = $data[$i]['TimeCard'];
                     }
                 }
-                $this->set('data', $data);
+                $this->set('data', $data);              
+                // 確定シフト
+                $data2 = $this->WkSchedule->find('first', 
+                        array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'month'=>$date1.'-01')));
+                //$this->log($data2, LOG_DEBUG);
+                $this->set('data2', $data2);
             }
         }
         
@@ -515,33 +596,67 @@ class UsersController extends AppController {
             }
             // テーブル変更
             $this->TimeCard->setSource('time_cards');
+            // 案件リスト
+            $conditions1 = array('class'=>$class);
+            $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions1, 'order'=>array('sequence'=>'asc')));
+            $list_case2 += array(''=>'');
+            $this->set('list_case2', $list_case2);
+            // 
 
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
                 if (isset($this->request->data['request'])) {
                     // データを登録する
                     if ($this->TimeCard->save($this->request->data)) {
-                        $this->redirect(array('controller' => 'users', 'action' => 'work_timecard'));
-                        $this->request->query['page'] = $this->Session->read('date');
+                        $date3 = date('Y-m', strtotime($this->request->data['TimeCard']['work_date']));
+                        $this->log($date3, LOG_DEBUG);
+                        $this->redirect(array('controller' => 'users', 'action' => 'work_timecard', $date3));
+                        //$this->request->query['page'] = $this->Session->read('date');
                     }
                 } elseif (isset($this->request->data['delete'])) {
                     $this->log($this->request->data, LOG_DEBUG);
+                    if (empty($this->request->data['TimeCard']['id'])) {
+                        $this->redirect(array('controller' => 'users', 'action' => 'work_input', $this->request->data['TimeCard']['work_date']));
+                        return null;
+                    }
                     // 削除処理
                     if ($this->TimeCard->delete($this->request->data['TimeCard']['id'])) {
                         // 成功
-                        $this->redirect(array('controller' => 'users', 'action' => 'work_timecard'));
+                        $date3 = date('Y-m', strtotime($this->request->data['TimeCard']['work_date']));
+                        $this->redirect(array('controller' => 'users', 'action' => 'work_timecard', $date3));
                     }
                 }
             } else {
+                if (!empty ($date)) {
+                    $date1 = $date;
+                    $date2 = null;
+                } elseif (!empty($this->request->query['date'])) {
+                    $date2 = $this->request->query['date'];
+                    $date1 = $date2;
+                } else {
+                    $date1 = date('Y-m-d');
+                    $date2 = null;
+                }
                 // 指定日をセット
-                $datetime = new DateTime($date);
+                $datetime = new DateTime($date1);
                 $week = array("日", "月", "火", "水", "木", "金", "土");
                 $w = (int)$datetime->format('w');
+                $date0 = $datetime->format('Y').'-'.$datetime->format('m').'-01';
                 $date2 = $datetime->format('Y').'年'.$datetime->format('n').'月'.$datetime->format('j').'日（'.$week[$w].'）';
-                $this->set('date1', $date);
+                $this->set('date1', $date1);
+                $this->log($date, LOG_DEBUG);
                 $this->set('date2', $date2);
+                $date3 = date('Y-m', strtotime($date1));
+                $this->set('date3', $date3);
                 // 登録していた値をセット
-                $this->request->data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date)));
+                $this->request->data = $this->TimeCard->find('first', array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1)));
+                // 確定シフト
+                $data2 = $this->WkSchedule->find('first', 
+                        array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'month'=>$date0)));
+                //$this->log($date, LOG_DEBUG);
+                //$this->log($data2, LOG_DEBUG);
+                $this->set('data2', $data2);
             }
         }
         

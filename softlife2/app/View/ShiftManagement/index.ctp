@@ -1,13 +1,9 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
+<?php require('holiday.ctp'); ?>
 <?php
 	// 初期値
-/**
-	$y = date('Y');
-	$m = date('n');
- * 
- */
     $y = date('Y', strtotime('+1 month'));
     $m = date('n', strtotime('+1 month'));
 		
@@ -25,6 +21,8 @@
         $m = substr($month, 4, 2);
         $m = ltrim($m, '0');
     }
+    // 祝日取得
+    $national_holiday = japan_holiday($y);
 ?>
 <?php
 function setShokushu($shokushu_ids, $list_shokushu) {
@@ -155,12 +153,15 @@ window.onload = function(){
     $d = 1;
     while (checkdate($m, $d, $y)) {
         // 日付出力（土日祝には色付け）
-        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0) {
+        if (date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
         } elseif(date("w", mktime(0, 0, 0, $m, $d, $y)) == 6) {
                 $style = 'color:blue;';
+                /**
         } elseif(!empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
+                 * 
+                 */
         } else {
                 $style = '';
         }
@@ -211,12 +212,10 @@ window.onload = function(){
     $d = 1;
     while (checkdate($m, $d, $y)) {
         // 日付出力（土日祝には色付け）
-        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0) {
+        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
         } elseif(date("w", mktime(0, 0, 0, $m, $d, $y)) == 6) {
                 $style = 'color:blue;';
-        } elseif(!empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
-                $style = 'color:red;';
         } else {
                 $style = '';
         }

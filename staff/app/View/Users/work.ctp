@@ -5,8 +5,8 @@
     </div>			
     <div data-role="content">
         <p>以下の入力ができます。</p>
-        <input type="button" value="１．タイムカード" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
-        <input type="button" value="２．給与確認" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#salary"'>
+        <input type="button" value="１．タイムカード" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/work_timecard"'>
+        <input type="button" value="２．給与確認" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
         </div> 

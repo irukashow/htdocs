@@ -901,13 +901,16 @@ class StaffMastersController extends AppController {
                     // 登録２にリダイレクト
                     //$this->redirect(array('action' => 'reg3', $staff_id, $koushin_flag));
                     // 登録完了メッセージ
-                    $this->Session->setFlash('登録しました。');
+                    $this->Session->setFlash('【情報】登録しました。');
                     $this->redirect(array('action' => 'reg2', $staff_id, $koushin_flag));
                 } else {
                     // 登録していた値をセット
                     //$this->request->data = $this->StaffMaster->read(null, $staff_id);
+                    //$this->request->data['StaffMaster']['para2'] = null;
+                    //$this->request->data['StaffMaster']['para3'] = null;
                     $this->set('data', $this->request->data); 
-                    $this->Session->setFlash('登録時にエラーが発生しました。');
+                    $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
+                    //$this->redirect(array('action' => 'reg2', $staff_id, $koushin_flag));
                 }
             } else {
                 /**
