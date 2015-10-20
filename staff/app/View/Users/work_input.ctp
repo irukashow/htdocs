@@ -29,6 +29,7 @@
                             $this->log($case_ids, LOG_DEBUG);
                         ?>
                         <?=$list_case2[$case_id] ?>
+                        <?php echo $this->Form->input('case_id', array('type'=>'hidden', 'value' => $case_id)); ?>
                     </td>
                 </tr>
                 <tr>

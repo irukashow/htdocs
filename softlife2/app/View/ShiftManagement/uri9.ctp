@@ -65,11 +65,19 @@ $(function() {
 <!-- 見出し１ END -->
 
 <?php echo $this->Form->create('TimeCard', array('name' => 'form')); ?>
+<?php
+    // 当月ならば、月を黄色に
+    if ($y == date('Y') && $m == date('m')) {
+        $color = 'color:#ffffcc;font-weight:bold;';
+    } else {
+        $color = 'color:white;';
+    }
+?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
-                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
-                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/uri9?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
+                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;<?=$color ?>'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
+                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/uri9?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
 
@@ -101,7 +109,7 @@ $(function() {
     <thead>
   <tr style="font-size: 100%;margin-top: -10px;">
       <th rowspan="2" style="width:3%;"><?php echo $this->Paginator->sort('no',"No.");?></th>
-    <th rowspan="2" style="width:3%;"><?php echo $this->Paginator->sort('id','日付', array('escape' => false));?></th>
+    <th rowspan="2" style="width:3%;"><?php echo $this->Paginator->sort('id','勤務日付', array('escape' => false));?></th>
     <th rowspan="1" colspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','案件', array('escape' => false));?></th>
     <th rowspan="1" colspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','勤務者', array('escape' => false));?></th>
     <th rowspan="1" colspan="3" style="width:9%;"><?php echo $this->Paginator->sort('name_sei','就業時間', array('escape' => false));?></th>
@@ -113,13 +121,13 @@ $(function() {
     <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','備考', array('escape' => false));?></th>
   </tr>
   <tr>
-      <th style="color: white;width:3%;">物件№</th>
-      <th style="color: white;width:3%;">案件名</th>
+      <th style="color: white;width:2%;">物件№</th>
+      <th style="color: white;width:6%;">案件名</th>
       <th style="color: white;width:3%;">氏名</th>
-      <th style="color: white;width:3%;">所属</th>
-      <th style="color: white;width:3%;">就業時間</th>
-      <th style="color: white;width:3%;">休憩時間</th>
-      <th style="color: white;width:3%;">労働時間</th>
+      <th style="color: white;width:4%;">所属</th>
+      <th style="color: white;width:2%;">就業時間</th>
+      <th style="color: white;width:2%;">休憩時間</th>
+      <th style="color: white;width:2%;">労働時間</th>
       <th style="color: white;width:3%;">売上</th>
       <th style="color: white;width:3%;">時間外費</th>
       <th style="color: white;width:3%;">遅刻早退<br>調整</th>
@@ -182,38 +190,95 @@ $(function() {
   <tbody style="overflow-y:scroll;">
   <?php foreach ($datas as $data): ?>
   <tr>
+    <!-- No -->
     <td align="center">
-        <?php $case_id = $data['TimeCard']['id']; ?>
-        <?php echo $case_id; ?>
+        <?php echo $data['TimeCard']['id']; ?>
     </td>
+    <!-- 勤務日付 -->
+    <td align="center" style="font-size: 100%;">
+        <?php echo $data['TimeCard']['work_date']; ?>
+    </td>
+    <!-- 案件ID -->
+    <td align="center" style="font-size: 100%;">
+        <?php echo $data['TimeCard']['case_id']; ?>
+    </td>
+    <!-- 案件名 -->
+    <td align="left" style="font-size: 100%;">
+        <?php echo $list_case2[$data['TimeCard']['case_id']]; ?>
+    </td>
+    <!-- 氏名 -->
+    <td align="center" style="font-size: 100%;">
+        <?php echo $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?>
+    </td>
+    <!-- 所属 -->
+    <td align="center" style="font-size: 100%;">
+        <?php echo $list_class[$data['TimeCard']['class']]; ?>
+    </td>
+    <!-- 就業時間 -->
+    <td align="center" style="font-size: 100%;">
+        <?php 
+        $work_time = $data['TimeCard']['end_time_h']+$data['TimeCard']['end_time_m']/60 - ($data['TimeCard']['start_time_h']+$data['TimeCard']['start_time_m']/60);
+        echo number_format($work_time, 2); 
+        ?>
+    </td>
+    <!-- 休憩時間 -->
+    <td align="center" style="font-size: 100%;">
+        <?php 
+        $rest_time = $data['TimeCard']['rest_time_to_h']+$data['TimeCard']['rest_time_to_m']/60 - ($data['TimeCard']['rest_time_from_h']+$data['TimeCard']['rest_time_from_m']/60);
+        echo number_format($rest_time, 2); 
+        ?>
+    </td>
+    <!-- 労働時間 -->
+    <td align="center" style="font-size: 100%;">
+        <?php
+        echo number_format($work_time - $rest_time, 2);
+        ?>
+    </td>
+    <!-- 案件名 -->
+    <td align="center" style="font-size: 100%;"></td>
+    <!-- 案件名 -->
+    <td align="center" style="font-size: 100%;"></td>
+    <!-- 案件名 -->
+    <td align="center" style="font-size: 100%;"></td>
+    <!-- 案件名 -->
+    <td align="center" style="font-size: 100%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
+    <!-- 案件名 -->
     <td align="center" style="font-size: 90%;"></td>
   </tr>
   <?php endforeach; ?>

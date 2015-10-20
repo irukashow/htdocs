@@ -1366,13 +1366,82 @@ class ShiftManagementController extends AppController {
         $this->set('user_name', $name);
         $selected_class = $this->Session->read('selected_class');
         $this->set('selected_class', $selected_class);
+        // 所属
+        $conditions0 = array('item' => 2);
+        $list_class = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_class', $list_class);
+        // 案件リスト
+        $conditions1 = array('class'=>$selected_class);
+        $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions1, 'order'=>array('sequence'=>'asc')));
+        $list_case2 += array(''=>'');
+        $this->set('list_case2', $list_case2);
+        // 引数の受け取り
+        if (isset($this->params['named']['limit'])) {
+            $limit = $this->params['named']['limit'];
+        } else {
+            $limit = '20';
+        }
+        $this->set('limit', $limit);
+        // 該当月
+        if (!empty($this->request->query('date'))) {
+            $date = $this->request->query('date');
+            //$this->log($date, LOG_DEBUG);
+            $date_arr = explode('-',$date);
+            $year = $date_arr[0];
+            $month = $date_arr[1];
+        } else {
+            $year = date('Y', strtotime('+1 month'));
+            $month = date('n', strtotime('+1 month'));
+            $date = $year.'-'.$month;
+        }
+        $this->set('date', $date);
+        // スタッフの抽出条件
+        $joins = array(
+            array(
+                'type' => 'left',// innerもしくはleft
+                'table' => 'staff_'.$selected_class,
+                'alias' => 'StaffMaster',
+                'conditions' => array(
+                    'TimeCard.staff_id = StaffMaster.id',
+                )    
+            )
+        );
+        $options = array(
+            'fields'=> array('TimeCard.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei', 
+                'StaffMaster.name_sei2', 'StaffMaster.name_mei2', 'StaffMaster.shokushu_shoukai'),
+            'conditions' => array(
+                'TimeCard.class' => $selected_class,
+                'TimeCard.work_date >=' => $date.'-01',
+                'TimeCard.work_date <= ' => $date.'-31',
+                ),
+            'limit' => $limit,
+            //'group' => array('staff_id'),
+            'joins' => $joins
+        );
+        $this->paginate = $options;
         // データ
         $this->set('datas', $this->paginate('TimeCard'));
+        
         $this->log($this->request->data, LOG_DEBUG);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            $this->CaseManagement->saveAll($this->request->data['CaseManagement']);
-            $this->Session->setFlash('【情報】背景色の登録が完了しました。');
+            if (1 == 1) {
+                
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1, $month));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit, $month));
+            }
         } elseif ($this->request->is('get')) {
             
         } else {
