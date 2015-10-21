@@ -1118,6 +1118,7 @@ class ShiftManagementController extends AppController {
         // 案件情報
         $conditions0 = array('class'=>$selected_class);
         $datas1 = $this->CaseManagement->find('all', array('conditions'=>$conditions0));
+        $list_case = null;
         foreach($datas1 as $key=>$data1) {
             $list_case[$data1['CaseManagement']['id']] = array('case_name'=>$data1['CaseManagement']['case_name'],
                 'bgcolor'=>$data1['CaseManagement']['bgcolor'],'color'=>$data1['CaseManagement']['color']);

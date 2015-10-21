@@ -192,7 +192,7 @@
                             <th style='width:5%;'>&nbsp;</th>
                             <th style='width:10%;'>区分</th>
                             <th style='width:50%;'>標題</th>
-                            <th style='width:25%;'>作成日時</th>
+                            <th style='width:25%;'>配信日時</th>
                         </tr>
                         <?php foreach ($datas as $data) { ?>
                     <?php if (isKidoku($data['AdminInfo']['kidoku_user'], $username)) { ?>

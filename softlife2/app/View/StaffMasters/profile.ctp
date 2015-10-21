@@ -182,12 +182,12 @@ window.onload = function(){
                     <?php
                         if (is_null($data['StaffMaster']['account'])) {
                             echo '未設定';
-                            echo '<br>';
-                            echo '→'.$this->Html->link('ログインアカウント登録', 'password/'.$data['StaffMaster']['id']);
+                            //echo '<br>';
+                            //echo '→'.$this->Html->link('ログインアカウント登録', 'password/'.$data['StaffMaster']['id']);
                         } else {
                             echo $data['StaffMaster']['account'];
-                            echo '<br>';
-                            echo '→'.$this->Html->link('ログインアカウント変更', 'password/'.$data['StaffMaster']['id']);
+                            //echo '<br>';
+                            //echo '→'.$this->Html->link('ログインアカウント変更', 'password/'.$data['StaffMaster']['id']);
                             echo '<br>';
                             echo '→'.$this->Html->link('ログインパスワード変更', 'password2/'.$data['StaffMaster']['id']);
                         }

@@ -127,7 +127,7 @@ window.onload = function(){
 ?>
     &nbsp;&nbsp;
     <div style="float:right;margin-top: 5px;">
-        <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
+        <?php echo $this->Paginator->counter(array('format' => __('全  <b>{:count}</b> 名')));?>
         &nbsp;&nbsp;&nbsp;
         表示件数：
         <?php

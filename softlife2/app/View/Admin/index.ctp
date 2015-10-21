@@ -57,7 +57,7 @@
                     <?php echo $this->Html->link('▶バージョン情報入力ページ', './version/'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master'); ?>
+                    <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master/sort:id/direction:desc'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶スタッフ職種マスタ', '/master/shokushu'); ?>
