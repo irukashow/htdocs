@@ -26,7 +26,7 @@ $(function() {
   // 2日本語を有効化
   $.datepicker.setDefaults($.datepicker.regional['ja']);
   // 3日付選択ボックスを生成
-  $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
+  $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>
 
@@ -40,9 +40,9 @@ $(function() {
             オーダー情報&nbsp;&gt;&gt;&nbsp;
             契約書情報&nbsp;
 <?php } else { ?>
-            <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">オーダー情報</a>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;
+            <font color=blue style="background-color: yellow;">基本情報</font>&nbsp;&gt;&gt;&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【オーダー情報】</a>&nbsp;&gt;&gt;&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【契約書情報】</a>&nbsp;      <!-- alert('制作前');return false; -->
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
@@ -528,9 +528,9 @@ $(function() {
             オーダー情報&nbsp;>>&nbsp;
             契約書情報&nbsp;
 <?php } else { ?>
-            <font color=blue style="background-color: yellow;">【基本情報】</font>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">オーダー情報</a>&nbsp;>>&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">契約書情報</a>&nbsp;  
+            <font color=blue style="background-color: yellow;">基本情報</font>&nbsp;&gt;&gt;&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【オーダー情報】</a>&nbsp;&gt;&gt;&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【契約書情報】</a>&nbsp;      <!-- alert('制作前');return false; --> 
 <?php } ?>
         </font>
         <!-- ページ選択 END -->

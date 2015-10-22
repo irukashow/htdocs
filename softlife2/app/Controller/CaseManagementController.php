@@ -13,7 +13,8 @@ App::uses('AppController', 'Controller');
  * @author M-YOKOI
  */
 class CaseManagementController extends AppController {
-    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster', 'WorkTable');
+    public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 
+        'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster', 'WorkTable');
     
     public $components = array('RequestHandler');
     
@@ -1220,6 +1221,263 @@ class CaseManagementController extends AppController {
             //$this->Session->delete('staff_id');
         } else {
             $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
+        }
+    }
+    
+    // 登録ページ（契約書情報）
+    public function reg3($case_id = null, $koushin_flag = null, $order_id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 登録データのセット
+        $this->set('case_id', $case_id);
+        $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+        $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+        $this->set('data', $data);
+        if (empty($data['OrderInfo']['shokushu_num'])) {
+            $row = 1;
+        } else {
+            $row = $data['OrderInfo']['shokushu_num'];
+        }
+        $option = array();
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['order'] = array('OrderInfo.id' => 'asc');
+        $option['joins'] = array(
+        array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'order_info_details',
+            'alias' => 'OrderInfoDetail',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderInfoDetail.order_id'
+            ),
+        array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'order_calenders',
+            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
+            ),
+        );
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
+        $this->set('list_shokushu', $list_shokushu);
+        // その他
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+        $this->set('order_id', $order_id);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        // 初期化
+        $this->set('row', $row);
+        // 書類配列
+        $datas2= array(
+            0=>'労働者派遣契約書【個別】',
+            1=>'派遣先管理台帳（兼）通知書',
+            2=>'派遣元管理台帳',
+            3=>'労働条件通知書（兼）就業条件明示書',
+            4=>'業務委託契約書',
+            //5=>'その他',
+            );
+        $this->set('datas2', $datas2);
+        //$this->log($datas2, LOG_DEBUG);
+
+        //$this->log($this->request->data['OrderInfo'], LOG_DEBUG);
+        //$this->log('$row='.$row, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            // 次へ進む
+            if (isset($this->request->data['forward'])) {
+                $order_name = $this->request->data['OrderInfo']['order_name'];
+                $period_from = $this->request->data['OrderInfo']['period_from'];
+                $period_to = $this->request->data['OrderInfo']['period_to'];
+                $file = $this->request->data['OrderInfo']['file'];
+                $this->redirect(array('action' => 'reg3_output', $case_id, $koushin_flag,
+                    $order_id, $order_name, $period_from, $period_to, $file));
+            // 
+            } else {
+
+            } 
+        } elseif ($this->request->is('get')) {
+            if (!empty($this->params['named']['row'])) {
+                $row = $this->params['named']['row'];
+            }
+            if (!empty($this->request->query('date'))) {
+                $date = $this->request->query('date');
+                $date_arr = explode('-',$date);
+                $year = $date_arr[0];
+                $month = $date_arr[1];
+            } else {
+                //$year = date('Y');
+                //$month = date('n');
+                $year = date('Y', strtotime('+1 month'));
+                $month = date('n', strtotime('+1 month'));
+            }
+            $month = ltrim($month, '0');
+            $this->set('row', $row);
+            $this->set('year', $year);
+            $this->set('month', $month);
+            
+            // 登録していた値をセット
+            // オーダー一覧用
+            $conditions = array('OrderInfo.case_id' => $case_id);
+            $datas0 = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+            $this->set('datas0', $datas0);
+            // オーダー入力欄以下
+            if (is_null($order_id)) {
+                $this->set('datas', null);
+            } else {
+                //$option['conditions'] = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
+                $conditions = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
+                $datas = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+                //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
+                $this->set('datas', $datas);
+                //$this->log($datas, LOG_DEBUG);
+            }
+            // 職種以下
+            // オーダー入力欄以下
+            /**
+            if (is_null($order_id)) {
+                $this->set('datas2', null);
+            } else {
+                $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
+                $datas2 = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions));
+                $this->set('datas2', $datas2);
+                //$this->log($datas2, LOG_DEBUG);
+            }
+             * 
+             */
+            // レコード数
+            $record = $this->OrderInfo->find('count', $option);
+            $this->set('record', $record);
+            // カレンダー部分のデータ・セット
+            //$conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
+            //$datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions, 'order'=>array('shokushu_num')));
+            for ($i=0; $i<20; $i++) {
+                $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 
+                    'OrderCalender.year' => $year, 'OrderCalender.month' => $month, 'OrderCalender.shokushu_num' => $i+1);
+                $result3 = $this->OrderCalender->find('first', array('conditions'=>$conditions));
+                if (empty($result3)) {
+                    $datas1[$i] = null;
+                } else {
+                    $datas1[$i] = $result3;
+                }
+            }
+            $this->set('datas1', $datas1);
+            $this->log($datas1, LOG_DEBUG);
+            
+            // スタッフ選択の値を渡す
+            $results = null;
+            $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
+            for($i=0; $i<$row; $i++) {
+                $result = null;
+                if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
+                    $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
+        $this->log($ids, LOG_DEBUG);
+                    $result = $ids;
+                } else {
+                    $result =null;
+                }
+                $results[$i] = $result;
+            }
+            $this->set('staff_ids', $results);
+            //$this->log($results, LOG_DEBUG);
+            // スタッフ名の検索
+            $results2 = null;
+            for($i=0; $i<$row; $i++) {
+                $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
+                //$this->log($values, LOG_DEBUG);
+                $result2 = null;
+                if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
+                    $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
+                    foreach($ids as $key=>$id) {
+                        if (empty($id)) {
+                            continue;
+                        }
+                        $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                        $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
+                    }
+                } else {
+                    $result2 = null;
+                }
+                $results2[$i] = $result2;
+                //$this->log($result2, LOG_DEBUG);
+            }
+            //$this->log($results2, LOG_DEBUG);
+            $this->set('staff_names', $results2);
+            //$this->log($results2, LOG_DEBUG);
+            //$this->Session->delete('staff_id');
+        } else {
+            $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
+        }
+    }
+    
+    // 登録ページ（契約書情報）
+    public function reg3_output($case_id = null, $koushin_flag = null, $order_id = null, 
+            $order_name = null, $period_from = null, $period_to = null, $file = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // 登録データのセット
+        $this->set('case_id', $case_id);
+        $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+        $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+        $this->set('data', $data);
+        if (empty($data['OrderInfo']['shokushu_num'])) {
+            $row = 1;
+        } else {
+            $row = $data['OrderInfo']['shokushu_num'];
+        }
+        $option = array();
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['order'] = array('OrderInfo.id' => 'asc');
+        $option['joins'] = array(
+        array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'order_info_details',
+            'alias' => 'OrderInfoDetail',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderInfoDetail.order_id'
+            ),
+        array(
+            'type' => 'LEFT',   //LEFT, INNER, OUTER
+            'table' => 'order_calenders',
+            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
+            ),
+        );
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
+        $this->set('list_shokushu', $list_shokushu);
+        // その他
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+        $this->set('order_id', $order_id);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        $this->set('order_name', $order_name);
+        $this->set('period_from', $period_from);
+        $this->set('period_to', $period_to);
+        $this->set('file', $file);
+        // 書類配列
+        $datas2= array(
+            0=>'労働者派遣契約書【個別】',
+            1=>'派遣先管理台帳（兼）通知書',
+            2=>'派遣元管理台帳',
+            3=>'労働条件通知書（兼）就業条件明示書',
+            4=>'業務委託契約書',
+            //5=>'その他',
+            );
+        $this->set('datas2', $datas2);
+
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            
+            
         }
     }
     

@@ -39,7 +39,7 @@
                     <?php echo $this->Html->link('▶ユーザー一覧', '/users/view'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶管理者からのお知らせ', './admin_info_list'); ?>
+                    <?php echo $this->Html->link('▶管理者からのお知らせ一覧', './admin_info_list'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶ログイン履歴', '/log/login/sort:created/direction:desc'); ?>
@@ -54,7 +54,7 @@
                     <?php echo $this->Html->link('▶ユーザー登録（新規）', '/users/add/'); ?>
                 </td>
                 <td>
-                    <?php echo $this->Html->link('▶バージョン情報入力ページ', './version/'); ?>
+                    <?php echo $this->Html->link('▶バージョン情報一覧', './version_list'); ?>
                 </td>
                 <td>
                     <?php echo $this->Html->link('▶スタッフマスタ更新履歴', '/log/staff_master/sort:id/direction:desc'); ?>

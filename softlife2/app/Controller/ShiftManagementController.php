@@ -475,7 +475,7 @@ class ShiftManagementController extends AppController {
                 // 氏名に変換
                 foreach ($datas3[$key] as $j=>$value) {
                     $condition = array('id'=>$value);
-                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, "", name_mei)';
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     $list_premonth[$key][$j] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>$condition));
                 }
             }
@@ -870,7 +870,7 @@ class ShiftManagementController extends AppController {
                         $staff_cell2[$j][$i] = implode(',', $staff_cell[$j][$i]);
                     }
                 }
-                //$this->log('ここ', LOG_DEBUG);
+                $this->log('セッションあり', LOG_DEBUG);
                 //$this->log($staff_cell2, LOG_DEBUG);
                 $this->set('staff_cell', $staff_cell2);
             } else {
@@ -896,6 +896,7 @@ class ShiftManagementController extends AppController {
                 $staff_cell[0][0] = $year.'-'.$month;     // 該当月セット
                 $this->Session->write('staff_cell', $staff_cell);
                 $this->set('staff_cell', $staff_ids3);
+                $this->log('セッションなし', LOG_DEBUG);
                 //$this->log($this->Session->read('staff_cell'), LOG_DEBUG);
             }
             // 氏名のセット

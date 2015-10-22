@@ -33,6 +33,13 @@ $(function() {
                 <th style='background:#99ccff;text-align: center;'>入力内容</th>
             </tr>
             <tr>
+                <td style='background-color: #e8ffff;width:20%;'>登録番号</td>
+                <td>
+                    <?php echo $this->Form->input('id', array('label'=>false, 'type'=>'hidden')); ?>
+                    <?php echo $id; ?>
+                </td>
+            </tr>
+            <tr>
                 <td style='background-color: #e8ffff;width:20%;'>バージョン</td>
                 <td>
                     <?php echo $this->Form->input('version_no',array('label'=>false,'div'=>false,'maxlength'=>'20','style'=>'width:20%;')); ?>
@@ -72,7 +79,7 @@ $(function() {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('キャンセル', './index', array('id'=>'button-delete'))); ?>
+<?php print($this->Html->link('キャンセル', './version_list', array('id'=>'button-delete'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

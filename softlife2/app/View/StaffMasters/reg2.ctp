@@ -51,7 +51,7 @@ $(function() {
   // 2日本語を有効化
   $.datepicker.setDefaults($.datepicker.regional['ja']);
   // 3日付選択ボックスを生成
-  $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
+  $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>
 

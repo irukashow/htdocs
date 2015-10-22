@@ -7,7 +7,24 @@
     echo $this->Html->script('fixed_midashi');
     echo $this->Html->css('jquery.timepicker');
 ?>
-<?php require('calender.ctp'); ?>
+<?php require('holiday.ctp'); ?>
+<?php
+    // 初期値
+    $y = date('Y', strtotime('+1 month'));
+    $m = date('n', strtotime('+1 month'));
+		
+    // 日付の指定がある場合
+    if(!empty($_GET['date'])){
+        $arr_date = explode('-', $_GET['date']);
+
+        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])) {
+                $y = (int)$arr_date[0];
+                $m = (int)$arr_date[1];
+        }
+    }
+    // 祝日取得
+    $national_holiday = japan_holiday($y);
+?>
 <?php
 //JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
 function convGtJDate($src) {
@@ -92,7 +109,7 @@ $(function() {
   // 2日本語を有効化
   $.datepicker.setDefaults($.datepicker.regional['ja']);
   // 3日付選択ボックスを生成
-  $('.date').datepicker({ dateFormat: 'yy/mm/dd' });
+  $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>
 <script>
@@ -223,7 +240,7 @@ function doAlert(str, element) {
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <font color=blue style="background-color: yellow;">オーダー情報</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">【契約書情報】</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【契約書情報】</a>&nbsp;      <!-- alert('制作前');return false; -->
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
@@ -243,10 +260,8 @@ function doAlert(str, element) {
                 <td align="center" style='background-color: #e8ffff;width:20%;'><?=setNum($key+1) ?></td>
                 <?php if ($data0['OrderInfo']['id'] == $order_id) { ?>
                 <td colspan="3" style="background-color: #ffffcc;">
-                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
                     <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
                             .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
-                    </a>
                 </td>
                 <td align="center" style="background-color: #ffffcc;width: 50px;">
                     <?php echo $this->Form->input('削　除',
@@ -289,13 +304,6 @@ function doAlert(str, element) {
                 <th colspan="4" style='background:#99ccff;text-align: center;'>オーダー入力</th>
             </tr>
             <tr>
-                <td style='background-color: #e8ffff;width:20%;'>保存名（帳票単位）</td>
-                <td colspan="3">
-                    <?php echo $this->Form->input('OrderInfo.order_name',
-                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>setData2($datas, 'OrderInfo', 'order_name'))); ?>
-                </td>
-            </tr>
-            <tr>
                 <td style='background-color: #e8ffff;width:20%;'>契約期間</td>
                 <td colspan="1">
                     自&nbsp;<?php echo $this->Form->input('OrderInfo.period_from',
@@ -309,6 +317,13 @@ function doAlert(str, element) {
                     <?php $list = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12','13'=>'13','14'=>'14','15'=>'15'); ?>
                     <?php echo $this->Form->input('OrderInfo.shokushu_num',
                             array('type'=>'select','div'=>false,'options'=>$list,'label'=>false,'style'=>'width:50px;','value'=>setData2($datas, 'OrderInfo', 'shokushu_num'))); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>保存名（帳票単位）</td>
+                <td colspan="3">
+                    <?php echo $this->Form->input('OrderInfo.order_name',
+                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>setData2($datas, 'OrderInfo', 'order_name'))); ?>
                 </td>
             </tr>
         </table>
@@ -545,7 +560,7 @@ function doAlert(str, element) {
                     <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'全選択・全解除',
                         'value'=>1, 'style'=>'text-align: left;',
                         'onclick'=>'setAllSelect('.$count.', this);')); ?><br>
-                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'土日選択・解除',
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'土日祝選択・解除',
                         'value'=>1, 'style'=>'text-align: left;',
                         'onclick'=>'setAllSelect2('.$count.', this);')); ?>
                 </td>
@@ -568,7 +583,7 @@ function doAlert(str, element) {
                         $i = 0;
                     }
                 //-------------スタイルシート設定-----------------------------------
-                    if( $i == 0 ){ //日曜日の文字色
+                    if( $i == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
                         $style = "#C30";
                     }
                     else if( $i == 6 ){ //土曜日の文字色
@@ -583,7 +598,7 @@ function doAlert(str, element) {
                     // 日付セル作成とスタイルシートの挿入
                     echo '<tr style="'.$style2.';">';
                     echo '<td align="center" style="color:'.$style.';background-color: #e8ffff;">'.$m.'/'.$d.'('.$weekday[$i].')</td>';
-                    if ($i==0 || $i==6) {
+                    if ($i==0 || $i==6 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
                     } else {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';
@@ -629,7 +644,7 @@ function doAlert(str, element) {
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <font color=blue style="background-color: yellow;">オーダー情報</font>&nbsp;&gt;&gt;&nbsp;
-            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="alert('制作前');return false;">【契約書情報】</a>&nbsp;
+            <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【契約書情報】</a>&nbsp;      <!-- alert('制作前');return false; -->
 <?php } ?>
         </font>
         <!-- ページ選択 END -->

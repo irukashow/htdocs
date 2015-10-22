@@ -59,7 +59,7 @@ class AdminController extends AppController {
         }
     }
 
-    // 管理者のお知らせ入力ページ
+    // 管理者のお知らせ一覧ページ
     public function admin_info_list() {
         // レイアウト関係
         $this->layout = "log";
@@ -69,6 +69,7 @@ class AdminController extends AppController {
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name); 
         // データのセット
+        $this->paginate = array('order'=>array('id'=>'desc'));
         $this->set('datas', $this->paginate('AdminInfo'));
         
     	// POSTの場合
@@ -123,34 +124,43 @@ class AdminController extends AppController {
         }
     }
     
-    // バージョン情報入力ページ
-    public function version() {
+    // 管理者のお知らせ一覧ページ
+    public function version_list() {
         // レイアウト関係
-        $this->layout = "sub";
-        $this->set("title_for_layout","バージョン情報入力 - 派遣管理システム");
-        // タブの状態
-        $this->set('active1', '');
-        $this->set('active2', '');
-        $this->set('active3', '');
-        $this->set('active4', '');
-        $this->set('active5', '');
-        $this->set('active6', '');
-        $this->set('active7', '');
-        $this->set('active8', '');
-        $this->set('active9', '');
-        $this->set('active10', 'active');
+        $this->layout = "log";
+        $this->set("title_for_layout","管理者のお知らせ一覧 - 派遣管理システム");
+        $this->set("headline", 'バージョン情報一覧');
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name); 
+        // データのセット
+        $this->paginate = array('order'=>array('id'=>'desc'));
+        $this->set('datas', $this->paginate('VersionRemarks'));
+        
+    	// POSTの場合
+        if ($this->request->is('post')) {
+            if (isset($this->request->data['submit'])) {
+
+            }
+        }
+        
+    }
+    
+    // バージョン情報入力ページ
+    public function version($id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout","バージョン情報入力 - 派遣管理システム");
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name); 
+        $this->set('id', $id); 
         // テーブルの設定
         $this->VersionRemarks->setSource('version_remarks');
         
         $this->log($this->request->data, LOG_DEBUG);
     	// POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            if ($this->VersionRemarks->validates() == false) {
-                exit();
-            }
             if (isset($this->request->data['submit'])) {
                 // モデルの状態をリセットする
                 $this->VersionRemarks->create();
@@ -162,6 +172,9 @@ class AdminController extends AppController {
                 // indexに移動する
                 //$this->redirect(array('action' => 'index'));
             }
+        } else {
+            // 登録していた値をセット
+            $this->request->data = $this->VersionRemarks->read(null, $id);
         }
         
     }
