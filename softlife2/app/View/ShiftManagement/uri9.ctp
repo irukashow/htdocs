@@ -82,7 +82,7 @@ $(function() {
 </table>
 
 <!-- ページネーション -->
-<div class="pageNav03" style="margin-top:5px; margin-bottom: 30px;">
+<div class="pageNav03" style="margin-top:5px; margin-bottom: 35px;">
 <?php
 	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
 	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
@@ -90,6 +90,7 @@ $(function() {
 	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
+    <div style="float:left;margin-left: 10px;margin-top: 5px;">【入力】<b>自動</b> | <a href="<?=ROOTDIR ?>/ShiftManagement/uri9_manual?date=<?=$date ?>">手動</a></div>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
@@ -110,8 +111,8 @@ $(function() {
   <tr style="font-size: 100%;margin-top: -10px;">
       <th rowspan="2" style="width:3%;"><?php echo $this->Paginator->sort('no',"No.");?></th>
     <th rowspan="2" style="width:3%;"><?php echo $this->Paginator->sort('id','勤務日付', array('escape' => false));?></th>
-    <th rowspan="1" colspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','案件', array('escape' => false));?></th>
     <th rowspan="1" colspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','勤務者', array('escape' => false));?></th>
+    <th rowspan="1" colspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','案件', array('escape' => false));?></th>
     <th rowspan="1" colspan="3" style="width:9%;"><?php echo $this->Paginator->sort('name_sei','就業時間', array('escape' => false));?></th>
     <th rowspan="1" colspan="6" style="width:18%;"><?php echo $this->Paginator->sort('name_sei','売上金額', array('escape' => false));?></th>
     <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('age','備考', array('escape' => false));?></th>
@@ -121,10 +122,10 @@ $(function() {
     <th rowspan="2" style="width:6%;"><?php echo $this->Paginator->sort('name_sei','備考', array('escape' => false));?></th>
   </tr>
   <tr>
-      <th style="color: white;width:2%;">物件№</th>
-      <th style="color: white;width:6%;">案件名</th>
       <th style="color: white;width:3%;">氏名</th>
       <th style="color: white;width:4%;">所属</th>
+      <th style="color: white;width:2%;">物件№</th>
+      <th style="color: white;width:6%;">案件名</th>
       <th style="color: white;width:2%;">就業時間</th>
       <th style="color: white;width:2%;">休憩時間</th>
       <th style="color: white;width:2%;">労働時間</th>
@@ -198,14 +199,6 @@ $(function() {
     <td align="center" style="font-size: 100%;">
         <?php echo $data['TimeCard']['work_date']; ?>
     </td>
-    <!-- 案件ID -->
-    <td align="center" style="font-size: 100%;">
-        <?php echo $data['TimeCard']['case_id']; ?>
-    </td>
-    <!-- 案件名 -->
-    <td align="left" style="font-size: 100%;">
-        <?php echo $list_case2[$data['TimeCard']['case_id']]; ?>
-    </td>
     <!-- 氏名 -->
     <td align="center" style="font-size: 100%;">
         <?php echo $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?>
@@ -213,6 +206,14 @@ $(function() {
     <!-- 所属 -->
     <td align="center" style="font-size: 100%;">
         <?php echo $list_class[$data['TimeCard']['class']]; ?>
+    </td>
+    <!-- 案件ID -->
+    <td align="center" style="font-size: 100%;">
+        <?php echo $data['TimeCard']['case_id']; ?>
+    </td>
+    <!-- 案件名 -->
+    <td align="left" style="font-size: 100%;">
+        <?php echo $list_case2[$data['TimeCard']['case_id']]; ?>
     </td>
     <!-- 就業時間 -->
     <td align="center" style="font-size: 100%;">

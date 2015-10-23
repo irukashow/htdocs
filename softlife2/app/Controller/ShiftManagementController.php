@@ -1338,7 +1338,7 @@ class ShiftManagementController extends AppController {
     }
 
     /**
-     * 売上給与一覧ページ
+     * 売上給与一覧ページ（自動入力）
      */
     public function uri9() {
         // 所属が選択されていなければ元の画面に戻す
@@ -1392,8 +1392,122 @@ class ShiftManagementController extends AppController {
             $year = $date_arr[0];
             $month = $date_arr[1];
         } else {
-            $year = date('Y', strtotime('+1 month'));
-            $month = date('n', strtotime('+1 month'));
+            $year = date('Y');
+            $month = date('n');
+            $date = $year.'-'.$month;
+        }
+        $this->set('date', $date);
+        // スタッフの抽出条件
+        $joins = array(
+            array(
+                'type' => 'left',// innerもしくはleft
+                'table' => 'staff_'.$selected_class,
+                'alias' => 'StaffMaster',
+                'conditions' => array(
+                    'TimeCard.staff_id = StaffMaster.id',
+                )    
+            )
+        );
+        $options = array(
+            'fields'=> array('TimeCard.*', 'StaffMaster.name_sei', 'StaffMaster.name_mei', 
+                'StaffMaster.name_sei2', 'StaffMaster.name_mei2', 'StaffMaster.shokushu_shoukai'),
+            'conditions' => array(
+                'TimeCard.class' => $selected_class,
+                'TimeCard.work_date >=' => $date.'-01',
+                'TimeCard.work_date <= ' => $date.'-31',
+                ),
+            'limit' => $limit,
+            //'group' => array('staff_id'),
+            'joins' => $joins
+        );
+        $this->paginate = $options;
+        // データ
+        $this->set('datas', $this->paginate('TimeCard'));
+        
+        $this->log($this->request->data, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (1 == 1) {
+                
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1, $month));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit, $month));
+            }
+        } elseif ($this->request->is('get')) {
+            
+        } else {
+            
+        }
+    }
+    
+    /**
+     * 売上給与一覧ページ（手動入力）
+     */
+    public function uri9_manual() {
+        // 所属が選択されていなければ元の画面に戻す
+        if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
+            //$this->log($this->Session->read('selected_class'));
+            $this->Session->setFlash('右上の所属を選んでください。');
+            $this->redirect($this->referer());
+        }
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', 'active');
+        $this->set('active6', '');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // 所属
+        $conditions0 = array('item' => 2);
+        $list_class = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_class', $list_class);
+        // 案件リスト
+        $conditions1 = array('class'=>$selected_class);
+        $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions1, 'order'=>array('sequence'=>'asc')));
+        $list_case2 += array(''=>'');
+        $this->set('list_case2', $list_case2);
+        // 引数の受け取り
+        if (isset($this->params['named']['limit'])) {
+            $limit = $this->params['named']['limit'];
+        } else {
+            $limit = '20';
+        }
+        $this->set('limit', $limit);
+        // 該当月
+        if (!empty($this->request->query('date'))) {
+            $date = $this->request->query('date');
+            //$this->log($date, LOG_DEBUG);
+            $date_arr = explode('-',$date);
+            $year = $date_arr[0];
+            $month = $date_arr[1];
+        } else {
+            $year = date('Y');
+            $month = date('n');
             $date = $year.'-'.$month;
         }
         $this->set('date', $date);
