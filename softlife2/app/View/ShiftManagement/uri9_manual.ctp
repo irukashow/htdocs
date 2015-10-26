@@ -10,6 +10,14 @@
         '2' => '社員',
         '3' => 'ベルサンテ',
     );
+    // 日付のフォーマット
+    function setDate($date) {
+        if (empty($date)) {
+            return '';
+        }
+        $ret = date('n月j日', strtotime($date));
+        return $ret;
+    }
 ?>
 <style>
 #loading{
@@ -82,7 +90,7 @@ $(function() {
 </div>
 <!-- 見出し１ END -->
 
-<?php echo $this->Form->create('TimeCard', array('name' => 'form')); ?>
+<?php echo $this->Form->create('SalesSalary', array('name' => 'form')); ?>
 <?php
     // 当月ならば、月を黄色に
     if ($y == date('Y') && $m == date('m')) {
@@ -112,6 +120,10 @@ $(function() {
         【入力】<a href="<?=ROOTDIR ?>/ShiftManagement/uri9?date=<?=$date ?>">自動</a> | 
         <font style="font-weight: bold;background-color: #ffffcc;float:right;pading:0px 5px;">手動</font>
     </div>
+    <div style="float:left;margin-left: 20px;margin-top: 5px;">
+        <button type="button" style="cursor: pointer;" 
+                onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/property_info','物件情報','width=800,height=700,scrollbars=yes');">物件情報</button>
+    </div>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
@@ -137,7 +149,7 @@ $(function() {
       <col style='width:60px;'>
       
       <col style='width:50px;'>
-      <col style='width:100px;'>
+      <col style='width:200px;'>
       <col style='width:100px;'>
       
       <col style='width:50px;'>
@@ -162,7 +174,7 @@ $(function() {
     <th rowspan="2" style="width:50px;"><?php echo $this->Paginator->sort('no',"No.");?></th>
     <th rowspan="2" style="width:50px;"><?php echo $this->Paginator->sort('id','勤務日付', array('escape' => false));?></th>
     <th rowspan="1" colspan="2" style="width:150px;"><?php echo $this->Paginator->sort('name_sei','勤務者', array('escape' => false));?></th>
-    <th rowspan="1" colspan="3" style="width:350px;"><?php echo $this->Paginator->sort('name_sei','案件', array('escape' => false));?></th>
+    <th rowspan="1" colspan="3" style="width:350px;"><?php echo $this->Paginator->sort('name_sei','物件（案件）', array('escape' => false));?></th>
     <th rowspan="1" colspan="7" style="width:500px;"><?php echo $this->Paginator->sort('name_sei','売上金額', array('escape' => false));?></th>
     <th rowspan="1" colspan="8" style="width:500px;"><?php echo $this->Paginator->sort('name_sei','給与金額', array('escape' => false));?></th>
     </tr>
@@ -172,7 +184,7 @@ $(function() {
         
         <th style="color: white;width:30px;">№</th>
         <th style="color: white;width:150px;">現場①</th>
-        <th style="color: white;width:120px;">就業時間</th>
+        <th style="color: white;width:120px;">勤務時間</th>
         <th style="color: white;width:20px;">売上</th>
         <th style="color: white;width:40px;">時間外費</th>
         <th style="color: white;width:40px;">遅刻早退</th>
@@ -205,124 +217,125 @@ $(function() {
     </td>
     <!-- 勤務日付 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.work_date', 
-                array('type'=>'text', 'label' => false, 'class' => 'date', 'style' => 'width:80%;text-align:center;')); ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.work_date', 
+                array('type'=>'text', 'label' => false, 'class' => 'date', 'style' => 'width:80%;text-align:center;', 'value'=>setDate($data['SalesSalary']['work_date']))); ?>
     </td>
     <!-- 氏名 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.name', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.name', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:left;', 
-                    'value' => $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'])); ?>
+                    'value' => $data['SalesSalary']['name'])); ?>
     </td>
     <!-- 所属 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.division', 
-                array('type'=>'select', 'label' => false, 'options' => $list_division, 'style' => 'width:80%;font-size:100%;')); ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.division', 
+                array('type'=>'select', 'label' => false, 'options' => $list_division, 'style' => 'width:95%;font-size:90%;')); ?>
     </td>
     <!-- 物件№ -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $data['TimeCard']['case_id']; ?>
+        <?php echo $data['SalesSalary']['case_id']; ?>
     </td>
     <!-- 現場① -->
     <td align="left" style="font-size: 100%;">
-        <?php echo $list_case2[$data['TimeCard']['case_id']]; ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.case_id', 
+                array('type'=>'select', 'label' => false, 'options' => $list_case3, 'selected'=>$data['SalesSalary']['case_id'], 'style' => 'width:95%;font-size:80%;')); ?>
     </td>
-    <!-- 就業時間 -->
+    <!-- 勤務時間 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.name', 
-                array('type'=>'text', 'label' => false, 'div' => false, 'style' => 'width:40px;text-align:left;', 'value' =>'9:30')); ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.name', 
+                array('type'=>'text', 'label' => false, 'div' => false, 'style' => 'width:40px;text-align:left;', 'value' =>$data['PropertyList']['work_time_from'])); ?>
         ~
-        <?php echo $this->Form->input('WorkTable.'.$count.'.name', 
-                array('type'=>'text', 'label' => false, 'div' => false, 'style' => 'width:40px;text-align:left;', 'value' =>'17:30')); ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.name', 
+                array('type'=>'text', 'label' => false, 'div' => false, 'style' => 'width:40px;text-align:left;', 'value' =>$data['PropertyList']['work_time_to'])); ?>
     </td>
     <!-- 売上 -->
     <td align="center" style="font-size: 100%;padding: 0px;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:left;', 
-                    'value' => '13,000')); ?>
+                    'value' => $data['PropertyList']['sales'])); ?>
     </td>
     <!-- 時間外費 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 遅刻早退 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- その他 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 交通費 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 合計 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 備考 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.remarks', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.remarks', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:95%;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 給与 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
-                    'value' => '')); ?>
+                    'value' => $data['PropertyList']['salary'])); ?>
     </td>
     <!-- 時間外費 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 遅刻早退 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- その他 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 小計 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 交通費 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 合計 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
                 array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:left;', 
                     'value' => '')); ?>
     </td>
     <!-- 備考 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input('WorkTable.'.$count.'.sales', 
-                array('type'=>'text', 'label' => false, 'style' => 'width:100px;text-align:left;', 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:95%;text-align:left;', 
                     'value' => '')); ?>
     </td>
   </tr>

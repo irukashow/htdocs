@@ -391,7 +391,9 @@ $(function() {
                 <td style='background-color: #e8ffff;width:20%;'>銀行名</td>
                 <td colspan="2"><?php echo $this->Form->input('bank_name',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:150px;')); ?></td>
                 <td style='background-color: #e8ffff;width:20%;'>支店名</td>
-                <td colspan="3"><?php echo $this->Form->input('bank_shiten',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:200px;')); ?></td>
+                <td colspan="1"><?php echo $this->Form->input('bank_shiten',array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:200px;')); ?></td>
+                <td style='background-color: #e8ffff;width:20%;'>店番号</td>
+                <td colspan="1"><?php echo $this->Form->input('bank_branch_code',array('type'=>'text','div'=>false,'maxlength'=>'5','label'=>false,'style'=>'width:50px;')); ?></td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>普通・当座</td>

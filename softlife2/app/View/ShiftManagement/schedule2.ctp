@@ -125,7 +125,10 @@ window.onload = function(){
 	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
-    &nbsp;&nbsp;
+    <div style="float:left;margin-left: 15px;margin-top: 5px;">
+        【表示】<a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?=$date2 ?>">案件別</a> | スタッフ別
+    </div>
+    
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('全  <b>{:count}</b> 名')));?>
         &nbsp;&nbsp;&nbsp;
