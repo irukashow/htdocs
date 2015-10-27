@@ -281,6 +281,3 @@ onload = function() {
     </fieldset>
 </div>
         
-        <?php
-print_r($datas2);
-        ?>

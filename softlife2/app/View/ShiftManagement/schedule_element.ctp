@@ -734,6 +734,27 @@ table.t tr:nth-child(even) td{background-color:#E8E8FF;color:#000000;}
    width:91%;
    height:600px;
    }
+/** schedule3 **/   
+#header_h3 {
+   position: relative;left:120px;top:0px;
+   width:89.6%;
+   overflow-x:hidden;overflow-y:hidden;
+   }
+#header_v3 {
+   position: relative;left:0px;top:0px;
+   width:122px;
+   //height:582px; 
+   overflow-x:hidden;
+   overflow-y:hidden;
+   }
+#data3 {
+   position: relative;left:120px;top:0px;
+   //overflow-x:scroll;overflow-y:scroll;
+   overflow-x:hidden;
+   overflow-y:hidden;
+   width:91%;
+   //height:600px;
+   }
 </style>
 <script type="text/javascript">
 jQuery(function() {

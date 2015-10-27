@@ -1,7 +1,8 @@
 <?php
 class UsersController extends AppController {
         public $uses = array('StaffMaster', 'User', 'Message2Staff', 'Message2Member', 
-            'TimeCard', 'StaffSchedule', 'StaffLoginLog', 'StaffLog', 'WkSchedule', 'CaseManagement');
+            'TimeCard', 'StaffSchedule', 'StaffLoginLog', 'StaffLog', 'WkSchedule', 
+            'CaseManagement', 'OrderCalender', 'WorkTable');
         // タイトル
         public $title_for_layout = "ホーム - 派遣管理システム";
         /****認証周り*****/
@@ -419,6 +420,138 @@ class UsersController extends AppController {
                         array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'month'=>$date1.'-01')));
                 $this->log($data2, LOG_DEBUG);
                 $this->set('data2', $data2);
+            } else {
+                
+            }
+        }
+        
+	/**
+	 * スケジュール（スタッフシフト表）
+	 */
+	public function schedule3($case_id = null){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+                return;
+            }
+            $this->set('class', $class);
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            $this->WkSchedule->setSource('wk_schedules');
+            // 職種IDのセット
+            $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+            $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
+            $this->set('shokushu_id', $shokushu_id);
+            // 職種マスタ配列
+            $conditions0 = array('item' => 17);
+            $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+            $this->set('list_shokushu', $list_shokushu);
+            // 案件リスト
+            $conditions1 = array('class'=>$class);
+            $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions1, 'order'=>array('sequence'=>'asc')));
+            $list_case2 += array(''=>'');
+            $this->set('list_case2', $list_case2);
+            $this->set('case_id', $case_id);
+        
+            // 登録していた値をセット
+            if (empty($this->request->query['date'])) {
+                $date1 = date('Y-m');
+                $date2 = null;
+            } else {
+                $date2 = $this->request->query['date'];
+                $date1 = $date2;
+            }
+            $this->Session->write('date2', $date2);
+            $this->set('date1', $date1);
+            $y = date('Y', strtotime($date1.'-01'));
+            $m = date('n', strtotime($date1.'-01'));
+            // 案件あたりの職種数
+            $conditions2 = array('class'=>$class, 'OrderCalender.year' => $y, 'OrderCalender.month' => $m, 'OrderCalender.case_id' => $case_id);
+            $col = $this->OrderCalender->find('count', array('conditions' => $conditions2));
+            $this->set('col', $col);
+            // スタッフ配列
+            $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+            $staff_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name_sei')));
+            $this->set('staff_arr', $staff_arr);
+
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
+                if (isset($this->request->data['changeCase'])) {
+                    $case_id = $this->request->data['StaffSchedule']['case_id']; 
+                    $this->redirect(array('action'=>'schedule3', $case_id, '?date='.$date1));
+                }
+            } elseif ($this->request->is('get')) {
+                //$this->log($this->request->data, LOG_DEBUG);
+                $data2 = $this->WkSchedule->find('first', 
+                        array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'month'=>$date1.'-01')));
+                //$this->log($data2, LOG_DEBUG);
+                $case_arr = null;$case_arr2 = null;$case_arr3 = null;
+                if (empty($data2)) {
+                    
+                } else {
+                    for($d=1; $d<=31; $d++) {
+                        $ret = $data2['WkSchedule']['c'.$d];
+                        if (empty($ret)) {
+                            continue;
+                        }
+                        $ret_arr = explode(',', $ret);
+                        $case_arr[$d] = $ret_arr[0];
+                    }
+                    //$this->log($case_arr, LOG_DEBUG);
+                    if (empty($case_arr)) {
+                        $case_arr2 = null;
+                    } else {
+                        $case_arr2 = array_unique($case_arr);
+                        foreach($case_arr2 as $value) {
+                            $case_arr3[$value] = $list_case2[$value];
+                        }
+                    }
+                }
+                $this->set('case_arr', $case_arr3);
+                $this->set('case_num', count($case_arr3));
+                if (empty($case_id) && !empty($case_arr3)) {
+                    reset($case_arr3);
+                    $case_id = key($case_arr3);
+                    $this->redirect(array('action'=>'schedule3', $case_id, '?date='.$date1));
+                }
+                // スタッフの抽出条件
+                $joins = array(
+                    array(
+                        'type' => 'left',// innerもしくはleft
+                        'table' => 'order_info_details',
+                        'alias' => 'OrderInfoDetail',
+                        'conditions' => array(
+                            'WorkTable.order_id = OrderInfoDetail.order_id',
+                            'WorkTable.shokushu_num = OrderInfoDetail.shokushu_num',
+                        )    
+                    )
+                );
+                $options = array(
+                    'fields'=> array('WorkTable.*', 'OrderInfoDetail.*'),
+                    'conditions' => array(
+                        'WorkTable.class' => $class,
+                        'WorkTable.month' => $date1.'-01',
+                        'WorkTable.case_id' => $case_id,
+                        'WorkTable.flag' => 1,
+                        ),
+                    'limit' => 20,
+                    //'group' => array('staff_id'),
+                    'joins' => $joins
+                );
+                // ページネーション
+                $this->paginate = $options;
+                $datas = $this->paginate('WorkTable');
+                //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+                $this->set('datas', $datas);
             } else {
                 
             }

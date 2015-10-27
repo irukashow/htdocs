@@ -290,6 +290,7 @@ input[type=checkbox] {
         <p>以下の入力ができます。</p>
         <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#page2"'>
         <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule2#page1"'>
+        <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule3#page1"'>
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
         </div> 

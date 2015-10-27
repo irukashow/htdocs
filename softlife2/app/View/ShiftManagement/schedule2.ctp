@@ -24,6 +24,26 @@
     $national_holiday = japan_holiday($y);
 ?>
 <?php
+    // 確定表示
+    function displayCommit($flag) {
+        if ($flag == 1) {
+            $ret = "確定";
+        } else {
+            $ret = "未確定";
+        }
+        return $ret;
+    }
+    // 確定スタイル
+    function commitStyle($flag) {
+        if ($flag == 1) {
+            $color = 'background-color:#ff0000;color:white;';
+        } else {
+            $color = 'background-color:#006699;color:white;';
+        }
+        return $color;
+    }
+?>
+<?php
 function setShokushu($shokushu_ids, $list_shokushu) {
     $shokushu_id = explode(',', $shokushu_ids);
     $ret = '';
@@ -85,31 +105,44 @@ window.onload = function(){
 
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 <!-- 見出し１ -->
-<div id='headline' style="padding:10px 10px 10px 10px;">
-    ★ シフト管理
-    &nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">スタッフシフト希望</font></a>        <!-- alert("制作中");return false; -->
-    &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
-    &nbsp;
-    <b><font Style="font-size:95%;color: yellow;">[確定シフト]</font></b>
-    &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
-    &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
-    &nbsp;
-
+<div id='headline' style="padding:4px 10px 4px 10px;">
+    <div style="float: left;padding-top: 5px;">
+        ★ シフト管理
+        &nbsp;&nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">スタッフシフト希望</font></a>        <!-- alert("制作中");return false; -->
+        &nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
+        &nbsp;
+        <b><font Style="font-size:95%;color: yellow;">[確定シフト]</font></b>
+        &nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
+        &nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
+        &nbsp;
+    </div>
+    <div style="float:right;padding-top: 1px;">
+        <input type="text" value="<?=displayCommit($flag); ?>" 
+               style="text-align: center;width: 100px;font-size: 110%;margin-right:30px;font-family: メイリオ;<?=commitStyle($flag); ?>" disabled="disabled">
+    </div>
+    <div style="clear: both;"></div>
 </div>
 <!-- 見出し１ END -->
 
 <!-- 月の指定 -->
 <?php echo $this->Form->create('WkSchedule', array('name' => 'form')); ?>
 <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display: none;')); ?>
+<?php
+    if ($flag == 1) {
+        $css = 'font-weight:bold; color:#FFFFCC;';
+    } else {
+        $css = 'color:white;';
+    }
+?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
                 <td><a href="<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                <td style='background-color: #006699;color: white;cursor: pointer;'>
-                    <a style='font-size: 110%;color:white;' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
+                <td style='background-color: #006699;cursor: pointer;'>
+                    <a style='font-size: 110%;<?=$css?>' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/schedule2?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
                         【<?php echo $y ?>年<?php echo $m ?>月】
                     </a>
                 </td>

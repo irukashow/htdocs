@@ -397,6 +397,16 @@ class ShiftManagementController extends AppController {
         $month = ltrim($month, '0');
         $this->set('year', $year);
         $this->set('month', ltrim($month, '0'));
+        // 該当月のフラグ
+        $conditions3 = array('class'=>$selected_class, 'month'=>$year.'-'.$month.'-01');
+        $data = $this->WorkTable->find('first', array('conditions'=>$conditions3));
+        if (empty($data)) {
+            $flag = 0;
+            $this->set('flag', $flag);
+        } else {
+            $flag = $data['WorkTable']['flag'];
+            $this->set('flag', $flag);   
+        }
         // 登録していた値をセット
         // 登録データのセット
         //$conditions1 = array('id' => $order_id, 'case_id' => $case_id);
@@ -1114,7 +1124,17 @@ class ShiftManagementController extends AppController {
         }
         $this->set('month', $month);
         $this->set('date2', $date2);
-        //$this->log($month, LOG_DEBUG);
+        // 該当月のフラグ
+        $conditions3 = array('class'=>$selected_class, 'month'=>$month.'01');
+        $data = $this->WorkTable->find('first', array('conditions'=>$conditions3));
+        $flag = $data['WorkTable']['flag'];
+        if (empty($data)) {
+            $flag = 0;
+            $this->set('flag', $flag);
+        } else {
+            $flag = $data['WorkTable']['flag'];
+            $this->set('flag', $flag);   
+        }
         // 表示件数の初期値
         $this->set('limit', $limit);
         // 案件情報
@@ -1216,7 +1236,7 @@ class ShiftManagementController extends AppController {
     /**
      * 確定シフト（案件別）
      */
-    public function schedule3($order_id = null, $date = null) {
+    public function schedule3($case_id = null, $date = null) {
         // レイアウト関係
         $this->layout = "main";
         $this->set("title_for_layout", $this->title_for_layout);
@@ -1273,53 +1293,81 @@ class ShiftManagementController extends AppController {
         }
         $this->set('month', $month);
         $this->set('date2', $date2);
-        $this->set('flag', null);
+        $this->set('case_id', $case_id);
+        // 該当月のフラグ
+        $conditions3 = array('class'=>$selected_class, 'month'=>$month.'01');
+        $data = $this->WorkTable->find('first', array('conditions'=>$conditions3));
+        if (empty($data)) {
+            $flag = 0;
+            $this->set('flag', $flag);
+        } else {
+            $flag = $data['WorkTable']['flag'];
+            $this->set('flag', $flag);   
+        }
         //$this->log($month, LOG_DEBUG);
         // 表示件数の初期値
         $this->set('limit', $limit);
         // 案件あたりの職種数
-        $order_id = 1;
-        $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $y, 'OrderCalender.month' => $m, 'OrderCalender.order_id' => $order_id);
+        //$order_id = 1;
+        $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $y, 'OrderCalender.month' => $m, 'OrderCalender.case_id' => $case_id);
         $col = $this->OrderCalender->find('count', array('conditions' => $conditions1));
         $this->set('col', $col);
         // 案件名の取得
-        $conditions1 = array('class'=>$selected_class);
-        $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1, 'order' => array('sequence')));
+        $conditions4 = array('class'=>$selected_class);
+        $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions4, 'order' => array('sequence')));
         $this->set('getCasename', $getCasename);
         // 案件情報
-        $conditions0 = array('class'=>$selected_class);
-        $datas1 = $this->CaseManagement->find('all', array('conditions'=>$conditions0));
+        $datas1 = $this->CaseManagement->find('all', array('conditions'=>$conditions4));
         $list_case = null;
         foreach($datas1 as $key=>$data1) {
             $list_case[$data1['CaseManagement']['id']] = array('case_name'=>$data1['CaseManagement']['case_name'],
                 'bgcolor'=>$data1['CaseManagement']['bgcolor'],'color'=>$data1['CaseManagement']['color']);
         }
         $this->set('list_case', $list_case);
-        // 案件リスト
-        $list_case2 = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions'=>$conditions0, 'order'=>array('sequence'=>'asc')));
-        $this->set('list_case2', $list_case2);
+        // 該当月の案件
+        $datas2 = $this->WorkTable->find('all', array('fields'=>array('case_id'), 'conditions' => $conditions3));
+        foreach($datas2 as $data2) {
+            $case_arr[$data2['WorkTable']['case_id']] = $getCasename[$data2['WorkTable']['case_id']];
+        }
+        if (empty($case_arr)) {
+            $case_arr2 = null;
+        } else {
+            $case_arr2 = array_unique($case_arr); 
+        }
+        if ($flag == 1) {
+            $this->set('case_arr', $case_arr2);
+        } else {
+            $this->set('case_arr', null);
+        } 
+        
         // スタッフの抽出条件
         $joins = array(
             array(
                 'type' => 'left',// innerもしくはleft
-                'table' => 'staff_'.$selected_class,
-                'alias' => 'StaffMaster',
+                'table' => 'order_info_details',
+                'alias' => 'OrderInfoDetail',
                 'conditions' => array(
-                    'WorkTable.staff_id = StaffMaster.id',
+                    'WorkTable.order_id = OrderInfoDetail.order_id',
+                    'WorkTable.shokushu_num = OrderInfoDetail.shokushu_num',
                 )    
             )
         );
         $options = array(
-            //'fields'=> array('WorkTable.*'),
+            'fields'=> array('WorkTable.*', 'OrderInfoDetail.*'),
             'conditions' => array(
                 'WorkTable.class' => $selected_class,
                 'WorkTable.month' => $month.'01',
-                'WorkTable.order_id' => $order_id,
+                'WorkTable.case_id' => $case_id,
+                'WorkTable.flag' => 1,
                 ),
             'limit' => $limit,
             //'group' => array('staff_id'),
-            //'joins' => $joins
+            'joins' => $joins
         );
+        // スタッフ配列
+        $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $staff_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name')));
+        $this->set('staff_arr', $staff_arr);
 
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
