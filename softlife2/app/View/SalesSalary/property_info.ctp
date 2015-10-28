@@ -25,7 +25,7 @@ window.onload = function(){
 <div id='headline' style="padding:10px 10px 10px 10px;margin-top: 10px;">
     ★ 物件情報リスト
     &nbsp;&nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/reg_property" target=""><font Style="font-size:95%;color:yellow;">新規登録</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/reg_property" target=""><font Style="font-size:95%;color:yellow;">新規登録</font></a>
 
 </div>
 <!-- 見出し１ END -->
@@ -78,17 +78,17 @@ window.onload = function(){
     <?php foreach($datas1 as $key => $data1) { ?>
     <tr>
         <td align="center" style="padding: 0px 10px;">
-            <a href="<?=ROOTDIR ?>/ShiftManagement/reg_property/<?=$data1['PropertyList']['id']; ?>">
+            <a href="<?=ROOTDIR ?>/SalesSalary/reg_property/<?=$data1['PropertyList']['id']; ?>">
             <?=$data1['PropertyList']['id']; ?>
             </a>
         </td>
         <td align="left" style="padding: 0px 10px;">
-            <a href="<?=ROOTDIR ?>/ShiftManagement/reg_property/<?=$data1['PropertyList']['id']; ?>">
+            <a href="<?=ROOTDIR ?>/SalesSalary/reg_property/<?=$data1['PropertyList']['id']; ?>">
             <?=$data1['PropertyList']['scene1']; ?>
             </a>
         </td>
         <td align="left">
-            <a href="<?=ROOTDIR ?>/ShiftManagement/reg_property/<?=$data1['PropertyList']['id']; ?>">
+            <a href="<?=ROOTDIR ?>/SalesSalary/reg_property/<?=$data1['PropertyList']['id']; ?>">
             <?=$data1['PropertyList']['scene2']; ?>
             </a>
         </td>

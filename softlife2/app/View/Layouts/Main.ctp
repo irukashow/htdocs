@@ -185,7 +185,7 @@ $(document).ready(function() {
                            <li class='<?= $active3 ?>'><a href='<?=ROOTDIR ?>/StaffMasters/index/0'>スタッフ管理<br><div>Staff Management</div></a></li>
                            <li class='<?= $active4 ?>'><a href='<?=ROOTDIR ?>/CaseManagement/index/0'>案件管理<br><div>Case Management</div></a></li>
                            <li class='<?= $active5 ?>'><a href='<?=ROOTDIR ?>/ShiftManagement/index/'>シフト管理<br><div>Shift Management</div></a></li>
-                           <li class='<?= $active6 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
+                           <li class='<?= $active6 ?>'><a href='<?=ROOTDIR ?>/SalesSalary/index/'>売上給与<br><div>Sales Salary</div></a></li>
                            <li class='<?= $active7 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
                            <li class='<?= $active8 ?>'><a href='#'>&nbsp;<br><div>&nbsp;</div></a></li>
