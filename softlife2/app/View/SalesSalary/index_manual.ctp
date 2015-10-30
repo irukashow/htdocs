@@ -143,13 +143,13 @@ $(function() {
        bordercolor="#333333" align="center" style="font-size: 80%;margin: 0px 0px 5px 0px;table-layout: fixed;" _fixedhead="rows:1; cols:1">
     <colgroup>
       <col style='width:50px;'>
-      <col style='width:50px;'>
+      <col style='width:60px;'>
       
-      <col style='width:70px;'>
+      <col style='width:80px;'>
       <col style='width:60px;'>
       
       <col style='width:50px;'>
-      <col style='width:200px;'>
+      <col style='width:250px;'>
       <col style='width:100px;'>
       
       <col style='width:50px;'>

@@ -292,44 +292,99 @@ class SalesSalaryController extends AppController {
             $page = '1';
         }
         $this->set('flag', $flag);
-        // スタッフの抽出条件
-        $joins = array(
-            array(
-                'type' => 'left',// innerもしくはleft
-                'table' => 'staff_'.$selected_class,
-                'alias' => 'StaffMaster',
+        // 売上給与データ
+        $data_salary = null;
+        $this->SalesSalary->virtualFields['sum'] = 'SUM(salary)';			// バーチャルフィールドを追加
+        $this_month = date('Y-m');      // 今月
+        $result = $this->SalesSalary->find('all', array(
+                'fields'=> array('staff_id', 'sum'),	// Model__エイリアスにする
                 'conditions' => array(
-                    'TimeCard.staff_id = StaffMaster.id',
-                )    
-            )
-        );
-        $options = array(
-            'fields'=> array('StaffMaster.*'),
-            'conditions' => array(
-                //'StaffMaster.class' => $selected_class,
-                ),
-            'limit' => $limit,
-            //'group' => array('staff_id'),
-            //'joins' => $joins
-        );
-        if ($flag == 1) {
-            $options['conditions'] = array(
-                'StaffMaster.bank_kouza_reg' => 0
-                );
-        } elseif ($flag == 2) {
-            $options['conditions'] = array(
-                'StaffMaster.bank_kouza_reg' => 0
-                );
+                    //'staff_id' => $data['StaffMaster']['id'], 
+                    'class' => $selected_class, 
+                    'work_date >=' => $this_month.'-01', 
+                    'work_date <=' => $this_month.'-31',
+                    ),
+                'group' => array('staff_id'),
+        ));
+        foreach($result as $value) {
+            $data_salary[$value['SalesSalary']['staff_id']] = $value['SalesSalary']['sum'];
         }
-        $this->paginate = $options;
-        // データ
-        $this->set('datas', $this->paginate('StaffMaster'));
+        //$this->log($data_salary, LOG_DEBUG);
+        $this->set('data_salary', $data_salary);
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
+            // 検索
+            if (isset($this->request->data['search'])) {
+                $conditions2 = array('kaijo_flag' => 0);
+                // 登録番号で検索
+                if (!empty($this->request->data['search_id'])){
+                    $search_id = $this->request->data['search_id'];
+                    $conditions2 += array('id' => $search_id);
+                }
+                // 氏名で検索
+                if (!empty($this->request->data['search_name'])){
+                    $search_name = $this->request->data['search_name'];
+                    //$conditions2 += array( 'OR' => array(array('StaffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StaffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
+                    //$conditions2 += array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
+                    //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字で検索
+                    foreach( $ary_keyword as $val ){
+                        // 漢字で検索
+                        $conditions1_1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                        // かなで検索
+                        $conditions1_2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2)  LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $conditions2[] = array('OR' => array($conditions1_1, $conditions1_2));
+                    $this->log($conditions2, LOG_DEBUG);
+                }
+                // スタッフの抽出条件
+                $options = array(
+                    'fields'=> array('StaffMaster.*'),
+                    'conditions' => $conditions2,
+                    'limit' => $limit,
+                );
+                if (empty($flag) || $flag == 0) {
+                    $options['conditions'] = array(
+                        'StaffMaster.bank_kouza_reg' => 1,
+                        'kaijo_flag' => 0,
+                        $conditions2
+                        );
+                } elseif ($flag == 1) {
+                    $options['conditions'] = array(
+                        'StaffMaster.bank_kouza_reg' => 0,
+                        'kaijo_flag' => 0,
+                        $conditions2
+                        );
+                } elseif ($flag == 2) {
+                    foreach ($result as $value) {
+                        $array1[] = array('id' => $value['SalesSalary']['staff_id']);
+                    }
+                    $options['conditions'] = array(
+                        'StaffMaster.bank_kouza_reg' => 0,
+                        'OR' => $array1,
+                        'kaijo_flag' => 0,
+                        $conditions2
+                        );
+                }
+                $this->paginate = $options;
+                // スタッフデータ
+                $datas = $this->paginate('StaffMaster');
+                $this->set('datas', $datas);
+                $this->log($datas, LOG_DEBUG);
+            // 登録
+            } elseif (isset($this->request->data['register'])) {
+                if ($this->StaffMaster->saveAll($this->request->data['StaffMaster'])) {
+                    $this->Session->setFlash('【情報】登録を完了しました。');
+                } else {
+                    $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
+                }
+                $this->redirect(array('limit' => $limit, 'page' => $page, $flag));
             // 所属の変更
-            if (isset($this->request->data['class'])) {
+            } elseif (isset($this->request->data['class'])) {
                 $this->selected_class = $this->request->data['class'];
                 //$this->Session->setFlash($class);
                 $this->set('selected_class', $this->selected_class);
@@ -351,10 +406,43 @@ class SalesSalaryController extends AppController {
                     $this->redirect(array('limit' => $limit, 'page' => $page, $flag));
                 }
             }
-        } elseif ($this->request->is('get')) {
-            
         } else {
-            
+            // スタッフの抽出条件
+            $options = array(
+                'fields'=> array('StaffMaster.*'),
+                'conditions' => array(
+                    //'SalesSalary.class' => $selected_class,
+                    ),
+                'limit' => $limit,
+                //'group' => array('staff_id'),
+                //'joins' => $joins
+            );
+            if (empty($flag) || $flag == 0) {
+                $options['conditions'] = array(
+                    'StaffMaster.bank_kouza_reg' => 1,
+                    'kaijo_flag' => 0
+                    );
+            } elseif ($flag == 1) {
+                $options['conditions'] = array(
+                    'StaffMaster.bank_kouza_reg' => 0,
+                    'kaijo_flag' => 0
+                    );
+            } elseif ($flag == 2) {
+                foreach ($result as $value) {
+                    $array1[] = array('id' => $value['SalesSalary']['staff_id']);
+                }
+                $options['conditions'] = array(
+                    'StaffMaster.bank_kouza_reg' => 0,
+                    'OR' => $array1,
+                    'kaijo_flag' => 0
+                    );
+            }
+            $this->paginate = $options;
+            // スタッフデータ
+            $datas = $this->paginate('StaffMaster');
+            $this->set('datas', $datas);
+            //$this->log($this->StaffMaster->getDataSource()->getlog(), LOG_DEBUG);
+            //$this->log($datas, LOG_DEBUG);
         }
     }
     

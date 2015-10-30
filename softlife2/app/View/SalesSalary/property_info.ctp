@@ -122,7 +122,7 @@ window.onload = function(){
 
 <div style="margin-top: 10px;">
 <?php print($this->Form->input('閉 じ る', array('type'=>'button', 'id'=>'button-delete', 
-    'name'=>'close','label'=>false, 'style'=>'cursor:pointer;', 'onclick'=>'window.close();'))); ?>
+    'name'=>'close','label'=>false, 'style'=>'cursor:pointer;', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
 </div>
 <?php echo $this->Form->end(); ?>
 

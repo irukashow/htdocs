@@ -1,7 +1,16 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
-<?php require('calender.ctp'); ?>
+<?php
+    function setSalary($value, $array) {
+        if (empty($array[$value])) {
+            $ret = '';
+        } else {
+            $ret = number_format($array[$value]);
+        }
+        return $ret;
+    }
+?>
 <style>
 #loading{
     position:absolute;
@@ -65,15 +74,7 @@ $(function() {
 <!-- 見出し１ END -->
 
 <?php echo $this->Form->create('StaffMaster', array('name' => 'form')); ?>
-<?php
-    // 当月ならば、月を黄色に
-    if ($y == date('Y') && $m == date('m')) {
-        $color = 'color:#ffffcc;font-weight:bold;';
-    } else {
-        $color = 'color:white;';
-    }
-?>
-
+<?php echo $this->Form->submit('検索', array('name' => 'search', 'style' => 'display:none;')); ?>
 <!-- ページネーション -->
 <div class="pageNav03" style="margin-top:0px; margin-bottom: 5px;">
 <?php
@@ -85,11 +86,11 @@ $(function() {
 ?>
     <div style="float:left;margin-left: 10px;margin-top: 5px;">
         <?php if (empty($flag) || $flag == 0) { ?>
-        【表示】<b>全件</b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1">未登録</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/2">要登録</a>
+        【表示】<b><font style="background-color: yellow;">登録済</font></b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1" style="color:#0000FF;">未登録</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/2" style="color:red;">要登録</a>
         <?php } elseif ($flag == 1) { ?>
-        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/0">全件</a> | <b>未登録</b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/2">要登録</a>
+        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/0">登録済</a> | <b><font color="#FF5F17" style="background-color: yellow;color:#0000FF;">未登録</font></b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/2" style="color:red;">要登録</a>
         <?php } elseif ($flag == 2) { ?>
-        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/0">全件</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1">未登録</a> | <b>要登録</b>
+        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/0">登録済</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1" style="color:#0000FF;">未登録</a> | <b><font color="red" style="background-color: yellow;">要登録</font></b>
         <?php } ?>
     </div>
     <div style="float:right;margin-top: 5px;">
@@ -114,7 +115,7 @@ $(function() {
     <th rowspan="2" style="width:10%;"><?php echo $this->Paginator->sort('name_sei','氏名', array('escape' => false));?></th>
     <th rowspan="2" colspan="1" style="width:10%;"><?php echo $this->Paginator->sort('name_sei2','フリガナ', array('escape' => false));?></th>
     <th rowspan="1" colspan="6" style="width:45%;color:white;">振込口座</th>
-    <th rowspan="2" colspan="1" style="width:10%;color:white;">今月の給与<br>（現段階）</th>
+    <th rowspan="2" colspan="1" style="width:10%;color:white;">今月の給与<br>（現時点）</th>
   </tr>
   <tr>
     <th style="width:5%;"><?php echo $this->Paginator->sort('name_kouza_reg','登録済', array('escape' => false));?></th>
@@ -125,8 +126,8 @@ $(function() {
     <th style="width:10%;"><?php echo $this->Paginator->sort('name_kouza_meigi','口座名義（カナ）', array('escape' => false));?></th>
   </tr>
   <tr>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
-      <td style="background-color: #ffffe6;">&nbsp;</td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input(false, array('type'=>'text', 'name'=>'search_id', 'label' => false, 'placeholder'=>'登録番号', 'style' => 'width:90%;')); ?></td>
+      <td style="background-color: #ffffe6;"><?php echo $this->Form->input(false, array('type'=>'text', 'name'=>'search_name', 'label' => false, 'placeholder'=>'氏名（漢字 or かな）', 'style' => 'width:90%;')); ?></td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
       <td style="background-color: #ffffe6;">&nbsp;</td>
@@ -140,12 +141,15 @@ $(function() {
   <tbody style="">
   <?php foreach ($datas as $i=>$data): ?>
     <?php
-        $flag = $data['StaffMaster']['bank_kouza_reg'];
-        if (empty($flag) || $flag == 0) {
+        $flag_reg = $data['StaffMaster']['bank_kouza_reg'];
+        if (empty($flag_reg) || $flag_reg == 0) {
             $bgcolor = '#C2EEFF';
-            $flag = 0;
-        } elseif ($flag == 1) {
+            $flag_reg = 0;
+        } elseif ($flag_reg == 1) {
             $bgcolor = '#fff9ff';
+        }
+        if ($flag_reg == 0 && !empty(setSalary($data['StaffMaster']['id'], $data_salary))) {
+            $bgcolor = '#FFFF99';
         }
     ?>
 <tr style="background-color:<?=$bgcolor?>;">
@@ -156,17 +160,19 @@ $(function() {
     </td>
     <!-- 氏名 -->
     <td align="left" style="font-size: 100%;">
+                <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
         <?php echo $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?>
+                </a>
     </td>
     <!-- フリガナ -->
     <td align="left" style="font-size: 100%;">
         <?php echo $data['StaffMaster']['name_sei2'].' '.$data['StaffMaster']['name_mei2']; ?>
     </td>
     <!-- 登録済み -->
-    <td align="center" style="font-size: 100%;padding-left: 20px;">
+    <td align="center" style="font-size: 100%;padding-left: 30px;">
         <?php 
             echo $this->Form->input('StaffMaster.'.$i.'.bank_kouza_reg', array('type'=>'checkbox', 'label' => false, 
-                'style' => '', 'value' =>1, 'checked'=>$flag, 'onchange'=>'form.submit();')); 
+                'style' => '', 'value' =>1, 'checked'=>$flag_reg, 'onchange'=>'')); 
         ?>
     </td>
     <!-- 銀行 -->
@@ -191,13 +197,13 @@ $(function() {
     </td>
     <!-- 今月の給与 -->
     <td align="right" style="font-size: 100%;">
-        <?php echo $data['StaffMaster']['bank_kouza_meigi']; ?>
+        <?php echo setSalary($data['StaffMaster']['id'], $data_salary); ?>
     </td>
   </tr>
   <?php endforeach; ?>
 <?php if (count($datas) == 0) { ?>
 <tr>
-    <td colspan="9" align="center">表示するデータはありません。</td>
+    <td colspan="10" align="center">表示するデータはありません。</td>
 </tr>
 <?php } ?>
   </tbody>
@@ -213,5 +219,9 @@ $(function() {
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
  </div>
+<div style="clear:both;"></div>
+    <div style='margin: 10px 0px 0px 0px;'>
+<?php echo $this->Form->submit('登録する', array('name' => 'register','div' => false)); ?>
+    </div>
 <!--- スタッフマスタ本体 END --->
 <?php echo $this->Form->end(); ?>
