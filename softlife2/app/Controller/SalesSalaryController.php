@@ -249,6 +249,95 @@ class SalesSalaryController extends AppController {
     /**
      * 銀行口座
      */
+    public function salary() {
+        // 所属が選択されていなければ元の画面に戻す
+        if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
+            //$this->log($this->Session->read('selected_class'));
+            $this->Session->setFlash('右上の所属を選んでください。');
+            $this->redirect($this->referer());
+        }
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', 'active');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        // 引数の受け取り
+        if (isset($this->params['named']['limit'])) {
+            $limit = $this->params['named']['limit'];
+        } else {
+            $limit = '10';
+        }
+        $this->set('limit', $limit);
+        if (isset($this->params['named']['page'])) {
+            $page = $this->params['named']['page'];
+        } else {
+            $page = '1';
+        }
+        $selected_year = date('Y');
+        $this->set('selected_year', $selected_year);
+        $conditions2 = array('kaijo_flag' => 0);
+        
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            // 登録番号で検索
+            if (!empty($this->request->data['search_id'])){
+                $search_id = $this->request->data['search_id'];
+                $conditions2 += array('id' => $search_id);
+            }
+            // 氏名で検索
+            if (!empty($this->request->data['search_name'])){
+                $search_name = $this->request->data['search_name'];
+                //$conditions2 += array( 'OR' => array(array('StaffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StaffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
+                //$conditions2 += array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
+                //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+                $keyword = mb_convert_kana($search_name, 's');
+                $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                // 漢字で検索
+                foreach( $ary_keyword as $val ){
+                    // 漢字で検索
+                    $conditions1_1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    // かなで検索
+                    $conditions1_2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2)  LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                }
+                $conditions2[] = array('OR' => array($conditions1_1, $conditions1_2));
+                $this->log($conditions2, LOG_DEBUG);
+            }
+            // 年度の指定
+            if (isset($this->request->data['select'])) {
+                $selected_year = $this->request->data['select_year'];
+                $this->set('selected_year', $selected_year);
+            }
+            
+        } else {
+
+        }
+        // スタッフデータ
+        $datas = $this->StaffMaster->find('all', array('conditions' => $conditions2));
+        $this->set('datas', $datas);
+    }   
+        
+    /**
+     * 銀行口座
+     */
     public function account($flag = null) {
         // 所属が選択されていなければ元の画面に戻す
         if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {

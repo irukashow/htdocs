@@ -367,7 +367,7 @@ $(function() {
             <!-- 請求先 -->
             <?php for($j=0; $j<$count_billing ;$j++) { ?>
             <tr>
-                <td style='background-color: #e8ffff;width:10%;' rowspan="6">
+                <td style='background-color: #e8ffff;width:10%;' rowspan="7">
                     <a href="javascript:void(0);" 
                        onclick="window.open('<?=ROOTDIR ?>/CaseManagement/register_customer/0/<?php echo $data['CaseManagement']['billing_destination'.($j+1)]; ?>',
                                    '取引先登録','width=1200,height=800,scrollbars=yes');" class="link_prof">
@@ -455,6 +455,12 @@ $(function() {
                     ?>
                 </td>
             </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>請求割合</td>
+                <td>
+                    <?php echo $this->Form->input('bill_percentage'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '請求割合', 'style'=>'width:50px;padding:5px;')); ?>% 
+                </td>
+            </tr> 
             <?php } ?>
             
             <!-- 請求先（追加分）-->

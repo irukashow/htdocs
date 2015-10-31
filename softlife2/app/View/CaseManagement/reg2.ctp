@@ -156,10 +156,43 @@ function setAllSelect(col, element) {
         }
     }
 }
-// 土日選択・解除
+// 土日祝選択・解除
 function setAllSelect2(col, element) {
     for(var i=1; i<=31 ;i++) {
         if (document.getElementById("HolidayD"+i).value == 0) {
+            continue;
+        }
+        if (element.checked) {
+            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            changeColor(col, i, 1);
+        } else {
+            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            changeColor(col, i, 0);
+        }
+    }
+}
+// 平日選択・解除
+function setAllSelect3(col, element) {
+    for(var i=1; i<=31 ;i++) {
+        if (document.getElementById("HolidayD"+i).value == 1) {
+            continue;
+        }
+        if (element.checked) {
+            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            changeColor(col, i, 1);
+        } else {
+            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            changeColor(col, i, 0);
+        }
+    }
+}
+// 指定曜日選択・解除
+function setAllSelect4(col, element, week) {
+    for(var i=1; i<=31 ;i++) {
+        if (document.getElementById("HolidayD"+i).value == 1) {
+            continue;
+        }
+        if (document.getElementById("WeekD"+i).value != week) {
             continue;
         }
         if (element.checked) {
@@ -558,11 +591,32 @@ function doAlert(str, element) {
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
                 <td align='center' style='background-color: #e8ffff;'>
                     <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'全選択・全解除',
-                        'value'=>1, 'style'=>'text-align: left;',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
                         'onclick'=>'setAllSelect('.$count.', this);')); ?><br>
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'平日選択・解除',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect3('.$count.', this);')); ?><br>
                     <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'土日祝選択・解除',
-                        'value'=>1, 'style'=>'text-align: left;',
-                        'onclick'=>'setAllSelect2('.$count.', this);')); ?>
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect2('.$count.', this);')); ?><br>
+                        <div style="clear:both;"></div>
+                    <!-- カスタム選択 -->
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'月&nbsp;',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect4('.$count.', this, 1);')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'火&nbsp;',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect4('.$count.', this, 2);')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'水&nbsp;',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect4('.$count.', this, 3);')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'木&nbsp;',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect4('.$count.', this, 4);')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'金&nbsp;',
+                        'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
+                        'onclick'=>'setAllSelect4('.$count.', this, 5);')); ?>
+                    <!-- カスタム選択 END -->
                 </td>
                 <?php } ?>
             </tr> 
@@ -603,6 +657,7 @@ function doAlert(str, element) {
                     } else {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';
                     }
+                    echo '<input type="hidden" id="WeekD'.$d.'" value="'.$i.'">';
                     for ($count=0; $count<$row; $count++){
             ?>
                 <td id="Cell<?=$count ?>D<?=$d ?>">

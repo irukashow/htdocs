@@ -42,6 +42,86 @@ window.onload = function(){
 }
   //-->
 </script>
+<script language="javascript">
+function getCELL() {
+ var myTbl = document.getElementById('staff_master');
+    // trをループ。rowsコレクションで,行位置取得。
+　for (var i=0; i<myTbl.rows.length; i++) {
+     // tr内のtdをループ。cellsコレクションで行内セル位置取得。
+    for (var j=0; j<myTbl.rows[i].cells.length; j++) {
+    var Cells=myTbl.rows[i].cells[j]; //i番行のj番列のセル "td"
+　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
+    //Cells.onclick =function(){Mclk(this);}
+    Cells.ondblclick =function(){Mdblclk(this);}
+　  }
+　 }
+　}
+function Mclk(Cell) { 
+ var rowINX = '行位置：'+Cell.parentNode.rowIndex;//Cellの親ノード'tr'の行位置
+ var cellINX = 'セル位置：'+Cell.cellIndex;
+ var cellVal = 'セルの内容：'+Cell.innerHTML;
+  var cellDivNum = 'セル内のDivの数：'+Cell.getElementsByTagName("DIV").length;
+  var divs = "";
+ for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
+    if (i == 0) {
+         divs = Cell.getElementsByTagName("DIV")[0].id;
+    } else {
+         divs = divs + "," + Cell.getElementsByTagName("DIV")[i].id;       
+     }
+ }
+    //alert("移動確定!");
+ //console.log('ID:'+divs);
+ var cellDivIDs = 'セル内のDivのID：'+divs;
+    //取得した値の書き出し
+    res=rowINX + '<br/> '+ cellINX + '<br/>' + cellVal + '<br/>' + cellDivNum + '<br/>' + cellDivIDs;
+      document.getElementById('Mbox0').innerHTML=res;
+       var Ms1=document.getElementById('Mbox1')
+        Ms1.innerText=Cell.innerHTML;
+        Ms1.textContent=Cell.innerHTML;
+}
+var startrow = 24;
+function Mdblclk(Cell) {
+ var rowINX = '行位置：'+Cell.parentNode.rowIndex;//Cellの親ノード'tr'の行位置
+ var cellINX = 'セル位置：'+Cell.cellIndex;
+ var cellVal = 'セルの内容：'+Cell.innerHTML;
+  var cellDivNum = 'セル内のDivの数：'+Cell.getElementsByTagName("DIV").length;
+    if (Cell.parentNode.rowIndex > 2) {
+        // スタッフ選択
+        if (Cell.cellIndex == 2) {
+            window.open('<?=ROOTDIR ?>/ShiftManagement/select/2','スタッフ選択','width=800,height=700,scrollbars=yes');
+        } else if (Cell.cellIndex == 4) {
+            window.open('<?=ROOTDIR ?>/ShiftManagement/select/4','スタッフ選択','width=800,height=700,scrollbars=yes');
+        }
+        alert("("+cellINX+","+rowINX+")");
+    }
+  var divs = "";
+ for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
+    if (i == 0) {
+         divs = "&s1=" + Cell.getElementsByTagName("DIV")[0].id;
+    } else {
+         divs = divs + "&s" + (i+1) + "=" + Cell.getElementsByTagName("DIV")[i].id;       
+     }
+ }
+    if (Cell.parentNode.rowIndex == 0) {
+        location.href = "<?=ROOTDIR ?>/ShiftManagement/setting";
+    } else if (Cell.parentNode.rowIndex < startrow || Cell.parentNode.rowIndex > startrow+31 || Cell.cellIndex < 0) {
+        return false;
+    }
+    // class名が「redips-drag t1」以外ならばNG
+    if (Cell.getAttribute("class") == "redips-mark") {
+        return false;
+    }
+    //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/','スタッフ選択','width=800,height=700,scrollbars=yes');
+}
+      // try ～ catch 例外処理、エラー処理
+      // イベントリスナーaddEventListener,attachEventメソッド
+try{
+ window.addEventListener("load",getCELL,false);
+     }catch(e){
+   window.attachEvent("onload",getCELL);
+  }
+</script>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
   href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
