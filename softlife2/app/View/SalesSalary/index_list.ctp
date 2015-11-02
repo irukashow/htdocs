@@ -2,26 +2,7 @@
     echo $this->Html->css('staffmaster');
     echo $this->Html->script('fixed_midashi');
 ?>
-<?php
-    // 初期値
-    $y = date('Y');
-    $m = date('n');
-
-    // 日付の指定がある場合
-    if(!empty($_GET['date'])){
-        $arr_date = explode('-', $_GET['date']);
-        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])){
-            $y = (int)$arr_date[0];
-            $m = (int)$arr_date[1];
-        }
-    } elseif (!empty($date)) {
-        $arr_date = explode('-', $date);
-        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])){
-            $y = (int)$arr_date[0];
-            $m = (int)$arr_date[1];
-        }
-    }
-?>
+<?php require('calender.ctp'); ?>
 <?php
     // 所属
     $list_division = array(
@@ -200,25 +181,18 @@ $(function() {
 ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
-                <td style=''><a href="<?=ROOTDIR ?>/SalesSalary/index_manual?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
-                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;<?=$color ?>'>【<?php echo $y ?>年<?php echo $m ?>月】</font></td>
-                <td style=''><a href="<?=ROOTDIR ?>/SalesSalary/index_manual?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                <td style='width:25%;'></td>
+                <td style='background-color: #006699;color: white;'><font style='font-size: 110%;'>売上給与データ一覧</font></td>
+                <td style='width:25%;'></td>
         </tr>
 </table>
 
 <!-- ページネーション -->
 <div class="pageNav03" style="margin-top:5px; margin-bottom: 30px;">
-<?php
-	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
-	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
-        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
-?>
     <div style="float:left;margin-left: 10px;margin-top: 5px;">
         【入力】<a href="<?=ROOTDIR ?>/SalesSalary/index?date=<?=$date ?>">自動</a> | 
-        <font style="font-weight: bold;background-color: #ffffcc;padding:0px 5px;">手動</font> |
-        <a href="<?=ROOTDIR ?>/SalesSalary/index_list?date=<?=$date ?>">一覧</a>
+        <a href="<?=ROOTDIR ?>/SalesSalary/index_manual?date=<?=$date ?>">手動</a> |
+        <font style="font-weight: bold;background-color: #ffffcc;padding:0px 5px;">一覧</font>
     </div>
     <div style="float:left;margin-left: 20px;margin-top: 5px;">
         <button type="button" style="cursor: pointer;background-color: #FF5F17;color:white;padding:3px 10px;" 
@@ -226,15 +200,8 @@ $(function() {
         <button type="button" style="cursor: pointer;" 
                 onclick="window.open('<?=ROOTDIR ?>/SalesSalary/property_info','物件情報','width=800,height=700,scrollbars=yes');">物件情報</button>
     </div>
-    <div style="float:right;margin-top: 5px;">
-        <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
-        &nbsp;&nbsp;&nbsp;
-        表示件数：
-        <?php
-            $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
-            echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, 'selected' => $limit,
-                'onchange' => 'form.submit();'));
-        ?>
+    <div style="float:right;margin-top: 5px;margin-right: 10px;">
+        <?php echo '総件数  <b>'.count($datas).'</b> 件';?>
     </div>
  </div>
 <div style="clear:both;"></div>
@@ -242,7 +209,7 @@ $(function() {
 <div class="scroll_div">
 <!--- スタッフマスタ本体 START --->
 <table id="staff_master" border="1" width="1750px" cellspacing="0" cellpadding="1" 
-       bordercolor="#333333" align="center" style="font-size: 80%;margin: 0px 0px 5px 0px;table-layout: fixed;" _fixedhead="rows:1; cols:1">
+       bordercolor="#333333" align="center" style="font-size: 80%;margin: 5px 0px 5px 0px;table-layout: fixed;" _fixedhead="rows:1; cols:1">
     <colgroup>
       <col style='width:50px;'>
       <col style='width:60px;'>
@@ -453,15 +420,5 @@ $(function() {
 </table>
 </div>
 
-<!-- ページネーション -->
-<div class="pageNav03" style="margin-bottom: 30px;">
-<?php
-	echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
-	echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
-	echo $this->Paginator->numbers(array('separator' => ''));
-	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
-        echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
-?>
- </div>
 <!--- スタッフマスタ本体 END --->
 <?php echo $this->Form->end(); ?>

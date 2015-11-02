@@ -21,7 +21,7 @@ class SalesSalaryController extends AppController {
     /**
      * 売上給与一覧ページ（自動入力）
      */
-    public function index() {
+    public function index($date0 = null) {
         // 所属が選択されていなければ元の画面に戻す
         if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
             //$this->log($this->Session->read('selected_class'));
@@ -72,6 +72,11 @@ class SalesSalaryController extends AppController {
             $date_arr = explode('-',$date);
             $year = $date_arr[0];
             $month = $date_arr[1];
+        } elseif (!empty($date0)) {
+            $date = $date0;
+            $date_arr = explode('-',$date);
+            $year = $date_arr[0];
+            $month = $date_arr[1];
         } else {
             $year = date('Y');
             $month = date('n');
@@ -107,23 +112,21 @@ class SalesSalaryController extends AppController {
         
         $this->log($this->request->data, LOG_DEBUG);
         // post時の処理
-        if ($this->request->is('post') || $this->request->is('put')) {
-            if (1 == 1) {
-                
+        if ($this->request->is('post') || $this->request->is('put')) { 
             // 所属の変更
-            } elseif (isset($this->request->data['class'])) {
+            if (isset($this->request->data['class'])) {
                 $this->selected_class = $this->request->data['class'];
                 //$this->Session->setFlash($class);
                 $this->set('selected_class', $this->selected_class);
                 $this->Session->write('selected_class', $this->selected_class);
                 // テーブル変更
                 $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
-                $this->redirect(array('page' => 1, $month));  
+                $this->redirect(array('page' => 1, $date));  
             // 表示件数の変更
             } elseif (isset($this->request->data['limit'])) {
                 $limit = $this->request->data['limit'];
                 $this->set('limit', $limit);
-                $this->redirect(array('limit' => $limit, $month));
+                $this->redirect(array('limit' => $limit, $date));
             }
         } elseif ($this->request->is('get')) {
             
@@ -135,7 +138,7 @@ class SalesSalaryController extends AppController {
     /**
      * 売上給与一覧ページ（手動入力）
      */
-    public function index_manual() {
+    public function index_manual($date0 = null) {
         // 所属が選択されていなければ元の画面に戻す
         if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
             //$this->log($this->Session->read('selected_class'));
@@ -186,6 +189,119 @@ class SalesSalaryController extends AppController {
             $date_arr = explode('-',$date);
             $year = $date_arr[0];
             $month = $date_arr[1];
+        } elseif (!empty($date0)) {
+            $date = $date0;
+            $date_arr = explode('-',$date);
+            $year = $date_arr[0];
+            $month = $date_arr[1];
+        } else {
+            $year = date('Y');
+            $month = date('n');
+            $date = $year.'-'.$month;
+        }
+        $this->set('date', $date);
+        $this->log($date, LOG_DEBUG);
+        // スタッフの抽出条件
+        $joins = array(
+            array(
+                'type' => 'left',// innerもしくはleft
+                'table' => 'property_lists',
+                'alias' => 'PropertyList',
+                'conditions' => array(
+                    'SalesSalary.case_id = PropertyList.id',
+                )    
+            )
+        );
+        $options = array(
+            'fields'=> array('SalesSalary.*', 'PropertyList.*'),
+            'conditions' => array(
+                'SalesSalary.class' => $selected_class,
+                'SalesSalary.work_date >=' => $date.'-01',
+                'SalesSalary.work_date <=' => $date.'-31',
+                ),
+            'limit' => $limit,
+            //'group' => array('staff_id'),
+            'joins' => $joins
+        );
+        $this->paginate = $options;
+        $datas = $this->paginate('SalesSalary');
+        // データ
+        $this->set('datas', $datas);
+        $this->log($datas, LOG_DEBUG);
+        
+        $this->log($this->request->data, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            // 所属の変更
+            if (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1, $date));  
+            // 表示件数の変更
+            } elseif (isset($this->request->data['limit'])) {
+                $limit = $this->request->data['limit'];
+                $this->set('limit', $limit);
+                $this->redirect(array('limit' => $limit, $date));
+            }
+        } elseif ($this->request->is('get')) {
+            
+        } else {
+            
+        }
+        
+    }
+    
+    /**
+     * 売上給与一覧ページ（手動入力）
+     */
+    public function index_list() {
+        // 所属が選択されていなければ元の画面に戻す
+        if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
+            //$this->log($this->Session->read('selected_class'));
+            $this->Session->setFlash('右上の所属を選んでください。');
+            $this->redirect($this->referer());
+        }
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', 'active');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // 所属
+        $conditions0 = array('item' => 2);
+        $list_class = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_class', $list_class);
+        // 案件リスト2
+        $conditions1 = array('class'=>$selected_class);
+        $list_case3 = $this->PropertyList->find('list', array('fields'=>array('id', 'scene1'), 'conditions'=>$conditions1));
+        $list_case3 += array(''=>'');
+        $this->set('list_case3', $list_case3);
+        // 該当月
+        if (!empty($this->request->query('date'))) {
+            $date = $this->request->query('date');
+            //$this->log($date, LOG_DEBUG);
+            $date_arr = explode('-',$date);
+            $year = $date_arr[0];
+            $month = $date_arr[1];
         } else {
             $year = date('Y');
             $month = date('n');
@@ -208,12 +324,10 @@ class SalesSalaryController extends AppController {
             'conditions' => array(
                 'SalesSalary.class' => $selected_class,
                 ),
-            'limit' => $limit,
             //'group' => array('staff_id'),
             'joins' => $joins
         );
-        $this->paginate = $options;
-        $datas = $this->paginate('SalesSalary');
+        $datas = $this->SalesSalary->find('all', $options);
         // データ
         $this->set('datas', $datas);
         $this->log($datas, LOG_DEBUG);
@@ -243,9 +357,162 @@ class SalesSalaryController extends AppController {
         } else {
             
         }
-        
     }
 
+    /**
+     * 売上給与登録ページ
+     */
+    public function reg_ss($id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $username = $this->Auth->user('username');
+        $this->set('username', $username);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // 所属
+        $conditions0 = array('item' => 2);
+        $list_class = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $this->set('list_class', $list_class);
+        // テーブル変更
+        $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+        // 案件リスト2
+        $conditions4 = array('class'=>$selected_class);
+        $list_case3 = $this->PropertyList->find('list', array('fields'=>array('id', 'scene1'), 'conditions'=>$conditions4));
+        $this->set('list_case3', $list_case3);
+        // 初期セット
+        $this->set('id', $id);
+        $this->set('datas2', null);
+        // スタッフ
+        $conditions = array('kaijo_flag'=>0);
+        $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $name_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name'), 'conditions'=>$conditions));
+        $this->set('name_arr', $name_arr);
+
+        $this->log($this->request->data, LOG_DEBUG);
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            if (isset($this->request->data['search'])) {
+                if (!empty($this->request->data['SalesSalary']['search_name']) 
+                        && ($this->request->data['SalesSalary']['division'] == 1 || $this->request->data['SalesSalary']['division'] == 3)) {
+                    $search_name = $this->data['SalesSalary']['search_name'];
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                    }
+                    // ひらがな（カタカナ）での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2) LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $conditions3 = array('OR'=>array(array('kaijo_flag'=>0, $conditions1), array('kaijo_flag'=>0, $conditions2)));
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $name_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name'), 'conditions'=>$conditions3));
+                    $this->set('name_arr', $name_arr);
+                    //$this->log($this->StaffMaster->getDataSource()->getlog(), LOG_DEBUG);
+                } else {
+                    // 社員リスト
+                    $conditions5 = array('FIND_IN_SET('.substr($selected_class, 0, 1).'3'.', busho_id)');
+                    $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $name_arr = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>$conditions5));
+                    $this->set('name_arr', $name_arr);
+                }
+                // 現場検索
+                if (!empty($this->request->data['SalesSalary']['search_case'])) {
+                    $search_case = $this->data['SalesSalary']['search_case'];
+                    $keyword = mb_convert_kana($search_case, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 小文字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions6[] = array('PropertyList.scene1 LIKE ' => '%'.mb_strtolower($val).'%');
+                    }
+                    // 大文字での検索
+                    foreach( $ary_keyword as $val ){
+                        // 検索条件を設定するコードをここに書く
+                        $conditions7[] = array('PropertyList.scene1 LIKE ' => '%'.mb_strtoupper($val).'%');
+                    }
+                    $conditions4 += array('OR' => array($conditions6, $conditions7));
+                    $list_case3 = $this->PropertyList->find('list', array('fields'=>array('id', 'scene1'), 'conditions'=>$conditions4));
+                    $list_case3 += array(''=>'');
+                    $this->set('list_case3', $list_case3);
+                }
+            // 案件選択
+            } elseif (isset($this->request->data['select_case'])) {
+                $conditions8 = array('id' => $this->request->data['SalesSalary']['case_id']);
+                $datas2 = $this->PropertyList->find('first', array('conditions'=>$conditions8));
+                $this->set('datas2', $datas2);
+                $this->log($datas2, LOG_DEBUG);
+            // 登録
+            } elseif (isset($this->request->data['register'])) {
+                // 氏名のセット
+                if (empty($this->request->data['SalesSalary']['name'] )) {
+                    if ($this->request->data['SalesSalary']['division'] == 2) {
+                        $conditions9 = array('username' => $this->request->data['SalesSalary']['staff_id']);
+                        $result = $this->User->find('first', array('conditions'=>$conditions9));
+                        $this->request->data['SalesSalary']['name'] = $result['User']['name_sei'].' '.$result['User']['name_mei'];
+                    } else {
+                        $conditions9 = array('id' => $this->request->data['SalesSalary']['staff_id']);
+                        $result = $this->StaffMaster->find('first', array('conditions'=>$conditions9));
+                        $this->request->data['SalesSalary']['name'] = $result['StaffMaster']['name_sei'].' '.$result['StaffMaster']['name_mei'];
+                    }
+                }
+                if ($this->SalesSalary->save($this->request->data)) {
+                    $this->Session->setFlash('【情報】登録を完了しました。');
+                    // 社員の場合、氏名の再セット
+                    if ($this->request->data['SalesSalary']['division'] == 2) {
+                        // 社員リスト
+                        $conditions5 = array('FIND_IN_SET('.substr($selected_class, 0, 1).'3'.', busho_id)');
+                        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                        $name_arr = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>$conditions5));
+                        $this->set('name_arr', $name_arr);
+                    }
+                }
+            } else {
+                // 所属の変更により氏名セレクトボックスが変更
+                if ($this->request->data['SalesSalary']['division'] == 2) {
+                    // 社員リスト
+                    $conditions5 = array('FIND_IN_SET('.substr($selected_class, 0, 1).'3'.', busho_id)');
+                    $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $name_arr = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>$conditions5));
+                    $this->set('name_arr', $name_arr);
+                } else {
+                    // スタッフ
+                    $conditions = array('kaijo_flag'=>0);
+                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                    $name_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name'), 'conditions'=>$conditions));
+                    $this->set('name_arr', $name_arr);
+                }
+
+            }
+        } else {
+            // 登録していた値をセット
+            $this->request->data = $this->SalesSalary->read(null, $id); 
+            $this->log($this->request->data, LOG_DEBUG);
+            // 社員の場合、氏名の再セット
+            if ($this->request->data['SalesSalary']['division'] == 2) {
+                // 社員リスト
+                $conditions5 = array('FIND_IN_SET('.substr($selected_class, 0, 1).'3'.', busho_id)');
+                $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                $name_arr = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>$conditions5));
+                $this->set('name_arr', $name_arr);
+            }
+        }
+    }
+
+    /**
+     * 請求書作成
+     */
+    public function bill() {
+        
+    }
+    
     /**
      * 銀行口座
      */
@@ -2426,6 +2693,13 @@ class SalesSalaryController extends AppController {
         $conditions8 = array('order_id'=>$order_id, 'shokushu_num'=>$shokushu_num, 'month'=>$month.'-01');
         $data2 = $this->WorkTable->find('first', array('conditions' => $conditions8));
         $this->set('data_ap', $data2);
+        
+    }
+    
+    /**
+     * スタッフ住所覧
+     */
+    public function address() {
         
     }
     

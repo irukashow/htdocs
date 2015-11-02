@@ -1,7 +1,26 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
-<?php require('calender.ctp'); ?>
+<?php
+    // 初期値
+    $y = date('Y');
+    $m = date('n');
+
+    // 日付の指定がある場合
+    if(!empty($_GET['date'])){
+        $arr_date = explode('-', $_GET['date']);
+        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])){
+            $y = (int)$arr_date[0];
+            $m = (int)$arr_date[1];
+        }
+    } elseif (!empty($date)) {
+        $arr_date = explode('-', $date);
+        if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])){
+            $y = (int)$arr_date[0];
+            $m = (int)$arr_date[1];
+        }
+    }
+?>
 <style>
 #loading{
     position:absolute;
@@ -90,14 +109,18 @@ $(function() {
 	echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
         echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
 ?>
-    <div style="float:left;margin-left: 10px;margin-top: 5px;">【入力】<b>自動</b> | <a href="<?=ROOTDIR ?>/SalesSalary/index_manual?date=<?=$date ?>">手動</a></div>
+    <div style="float:left;margin-left: 10px;margin-top: 5px;">
+        【入力】<b>自動</b> |
+        <a href="<?=ROOTDIR ?>/SalesSalary/index_manual?date=<?=$date ?>">手動</a> |
+        <a href="<?=ROOTDIR ?>/SalesSalary/index_list?date=<?=$date ?>">一覧</a>
+    </div>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
         &nbsp;&nbsp;&nbsp;
         表示件数：
         <?php
             $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
-            echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, //'selected' => $limit,
+            echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, 'selected' => $limit,
                 'onchange' => 'form.submit();'));
         ?>
     </div>

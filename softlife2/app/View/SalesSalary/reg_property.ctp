@@ -52,6 +52,6 @@
     &nbsp;&nbsp;
 <?php print($this->Html->link('戻　る', 'property_info', array('id'=>'button-delete'))); ?>
     &nbsp;&nbsp;
-<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.close();'))); ?>
+<?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>

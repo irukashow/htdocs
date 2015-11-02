@@ -259,7 +259,7 @@ function doSubmit(value, flag) {
             $shiharai_arr = array('1'=>'時給', '2'=>'日給', '3'=>'月給', ''=>'');
             if (!empty($datas_order[$key])) {
                 echo $shiharai_arr[$datas_order[$key][0]['OrderInfoDetail']['juchuu_shiharai']].' ';
-                echo $datas_order[$key][0]['OrderInfoDetail']['juchuu_money'].'円<br>';
+                echo number_format($datas_order[$key][0]['OrderInfoDetail']['juchuu_money']).'円<br>';
             }
         ?>
     </td>
@@ -335,7 +335,7 @@ function doSubmit(value, flag) {
         <?php
             $shiharai_arr = array('1'=>'時給', '2'=>'日給', '3'=>'月給', ''=>'');
             echo $shiharai_arr[$datas_order[$key][$i]['OrderInfoDetail']['juchuu_shiharai']].' ';
-            echo $datas_order[$key][$i]['OrderInfoDetail']['juchuu_money'].'円<br>'; 
+            echo number_format($datas_order[$key][$i]['OrderInfoDetail']['juchuu_money']).'円<br>'; 
         ?>
       </td>
       <td style="font-size: 90%;" align="center">
