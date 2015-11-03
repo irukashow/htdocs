@@ -418,6 +418,7 @@ class ShiftManagementController extends AppController {
             'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('sequence', 'case_id', 'order_id')));
         $this->set('datas', $datas);
         //$this->log($datas, LOG_DEBUG);
+        //$this->log($this->OrderCalender->getDataSource()->getlog(), LOG_DEBUG);
         // 職種以下
         $option = array();
         $option['fields'] = array('OrderInfoDetail.*', 'OrderCalender.*'); 
@@ -643,6 +644,9 @@ class ShiftManagementController extends AppController {
                 }
                 // 該当月の更新
                 for ($i=1; $i<=$col; $i++) {
+                    if (empty($data[$d.'_'.$i])) {
+                        continue;
+                    }
                     $conditions = array(
                         'class' => $selected_class,
                         'order_id' => $data2[$i]['order_id'],
@@ -1068,6 +1072,13 @@ class ShiftManagementController extends AppController {
             $this->StaffSchedule->id = $id;
             $this->StaffSchedule->save($data6);
         }
+    }
+    
+    /**
+     * 稼働表作成（改良版）
+     */
+    public function schedule_test() {
+        $this->schedule();
     }
  
     /**

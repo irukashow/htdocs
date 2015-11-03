@@ -10,8 +10,13 @@
 <?php require('holiday.ctp'); ?>
 <?php
     // 初期値
-    $y = date('Y', strtotime('+1 month'));
-    $m = date('n', strtotime('+1 month'));
+    if (empty($datas)) {
+        $y = date('Y', strtotime('+1 month'));
+        $m = date('n', strtotime('+1 month'));
+    } else {
+        $y = date('Y', strtotime($datas[0]['OrderInfo']['period_from']));
+        $m = date('n', strtotime($datas[0]['OrderInfo']['period_from']));  
+    }
 		
     // 日付の指定がある場合
     if(!empty($_GET['date'])){
@@ -263,7 +268,9 @@ function doAlert(str, element) {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('案件登録<font color=gray> （オーダー情報）</font>'); ?></legend>
+        <legend style="font-size: 150%;color: red;">
+            <?php echo __('案件登録<font color=gray> （オーダー情報）</font>'); ?><font color=green style="font-size: 90%;">～<?=$case_arr[$case_id] ?>～</font>
+        </legend>
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
 <?php if ($case_id == 0) { ?>
@@ -288,6 +295,13 @@ function doAlert(str, element) {
             <tr>
                 <th colspan="5" style='background:#99ccff;text-align: center;'>登録済オーダー</th>
             </tr>
+            <?php
+                if (!empty($selected_date)) {
+                    $date2 = '?date='.$selected_date;
+                } else {
+                    $date2 = '';
+                }
+            ?>
             <?php foreach($datas0 as $key=>$data0) { ?>
             <tr>
                 <td align="center" style='background-color: #e8ffff;width:20%;'><?=setNum($key+1) ?></td>
@@ -304,7 +318,7 @@ function doAlert(str, element) {
                 </td>
                 <?php } else { ?>
                 <td colspan="3">
-                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
+                    <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id'].$date2 ?>">
                     <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
                             .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
                     </a>

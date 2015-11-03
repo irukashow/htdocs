@@ -28,7 +28,7 @@
     //echo $this->Html->script('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js');
     //echo $this->Html->script('jquery.timepicker');
     echo $this->Html->script('fixed_midashi');
-    echo $this->Html->script('jquery.tablefix');
+    echo $this->Html->script('jquery.fixedtable');
     if ($flag == 0) {
         echo $this->Html->script('redips-drag-min');
     }
@@ -478,6 +478,16 @@ function getCELL() {
     Cells.ondblclick =function(){Mdblclk(this);}
 　  }
 　 }
+ var myTbl2 = document.getElementById('table0');
+    // trをループ。rowsコレクションで,行位置取得。
+　for (var i=0; i<myTbl2.rows.length; i++) {
+     // tr内のtdをループ。cellsコレクションで行内セル位置取得。
+    for (var j=0; j<myTbl2.rows[i].cells.length; j++) {
+    var Cells2=myTbl2.rows[i].cells[j]; //i番行のj番列のセル "td"
+　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
+    Cells2.ondblclick =function(){Mdblclk2(this);}
+　  }
+　 }
 　}
 function Mclk(Cell) { 
  var rowINX = '行位置：'+Cell.parentNode.rowIndex;//Cellの親ノード'tr'の行位置
@@ -524,6 +534,10 @@ function Mdblclk(Cell) {
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
     window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex+1)
             +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
+}
+function Mdblclk2(Cell) {
+    window.open('<?=ROOTDIR ?>/CaseManagement/reg2/'+Cell.getElementsByTagName("div")[0].id+'/1?date='+Cell.getElementsByTagName("div")[1].id, 
+    'オーダー入力','width=1200,height=800,scrollbars=yes');
 }
       // try ～ catch 例外処理、エラー処理
       // イベントリスナーaddEventListener,attachEventメソッド
@@ -777,3 +791,35 @@ jQuery(function() {
     background: #FEFFED;
   }
 </style>
+<script>
+// this "tableDiv" must be the table's class
+$(".tableDiv").each(function() {      
+    var Id = $(this).get(0).id;
+    var maintbheight = 555;
+    var maintbwidth = 911;
+
+    $("#" + Id + " .FixedTables").fixedTable({
+        width: maintbwidth,
+        height: maintbheight,
+        fixedColumns: 1,
+        // header style
+        classHeader: "fixedHead",
+        // footer style        
+        classFooter: "fixedFoot",
+        // fixed column on the left        
+        classColumn: "fixedColumn",
+        // the width of fixed column on the left      
+        fixedColumnWidth: 150,
+        // table's parent div's id           
+        outerId: Id,
+        // tds' in content area default background color                     
+        Contentbackcolor: "#FFFFFF",
+        // tds' in content area background color while hover.     
+        Contenthovercolor: "#99CCFF", 
+        // tds' in fixed column default background color   
+        fixedColumnbackcolor:"#187BAF", 
+        // tds' in fixed column background color while hover. 
+        fixedColumnhovercolor:"#99CCFF"  
+    });        
+});
+</script>

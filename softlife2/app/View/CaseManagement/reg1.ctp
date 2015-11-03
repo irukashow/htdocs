@@ -51,7 +51,7 @@ $(function() {
 <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $selected_class)); ?>
 <?php echo $this->Form->input('update_user', array('type'=>'hidden', 'value' => $username)); ?>
 
-        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;">
+        <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;margin-bottom: 10px;border-spacing: 0px;font-size:90%;">
             <tr>
                 <th style='background:#99ccff;text-align: center;' colspan="2">項目</th>
                 <th style='background:#99ccff;text-align: center;'>入力内容</th>

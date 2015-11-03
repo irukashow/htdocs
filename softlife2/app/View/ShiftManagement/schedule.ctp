@@ -81,7 +81,7 @@
         </table>
         <!-- ロック部分（上） -->
         <div id="header_h">
-            <table border='1' cellspacing="0" cellpadding="5" id=""
+            <table border='1' cellspacing="0" cellpadding="5" id="table0"
                    style="width:<?=$col*120 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;font-size: 90%;">
                 <colgroup> 
                   <?php for ($count=0; $count<$col; $count++){ ?>
@@ -94,6 +94,8 @@
                         style='background:#99ccff;text-align: center;height: 36px;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;
                         color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
                     <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
+                        <div id="<?=$data['OrderCalender']['case_id'] ?>"></div>
+                        <div id="<?=$year.'-'.sprintf('%02d', $month) ?>"></div>
                     </th>
                     <?php } ?>
                 </tr>
@@ -930,7 +932,7 @@ $E("data").onscroll=scroll;
 <?php print($this->Form->submit($commet2, array('type'=>'button', 'id'=>$button_type, 'name'=>'confirm','div' => false, 'label'=>false,  'class'=>'check',
     'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$y.','.sprintf("%02d", $m).', 2);'))); ?>
     &nbsp;&nbsp;
-<?php print($this->Form->submit('EXCEL出力', array('id'=>'', 'name'=>'output_excel','div' => false, 'onclick'=>'alert("工事中");return false;'))); ?>
+<?php print($this->Form->submit('>>スタッフ送信<<', array('id'=>'button-create', 'name'=>'send', 'div' => false, 'style' => 'padding:10px 20px', 'onclick'=>'alert("工事中");return false;'))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <?php $comment2 = '【注意！】いままで保存した当月のシフトデータは消去されます。\nシフトの全クリアを実行しますか？'; ?>
 <?php print($this->Form->submit('シフトの全クリア', array('id'=>'button-delete', 'class'=>'check', 'name'=>'all_clear', 'div'=>false, $disabled, 'onclick'=>'return window.confirm(\''.$comment2.'\');'))); ?>
