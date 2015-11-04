@@ -474,6 +474,15 @@ class SalesSalaryController extends AppController {
                         $this->set('name_arr', $name_arr);
                     }
                 }
+            // 削除
+            } elseif (isset($this->request->data['delete'])) {
+                if ($this->SalesSalary->delete($id)) {
+                    $this->Session->setFlash('【情報】削除を完了しました。');
+                    $this->redirect(array('action'=>'reg_ss', 0));
+                }
+            // 入力クリア
+            } elseif (isset($this->request->data['clear'])) {
+                $this->redirect(array('action'=>'reg_ss', 0));
             } else {
                 // 所属の変更により氏名セレクトボックスが変更
                 if ($this->request->data['SalesSalary']['division'] == 2) {

@@ -312,8 +312,8 @@ window.onload = function(){
                             <td style='width:70%;'><?=$data['StaffMaster']['bank_name'] ?></td>
                         </tr>
                         <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>支店名</td>
-                            <td style='width:70%;'><?=$data['StaffMaster']['bank_shiten'] ?></td>
+                            <td style='background-color: #e8ffff;width:30%;'>支店名(店番号)</td>
+                            <td style='width:70%;'><?=$data['StaffMaster']['bank_shiten'] ?>(<?=$data['StaffMaster']['bank_branch_code'] ?>)</td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>口座番号</td>

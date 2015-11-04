@@ -1,3 +1,6 @@
+<?php
+    echo $this->Html->css('staffmaster');
+?>
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
@@ -232,6 +235,7 @@ $(function() {
         <input name="register" type="submit" value="登録する">
 <?php echo $this->Form->submit('削　除', array('name' => 'delete','div' => false, 'id'=>'button-delete', 'style'=>'margin-left:10px;', 'onclick'=>'return confirm("登録を削除しますか？")')); ?>
 <?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'style'=>'margin-left:10px;', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<?php print($this->Form->submit('入力クリア', array('name' => 'clear', 'id'=>'clear', 'div'=>false, 'style'=>'margin-left:10px;', 'onclick'=>'window.location.reload();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>
 </div>
