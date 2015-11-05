@@ -105,29 +105,12 @@ $(function() {
   $.datepicker.setDefaults($.datepicker.regional['ja']);
   // 3日付選択ボックスを生成
   $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
-});
-</script>
-<script>
-$(function() {
-	$('#time').timepicker();
+  $('.date').datepicker("option", "showOn", 'button');
 });
 </script>
 <script>
 onload = function() {
-    FixedMidashi.create();
-    // チェックのあるセルを着色
-    for(var col=0; col<<?=$row ?> ;col++) {
-        for(var i=1; i<=31 ;i++) {
-            if (document.getElementById("OrderCalender"+col+"D"+i) == null) {
-                break;
-            }
-            if (document.getElementById("OrderCalender"+col+"D"+i).checked) {
-                changeColor(col, i, 1);
-            } else {
-                changeColor(col, i, 0);
-            }
-        }
-    }
+    //FixedMidashi.create();
 }
 </script>
 <script>
@@ -213,6 +196,35 @@ function doAlert(str, element) {
         element.focus();
     }
 }
+// 和暦に変換
+function setDate2(element, destination) {
+    document.getElementById(destination).value = SeirekiToWareki(element.value);
+}
+function SeirekiToWareki(str){
+    var gengou = "";
+    var year = "";
+    a = str.split("-");
+    a[0] = parseInt(a[0]);
+    a[1] = parseInt(a[1]);
+    a[2] = parseInt(a[2]);
+    if(a[0] > 1989 || (a[0] == 1989 && a[1] == 1 && a[2] > 6)){
+    a[0] = a[0] - 1988;
+    gengou = "平成";
+    }else if(a[0] > 1926 || (a[0] == 1926 && a[1] == 12 && a[2] > 24)){
+    a[0] = a[0] - 1925;
+    gengou = "昭和";
+    }else if(a[0] > 1912 || (a[0] == 1912 && a[1] == 7 && a[2] > 30)){
+    a[0] = a[0] - 1911;
+    gengou = "大正";
+    }else if(a[0] > 1868 || (a[0] == 1868 && a[1] == 1 && a[2] > 24)){
+    a[0] = a[0] - 1867;
+    gengou = "明治";
+    }
+    if(a[0] == 1){
+    a[0] = "元";
+    }
+    return gengou + a[0] + "年" + a[1] + "月" + a[2] + "日";
+}
 </script>
 <style type="text/css" media="screen">
   div.scroll_div { 
@@ -250,84 +262,382 @@ function doAlert(str, element) {
 <?php echo $this->Form->input('OrderInfo.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
 <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('OrderInfo.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-    <div id='headline' style="font-size: 120%;margin-top: 5px;padding: 5px;border:1px solid black;background-color: #45bcd2;color:white;border-radius: 5px;width:1000px;">
+    <div id='headline' style="font-size: 120%;margin: 5px 0px;padding: 5px;border:1px solid black;background-color: #45bcd2;color:white;border-radius: 5px;width:1000px;">
         <span style="font-size: 100%;">★&nbsp;<?=$datas2[$file] ?>&nbsp;★</span>
     </div>
         
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 5px;border-spacing: 0px;'>
             <tr>
-                <th colspan="5" style='background:#99ccff;text-align: left;padding-left: 10px;'>
-                    <?php
-                        $period ='自&nbsp;'.convGtJDate($period_from).'&nbsp;～至&nbsp;'.convGtJDate($period_to);
-                        $period2 ='自 '.convGtJDate($period_from).' ～ 至 '.convGtJDate($period_to);
-                    ?>
-                    <?=$period ?>&nbsp;&nbsp;<?=$order_name ?>
-                </th>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    案件名称
+                </td>
+                <td colspan="5" style='text-align: left;padding-left: 10px;'>
+                    <?=$case_arr[$case_id] ?>
+                </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>
-                    契約締結日
+                    派遣先企業名
                 </td>
-                <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                <td colspan="5" style='text-align: left;'>
+                    <?php echo $this->Form->input('OrderInfo.dispatch_destination',
                             array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>
-                    業務内容
+                    契約締結日
                 </td>
-                <td colspan="4" style="font-size: 100%;">
+                <td colspan="5" style="font-size: 100%;">
                     <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'textarea','div'=>false,'rows'=>'3','label'=>false,'style'=>'width:700px;','value'=>$data['OrderInfo']['order_name'])); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="4">
-                    就業場所
-                </td>
-                <td style='background-color: #e8ffff;width:20%;text-align: left;'>名称</td>
-                <td colspan="3" style="font-size: 100%;">
-                    <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'textarea','div'=>false,'rows'=>'2','label'=>false,'style'=>'width:700px;','value'=>$data['OrderInfo']['order_name'])); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;text-align: left;'>部署</td>
-                <td colspan="3" style="font-size: 100%;">
-                    <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:700px;','value'=>$data['OrderInfo']['order_name'])); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;text-align: left;'>住所・TEL</td>
-                <td colspan="3" style="font-size: 100%;">
-                    <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:700px;','value'=>$data['OrderInfo']['order_name'])); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style='background-color: #e8ffff;width:20%;text-align: left;'>指揮命令者</td>
-                <td style="font-size: 100%;">
-                    <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:300px;','value'=>$data['OrderInfo']['order_name'])); ?>
-                </td>
-                <td style='background-color: #e8ffff;width:20%;text-align: left;'>役職</td>
-                <td style="font-size: 100%;">
-                    <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:300px;','value'=>$data['OrderInfo']['order_name'])); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'class'=>'date','style'=>'display:none;', 'onchange'=>'setDate2(this, "contract_date2");')); ?>
+                    <input type="text" id="contract_date2" disabled="disabled" style="background-color: white;border:none;font-size: 100%;width:150px;">
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>
                     派遣期間
                 </td>
-                <td colspan="4" style="font-size: 100%;">
+                <td colspan="5" style='text-align: left;'>
+                    <?php
+                        $period ='自&nbsp;'.convGtJDate($period_from).'&nbsp;～至&nbsp;'.convGtJDate($period_to);
+                        $period2 ='自 '.convGtJDate($period_from).' ～ 至 '.convGtJDate($period_to);
+                    ?>
+                    <?=$period ?>&nbsp;&nbsp;<?=$order_name ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    抵触日(事業所)
+                </td>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.conflict_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:150px;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    派遣元責任者
+                </td>
+                <td colspan="5" style="font-size: 100%;">
                     <?php echo $this->Form->input('OrderInfo.contract_date',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:700px;','value'=>$period2)); ?>
+                            array('type'=>'select','div'=>false,'label'=>false,'options'=>$user_arr,'empty'=>'選んでしてください', 'style'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    派遣料金
+                </td>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align:right;')); ?>円
                 </td>
             </tr>
         </table>
+    
+        <!-- 派遣契約書（個別）内容 -->
+        <table style="padding-top:10px;">
+            <tr>
+                <td>■派遣契約書（個別）内容</td>
+            </tr>
+        </table>
+        <?php
+            $text1 = '（以下「甲」という。）と株式会社ソフトライフ（以下「乙」という。）とは、'
+                    . '平成　　年　　月　　日締結の「労働者派遣基本契約書」に基づき、下記派遣概要の通り、労働者派遣契約書（個別）を締結する。';
+        ?>
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 0px;border-spacing: 0px;'>
+            <tr>
+                <td style='background-color: #e8ffff;text-align: left;padding-left: 10px;'>
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>3,'style'=>'width:95%;text-align:left;','value'=>$text1)); ?>
+                </td>
+            </tr>
+        </table>
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;table-layout: fixed;'>
+            <colgroup>
+                <col style="width:150px;" />
+                <col style="width:150px;" />
+                <col style="width:150px;" />
+                <col style="width:150px;" />
+                <col style="width:150px;" />
+                <col style="width:150px;" />
+            </colgroup>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    業務内容
+                </td>
+                <?php
+                    $text2 ='受付スタッフ（労働派遣事業の適正な運営の確保及び派遣労働者の保護などに関する法律執行令第４条第１２号）：受付及びそれらに付帯する業務	';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>3,'style'=>'width:95%;text-align:left;','value'=>$text2)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="5">
+                    就業場所
+                </td>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>名称</td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'textarea','div'=>false,'rows'=>'2','label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>組織単位</td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>部署</td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>住所・TEL</td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>指揮命令者</td>
+                <td colspan="2" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
+                </td>
+                <td style='background-color: #e8ffff;text-align: left;'>役職名</td>
+                <td style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    派遣期間
+                </td>
+                <td colspan="5" style='text-align: left;'>
+                    <?php
+                        $period ='自&nbsp;'.convGtJDate($period_from).'&nbsp;～至&nbsp;'.convGtJDate($period_to);
+                        $period2 ='自 '.convGtJDate($period_from).' ～ 至 '.convGtJDate($period_to);
+                    ?>
+                    <?=$period ?>&nbsp;&nbsp;<?=$order_name ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    就業日
+                </td>
+                <td colspan="2" style='text-align: left;'>
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;')); ?>
+                </td>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    休日出勤
+                </td>
+                <td colspan="2" style='text-align: left;'>
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    就業時間算出
+                </td>
+                <?php
+                    $text3 = '欠勤、遅刻、早退等で契約時間に満たない場合及び契約時間外勤務をした場合の労働時間は15分単位とし、端数を切り上げることとする。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>2,'style'=>'width:95%;','value'=>$text3)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    時間外勤務
+                </td>
+                <?php
+                    $text4 = '法定時間外勤務については、1日8時間、1カ月45時間、1年360時間を超えない範囲とする。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text4)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    安全及び衛生
+                </td>
+                <?php
+                    $text5 = '甲及び乙は労働者派遣法第44条から第47条の2までの規定により課せられた責任を負う。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text5)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    福利厚生
+                </td>
+                <?php
+                    $text6 = '制服の貸与　　無　　　　　　ロッカーの使用　　無';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text6)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    便宜供与
+                </td>
+                <?php
+                    $text7 = '甲は、派遣労働者に対し、甲が雇用する労働者が利用する設備について同様に利用することが出来るように努める。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text7)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="2">
+                    派遣元<br>苦情処理申出先
+                </td>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    役職・氏名
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    ＴＥＬ
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="2">
+                    派遣先<br>苦情処理申出先
+                </td>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    役職・氏名
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    ＴＥＬ
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="2">
+                    派遣元責任者
+                </td>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    役職・氏名
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    ＴＥＬ
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="2">
+                    派遣先責任者
+                </td>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    役職・氏名
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    ＴＥＬ
+                </td>
+                <td colspan="4" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
+                </td>
+            </tr>
+            
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    派遣人員
+                </td>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'width:50px;','value'=>2)); ?>名
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    派遣料金請求に<br>関する項目
+                </td>
+                <?php
+                    $text5 = '派遣人員１名につき、時給　　　　　　円（消費税別途）。'
+                            . '※8時間超過分の時間外勤務に関しては、　　　　　円（各消費税別途）とする。但し、甲の指揮命令者の指示した残業のみとする。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>3,'style'=>'width:95%;','value'=>$text5)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    交通費
+                </td>
+                <?php
+                    $text6 = '就業場所までの交通費については、　　の負担とする。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text6)); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;'>
+                    その他<br>特記事項
+                </td>
+                <?php
+                    $text7 = '派遣期間・派遣人員など、状況により内容の変更が生じた場合は、その都度甲乙協議の上、見直すものとする。';
+                ?>
+                <td colspan="5" style="font-size: 100%;">
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
+                            array('type'=>'text','div'=>false,'label'=>false,'rows'=>5,'style'=>'width:95%;','value'=>$text7)); ?>
+                </td>
+            </tr>
+        </table>
+        <!-- 派遣契約書（個別）内容 END -->
 </div>        
         <!-- ページ選択 -->
         <font style="font-size: 110%;">

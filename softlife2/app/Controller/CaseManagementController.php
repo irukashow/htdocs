@@ -1495,10 +1495,6 @@ class CaseManagementController extends AppController {
             'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
             ),
         );
-        // 職種マスタ配列
-        $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
-        $this->set('list_shokushu', $list_shokushu);
         // その他
         $username = $this->Auth->user('username');
         $this->set('username', $username); 
@@ -1511,6 +1507,23 @@ class CaseManagementController extends AppController {
         $this->set('period_from', $period_from);
         $this->set('period_to', $period_to);
         $this->set('file', $file);
+        // 社員配列
+        $conditions2 = array('area' => substr($selected_class, 0, 1));
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $user_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions2));
+        $this->set('user_arr', $user_arr); 
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
+        $this->set('list_shokushu', $list_shokushu);
+        // 案件配列
+        $conditions1 = array('class' => $selected_class);
+        $case_arr = $this->CaseManagement->find('list', array('fields' => array('id', 'case_name'), 'conditions' => $conditions1, 'order' => array('id'=>'asc')));
+        $this->set('case_arr', $case_arr); 
+        // 和暦配列
+        $conditions0 = array('item' => 30);
+        $jyear_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
+        $this->set('jyear_arr', $jyear_arr);
         // 書類配列
         $datas2= array(
             0=>'労働者派遣契約書【個別】',

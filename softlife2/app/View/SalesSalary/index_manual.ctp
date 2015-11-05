@@ -1,6 +1,6 @@
 <?php
     echo $this->Html->css('staffmaster');
-    echo $this->Html->script('fixed_midashi');
+    //echo $this->Html->script('fixed_midashi');
 ?>
 <?php
     // 初期値
@@ -62,6 +62,7 @@ window.onload = function(){
   //-->
 </script>
 <script language="javascript">
+    /**
 function getCELL() {
  var myTbl = document.getElementById('staff_master');
     // trをループ。rowsコレクションで,行位置取得。
@@ -140,7 +141,9 @@ try{
      }catch(e){
    window.attachEvent("onload",getCELL);
   }
+  **/
 </script>
+<script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 <!-- for Datepicker -->
 <link type="text/css" rel="stylesheet"
   href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
@@ -320,7 +323,7 @@ $(function() {
     </td>
     <!-- 勤務日付 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $this->Form->input(false, 
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.work_date2', 
                 array('type'=>'text', 'label' => false, 'class' => 'date', 'style' => 'width:80%;text-align:center;', 'value'=>setDate($data['SalesSalary']['work_date']))); ?>
         <?php echo $this->Form->input('SalesSalary.'.$count.'.work_date', array('type'=>'hidden', 'value' => $data['SalesSalary']['work_date'])); ?>
     </td>

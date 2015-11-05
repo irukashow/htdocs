@@ -644,9 +644,12 @@ class ShiftManagementController extends AppController {
                 }
                 // 該当月の更新
                 for ($i=1; $i<=$col; $i++) {
+                    /**
                     if (empty($data[$d.'_'.$i])) {
                         continue;
                     }
+                     * 
+                     */
                     $conditions = array(
                         'class' => $selected_class,
                         'order_id' => $data2[$i]['order_id'],
@@ -773,7 +776,7 @@ class ShiftManagementController extends AppController {
                                 /** スタッフスケジュールの抽出実行 **/
                                 $conditions4 = array('class' => $selected_class, 'month' => $month2);
                                 $datas10 = $this->WorkTable->find('all', array('conditions'=>$conditions4));
-                                $this->log($this->WorkTable->getDataSource()->getLog(), LOG_DEBUG);
+                                //$this->log($this->WorkTable->getDataSource()->getLog(), LOG_DEBUG);
                                 $data_schedules = null;
                                 $case_ids = null;
                                 foreach ($datas10 as $key=>$data) {
@@ -840,7 +843,7 @@ class ShiftManagementController extends AppController {
             /** シフトの全クリア **/
             } elseif (isset($this->request->data['all_clear'])) {
                 // 該当月を削除
-                $param = array('class' => $selected_class, 'month' => $data['month']);
+                $param = array('class' => $selected_class, 'month' => $data['month'].'-01');
                 if ($this->WorkTable->deleteAll($param)) {
                     // 成功
                     $this->Session->setFlash('【情報】シフトを全クリアしました。');

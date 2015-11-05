@@ -584,6 +584,7 @@ function doAccount(year, month, mode) {
     
     // 保存モードの場合(mode=1)
     // 保存＆チェックモードの場合(mode=2)
+    // 確定の場合(mode=3)
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
     input.setAttribute('name', 'mode');
@@ -595,6 +596,11 @@ function doAccount(year, month, mode) {
             Cell = myTbl.rows[i].cells[j];
             if (Cell.innerHTML.length == 0) {
                 continue;
+            }
+            // spanタグがあって、divタグがないものはエラー（一時保存以外）
+            if (mode != 1 && Cell.getElementsByTagName("span").length > 0 && Cell.getElementsByTagName("DIV").length == 0) {
+                alert("【エラー】"+(i-startrow+1)+"日に埋まっていないシフトが存在します。");
+                return;
             }
             for(k=0; k<Cell.getElementsByTagName("DIV").length; k++) {
                 // コピーの文字列を削る
