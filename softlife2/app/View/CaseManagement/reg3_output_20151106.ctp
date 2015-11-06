@@ -26,7 +26,7 @@
     $national_holiday = japan_holiday($y);
 ?>
 <?php
-//JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
+//JQueryのコントロールを使ったりして2015-4-23等の形式の文字列が渡すように限定するかんじ
 function convGtJDate($src) {
     list($year, $month, $day) = explode("-", $src);
     if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4
@@ -49,10 +49,10 @@ function convGtJDate($src) {
     }
     switch ($wayear) {
         case 1:
-            $wadate = $gengo."元年".$month."月".$day."日";
+            $wadate = $gengo."元年".ltrim($month, '0')."月".ltrim($day, '0')."日";
             break;
         default:
-            $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月".$day."日";
+            $wadate = $gengo.$wayear."年".ltrim($month, '0')."月".ltrim($day, '0')."日";
     }
     return $wadate;
 }
@@ -79,11 +79,6 @@ function setData2($datas, $table, $col) {
 }
 ?>
 <?php
-    /** 番号のマークをセット **/
-    function setNum($number) {
-        $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
-        return $arr[$number];
-    }
     /**  **/
     function NZ($value) {
         for ($i=0; $i<count($value) ;$i++) {
@@ -114,52 +109,8 @@ $(function() {
 });
 </script>
 <script>
-// 和暦に変換
-function setDate2(element, destination) {
-    document.getElementById(destination).value = SeirekiToWareki(element.value);
-}
-function SeirekiToWareki(str){
-    var gengou = "";
-    var year = "";
-    a = str.split("-");
-    a[0] = parseInt(a[0]);
-    a[1] = parseInt(a[1]);
-    a[2] = parseInt(a[2]);
-    if(a[0] > 1989 || (a[0] == 1989 && a[1] == 1 && a[2] > 6)){
-    a[0] = a[0] - 1988;
-    gengou = "平成";
-    }else if(a[0] > 1926 || (a[0] == 1926 && a[1] == 12 && a[2] > 24)){
-    a[0] = a[0] - 1925;
-    gengou = "昭和";
-    }else if(a[0] > 1912 || (a[0] == 1912 && a[1] == 7 && a[2] > 30)){
-    a[0] = a[0] - 1911;
-    gengou = "大正";
-    }else if(a[0] > 1868 || (a[0] == 1868 && a[1] == 1 && a[2] > 24)){
-    a[0] = a[0] - 1867;
-    gengou = "明治";
-    }
-    if(a[0] == 1){
-    a[0] = "元";
-    }
-    return gengou + a[0] + "年" + a[1] + "月" + a[2] + "日";
-}
-</script>
-<script>
 onload = function() {
-    FixedMidashi.create();
-    // チェックのあるセルを着色
-    for(var col=0; col<<?=$row ?> ;col++) {
-        for(var i=1; i<=31 ;i++) {
-            if (document.getElementById("OrderCalender"+col+"D"+i) == null) {
-                break;
-            }
-            if (document.getElementById("OrderCalender"+col+"D"+i).checked) {
-                changeColor(col, i, 1);
-            } else {
-                changeColor(col, i, 0);
-            }
-        }
-    }
+    //FixedMidashi.create();
 }
 </script>
 <script>
@@ -245,6 +196,35 @@ function doAlert(str, element) {
         element.focus();
     }
 }
+// 和暦に変換
+function setDate2(element, destination) {
+    document.getElementById(destination).value = SeirekiToWareki(element.value);
+}
+function SeirekiToWareki(str){
+    var gengou = "";
+    var year = "";
+    a = str.split("-");
+    a[0] = parseInt(a[0]);
+    a[1] = parseInt(a[1]);
+    a[2] = parseInt(a[2]);
+    if(a[0] > 1989 || (a[0] == 1989 && a[1] == 1 && a[2] > 6)){
+    a[0] = a[0] - 1988;
+    gengou = "平成";
+    }else if(a[0] > 1926 || (a[0] == 1926 && a[1] == 12 && a[2] > 24)){
+    a[0] = a[0] - 1925;
+    gengou = "昭和";
+    }else if(a[0] > 1912 || (a[0] == 1912 && a[1] == 7 && a[2] > 30)){
+    a[0] = a[0] - 1911;
+    gengou = "大正";
+    }else if(a[0] > 1868 || (a[0] == 1868 && a[1] == 1 && a[2] > 24)){
+    a[0] = a[0] - 1867;
+    gengou = "明治";
+    }
+    if(a[0] == 1){
+    a[0] = "元";
+    }
+    return gengou + a[0] + "年" + a[1] + "月" + a[2] + "日";
+}
 </script>
 <style type="text/css" media="screen">
   div.scroll_div { 
@@ -254,10 +234,15 @@ function doAlert(str, element) {
       margin-top: 5px;
   }
 </style>
+<style>
+    input[type=text],input[type=text]:hover {
+        font-size: 90%;
+    }
+</style>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 5px;">
-        <legend style="font-size: 150%;color: red;"><?php echo __('案件登録<font color=gray> （契約書作成）</font>'); ?></legend>
+        <legend style="font-size: 150%;color: red;"><?php echo __('案件登録<font color=gray> （契約書情報）</font>'); ?></legend>
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
 <?php if ($case_id == 0) { ?>
@@ -267,43 +252,20 @@ function doAlert(str, element) {
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【オーダー情報】</a>&nbsp;&gt;&gt;&nbsp;
-            <font color=blue style="background-color: yellow;">契約書作成（入力ページ、その①）</font>&nbsp;
+            <font color=blue style="background-color: yellow;">契約書情報（２ページ目）</font>&nbsp;
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
-<div style="font-size: 90%;margin-bottom: 10px;">
-    <div class="scroll_div">
-        <?php echo $this->Form->create('OrderInfo', array('name'=>'form')); ?>  
-        <?php echo $this->Form->input('OrderInfo.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
-        <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
-        <?php echo $this->Form->input('OrderInfo.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-        <!-- 基本情報 -->
-        <table border='1' cellspacing="0" cellpadding="5" style='width: 500px;margin-top: 0px;border-spacing: 0px;overflow-y: scroll;'>
-            <tr>
-                <th style='background:#99ccff;text-align: center;'>オーダー選択</th>
-            </tr>
-            <?php if (!empty($datas0)) { ?>
-            <tr>
-                <td align="left" style="padding-left: 10px;">
-                    <?php echo $this->Form->input('OrderInfo.id',
-                            array('type'=>'select','div'=>false,'label'=>false,'options'=>$order_arr,'empty'=>array('' => 'オーダーを選択してください'),
-                                'style'=>'width:95%;', 'selected'=>$order_id, 'onchange'=>'form.submit();')); ?>
-                </td>
-            </tr>
-            <?php } else { ?>
-            <tr>
-                <td align="center" style="background-color: #fff9ff;">登録されたデータはありません。</td>
-            </tr>
-            <?php } ?>
-        </table>
-        <?php echo $this->Form->end(); ?> 
+<div style="font-size: 100%;margin-bottom: 10px;">
+<?php echo $this->Form->create('OrderInfo'); ?>  
+<?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $order_id)); ?>
+<?php echo $this->Form->input('OrderInfo.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
+<?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
+<?php echo $this->Form->input('OrderInfo.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+    <div id='headline' style="font-size: 120%;margin: 5px 0px;padding: 5px;border:1px solid black;background-color: #45bcd2;color:white;border-radius: 5px;width:1000px;">
+        <span style="font-size: 100%;">★&nbsp;<?=$datas2[$file] ?>&nbsp;★</span>
     </div>
-     
-    <?php echo $this->Form->create('ReportTable', array('name'=>'form2')); ?> 
-    <?php echo $this->Form->input('ReportTable.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
-    <?php echo $this->Form->input('ReportTable.order_id', array('type'=>'hidden', 'value' => $order_id)); ?>  
-    <?php echo $this->Form->input('ReportTable.username', array('type'=>'hidden', 'value' => $username)); ?>
-    <?php echo $this->Form->input('ReportTable.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+        
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 5px;border-spacing: 0px;'>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>
@@ -318,7 +280,7 @@ function doAlert(str, element) {
                     派遣先企業名
                 </td>
                 <td colspan="5" style='text-align: left;'>
-                    <?php echo $this->Form->input('ReportTable.dispatch_destination',
+                    <?php echo $this->Form->input('OrderInfo.dispatch_destination',
                             array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
@@ -327,7 +289,7 @@ function doAlert(str, element) {
                     契約締結日
                 </td>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'class'=>'date','style'=>'display:none;', 'onchange'=>'setDate2(this, "contract_date2");')); ?>
                     <input type="text" id="contract_date2" disabled="disabled" style="background-color: white;border:none;font-size: 100%;width:150px;">
                 </td>
@@ -341,7 +303,7 @@ function doAlert(str, element) {
                         $period ='自&nbsp;'.convGtJDate($period_from).'&nbsp;～至&nbsp;'.convGtJDate($period_to);
                         $period2 ='自 '.convGtJDate($period_from).' ～ 至 '.convGtJDate($period_to);
                     ?>
-                    <?=$period ?>
+                    <?=$period ?>&nbsp;&nbsp;<?=$order_name ?>
                 </td>
             </tr>
             <tr>
@@ -349,7 +311,7 @@ function doAlert(str, element) {
                     抵触日(事業所)
                 </td>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.conflict_date',
+                    <?php echo $this->Form->input('OrderInfo.conflict_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:150px;')); ?>
                 </td>
             </tr>
@@ -358,7 +320,7 @@ function doAlert(str, element) {
                     派遣元責任者
                 </td>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'select','div'=>false,'label'=>false,'options'=>$user_arr,'empty'=>'選んでしてください', 'style'=>'')); ?>
                 </td>
             </tr>
@@ -367,16 +329,16 @@ function doAlert(str, element) {
                     派遣料金
                 </td>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align:right;')); ?>円
                 </td>
             </tr>
         </table>
     
         <!-- 派遣契約書（個別）内容 -->
-        <table style="padding-top:5px;">
+        <table style="padding-top:10px;">
             <tr>
-                <td style="font-size:110%;">■派遣契約書（個別）内容</td>
+                <td>■派遣契約書（個別）内容</td>
             </tr>
         </table>
         <?php
@@ -386,7 +348,7 @@ function doAlert(str, element) {
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 0px;border-spacing: 0px;'>
             <tr>
                 <td style='background-color: #e8ffff;text-align: left;padding-left: 10px;'>
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>3,'style'=>'width:95%;text-align:left;','value'=>$text1)); ?>
                 </td>
             </tr>
@@ -408,7 +370,7 @@ function doAlert(str, element) {
                     $text2 ='受付スタッフ（労働派遣事業の適正な運営の確保及び派遣労働者の保護などに関する法律執行令第４条第１２号）：受付及びそれらに付帯する業務	';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>3,'style'=>'width:95%;text-align:left;','value'=>$text2)); ?>
                 </td>
             </tr>
@@ -418,40 +380,40 @@ function doAlert(str, element) {
                 </td>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>名称</td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'textarea','div'=>false,'rows'=>'2','label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>組織単位</td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>部署</td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>住所・TEL</td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>指揮命令者</td>
                 <td colspan="2" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
                 <td style='background-color: #e8ffff;text-align: left;'>役職名</td>
                 <td style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:95%;','value'=>$data['OrderInfo']['order_name'])); ?>
                 </td>
             </tr>
@@ -472,14 +434,14 @@ function doAlert(str, element) {
                     就業日
                 </td>
                 <td colspan="2" style='text-align: left;'>
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;')); ?>
                 </td>
                 <td style='background-color: #e8ffff;width:20%;text-align: left;'>
                     休日出勤
                 </td>
                 <td colspan="2" style='text-align: left;'>
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;')); ?>
                 </td>
             </tr>
@@ -491,7 +453,7 @@ function doAlert(str, element) {
                     $text3 = '欠勤、遅刻、早退等で契約時間に満たない場合及び契約時間外勤務をした場合の労働時間は15分単位とし、端数を切り上げることとする。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>2,'style'=>'width:95%;','value'=>$text3)); ?>
                 </td>
             </tr>
@@ -503,7 +465,7 @@ function doAlert(str, element) {
                     $text4 = '法定時間外勤務については、1日8時間、1カ月45時間、1年360時間を超えない範囲とする。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text4)); ?>
                 </td>
             </tr>
@@ -515,7 +477,7 @@ function doAlert(str, element) {
                     $text5 = '甲及び乙は労働者派遣法第44条から第47条の2までの規定により課せられた責任を負う。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text5)); ?>
                 </td>
             </tr>
@@ -527,7 +489,7 @@ function doAlert(str, element) {
                     $text6 = '制服の貸与　　無　　　　　　ロッカーの使用　　無';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text6)); ?>
                 </td>
             </tr>
@@ -539,7 +501,7 @@ function doAlert(str, element) {
                     $text7 = '甲は、派遣労働者に対し、甲が雇用する労働者が利用する設備について同様に利用することが出来るように努める。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text7)); ?>
                 </td>
             </tr>
@@ -551,7 +513,7 @@ function doAlert(str, element) {
                     役職・氏名
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -560,7 +522,7 @@ function doAlert(str, element) {
                     ＴＥＬ
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -572,7 +534,7 @@ function doAlert(str, element) {
                     役職・氏名
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -581,7 +543,7 @@ function doAlert(str, element) {
                     ＴＥＬ
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -593,7 +555,7 @@ function doAlert(str, element) {
                     役職・氏名
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -602,7 +564,7 @@ function doAlert(str, element) {
                     ＴＥＬ
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -614,7 +576,7 @@ function doAlert(str, element) {
                     役職・氏名
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -623,7 +585,7 @@ function doAlert(str, element) {
                     ＴＥＬ
                 </td>
                 <td colspan="4" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>'')); ?>
                 </td>
             </tr>
@@ -633,7 +595,7 @@ function doAlert(str, element) {
                     派遣人員
                 </td>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false, 'style'=>'width:50px;','value'=>2)); ?>名
                 </td>
             </tr>
@@ -646,7 +608,7 @@ function doAlert(str, element) {
                             . '※8時間超過分の時間外勤務に関しては、　　　　　円（各消費税別途）とする。但し、甲の指揮命令者の指示した残業のみとする。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>3,'style'=>'width:95%;','value'=>$text5)); ?>
                 </td>
             </tr>
@@ -658,7 +620,7 @@ function doAlert(str, element) {
                     $text6 = '就業場所までの交通費については、　　の負担とする。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>1,'style'=>'width:95%;','value'=>$text6)); ?>
                 </td>
             </tr>
@@ -670,7 +632,7 @@ function doAlert(str, element) {
                     $text7 = '派遣期間・派遣人員など、状況により内容の変更が生じた場合は、その都度甲乙協議の上、見直すものとする。';
                 ?>
                 <td colspan="5" style="font-size: 100%;">
-                    <?php echo $this->Form->input('ReportTable.contract_date',
+                    <?php echo $this->Form->input('OrderInfo.contract_date',
                             array('type'=>'text','div'=>false,'label'=>false,'rows'=>5,'style'=>'width:95%;','value'=>$text7)); ?>
                 </td>
             </tr>
@@ -686,13 +648,15 @@ function doAlert(str, element) {
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【オーダー情報】</a>&nbsp;&gt;&gt;&nbsp;
-            <font color=blue style="background-color: yellow;">契約書作成（入力ページ、その①） </font>&nbsp;
+            <font color=blue style="background-color: yellow;">契約書情報（２ページ目）</font>&nbsp;
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('次へ進む', array('name' => 'forward','div' => false, 'onclick' => '')); ?>
+<?php echo $this->Form->submit('出　力', array('id'=>'button-create', 'name' => 'output','div' => false, 'style' => 'padding:10px 15px;', 'onclick' => '')); ?>
+    &nbsp;&nbsp;
+<?php print($this->Form->submit('戻　る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'history.back();'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
 <!--

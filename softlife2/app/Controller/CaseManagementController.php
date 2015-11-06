@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  */
 class CaseManagementController extends AppController {
     public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 
-        'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster', 'WorkTable');
+        'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster', 'WorkTable', 'ReportTable');
     
     public $components = array('RequestHandler');
     
@@ -1273,21 +1273,149 @@ class CaseManagementController extends AppController {
         }
     }
     
-    // 登録ページ（契約書情報）
+    // 登録ページ（契約書作成、入力２）
     public function reg3($case_id = null, $koushin_flag = null, $order_id = null) {
         // レイアウト関係
         $this->layout = "sub";
         $this->set("title_for_layout", $this->title_for_layout);
-        // 登録データのセット
+        // オーダー一覧用
+        $conditions = array('OrderInfo.case_id' => $case_id);
         $this->set('case_id', $case_id);
-        $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
-        $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
-        $this->set('data', $data);
+        $datas0 = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+        $this->set('datas0', $datas0);
+        // オーダー選択コンボ用
+        if (!empty($datas0)) {
+            foreach($datas0 as $data0) {
+                $order_arr[$data0['OrderInfo']['id']] = '★　自 '.$this->convGtJDate($data0['OrderInfo']['period_from'])
+                        .' ～ 至 '.$this->convGtJDate($data0['OrderInfo']['period_to']).'   '.$data0['OrderInfo']['order_name'];;
+            }
+        } else {
+            $order_arr = null;
+        }
+        $this->set('order_arr', $order_arr);
+        // その他
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+        $this->set('order_id', $order_id);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        // 社員配列
+        $conditions2 = array('area' => substr($selected_class, 0, 1));
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $user_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions2));
+        $this->set('user_arr', $user_arr); 
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
+        $this->set('list_shokushu', $list_shokushu);
+        // 案件配列
+        $conditions3 = array('class' => $selected_class);
+        $case_arr = $this->CaseManagement->find('list', array('fields' => array('id', 'case_name'), 'conditions' => $conditions3, 'order' => array('id'=>'asc')));
+        $this->set('case_arr', $case_arr); 
+        // 和暦配列
+        $conditions4 = array('item' => 30);
+        $jyear_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions4, 'order'=>array('sequence')));
+        $this->set('jyear_arr', $jyear_arr);
+        // 書類配列
+        $datas2= array(
+            0=>'労働者派遣契約書【個別】',
+            1=>'派遣先管理台帳（兼）通知書',
+            2=>'派遣元管理台帳',
+            3=>'労働条件通知書（兼）就業条件明示書',
+            4=>'業務委託契約書',
+            //5=>'その他',
+            );
+        $this->set('datas2', $datas2);
+
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            // 次へ進む
+            if (isset($this->request->data['forward'])) {
+                // POST情報をセッションにセット
+                if (!empty($this->Session->read('data_report'))) {
+                    $this->Session->delete('data_report');
+                }
+                $this->Session->write('data_report', $this->request->data['ReportTable']);
+                $this->redirect(array('action' => 'reg3_2', $case_id, $koushin_flag, $order_id));
+            // オーダー選択
+            } else {
+                if (!empty($this->request->data)) {
+                    $order_id = $this->request->data['OrderInfo']['id'];
+                    $this->redirect(array('action' => 'reg3', $case_id, $koushin_flag, $order_id));
+                }
+            } 
+        } elseif ($this->request->is('get')) {
+            // 登録データのセット
+            $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+            $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+            $this->set('data', $data);
+            // 契約期間
+            $period_from = $data['OrderInfo']['period_from'];
+            $period_to = $data['OrderInfo']['period_to'];
+            $order_name = $data['OrderInfo']['order_name'];
+            $this->set('period_from', $period_from);
+            $this->set('period_to', $period_to);
+            $this->set('order_name', $order_name);
+        } else {
+            $this->Session->setFlash('【エラー】エラーが発生しました。（？）');
+        }
+    }
+    
+    // 登録ページ（契約書作成、入力２）
+    public function reg3_2($case_id = null, $koushin_flag = null, $order_id = null) {
+        // レイアウト関係
+        $this->layout = "sub";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // オーダー一覧用
+        $conditions = array('OrderInfo.case_id' => $case_id);
+        $this->set('case_id', $case_id);
+        $datas0 = $this->OrderInfo->find('all', array('conditions'=>$conditions));
+        $this->set('datas0', $datas0);
+        // その他
+        $username = $this->Auth->user('username');
+        $this->set('username', $username); 
+        $this->set('koushin_flag', $koushin_flag);
+        $this->set('order_id', $order_id);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        // 社員配列
+        $conditions2 = array('area' => substr($selected_class, 0, 1));
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $user_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions2));
+        $this->set('user_arr', $user_arr);  
+        // 職種マスタ配列
+        $conditions0 = array('item' => 17);
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
+        $this->set('list_shokushu', $list_shokushu);
+        // 案件配列
+        $conditions3 = array('class' => $selected_class);
+        $case_arr = $this->CaseManagement->find('list', array('fields' => array('id', 'case_name'), 'conditions' => $conditions3, 'order' => array('id'=>'asc')));
+        $this->set('case_arr', $case_arr); 
+        // 和暦配列
+        $conditions4 = array('item' => 30);
+        $jyear_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions4, 'order'=>array('sequence')));
+        $this->set('jyear_arr', $jyear_arr);
+        // 書類配列
+        $datas2= array(
+            0=>'労働者派遣契約書【個別】',
+            1=>'派遣先管理台帳（兼）通知書',
+            2=>'派遣元管理台帳',
+            3=>'労働条件通知書（兼）就業条件明示書',
+            4=>'業務委託契約書',
+            //5=>'その他',
+            );
+        $this->set('datas2', $datas2);
+        // 初期化
         if (empty($data['OrderInfo']['shokushu_num'])) {
             $row = 1;
         } else {
             $row = $data['OrderInfo']['shokushu_num'];
         }
+        $this->set('row', $row);
         $option = array();
         $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
         $option['order'] = array('OrderInfo.id' => 'asc');
@@ -1305,160 +1433,88 @@ class CaseManagementController extends AppController {
             'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
             ),
         );
-        // 職種マスタ配列
-        $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
-        $this->set('list_shokushu', $list_shokushu);
-        // その他
-        $username = $this->Auth->user('username');
-        $this->set('username', $username); 
-        $this->set('koushin_flag', $koushin_flag);
-        $this->set('order_id', $order_id);
-        $selected_class = $this->Session->read('selected_class');
-        $this->set('selected_class', $selected_class);
-        $this->StaffMaster->setSource('staff_'.$selected_class);
-        // 初期化
-        $this->set('row', $row);
-        // 書類配列
-        $datas2= array(
-            0=>'労働者派遣契約書【個別】',
-            1=>'派遣先管理台帳（兼）通知書',
-            2=>'派遣元管理台帳',
-            3=>'労働条件通知書（兼）就業条件明示書',
-            4=>'業務委託契約書',
-            //5=>'その他',
-            );
-        $this->set('datas2', $datas2);
-        //$this->log($datas2, LOG_DEBUG);
 
-        //$this->log($this->request->data['OrderInfo'], LOG_DEBUG);
-        //$this->log('$row='.$row, LOG_DEBUG);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
             // 次へ進む
             if (isset($this->request->data['forward'])) {
-                $order_name = $this->request->data['OrderInfo']['order_name'];
-                $period_from = $this->request->data['OrderInfo']['period_from'];
-                $period_to = $this->request->data['OrderInfo']['period_to'];
-                $file = $this->request->data['OrderInfo']['file'];
-                $this->redirect(array('action' => 'reg3_output', $case_id, $koushin_flag,
-                    $order_id, $order_name, $period_from, $period_to, $file));
-            // 
-            } else {
+                // POST情報をセッションにセット
+                $data_report = $this->request->data['ReportTable'];
+                $sessions = $this->Session->read('data_report');
+                foreach($data_report as $key=>$value) {
+                    $data_report[$key] += array(
+                        'case_id' => $sessions['case_id'],
+                        'order_id' => $sessions['order_id'],
+                        'class' => $sessions['class'],
+                        'username' => $sessions['username'],
+                        'dispatch_destination' => $sessions['dispatch_destination'],
+                        'contract_date' => $sessions['contract_date'],
+                        'conflict_date' => $sessions['conflict_date'],
+                        );
+                }
 
+                $this->Session->write('data_report2', $data_report);
+                                $this->log($data_report, LOG_DEBUG);
+                $this->redirect(array('action' => 'reg3_output', $case_id, $koushin_flag, $order_id));
+            // 戻る
+            } elseif (isset($this->request->data['previous'])) {
+                $this->redirect(array('action' => 'reg3', $case_id, $koushin_flag, $order_id));
+            // オーダー選択
+            } else {
+                if (!empty($this->request->data)) {
+                    $order_id = $this->request->data['OrderInfo']['id'];
+                    $this->redirect(array('action' => 'reg3', $case_id, $koushin_flag, $order_id));
+                }
             } 
         } elseif ($this->request->is('get')) {
-            if (!empty($this->params['named']['row'])) {
-                $row = $this->params['named']['row'];
-            }
-            if (!empty($this->request->query('date'))) {
-                $date = $this->request->query('date');
-                $date_arr = explode('-',$date);
-                $year = $date_arr[0];
-                $month = $date_arr[1];
-            } else {
-                //$year = date('Y');
-                //$month = date('n');
-                $year = date('Y', strtotime('+1 month'));
-                $month = date('n', strtotime('+1 month'));
-            }
-            $month = ltrim($month, '0');
-            $this->set('row', $row);
-            $this->set('year', $year);
-            $this->set('month', $month);
-            
-            // 登録していた値をセット
-            // オーダー一覧用
-            $conditions = array('OrderInfo.case_id' => $case_id);
-            $datas0 = $this->OrderInfo->find('all', array('conditions'=>$conditions));
-            $this->set('datas0', $datas0);
-            // オーダー入力欄以下
-            if (is_null($order_id)) {
-                $this->set('datas', null);
-            } else {
-                //$option['conditions'] = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
-                $conditions = array('OrderInfo.case_id' => $case_id, 'OrderInfo.id' => $order_id);
-                $datas = $this->OrderInfo->find('all', array('conditions'=>$conditions));
-                //$this->log($this->OrderInfo->getDataSource()->getLog(), LOG_DEBUG);
-                $this->set('datas', $datas);
-                //$this->log($datas, LOG_DEBUG);
-            }
-            // 職種以下
-            // オーダー入力欄以下
-            /**
-            if (is_null($order_id)) {
-                $this->set('datas2', null);
-            } else {
-                $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
-                $datas2 = $this->OrderInfoDetail->find('all', array('conditions'=>$conditions));
-                $this->set('datas2', $datas2);
-                //$this->log($datas2, LOG_DEBUG);
-            }
-             * 
-             */
-            // レコード数
-            $record = $this->OrderInfo->find('count', $option);
-            $this->set('record', $record);
-            // カレンダー部分のデータ・セット
-            //$conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-            //$datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions, 'order'=>array('shokushu_num')));
-            for ($i=0; $i<20; $i++) {
-                $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 
-                    'OrderCalender.year' => $year, 'OrderCalender.month' => $month, 'OrderCalender.shokushu_num' => $i+1);
-                $result3 = $this->OrderCalender->find('first', array('conditions'=>$conditions));
-                if (empty($result3)) {
-                    $datas1[$i] = null;
-                } else {
-                    $datas1[$i] = $result3;
+            // 登録データのセット
+            $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+            $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+            $this->set('data', $data);
+            $conditions2 = array('class'=>$selected_class, 'order_id' => $order_id);
+            $datas2 = $this->WorkTable->find('all', array('conditions'=>$conditions2));
+            $this->set('datas2', $datas2);
+            // スタッフの総和
+            $staff_ids = null;
+            foreach ($datas2 as $data2) {
+                for ($i=0; $i<31; $i++) {
+                    $staff_ids[] = $data2['WorkTable']['d'.($i+1)];
                 }
             }
-            $this->set('datas1', $datas1);
-            $this->log($datas1, LOG_DEBUG);
-            
-            // スタッフ選択の値を渡す
-            $results = null;
-            $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
-            for($i=0; $i<$row; $i++) {
-                $result = null;
-                if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
-                    $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
-        $this->log($ids, LOG_DEBUG);
-                    $result = $ids;
-                } else {
-                    $result =null;
-                }
-                $results[$i] = $result;
+            $staff_ids2 = array_unique($staff_ids);     // ユニークに
+            $staff_ids3 = array_filter($staff_ids2, "strlen");      // 空白を除く
+            asort($staff_ids3);            // ソート
+            $staff_ids4 = array_merge($staff_ids3);      // キー振り直し
+            $this->set('staff_ids', $staff_ids4);
+            // スタッフ配列
+            foreach($staff_ids4 as $id) {
+                $conditions5 = array('id' => $id);
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                $result = $this->StaffMaster->find('first', array('fields' => array('id', 'name', 'gender'), 'conditions' => $conditions5));
+                $staff_arr[$result['StaffMaster']['id']] = $result['StaffMaster']['name'];
+                $gender_arr2[$result['StaffMaster']['id']] = $result['StaffMaster']['gender'];
             }
-            $this->set('staff_ids', $results);
-            //$this->log($results, LOG_DEBUG);
-            // スタッフ名の検索
-            $results2 = null;
-            for($i=0; $i<$row; $i++) {
-                $values = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$order_id)));
-                //$this->log($values, LOG_DEBUG);
-                $result2 = null;
-                if (!empty($values['OrderInfo']['staff_ids'.($i+1)])) {
-                    $ids = explode(',', $values['OrderInfo']['staff_ids'.($i+1)]);
-                    foreach($ids as $key=>$id) {
-                        if (empty($id)) {
-                            continue;
-                        }
-                        $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
-                        $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
-                    }
-                } else {
-                    $result2 = null;
-                }
-                $results2[$i] = $result2;
-                //$this->log($result2, LOG_DEBUG);
+            $staff_arr += array(''=>'（なし）');
+            $this->set('staff_arr', $staff_arr);
+            $this->set('gender_arr2', $gender_arr2);
+            // オーダー選択コンボ用
+            if (!empty($datas0)) {
+                    $order_info = '自 '.$this->convGtJDate($data['OrderInfo']['period_from'])
+                            .' ～ 至 '.$this->convGtJDate($data['OrderInfo']['period_to']).'   '.$data['OrderInfo']['order_name'];;
+            } else {
+                $order_info = '';
             }
-            //$this->log($results2, LOG_DEBUG);
-            $this->set('staff_names', $results2);
-            //$this->log($results2, LOG_DEBUG);
-            //$this->Session->delete('staff_id');
+            $this->set('order_info', $order_info);
+            // 契約期間
+            $period_from = $data['OrderInfo']['period_from'];
+            $period_to = $data['OrderInfo']['period_to'];
+            $order_name = $data['OrderInfo']['order_name'];
+            $this->set('period_from', $period_from);
+            $this->set('period_to', $period_to);
+            $this->set('order_name', $order_name);
         } else {
-            $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
+            $this->Session->setFlash('【エラー】エラーが発生しました。（？）');
         }
     }
     
@@ -2610,76 +2666,35 @@ class CaseManagementController extends AppController {
         }
     }  
     
-    /** 生年月日から年齢を割り出しマスタ更新 **/
-    // 年齢換算
-    public function setAge($class) {
-        $sql = '';
-        $sql = $sql. ' UPDATE staff_'.$class;
-        $sql = $sql. ' SET age = (YEAR(CURDATE())-YEAR(birthday)) - (RIGHT(CURDATE(),5)<RIGHT(birthday,5));';
-        
-        // sqlの実行
-        $ret = $this->CaseManagement->query($sql);
-        
-        return $ret;
-    }
-    
-    // 路線のコンボセット
-    function getLine($code) {
-        if (!is_null($code) && !empty($code)) {
-            $xml = "http://www.ekidata.jp/api/p/".$code.".xml";//ファイルを指定
-            // simplexml_load_fileは使えない処理
-            $xml_data = "";
-            $cp = curl_init();
-            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $cp, CURLOPT_HEADER, false );
-            curl_setopt($cp, CURLOPT_URL, $xml);
-            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
-            $xml_data = curl_exec($cp);
-            curl_close($cp);
-            $original_xml = simplexml_load_string($xml_data);
-            $xml_ary = json_decode(json_encode($original_xml), true);
-            $line_ary = $xml_ary['line'];
-
-            foreach ($line_ary as $value) {
-                $ret[$value['line_cd']] = $value['line_name'];
-            }
-
-            //$ret = $xml_ary['pref']['name'];
+    //JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
+    public function convGtJDate($src) {
+        list($year, $month, $day) = explode("-", $src);
+        if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4
+                || strlen($month) !== 2 || strlen($day) !== 2) return false;
+        $date = str_replace("-", "", $src);
+        $gengo = "";
+        $wayear = 0;
+        if ($date >= 19890108) {
+            $gengo = "平成";
+            $wayear = $year - 1988;
+        } elseif ($date >= 19261225) {
+            $gengo = "昭和";
+            $wayear = $year - 1925;
+        } elseif ($date >= 19120730) {
+            $gengo = "大正";
+            $wayear = $year - 1911;
         } else {
-            $ret = '';
+            $gengo = "明治";
+            $wayear = $year - 1868;
         }
-        
-        return $ret;
-    }
-
-    // 駅のコンボセット
-    function getStation($code) {
-    //$code = $data['CaseManagement']['s0_1'];
-        if (!is_null($code) && !empty($code)) {
-            $xml = "http://www.ekidata.jp/api/l/".$code.".xml";//ファイルを指定
-            // simplexml_load_fileは使えない処理
-            $xml_data = "";
-            $cp = curl_init();
-            curl_setopt($cp, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $cp, CURLOPT_HEADER, false );
-            curl_setopt($cp, CURLOPT_URL, $xml);
-            curl_setopt($cp, CURLOPT_TIMEOUT, 60);
-            $xml_data = curl_exec($cp);
-            curl_close($cp);
-            $original_xml = simplexml_load_string($xml_data);
-            $xml_ary = json_decode(json_encode($original_xml), true);
-            $station_ary = $xml_ary['station'];
-
-            foreach ($station_ary as $value) {
-                $ret[$value['station_cd']] = $value['station_name'];
-            }
-
-            //$ret = $xml_ary['pref']['name'];
-        } else {
-            $ret = '';
+        switch ($wayear) {
+            case 1:
+                $wadate = $gengo."元年".$month."月".$day."日";
+                break;
+            default:
+                $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月".$day."日";
         }
-        
-        return $ret;
+        return $wadate;
     }
 
     /** マスタ更新ログ書き込み **/

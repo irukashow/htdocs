@@ -26,7 +26,7 @@
     $national_holiday = japan_holiday($y);
 ?>
 <?php
-//JQueryのコントロールを使ったりして2015-4-23等の形式の文字列が渡すように限定するかんじ
+//JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
 function convGtJDate($src) {
     list($year, $month, $day) = explode("-", $src);
     if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4
@@ -49,10 +49,10 @@ function convGtJDate($src) {
     }
     switch ($wayear) {
         case 1:
-            $wadate = $gengo."元年".ltrim($month, '0')."月".ltrim($day, '0')."日";
+            $wadate = $gengo."元年".$month."月".$day."日";
             break;
         default:
-            $wadate = $gengo.$wayear."年".ltrim($month, '0')."月".ltrim($day, '0')."日";
+            $wadate = $gengo.sprintf("%02d", $wayear)."年".$month."月".$day."日";
     }
     return $wadate;
 }
@@ -79,6 +79,11 @@ function setData2($datas, $table, $col) {
 }
 ?>
 <?php
+    /** 番号のマークをセット **/
+    function setNum($number) {
+        $arr = array('', '①', '②', '③', '④', '⑤', '⑥','⑦','⑧','⑨','⑩');
+        return $arr[$number];
+    }
     /**  **/
     function NZ($value) {
         for ($i=0; $i<count($value) ;$i++) {
@@ -105,12 +110,29 @@ $(function() {
   $.datepicker.setDefaults($.datepicker.regional['ja']);
   // 3日付選択ボックスを生成
   $('.date').datepicker({ dateFormat: 'yy-mm-dd' });
-  $('.date').datepicker("option", "showOn", 'button');
+});
+</script>
+<script>
+$(function() {
+	$('#time').timepicker();
 });
 </script>
 <script>
 onload = function() {
-    //FixedMidashi.create();
+    FixedMidashi.create();
+    // チェックのあるセルを着色
+    for(var col=0; col<<?=$row ?> ;col++) {
+        for(var i=1; i<=31 ;i++) {
+            if (document.getElementById("OrderCalender"+col+"D"+i) == null) {
+                break;
+            }
+            if (document.getElementById("OrderCalender"+col+"D"+i).checked) {
+                changeColor(col, i, 1);
+            } else {
+                changeColor(col, i, 0);
+            }
+        }
+    }
 }
 </script>
 <script>
@@ -196,35 +218,6 @@ function doAlert(str, element) {
         element.focus();
     }
 }
-// 和暦に変換
-function setDate2(element, destination) {
-    document.getElementById(destination).value = SeirekiToWareki(element.value);
-}
-function SeirekiToWareki(str){
-    var gengou = "";
-    var year = "";
-    a = str.split("-");
-    a[0] = parseInt(a[0]);
-    a[1] = parseInt(a[1]);
-    a[2] = parseInt(a[2]);
-    if(a[0] > 1989 || (a[0] == 1989 && a[1] == 1 && a[2] > 6)){
-    a[0] = a[0] - 1988;
-    gengou = "平成";
-    }else if(a[0] > 1926 || (a[0] == 1926 && a[1] == 12 && a[2] > 24)){
-    a[0] = a[0] - 1925;
-    gengou = "昭和";
-    }else if(a[0] > 1912 || (a[0] == 1912 && a[1] == 7 && a[2] > 30)){
-    a[0] = a[0] - 1911;
-    gengou = "大正";
-    }else if(a[0] > 1868 || (a[0] == 1868 && a[1] == 1 && a[2] > 24)){
-    a[0] = a[0] - 1867;
-    gengou = "明治";
-    }
-    if(a[0] == 1){
-    a[0] = "元";
-    }
-    return gengou + a[0] + "年" + a[1] + "月" + a[2] + "日";
-}
 </script>
 <style type="text/css" media="screen">
   div.scroll_div { 
@@ -233,11 +226,6 @@ function SeirekiToWareki(str){
       width: auto;
       margin-top: 5px;
   }
-</style>
-<style>
-    input[type=text],input[type=text]:hover {
-        font-size: 90%;
-    }
 </style>
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
@@ -252,51 +240,95 @@ function SeirekiToWareki(str){
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【オーダー情報】</a>&nbsp;&gt;&gt;&nbsp;
-            <font color=blue style="background-color: yellow;">契約書作成（出力）</font>&nbsp;
+            <font color=blue style="background-color: yellow;">契約書情報（１ページ目）</font>&nbsp;
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
-<div style="font-size: 100%;margin-bottom: 10px;">
+<div style="font-size: 80%;margin-bottom: 10px;">
 <?php echo $this->Form->create('OrderInfo'); ?>  
 <?php echo $this->Form->input('OrderInfo.id', array('type'=>'hidden', 'value' => $order_id)); ?>
 <?php echo $this->Form->input('OrderInfo.case_id', array('type'=>'hidden', 'value' => $case_id)); ?>   
 <?php echo $this->Form->input('OrderInfo.username', array('type'=>'hidden', 'value' => $username)); ?>
 <?php echo $this->Form->input('OrderInfo.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-    <div id='headline' style="font-size: 120%;margin: 5px 0px;padding: 5px;border:1px solid black;background-color: #45bcd2;color:white;border-radius: 5px;width:1000px;">
-        <span style="font-size: 100%;">★&nbsp;契約書などの出力&nbsp;★</span>
+    <div class="scroll_div">
+        <!-- 基本情報 -->
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;overflow-y: scroll;'>
+            <tr>
+                <th colspan="5" style='background:#99ccff;text-align: center;'>登録済オーダー<span style="margin-left: 10px;font-weight: normal;">※該当するオーダーを選択してください</span></th>
+            </tr>
+            <?php foreach($datas0 as $key=>$data0) { ?>
+            <tr>
+                <td align="center" style='background-color: #e8ffff;width:20%;'><?='【'.$data0['OrderInfo']['id'].'】' ?></td>
+                <?php if ($data0['OrderInfo']['id'] == $order_id) { ?>
+                <td colspan="2" style="background-color: #ffffcc;">
+                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
+                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
+                </td>
+                <?php } else { ?>
+                <td colspan="2">
+                    <a href="<?=ROOTDIR ?>/CaseManagement/reg3/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id']  ?>">
+                    <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
+                            .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
+                    </a>
+                </td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+            <?php if (empty($datas0)) { ?>
+            <tr>
+                <td align="center" colspan="5" style="background-color: #fff9ff;">登録されたデータはありません。</td>
+            </tr>
+            <?php } ?>
+            <?php 
+                if (empty($order_id)) { 
+                    $style = 'background-color: #ffffcc;';
+                } else {
+                    $style = 'background-color: #fff9ff;';
+                }
+            ?>
+        </table>
     </div>
     
-    <table border='1' cellspacing="0" cellpadding="5" style='width: 250px;margin-top: 10px;border-spacing: 0px;table-layout: fixed;'>
-        <colgroup>
-            <col style="width:50px;" />
-            <col style="width:450px;" />
-            <col style="width:100px;" />
-        </colgroup>
-        <tr>
-            <td align="center">1</td>
-            <td>労働者派遣契約書（個別）</td>
-            <td>
-                <?php echo $this->Form->submit('出　力', array('id'=>'', 'name' => 'output_file1','div' => false, 'style' => 'padding:5px 15px;')); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>労働者派遣契約書（個別）</td>
-            <td>
-                <?php echo $this->Form->submit('出　力', array('id'=>'', 'name' => 'output_file1','div' => false, 'style' => 'padding:5px 15px;')); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>労働者派遣契約書（個別）</td>
-            <td>
-                <?php echo $this->Form->submit('出　力', array('id'=>'', 'name' => 'output_file1','div' => false, 'style' => 'padding:5px 15px;')); ?>
-            </td>
-        </tr>
-    </table>
-
-
-
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
+            <tr>
+                <th colspan="2" style='background:#99ccff;text-align: center;'>契約期間など</th>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>契約期間</td>
+                <td colspan="1">
+                    自&nbsp;<?php echo $this->Form->input('OrderInfo.period_from',
+                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false, 'placeholder' => '開始日','style'=>'width:150px;','value'=>setData2($datas, 'OrderInfo', 'period_from'))); ?>
+                    ～
+                    至&nbsp;<?php echo $this->Form->input('OrderInfo.period_to',
+                            array('type'=>'text','div'=>false,'class'=>'date','label'=>false, 'placeholder' => '終了日','style'=>'width:150px;','value'=>setData2($datas, 'OrderInfo', 'period_to'))); ?>
+                </td>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;'>保存名（帳票単位）</td>
+                <td colspan="1">
+                    <?php echo $this->Form->input('OrderInfo.order_name',
+                            array('type'=>'text','div'=>false,'maxlength'=>'30','label'=>false,'style'=>'width:500px;','value'=>setData2($datas, 'OrderInfo', 'order_name'))); ?>
+                </td>
+            </tr>
+        </table>
+        
+        <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
+            <tr>
+                <th colspan="2" style='background:#99ccff;text-align: center;'>作成書類</th>
+            </tr>
+            <tr>
+                <td style='background-color: #e8ffff;width:20%;text-align: left;' rowspan="<?=count($datas2) ?>">
+                    書類一覧<br>
+                    <span style="font-size: 100%;">※一つ選択してください</span>
+                </td>
+                <td colspan="1" style="font-size: 110%;">
+                    <?php
+                        $attributes = array('separator' => '</td></tr><tr><td>', 'legend' => false);
+                        echo $this->Form->radio('file', $datas2, $attributes);
+                    ?>
+                </td>
+            </tr>
+        </table>
 </div>        
         <!-- ページ選択 -->
         <font style="font-size: 110%;">
@@ -307,15 +339,13 @@ function SeirekiToWareki(str){
 <?php } else { ?>
             <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【基本情報】</a>&nbsp;&gt;&gt;&nbsp;
             <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>" onclick="">【オーダー情報】</a>&nbsp;&gt;&gt;&nbsp;
-            <font color=blue style="background-color: yellow;">契約書作成（出力）</font>&nbsp;
+            <font color=blue style="background-color: yellow;">契約書情報（１ページ目）</font>&nbsp;
 <?php } ?>
         </font>
         <!-- ページ選択 END -->
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('ファイル削除', array('id'=>'button-create', 'name' => 'output','div' => false, 'style' => 'padding:10px 15px;', 'onclick' => '')); ?>
-    &nbsp;&nbsp;
-<?php print($this->Form->submit('戻　る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'history.back();'))); ?>
+<?php echo $this->Form->submit('次へ進む', array('name' => 'forward','div' => false, 'onclick' => '')); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
 <!--
