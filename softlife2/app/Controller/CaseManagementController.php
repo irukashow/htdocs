@@ -1334,12 +1334,17 @@ class CaseManagementController extends AppController {
             $this->log($this->request->data, LOG_DEBUG);
             // 次へ進む
             if (isset($this->request->data['forward'])) {
-                // POST情報をセッションにセット
-                if (!empty($this->Session->read('data_report'))) {
-                    $this->Session->delete('data_report');
+                if (empty($order_id)) {
+                    $this->Session->setFlash('【エラー】オーダーを選択してください。');
+                    $this->redirect(array('action' => 'reg3', $case_id, $koushin_flag));
+                } else {
+                    // POST情報をセッションにセット
+                    if (!empty($this->Session->read('data_report'))) {
+                        $this->Session->delete('data_report');
+                    }
+                    $this->Session->write('data_report', $this->request->data['ReportTable']);
+                    $this->redirect(array('action' => 'reg3_2', $case_id, $koushin_flag, $order_id));
                 }
-                $this->Session->write('data_report', $this->request->data['ReportTable']);
-                $this->redirect(array('action' => 'reg3_2', $case_id, $koushin_flag, $order_id));
             // オーダー選択
             } else {
                 if (!empty($this->request->data)) {
@@ -1348,14 +1353,21 @@ class CaseManagementController extends AppController {
                 }
             } 
         } elseif ($this->request->is('get')) {
-            // 登録データのセット
-            $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
-            $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
-            $this->set('data', $data);
-            // 契約期間
-            $period_from = $data['OrderInfo']['period_from'];
-            $period_to = $data['OrderInfo']['period_to'];
-            $order_name = $data['OrderInfo']['order_name'];
+            if (!empty($order_id)) {
+                // 登録データのセット
+                $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+                $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+                $this->set('data', $data);
+                // 契約期間
+                $period_from = $data['OrderInfo']['period_from'];
+                $period_to = $data['OrderInfo']['period_to'];
+                $order_name = $data['OrderInfo']['order_name'];
+            } else {
+                $period_from = '';
+                $period_to = '';
+                $order_name = '';
+                $this->set('data', null);
+            }
             $this->set('period_from', $period_from);
             $this->set('period_to', $period_to);
             $this->set('order_name', $order_name);
@@ -1595,7 +1607,50 @@ class CaseManagementController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
             
-            
+        } else {
+            // 登録データのセット
+            $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
+            $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
+            $this->set('data', $data);
+            $conditions2 = array('class'=>$selected_class, 'order_id' => $order_id);
+            $datas2 = $this->WorkTable->find('all', array('conditions'=>$conditions2));
+            $this->set('datas2', $datas2);
+            // 派遣期間
+            if (!empty($data)) {
+                    $order_info = '自 '.$this->convGtJDate($data['OrderInfo']['period_from']).'<br>'
+                            .' 至 '.$this->convGtJDate($data['OrderInfo']['period_to']);
+            } else {
+                $order_info = '';
+            }
+            $this->set('order_info', $order_info);
+            // スタッフの総和
+            $staff_ids = null;
+            foreach ($datas2 as $data2) {
+                for ($i=0; $i<31; $i++) {
+                    $staff_ids[] = $data2['WorkTable']['d'.($i+1)];
+                }
+            }
+            $staff_ids2 = array_unique($staff_ids);     // ユニークに
+            $staff_ids3 = array_filter($staff_ids2, "strlen");      // 空白を除く
+            asort($staff_ids3);            // ソート
+            $staff_ids4 = array_merge($staff_ids3);      // キー振り直し
+            $this->set('staff_ids', $staff_ids4);
+            // スタッフ配列
+            foreach($staff_ids4 as $id) {
+                $conditions5 = array('id' => $id);
+                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+                $result = $this->StaffMaster->find('first', array('fields' => array('id', 'name', 'gender'), 'conditions' => $conditions5));
+                $staff_arr[$result['StaffMaster']['id']] = $result['StaffMaster']['name'];
+                $gender_arr2[$result['StaffMaster']['id']] = $result['StaffMaster']['gender'];
+            }
+            $staff_arr += array(''=>'（なし）');
+            $this->set('staff_arr', $staff_arr);
+            $this->set('gender_arr2', $gender_arr2);
+            // 職種
+            $conditions6 = array('case_id' => $case_id, 'order_id' => $order_id);
+            $data3 = $this->OrderInfoDetail->find('first', array('conditions' => $conditions6));
+            $this->set('shokushu_id', $data3['OrderInfoDetail']['shokushu_id']);
+            $this->set('data3', $data3);
         }
     }
     

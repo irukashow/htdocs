@@ -269,16 +269,16 @@ function SeirekiToWareki(str){
     <!-- スタッフ別出力 -->
     <table style="padding-top:5px;">
         <tr>
-            <td style="font-size:110%;">■<?=$case_arr[$case_id]; ?>■</td>
+            <td style="font-size:110%;">■スタッフ別出力</td>
         </tr>
     </table>
     <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 0px;border-spacing: 0px;table-layout: fixed;'>
         <colgroup>
             <col style="width:50px;" />
             <col style="width:125px;" />
-            <col style="width:200px;" />
-            <col style="width:125px;" />
             <col style="width:100px;" />
+            <col style="width:125px;" />
+            <col style="width:200px;" />
             <col style="width:300px;" />
         </colgroup>
         <tr>
@@ -307,25 +307,20 @@ function SeirekiToWareki(str){
                 $age = array('0'=>'-', '1'=>'45歳以上60歳未満', '2'=>'60歳以上');
             ?>
             <td style="font-size: 100%;">
-                <?php echo $staff_arr[$staff_id].'<br>('.$staff_id.')'; ?>
-            </td>
-            <td style="font-size: 100%;" align="center">
-                <?php echo $order_info ?>
-            </td>
-            <td style="font-size: 100%;" align="center">
-                <?php echo $list_shokushu[$shokushu_id]; ?>
-            </td>
-            <td style="font-size: 100%;" align="center">
-                <?=$data3['OrderInfoDetail']['worktime_from'].'~'.$data3['OrderInfoDetail']['worktime_to']; ?>
+                <?php echo $this->Form->input('ReportTable.'.$key.'.staff_id',
+                        array('type'=>'select','div'=>false,'label'=>false,'style'=>'width:95%;text-align:left;','options'=>$staff_arr,'selected'=>$staff_id)); ?>
             </td>
             <td style="font-size: 100%;">
-                <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>">1.労働者派遣契約書【個別】</a><br>
-                <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>">2.派遣先管理台帳（兼）通知書</a><br>
-                <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>">3.派遣元管理台帳</a><br>
-                <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>">4.労働条件通知書（兼）就業条件明示書</a>
-                <!--
-                <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>">業務委託契約書</a>
-                -->
+                
+            </td>
+            <td style="font-size: 100%;">
+                受付
+            </td>
+            <td style="font-size: 100%;">
+                9:30~18:00
+            </td>
+            <td style="font-size: 100%;">
+                <a href="<?=ROOTDIR ?>/CaseManagement/reg1/<?=$case_id ?>/<?=$koushin_flag ?>">【基本情報】</a>
             </td>
         </tr>
         <?php } ?>
@@ -348,9 +343,15 @@ function SeirekiToWareki(str){
         <!-- ページ選択 END -->
     </fieldset>
     <div style='margin-left: 10px;'>
+<?php echo $this->Form->submit('ファイル削除', array('id'=>'button-create', 'name' => 'output','div' => false, 'style' => 'padding:10px 15px;', 'onclick' => '')); ?>
+    &nbsp;&nbsp;
 <?php print($this->Form->submit('戻　る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'history.back();'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<!--
+    &nbsp;&nbsp;
+<?php print($this->Html->link('ﾌﾟﾛﾌｨｰﾙ', $_SESSION['cm_profile_url'], array('id'=>'button-create', 'style'=>'padding:10px;'))); ?> 
+-->
     </div>
 <?php echo $this->Form->end(); ?>
 </div>

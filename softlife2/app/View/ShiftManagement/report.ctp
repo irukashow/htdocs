@@ -72,11 +72,11 @@ window.onload = function(){
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
         &nbsp;
-        <b><font Style="font-size:95%;color: yellow;">[確定シフト]</font></b>
-        &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/report?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''>
-            <font Style="font-size:95%;">契約書作成</font>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''>
+            <font Style="font-size:95%;">確定シフト</font>
         </a>
+        &nbsp;
+        <b><font Style="font-size:95%;color: yellow;">[帳票作成]</font></b>
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
         &nbsp;
@@ -101,13 +101,13 @@ window.onload = function(){
 ?>
 <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center">
-                <td><a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
+                <td><a href="<?=ROOTDIR ?>/ShiftManagement/report?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">&lt; 前の月</a></td>
                 <td style='background-color: #006699;cursor: pointer;'>
-                    <a style='font-size: 110%;<?=$css?>' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
+                    <a style='font-size: 110%;<?=$css?>' onclick="location.href = '<?=ROOTDIR ?>/ShiftManagement/report?date=<?=$y?>-<?=sprintf("%02d", $m)?>';">
                         【<?php echo $y ?>年<?php echo $m ?>月】
                     </a>
                 </td>
-                <td><a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
+                <td><a href="<?=ROOTDIR ?>/ShiftManagement/report?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">次の月 &gt;</a></td>
         </tr>
 </table>
 <!-- ページネーション -->
@@ -141,29 +141,13 @@ window.onload = function(){
     <table border='1' cellspacing="0" cellpadding="5" class="data" 
            style="margin-top: 5px;margin-bottom: 5px;border-spacing: 0px;table-layout: fixed;font-size: 100%;">
         <tr>
-            <th style="background-color: #99ccff;width:50px;" align="center">案件名</th>
+            <td style="background-color: #99ccff;width:50px;">案件名</td>
             <th style="padding: 5px 20px;background-color: #FFFFEE;">
-                <?php
-                    echo $this->Form->input('select_case', 
+                <?php echo $this->Form->input('select_case', 
                         array('type'=>'select', 'label' => false, 'style' => 'width:100%;font-size:110%;', 
                             'empty' => array('' => '案件を選んでください'), 'options' =>$case_arr, 'selected'=>$case_id,
-                            'onchange' => 'location.href="'.ROOTDIR.'/ShiftManagement/schedule3/"+this.value+"?date='.$date2.'";')); 
-                ?>
+                            'onchange' => 'location.href="'.ROOTDIR.'/ShiftManagement/schedule3/"+this.value+"?date='.$date2.'";')); ?>
             </th>
-            <td style="padding:2px;">
-            <?php 
-                if (empty($case_id)) {
-                    $button = 'button-delete';
-                    $disabled = 'disabled';
-                } else {
-                    $button = 'button-create';
-                    $disabled = '';
-                }
-                print($this->Form->submit('契約書作成', array('type'=>'button', 'id'=>$button, 'name'=>'confirm','div' => false, 'label'=>false,  'class'=>'check',
-                    'style' => 'padding: 7px 15px;font-size: 100%;cursor:pointer;', 
-                    'onclick' => "window.open('".ROOTDIR."/CaseManagement/reg3/".$case_id."/1','契約書作成','width=1200,height=800,scrollbars=yes');", 'disabled'=>$disabled))); 
-            ?>
-            </td>
         </tr>
     </table>
         

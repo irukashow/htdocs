@@ -824,6 +824,8 @@ class UsersController extends AppController {
             }
             $pref_arr = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions1));
             $this->set('pref_arr', $pref_arr);
+            $flag = 0;
+            $this->set('flag', $flag);
             // メッセージ
             $this->set('message', $this->Session->read('message'));
             $this->Session->delete('message');
@@ -839,16 +841,22 @@ class UsersController extends AppController {
                 } elseif ($this->request->data['StaffMaster']['status'] == 3) {
                     $status = 3;
                 }
+                
                 // データを登録する
                 if ($this->StaffMaster->save($this->request->data)) {
                     // スタッフのプロフィール更新履歴
                     $this->setStaffLog(0, $class, $id, $name, 0, $status, $this->request->clientIp()); // プロフィール更新コード:1
                     //$this->redirect(array('action' => 'profile', 1));
-                    $this->Session->write('message', 1);
+                    //$this->Session->write('message', '<span style="color:red;">【情報】登録が完了しました。</span>');
+                    $flag = 1;
                 }
+                $this->set('flag', $flag);
             } else {
                 // 登録していた値をセット
                 $this->request->data = $this->StaffMaster->find('first', array('conditions' => array('id' => $id)));
+                $data = $this->request->data;
+                $this->set('data', $data);
+                $this->log($this->request->data, LOG_DEBUG);
                 //$this->request->data['StaffMaster']['zipcode'] = $this->request->data['StaffMaster']['zipcode1'].$this->request->data['StaffMaster']['zipcode2'];
             }
 

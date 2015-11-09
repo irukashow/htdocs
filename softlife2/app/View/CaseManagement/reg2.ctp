@@ -456,7 +456,7 @@ function doAlert(str, element) {
                 <?php } ?>
             </tr>
             <!-- 受注 -->
-            <?php $list1 = array('1'=>'時間', '2'=>'日払', '3'=>'月払'); ?>
+            <?php $list1 = array('1'=>'時給', '2'=>'日給', '3'=>'月給'); ?>
             <?php $list2 = array('1'=>'有', '0'=>'無'); ?>
             <tr id="OrderDetail3">
                 <td rowspan="4" style='background-color: #e8ffff;'>受注</td>

@@ -308,51 +308,9 @@ $(function() {
   <?php endforeach; ?>
 <?php if (count($datas) == 0) { ?>
 <tr>
-    <td colspan="29" align="center">表示するデータはありません。</td>
+    <td colspan="30" align="center">表示するデータはありません。</td>
 </tr>
 <?php } ?>
-  <tr>
-    <td align="center">例</td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 110%;">★</td>
-    <td align="center" style="font-size: 110%;">★</td>
-    <td align="center" style="font-size: 110%;">★</td>
-    <td align="center" style="font-size: 90%;">
-        <input type="text" style="font-size: 90%;width:95%;">
-    </td>
-    <td align="center" style="font-size: 90%;">
-        <input type="text" style="font-size: 90%;width:95%;">
-    </td>
-    <td align="center" style="font-size: 90%;">
-        <input type="text" style="font-size: 90%;width:95%;">
-    </td>
-    <td align="center" style="font-size: 90%;">
-        <input type="text" style="font-size: 90%;width:95%;">
-    </td>
-    <td align="center" style="font-size: 90%;">
-        <input type="text" style="font-size: 90%;width:95%;">
-    </td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-    <td align="center" style="font-size: 90%;"></td>
-  </tr>
   </tbody>
 </table>
 </div>

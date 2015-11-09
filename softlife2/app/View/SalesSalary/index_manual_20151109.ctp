@@ -187,7 +187,7 @@ $(function() {
     &nbsp;
     <a href="<?=ROOTDIR ?>/SalesSalary/account" target="" onclick=''><font Style="font-size:95%;">銀行口座</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/SalesSalary/address" target="" onclick=''><font Style="font-size:95%;">スタッフ更新情報</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/address" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
     &nbsp;
 </div>
 <!-- 見出し１ END -->
@@ -244,7 +244,7 @@ $(function() {
 
 <div class="scroll_div">
 <!--- スタッフマスタ本体 START --->
-<table id="staff_master" border="1" width="1750px" cellspacing="0" cellpadding="3" 
+<table id="staff_master" border="1" width="1750px" cellspacing="0" cellpadding="1" 
        bordercolor="#333333" align="center" style="font-size: 80%;margin: 0px 0px 5px 0px;table-layout: fixed;" _fixedhead="rows:1; cols:1">
     <colgroup>
       <col style='width:50px;'>
@@ -323,17 +323,20 @@ $(function() {
     </td>
     <!-- 勤務日付 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo setDate($data['SalesSalary']['work_date']); ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.work_date2', 
+                array('type'=>'text', 'label' => false, 'class' => 'date', 'style' => 'width:80%;text-align:center;', 'value'=>setDate($data['SalesSalary']['work_date']))); ?>
         <?php echo $this->Form->input('SalesSalary.'.$count.'.work_date', array('type'=>'hidden', 'value' => $data['SalesSalary']['work_date'])); ?>
     </td>
     <!-- 氏名 -->
-    <td align="left" style="font-size: 100%;">
-        <?php echo $data['SalesSalary']['name']; ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.name', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:left;', 'value' => $data['SalesSalary']['name'])); ?>
         <?php echo $this->Form->input('SalesSalary.'.$count.'.staff_id', array('type'=>'hidden', 'value' => $data['SalesSalary']['staff_id'])); ?>
     </td>
     <!-- 所属 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $list_division[$data['SalesSalary']['division']]; ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.division', 
+                array('type'=>'select', 'label' => false, 'options' => $list_division, 'selected' => $data['SalesSalary']['division'], 'style' => 'width:95%;font-size:90%;')); ?>
     </td>
     <!-- 物件№ -->
     <td align="center" style="font-size: 100%;">
@@ -341,71 +344,106 @@ $(function() {
     </td>
     <!-- 現場① -->
     <td align="left" style="font-size: 100%;">
-        <?php echo $list_case3[$data['SalesSalary']['case_id']]; ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.case_id', 
+                array('type'=>'select', 'label' => false, 'options' => $list_case3, 'selected'=>$data['SalesSalary']['case_id'], 'style' => 'width:95%;font-size:80%;')); ?>
     </td>
     <!-- 勤務時間 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $data['SalesSalary']['work_time_from']; ?>~<?php echo $data['SalesSalary']['work_time_to']; ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.name', 
+                array('type'=>'text', 'label' => false, 'div' => false, 'style' => 'width:40px;text-align:left;', 'value' =>$data['SalesSalary']['work_time_from'])); ?>
+        ~
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.name', 
+                array('type'=>'text', 'label' => false, 'div' => false, 'style' => 'width:40px;text-align:left;', 'value' =>$data['SalesSalary']['work_time_to'])); ?>
     </td>
     <!-- 売上 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['sales']); ?>
+    <td align="center" style="font-size: 100%;padding: 0px;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:right;', 
+                    'value' => $data['SalesSalary']['sales'])); ?>
     </td>
     <!-- 時間外費 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['offhours_1']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:right;', 
+                    'value' => $data['SalesSalary']['offhours_1'])); ?>
     </td>
     <!-- 遅刻早退 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['adjustment_1']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:80%;text-align:right;', 
+                    'value' => $data['SalesSalary']['adjustment_1'])); ?>
     </td>
     <!-- その他 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['etc_1']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['etc_1'])); ?>
     </td>
     <!-- 交通費 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['transportation_1']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['transportation_1'])); ?>
     </td>
     <!-- 合計 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['total_1']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['total_1'])); ?>
     </td>
     <!-- 備考 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $data['SalesSalary']['remarks_1']; ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.remarks', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:95%;text-align:left;', 
+                    'value' => $data['SalesSalary']['remarks_1'])); ?>
     </td>
     <!-- 給与 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['salary']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['salary'])); ?>
     </td>
     <!-- 時間外費 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['offhours_2']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['offhours_2'])); ?>
     </td>
     <!-- 遅刻早退 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['adjustment_2']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['adjustment_2'])); ?>
     </td>
     <!-- その他 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['etc_2']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['etc_2'])); ?>
     </td>
     <!-- 小計 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['sum']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['sum'])); ?>
     </td>
     <!-- 交通費 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['transportation_2']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['transportation_2'])); ?>
     </td>
     <!-- 合計 -->
-    <td align="right" style="font-size: 100%;">
-        <?php echo number_format($data['SalesSalary']['total_2']); ?>
+    <td align="center" style="font-size: 100%;">
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:50px;text-align:right;', 
+                    'value' => $data['SalesSalary']['total_2'])); ?>
     </td>
     <!-- 備考 -->
     <td align="center" style="font-size: 100%;">
-        <?php echo $data['SalesSalary']['remarks_2']; ?>
+        <?php echo $this->Form->input('SalesSalary.'.$count.'.sales', 
+                array('type'=>'text', 'label' => false, 'style' => 'width:95%;text-align:left;', 
+                    'value' => $data['SalesSalary']['remarks_2'])); ?>
     </td>
   </tr>
   <?php endforeach; ?>
