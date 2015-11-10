@@ -11,9 +11,9 @@
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[給与金額]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/SalesSalary/account" target="" class="load" onclick=''><font Style="font-size:95%;">銀行口座</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/account/2" target="" class="load" onclick=''><font Style="font-size:95%;">銀行口座</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/SalesSalary/address" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/address/1" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
     &nbsp;
 </div>
 <!-- 見出し１ END -->

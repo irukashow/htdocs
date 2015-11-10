@@ -68,7 +68,7 @@ $(function() {
     &nbsp;
     <b><font Style="font-size:95%;color: yellow;">[銀行口座]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/SalesSalary/address" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/address/1" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
     &nbsp;
 </div>
 <!-- 見出し１ END -->
@@ -86,11 +86,11 @@ $(function() {
 ?>
     <div style="float:left;margin-left: 10px;margin-top: 5px;">
         <?php if (empty($flag) || $flag == 0) { ?>
-        【表示】<b><font style="background-color: yellow;">登録済</font></b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1" style="color:#0000FF;">未登録</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/2" style="color:red;">要登録</a>
+        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/2" style="color:red;">要登録</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1" style="color:#0000FF;">未登録</a> | <b><font style="background-color: yellow;">登録済</font></b>
         <?php } elseif ($flag == 1) { ?>
-        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/0">登録済</a> | <b><font color="#FF5F17" style="background-color: yellow;color:#0000FF;">未登録</font></b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/2" style="color:red;">要登録</a>
+        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/2" style="color:red;">要登録</a> | <b><font color="#FF5F17" style="background-color: yellow;color:#0000FF;">未登録</font></b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/0">登録済</a>
         <?php } elseif ($flag == 2) { ?>
-        【表示】<a href="<?=ROOTDIR ?>/SalesSalary/account/0">登録済</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1" style="color:#0000FF;">未登録</a> | <b><font color="red" style="background-color: yellow;">要登録</font></b>
+        【表示】<b><font color="red" style="background-color: yellow;">要登録</font></b> | <a href="<?=ROOTDIR ?>/SalesSalary/account/1" style="color:#0000FF;">未登録</a> | <a href="<?=ROOTDIR ?>/SalesSalary/account/0">登録済</a>
         <?php } ?>
     </div>
     <div style="float:right;margin-top: 5px;">
@@ -142,11 +142,16 @@ $(function() {
   <?php foreach ($datas as $i=>$data): ?>
     <?php
         $flag_reg = $data['StaffMaster']['bank_kouza_reg'];
+        $type = '';
         if (empty($flag_reg) || $flag_reg == 0) {
             $bgcolor = '#C2EEFF';
             $flag_reg = 0;
         } elseif ($flag_reg == 1) {
             $bgcolor = '#fff9ff';
+            if ($data['StaffMaster']['koushin_flag3'] == 1) {
+                $bgcolor = '#FFFFCC';
+                $type = '<span style="color:red;">（変更あり）</span>';
+            }
         }
         if ($flag_reg == 0 && !empty(setSalary($data['StaffMaster']['id'], $data_salary))) {
             $bgcolor = '#FFFF99';
@@ -157,12 +162,13 @@ $(function() {
     <td align="center">
         <?php echo $data['StaffMaster']['id']; ?>
         <input type="hidden" name="data[StaffMaster][<?=$i?>][id]" value="<?=$data['StaffMaster']['id']; ?>">
+        <input type="hidden" name="data[StaffMaster][<?=$i?>][koushin_flag3]" value="0">
     </td>
     <!-- 氏名 -->
     <td align="left" style="font-size: 100%;">
                 <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data['StaffMaster']['id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
         <?php echo $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei']; ?>
-                </a>
+                </a><?=$type ?>
     </td>
     <!-- フリガナ -->
     <td align="left" style="font-size: 100%;">

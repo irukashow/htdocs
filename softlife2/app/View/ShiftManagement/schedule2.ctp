@@ -115,8 +115,6 @@ window.onload = function(){
         &nbsp;
         <b><font Style="font-size:95%;color: yellow;">[確定シフト]</font></b>
         &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/uri9" target=""><font Style="font-size:95%;">勤務実績</font></a>
-        &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
         &nbsp;
     </div>

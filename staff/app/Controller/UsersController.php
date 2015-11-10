@@ -831,15 +831,22 @@ class UsersController extends AppController {
             $this->Session->delete('message');
             
             $this->log($this->request->data, LOG_DEBUG);
+            $koushin1 = 0;$koushin2 = 0;$koushin3 = 0;$koushin4 = 0;
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
                 // プロフィールの種類
                 if ($this->request->data['StaffMaster']['status'] == 1) {
                     $status = 1;
+                    $this->request->data['StaffMaster']['koushin_flag1'] = 1;
                 } elseif ($this->request->data['StaffMaster']['status'] == 2) {
                     $status = 2;
+                    $this->request->data['StaffMaster']['koushin_flag2'] = 1;
                 } elseif ($this->request->data['StaffMaster']['status'] == 3) {
                     $status = 3;
+                    $this->request->data['StaffMaster']['koushin_flag3'] = 1;
+                } elseif ($this->request->data['StaffMaster']['status'] == 4) {
+                    $status = 4;
+                    $this->request->data['StaffMaster']['koushin_flag4'] = 1;
                 }
                 
                 // データを登録する

@@ -28,8 +28,9 @@ function chkPasswd(pwd1, pwd2) {
         <p>以下の変更ができます。</p>
         <input type="button" value="１．住所変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#address"'>
         <input type="button" value="２．連絡先変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#contact"'>
-        <input type="button" value="３．パスワード変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#password"'>
-        <input type="button" value="４．銀行口座変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#bank"'>
+        <input type="button" value="３．銀行口座変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#bank"'>
+        <input type="button" value="４．パスワード変更" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#password"'>
+        
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
         </div> 
@@ -200,7 +201,7 @@ function chkPasswd(pwd1, pwd2) {
     <?php echo $this->Form->create('StaffMaster', 
             array('name' => 'form3', 'method' => 'post')); ?>
     <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>   
-    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 3)); ?> 
+    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 4)); ?> 
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <td style='background-color: #e8ffff;width:20%;'>パスワード（２回入力）</td>
@@ -238,7 +239,7 @@ function chkPasswd(pwd1, pwd2) {
     <?php echo $this->Form->create('StaffMaster', 
             array('name' => 'form3', 'method' => 'post')); ?>
     <?php echo $this->Form->input('id', array('type'=>'hidden', 'value' => $id)); ?>   
-    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 3)); ?> 
+    <?php echo $this->Form->input('status', array('type'=>'hidden', 'value' => 3)); ?>
                 <table border="1" cellspacing="0" cellpadding="5" width="100%">
                     <tr>
                         <td colspan="2" style='background-color: #e8ffff;width:20%;'>銀行名</td>
@@ -272,9 +273,12 @@ function chkPasswd(pwd1, pwd2) {
                             if ($data['StaffMaster']['bank_type'] == 1) {
                                 $checked1 = 'checked="checked"'; 
                                 $checked2 = '';
-                            } else {
+                            } elseif ($data['StaffMaster']['bank_type'] == 2) {
                                 $checked1 = ''; 
                                 $checked2 = 'checked="checked"'; 
+                            } else {
+                                $checked1 = ''; 
+                                $checked2 = ''; 
                             }
                         ?>
                         <td colspan="2">

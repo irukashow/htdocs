@@ -293,7 +293,7 @@ function doAlert(str, element) {
         <!-- 基本情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
             <tr>
-                <th colspan="5" style='background:#99ccff;text-align: center;'>登録済オーダー</th>
+                <th colspan="5" style='background:#99ccff;text-align: center;font-size:110%;'>登録済オーダー</th>
             </tr>
             <?php
                 if (!empty($selected_date)) {
@@ -348,7 +348,7 @@ function doAlert(str, element) {
         
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
             <tr>
-                <th colspan="4" style='background:#99ccff;text-align: center;'>オーダー入力</th>
+                <th colspan="4" style='background:#99ccff;text-align: center;font-size:110%;'>オーダー入力</th>
             </tr>
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>契約期間</td>

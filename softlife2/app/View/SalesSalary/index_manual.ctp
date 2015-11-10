@@ -185,9 +185,9 @@ $(function() {
     &nbsp;
     <a href="<?=ROOTDIR ?>/SalesSalary/salary" target="" class="load" onclick=''><font Style="font-size:95%;">給与金額</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/SalesSalary/account" target="" onclick=''><font Style="font-size:95%;">銀行口座</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/account/2" target="" onclick=''><font Style="font-size:95%;">銀行口座</font></a>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/SalesSalary/address" target="" onclick=''><font Style="font-size:95%;">スタッフ更新情報</font></a>
+    <a href="<?=ROOTDIR ?>/SalesSalary/address/1" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
     &nbsp;
 </div>
 <!-- 見出し１ END -->

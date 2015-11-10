@@ -1069,7 +1069,11 @@ class ShiftManagementController extends AppController {
             }
             //$this->log($point, LOG_DEBUG);
             // ポイントの更新
-            $point = implode(',', $point);
+            if (empty($point)) {
+                $point = null;
+            } else {
+                $point = implode(',', $point);
+            }
             //$this->log($staff_id.':'.$point, LOG_DEBUG);
             $data6 = array('point'=>$point);
             $this->StaffSchedule->id = $id;
@@ -2047,8 +2051,19 @@ class ShiftManagementController extends AppController {
         $this->log($this->request->data, LOG_DEBUG);
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            $this->CaseManagement->saveAll($this->request->data['CaseManagement']);
-            $this->Session->setFlash('【情報】背景色の登録が完了しました。');
+            // 所属の変更
+            if (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('page' => 1, $month));  
+            } else {
+                $this->CaseManagement->saveAll($this->request->data['CaseManagement']);
+                $this->Session->setFlash('【情報】背景色の登録が完了しました。');
+            }
         } elseif ($this->request->is('get')) {
             // 順序の変更
             if ($direction == 'up') {
@@ -2175,11 +2190,14 @@ class ShiftManagementController extends AppController {
                 $id = $id_array[0];
                 // 選択は一つだけ
                 $staff_id = $this->Session->read('schedule_staff');
+                /**
                 if (count($staff_id) == 1) {
-                    $this->Session->setFlash('【エラー】すでにスタッフが選択されています。');
+                    $this->Session->setFlash('【エラー】すでにスタッフが選択されています。('.$staff_id.')');
                     $this->redirect(array('action' => 'input_schedule', $staff_id ));
                     return;
                 }
+                 * 
+                 */
                 // セッション格納
                 $this->Session->write('schedule_staff', $id);
                 // 選択中スタッフ
@@ -2198,6 +2216,8 @@ class ShiftManagementController extends AppController {
                 if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     $datas = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    // セッションの削除
+                    $this->Session->delete('schedule_staff');
                     // ログ書き込み
                     $this->setShiftLog($username, $selected_class, 
                             'シフト希望：'.$datas['StaffMaster']['name'].'('.$staff_id.') '.  str_replace('-', '年', $date).'月分', 1);
