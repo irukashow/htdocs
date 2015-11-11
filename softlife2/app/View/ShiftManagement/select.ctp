@@ -119,6 +119,7 @@ onload = function() {
                     'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
             </td>
         </tr>
+        <?php } ?>
         <tr>
             <?php
                 if (empty($data_ap)) {
@@ -155,7 +156,6 @@ onload = function() {
                     'name' => 'register['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:4px 15px;')); ?>
             </td>
         </tr>
-        <?php } ?>
         <?php } else { ?>
         <tr align="center">
             <td colspan="3">保存済スタッフのデータはありません。</td>

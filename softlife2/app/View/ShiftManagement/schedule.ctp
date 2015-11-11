@@ -15,6 +15,8 @@
         <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">確定シフト</font></a>        <!-- alert("制作中");return false; -->
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_test?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" onclick=''><font Style="font-size:95%;">シフト作成２</font></a>
         &nbsp;
     </div>
     <div style="float:right;padding-top: 1px;">
@@ -420,7 +422,7 @@
                 ?>
             </tr>
             <!-- 受注 -->
-            <?php $list1 = array('1'=>'時間', '2'=>'日払', '3'=>'月払'); ?>
+            <?php $list1 = array('1'=>'時給', '2'=>'日給', '3'=>'月給'); ?>
             <?php $list2 = array('1'=>'有', '0'=>'無'); ?>
             <tr id="OrderDetail10">
                 <?php for ($count=0; $count<$col; $count++){ ?>
