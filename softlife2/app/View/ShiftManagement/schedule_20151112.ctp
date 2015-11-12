@@ -645,6 +645,7 @@
                     <?php if (!empty($class_name)) { ?>
                     <?php echo ''; ?>
                     <?php } else { ?>
+                    <?php //echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
                     <span id="<?=setData($datas2,'order_id',$count,$record) ?>"></span>
                     <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
                     <?php
@@ -740,7 +741,7 @@
             <?php
                     }
                     ?>
-                        <td class="" style="height:30px;"><?=$unasigned[$d] ?></td>
+                        <td class="" style="height:30px;"></td>
                         <td class="" style="height:30px;"></td>
                         <td class="" style="height:30px;"></td>
                     </tr>
