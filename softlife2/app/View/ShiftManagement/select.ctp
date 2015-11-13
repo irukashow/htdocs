@@ -108,7 +108,8 @@ onload = function() {
             </td>
             <td align="left" style="width:70%;padding:0px 10px 0px 10px;">
             <?php
-                echo '<span style="font-size:120%;">'.$data2['StaffMaster']['name'].'</span>'; 
+                $point0 = explode(',', $datas22[$key]['StaffSchedule']['point']);
+                echo '<span style="font-size:120%;">'.$data2['StaffMaster']['name'].' ('.$point0[$col-1].')'.'</span>'; 
                 if (!empty($datas22[$key]['StaffSchedule']['conditions'])) {
                     echo '<span style="color:red;margin-left:10px;">【条件あり】'.$datas22[$key]['StaffSchedule']['conditions'].'</span>';
                 }
@@ -162,10 +163,12 @@ onload = function() {
         </tr>
         <?php } ?>
     </table>
+   <!--
    <span style="font-size: 90%;">※待ち合わせは、シフトの保存を行ってから入力してください。</span>
+   -->
    
     <!-- シフト希望スタッフ -->
-    <div class="scroll_div2" style="height: 300px;">
+    <div class="scroll_div2" style="height: 300px;display:none;">
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;' _fixedhead="rows:1;">
         <tr>
             <th colspan="4" style='background:#99ccff;text-align: center;'>シフト希望スタッフ</th>
@@ -236,7 +239,7 @@ onload = function() {
     </div>
 
     <!-- スタッフ検索 -->
-    <div class="scroll_div">
+    <div class="scroll_div" style="display:none;">
     <table border='1' cellspacing="0" cellpadding="1" style='width: 100%;margin-top: 10px;border-spacing: 0px;' _fixedhead="rows:2; cols:1">
         <tr>
             <th colspan="4" style='background:#ccffff;text-align: center;'>追加スタッフ検索</th>

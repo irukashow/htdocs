@@ -359,11 +359,18 @@ function br2nl($string) {
 <script>
 onload = function() {
     //FixedMidashi.create();
-    var width = 1200;
+    //var width = 1200;
     // ヘッダを隠す
     document.getElementById("header").style.display = 'none';
     document.getElementById("footer").style.display = 'none';
-    //document.getElementById("menu_table").style.display = 'none';
+    var width = <?=120+$col*120+count($datas)*50+120*3+30 ?>;
+    if (width > 1200) {
+        document.body.style.width = '<?=120+$col*120+count($datas)*50+120*3+30 ?>px';
+    } else {
+        document.body.style.width = '1300px';
+    }
+    document.getElementById("headline").style.width = '1200px';
+    document.getElementById("menu_table").style.width = '1200px';
     /**
     if (120+<?=$col ?>*120+20 > width) {
         document.body.style.width = '<?=120+$col*120+20 ?>px';
@@ -384,14 +391,14 @@ onload = function() {
     edit = getCookie("edit");
     // シフト編集モードのセット
     if (edit == 1) {
-        for(i=0; i<=19; i++) {
+        for(i=0; i<=29; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
-            document.getElementById("OrderDetail0_"+i).style.display = 'none';
+            //document.getElementById("OrderDetail0_"+i).style.display = 'none';
         }
     } else {
-        for(i=0; i<=19; i++) {
+        for(i=0; i<=29; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
-            document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
+            //document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
         }
     }
     REDIPS.drag.dropMode = 'multiple';
@@ -410,21 +417,21 @@ function setCalender(year, month) {
 function setHidden() {
     target = document.getElementById("ActiveDisplay");
     if (document.getElementById("OrderDetail1").style.display == 'none') {
-        for(i=0; i<=19; i++) {
+        for(i=0; i<=29; i++) {
             var id1 = "OrderDetail"+i;
-            var id2 = "OrderDetail0_"+i;
+            //var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'table-row'; 
-            document.getElementById(id2).style.display = 'table-row'; 
+            //document.getElementById(id2).style.display = 'table-row'; 
         }
         deleteCookie("edit");
         document.cookie = "edit=0;";
         //target.innerHTML = '<span>シフト編集</span>';
     } else {
-        for(i=0; i<=19; i++) {
+        for(i=0; i<=29; i++) {
             var id1 = "OrderDetail"+i;
-            var id2 = "OrderDetail0_"+i;
+            //var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'none';
-            document.getElementById(id2).style.display = 'none';
+            //document.getElementById(id2).style.display = 'none';
         }
         deleteCookie("edit");
         document.cookie = "edit=1;";
@@ -512,7 +519,7 @@ function Mclk(Cell) {
         Ms1.innerText=Cell.innerHTML;
         Ms1.textContent=Cell.innerHTML;
 }
-var startrow = 24;
+var startrow = 25;
 function Mdblclk(Cell) {
   var divs = "";
  for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
@@ -532,7 +539,7 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex+1)
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+Cell.getElementsByTagName("span")[2].id
             +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
 }
 function Mdblclk2(Cell) {
@@ -618,7 +625,7 @@ function doAccount(year, month, mode) {
             if (val.length > 0) {
                 var input = document.createElement('input');
                 input.setAttribute('type', 'hidden');
-                input.setAttribute('name', (i-(startrow-1))+'_'+(j+1));
+                input.setAttribute('name', (i-(startrow-1))+'_'+Cell.getElementsByTagName("span")[2].id);
                 input.setAttribute('value', val);
                 form.appendChild(input);
             }

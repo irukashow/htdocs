@@ -386,12 +386,12 @@ onload = function() {
     if (edit == 1) {
         for(i=0; i<=19; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
-            //document.getElementById("OrderDetail0_"+i).style.display = 'none';
+            document.getElementById("OrderDetail0_"+i).style.display = 'none';
         }
     } else {
         for(i=0; i<=19; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
-            //document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
+            document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
         }
     }
     REDIPS.drag.dropMode = 'multiple';
@@ -404,7 +404,7 @@ function setCalender(year, month) {
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;
     var value2 = options2[month.options.selectedIndex].value;
-    location.href="<?=ROOTDIR ?>/ShiftManagement/schedule_test?date=" +value1 + "-" + value2;
+    location.href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=" +value1 + "-" + value2;
 }
 // 職種の詳細を隠す
 function setHidden() {
@@ -414,7 +414,7 @@ function setHidden() {
             var id1 = "OrderDetail"+i;
             var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'table-row'; 
-            //document.getElementById(id2).style.display = 'table-row'; 
+            document.getElementById(id2).style.display = 'table-row'; 
         }
         deleteCookie("edit");
         document.cookie = "edit=0;";
@@ -424,7 +424,7 @@ function setHidden() {
             var id1 = "OrderDetail"+i;
             var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'none';
-            //document.getElementById(id2).style.display = 'none';
+            document.getElementById(id2).style.display = 'none';
         }
         deleteCookie("edit");
         document.cookie = "edit=1;";
@@ -512,7 +512,7 @@ function Mclk(Cell) {
         Ms1.innerText=Cell.innerHTML;
         Ms1.textContent=Cell.innerHTML;
 }
-var startrow = 26;
+var startrow = 24;
 function Mdblclk(Cell) {
   var divs = "";
  for(i=0; i<Cell.getElementsByTagName("DIV").length; i++) {
@@ -532,7 +532,7 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+Cell.getElementsByTagName("span")[2].id
+    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+(Cell.cellIndex+1)
             +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
 }
 function Mdblclk2(Cell) {
@@ -618,13 +618,13 @@ function doAccount(year, month, mode) {
             if (val.length > 0) {
                 var input = document.createElement('input');
                 input.setAttribute('type', 'hidden');
-                input.setAttribute('name', (i-(startrow-1))+'_'+Cell.getElementsByTagName("span")[2].id);
+                input.setAttribute('name', (i-(startrow-1))+'_'+(j+1));
                 input.setAttribute('value', val);
                 form.appendChild(input);
             }
         }
     }
-    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule_test');
+    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule_old');
     form.setAttribute('method', 'post');
     form.submit();
 }
