@@ -65,7 +65,7 @@ class ShiftManagementController extends AppController {
         //$this->log($month, LOG_DEBUG);
         // 職種マスタ配列
         $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order' => 'sequence'));
         $this->set('list_shokushu', $list_shokushu);
         // 表示件数の初期値
         $this->set('limit', $limit);
@@ -670,7 +670,7 @@ class ShiftManagementController extends AppController {
 
                     }
                 }
-                $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                $this->redirect(array('action'=>'schedule_old', '?date='.date('Y-m', strtotime($data['month']))));
             /** 保存、重複チェック、確定 **/
             } elseif (isset($data['mode'])) {
                 $mode = $data['mode'];
@@ -694,7 +694,7 @@ class ShiftManagementController extends AppController {
                 }
                 // データがなければ処理停止
                 if (empty($data2)) {
-                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                    $this->redirect(array('action'=>'schedule_old', '?date='.date('Y-m', strtotime($data['month']))));
                     return;
                 }
                 // 該当月の更新
@@ -773,7 +773,7 @@ class ShiftManagementController extends AppController {
                         if ($this->array_isunique($check_arr) != false) {
                             $data9 = $this->StaffMaster->find('first', array('conditions'=>array('id'=>key($this->array_isunique($check_arr)))));
                             $this->Session->setFlash('【エラー】'.date('n', strtotime($data['month'])).'/'.$d.'に'.$data9['StaffMaster']['name_sei'].$data9['StaffMaster']['name_mei'].'さんが重複しています。'.$commet2);
-                            $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                            $this->redirect(array('action'=>'schedule_old', '?date='.date('Y-m', strtotime($data['month']))));
                             // ログ書き込み
                             $this->setShiftLog($username, $selected_class, '', $status);
                             return;
@@ -891,7 +891,7 @@ class ShiftManagementController extends AppController {
                         }
                     }
                 }
-                $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($month2))));
+                $this->redirect(array('action'=>'schedule_old', '?date='.date('Y-m', strtotime($month2))));
             /** シフトの全クリア **/
             } elseif (isset($this->request->data['all_clear'])) {
                 // 該当月を削除
@@ -901,7 +901,7 @@ class ShiftManagementController extends AppController {
                     $this->Session->setFlash('【情報】シフトを全クリアしました。');
                     // セッション削除
                     $this->Session->delete('staff_cell');
-                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                    $this->redirect(array('action'=>'schedule_old', '?date='.date('Y-m', strtotime($data['month']))));
                 }
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
@@ -1572,7 +1572,7 @@ class ShiftManagementController extends AppController {
             $point_arr[$d] = $this->StaffSchedule->find('list', array('fields'=>array('staff_id', 'point'), 'conditions'=>$conditions9));
         }
         $this->set('point_arr', $point_arr);
-        $this->log($point_arr, LOG_DEBUG);
+        //$this->log($point_arr, LOG_DEBUG);
 
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
@@ -1611,7 +1611,14 @@ class ShiftManagementController extends AppController {
                             $column = array_search($point_max, explode(',', $data_ss['StaffSchedule']['point'])) + 1;
                             $worktable_arr[$d][$column][] = $data_ss['StaffSchedule']['staff_id'];
                         } else {
-                            $unasigned[$d][] = $data_ss['StaffSchedule']['staff_id'];
+                            if (in_array(2, explode(',', $data_ss['StaffSchedule']['shokushu_id']))) {
+                                $unasigned[$d][1][] = $data_ss['StaffSchedule']['staff_id'];
+                            } elseif (in_array(9, explode(',', $data_ss['StaffSchedule']['shokushu_id']))) {
+                                $unasigned[$d][2][] = $data_ss['StaffSchedule']['staff_id'];
+                            } else {
+                                $unasigned[$d][3][] = $data_ss['StaffSchedule']['staff_id'];
+                            }
+                            
                         }
                     }
                 }
@@ -1647,10 +1654,30 @@ class ShiftManagementController extends AppController {
                         $data2[$i]['class'] = $selected_class;
                         $data2[$i]['username'] = $username;
                         $data2[$i]['month'] = $year.'-'.$month.'-01';
-                        if (empty($worktable_arr[$d][$i])) {
-                            $data2[$i]['d'.$d] = '';
-                        } else {
-                            $data2[$i]['d'.$d] = implode(',', $worktable_arr[$d][$i]);
+                        if ($i <= $col-3) {
+                            if (empty($worktable_arr[$d][$i])) {
+                                $data2[$i]['d'.$d] = '';
+                            } else {
+                                $data2[$i]['d'.$d] = implode(',', $worktable_arr[$d][$i]);
+                            }
+                        } elseif ($i == $col-2) {
+                            if (empty($unasigned[$d][1])) {
+                                $data2[$i]['d'.$d] = '';
+                            } else {
+                                $data2[$i]['d'.$d] = implode(',', $unasigned[$d][1]);
+                            }
+                        } elseif ($i == $col-1) {
+                            if (empty($unasigned[$d][2])) {
+                                $data2[$i]['d'.$d] = '';
+                            } else {
+                                $data2[$i]['d'.$d] = implode(',', $unasigned[$d][2]);
+                            }
+                        } elseif ($i == $col) {
+                            if (empty($unasigned[$d][3])) {
+                                $data2[$i]['d'.$d] = '';
+                            } else {
+                                $data2[$i]['d'.$d] = implode(',', $unasigned[$d][3]);
+                            }
                         }
                         $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
                         $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
@@ -1659,22 +1686,33 @@ class ShiftManagementController extends AppController {
                     }
                 }
                 // 未定枠
-                $i = 999;
-                for ($d=1; $d<=31; $d++) {
-                    $data2[$i]['column'] = $i;
-                    $data2[$i]['class'] = $selected_class;
-                    $data2[$i]['username'] = $username;
-                    $data2[$i]['month'] = $year.'-'.$month.'-01';
-                    if (empty($unasigned[$d])) {
-                        $data2[$i]['d'.$d] = '';
-                    } else {
-                        $data2[$i]['d'.$d] = implode(',', $unasigned[$d]);
+                //$i = 999;
+                /**
+                for ($i=$col+1; $i<=$col+3; $i++) {
+                    for ($d=1; $d<=31; $d++) {
+                        $data2[$i]['column'] = $i;
+                        $data2[$i]['class'] = $selected_class;
+                        $data2[$i]['username'] = $username;
+                        $data2[$i]['month'] = $year.'-'.$month.'-01';
+                        if (empty($unasigned[$d])) {
+                            $data2[$i]['d'.$d] = '';
+                        } else {
+                            $data2[$i]['d'.$d] = implode(',', $unasigned[$d]);
+                        }
+                        $data2[$i]['case_id'] = 0;
+                        $data2[$i]['order_id'] = 0;
+                        $data2[$i]['shokushu_num'] = $i-$col;
+                        if ($i-$col == 1) {
+                            $data2[$i]['shokushu_id'] = 2;
+                        } elseif ($i-$col == 2) {
+                            $data2[$i]['shokushu_id'] = 9;
+                        } else {
+                            $data2[$i]['shokushu_id'] = 0;
+                        }
                     }
-                    $data2[$i]['case_id'] = 0;
-                    $data2[$i]['order_id'] = 0;
-                    $data2[$i]['shokushu_num'] = 0;
-                    $data2[$i]['shokushu_id'] = 0;
                 }
+                 * 
+                 */
                 // 該当月を削除
                 $param = array('class' => $selected_class, 'month' => $year.'-'.$month.'-01');
                 if ($this->WorkTable->deleteAll($param)) {
@@ -1696,16 +1734,19 @@ class ShiftManagementController extends AppController {
                 $mode = $data['mode'];
                 $month2 = $data['month'];
                 $col = $data['col'];
-                for ($i=1; $i<=$col; $i++) {
+                for ($i=1; $i<=$col+3; $i++) {
                     for ($d=1; $d<=31; $d++) {
                         if (empty($data[$d.'_'.$i])) {
-                            continue;
+                            $data_d = null;
+                            //continue;
+                        } else {
+                            $data_d = $data[$d.'_'.$i];
                         }
                         $data2[$i]['column'] = $i;
                         $data2[$i]['class'] = $selected_class;
                         $data2[$i]['username'] = $username;
                         $data2[$i]['month'] = '"'.date('Y-m-d', strtotime($data['month'])).'"';
-                        $data2[$i]['d'.$d] = '"'.$data[$d.'_'.$i].'"';
+                        $data2[$i]['d'.$d] = '"'.$data_d.'"';
                         $data2[$i]['case_id'] = $data['WorkTable'][$i]['case_id'];
                         $data2[$i]['order_id'] = $data['WorkTable'][$i]['order_id'];
                         $data2[$i]['shokushu_num'] = $data['WorkTable'][$i]['shokushu_num'];
@@ -1714,24 +1755,26 @@ class ShiftManagementController extends AppController {
                 }
                 // データがなければ処理停止
                 if (empty($data2)) {
-                    $this->redirect(array('action'=>'schedule_test', '?date='.date('Y-m', strtotime($data['month']))));
+                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
                     return;
                 }
                 // 該当月の更新
-                for ($i=1; $i<=$col; $i++) {
-                    if (empty($data2[$i])) {
-                        continue;
-                    }
-                    $conditions = array(
-                        'class' => $selected_class,
-                        'order_id' => $data2[$i]['order_id'],
-                        'shokushu_num' => $data2[$i]['shokushu_num'],
-                        'month' => $data['month']
-                    );
-                    if ($this->WorkTable->updateAll($data2[$i], $conditions)) {
-                        //$this->log($this->WorkTable->getDataSource()->getLog(), LOG_DEBUG);
-                    } else {
-                        break;
+                if ($data['flag'] == 0) {
+                    for ($i=1; $i<=$col+3; $i++) {
+                        if (empty($data2[$i])) {
+                            continue;
+                        }
+                        $conditions = array(
+                            'class' => $selected_class,
+                            'order_id' => $data2[$i]['order_id'],
+                            'shokushu_num' => $data2[$i]['shokushu_num'],
+                            'month' => $data['month']
+                        );
+                        if ($this->WorkTable->updateAll($data2[$i], $conditions)) {
+                            //$this->log($this->WorkTable->getDataSource()->getLog(), LOG_DEBUG);
+                        } else {
+                            break;
+                        }
                     }
                 }
                 // 該当月を削除
@@ -1792,15 +1835,21 @@ class ShiftManagementController extends AppController {
                         }
                         if ($this->array_isunique($check_arr) != false) {
                             $data9 = $this->StaffMaster->find('first', array('conditions'=>array('id'=>key($this->array_isunique($check_arr)))));
+                            $this->log($check_arr, LOG_DEBUG);
+                            if (empty($data9)) {
+                                $this->Session->setFlash('【エラー】処理中にエラーが発生しました。('.key($this->array_isunique($check_arr)).')');
+                                $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
+                                return;
+                            }
                             $this->Session->setFlash('【エラー】'.date('n', strtotime($data['month'])).'/'.$d.'に'.$data9['StaffMaster']['name_sei'].$data9['StaffMaster']['name_mei'].'さんが重複しています。'.$commet2);
-                            $this->redirect(array('action'=>'schedule_test', '?date='.date('Y-m', strtotime($data['month']))));
+                            $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
                             // ログ書き込み
                             $this->setShiftLog($username, $selected_class, '', $status);
                             return;
                         }
                     }
                     if ($mode == 2) {
-                        $this->Session->setFlash('【情報】重複はありません。');
+                        $this->Session->setFlash('【情報】エラーはありません。');
                         // ログ書き込み
                         $this->setShiftLog($username, $selected_class, '', 12);
                     } elseif ($mode == 3) {
@@ -1852,6 +1901,10 @@ class ShiftManagementController extends AppController {
                                 $data_schedules = null;
                                 $case_ids = null;
                                 foreach ($datas10 as $key=>$data) {
+                                    // 未定枠はスキップ
+                                    if ($data['WorkTable']['order_id'] == 0) {
+                                        continue;
+                                    }
                                     for ($d=1; $d<=31; $d++) {
                                         if (empty($data['WorkTable']['d'.$d])) {
                                             continue;
@@ -1878,6 +1931,7 @@ class ShiftManagementController extends AppController {
                                     }
                                 }
                                 if (!empty($data_schedules)) {
+                                    $this->log($data_schedules, LOG_DEBUG);
                                     // 案件、職種の集計
                                     foreach ($data_schedules as $sid=>$data2) {
                                         $case_ids = null;
@@ -1911,7 +1965,7 @@ class ShiftManagementController extends AppController {
                         }
                     }
                 }
-                $this->redirect(array('action'=>'schedule_test', '?date='.date('Y-m', strtotime($month2))));
+                $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($month2))));
             /** シフトの全クリア **/
             } elseif (isset($this->request->data['all_clear'])) {
                 // 該当月を削除
@@ -1921,7 +1975,7 @@ class ShiftManagementController extends AppController {
                     $this->Session->setFlash('【情報】シフトを全クリアしました。');
                     // セッション削除
                     $this->Session->delete('staff_cell');
-                    $this->redirect(array('action'=>'schedule_test', '?date='.date('Y-m', strtotime($data['month']))));
+                    $this->redirect(array('action'=>'schedule', '?date='.date('Y-m', strtotime($data['month']))));
                 }
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {
@@ -1961,7 +2015,7 @@ class ShiftManagementController extends AppController {
                     }
                 }
                 $this->log('セッションあり', LOG_DEBUG);
-                //$this->log($staff_cell2, LOG_DEBUG);
+                $this->log($staff_cell2, LOG_DEBUG);
                 $this->set('staff_cell', $staff_cell2);
             } else {
                 for($i=1; $i<=200; $i++) {
@@ -1985,21 +2039,23 @@ class ShiftManagementController extends AppController {
                     }
                 }
                 // 未定枠
-                $conditions1 = array('class'=>$selected_class, 'month'=>$year.'-'.$month.'-01', 'column'=>999);
-                $results= $this->WorkTable->find('first', array('conditions'=>$conditions1));
-                //$this->log($results, LOG_DEBUG);
-                if (!empty($results)) {
-                    $i = 999;
-                    for($d=1; $d<=31; $d++) {
-                        $staff_ids[$d][$i] = $results['WorkTable']['d'.$d];
-                        if (!empty($results['WorkTable']['d'.$d])) {
-                            $staff_ids2[$d][$i] = explode(',', $results['WorkTable']['d'.$d]);
-                            $staff_ids3[$d][$i] = $results['WorkTable']['d'.$d];
+                for($j=1; $j<=3; $j++) {
+                    $conditions1 = array('class'=>$selected_class, 'month'=>$year.'-'.$month.'-01', 'order_id'=>0, 'shokushu_num'=>$j);
+                    $results= $this->WorkTable->find('first', array('conditions'=>$conditions1));
+                    $this->log($results, LOG_DEBUG);
+                    if (!empty($results)) {
+                        $i = $results['WorkTable']['column'];
+                        for($d=1; $d<=31; $d++) {
+                            $staff_ids[$d][$i] = $results['WorkTable']['d'.$d];
+                            if (!empty($results['WorkTable']['d'.$d])) {
+                                $staff_ids2[$d][$i] = explode(',', $results['WorkTable']['d'.$d]);
+                                $staff_ids3[$d][$i] = $results['WorkTable']['d'.$d];
+                            }
                         }
                     }
                 }
-
                 $this->set('staff_ids', $staff_ids);
+                $this->log($staff_ids, LOG_DEBUG);
                 $staff_cell = $staff_ids2;
                 $staff_cell[0][0] = $year.'-'.$month;     // 該当月セット
                 $this->Session->write('staff_cell', $staff_cell);
@@ -2213,7 +2269,7 @@ class ShiftManagementController extends AppController {
         $this->Session->delete('filter');
         // 職種マスタ配列
         $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order' => 'sequence'));
         $this->set('list_shokushu', $list_shokushu);
         // その他
         $username = $this->Auth->user('username');
@@ -2447,8 +2503,16 @@ class ShiftManagementController extends AppController {
         $this->set('list_case', $list_case);
         // 該当月の案件
         $datas2 = $this->WorkTable->find('all', array('fields'=>array('case_id'), 'conditions' => $conditions3));
-        foreach($datas2 as $data2) {
-            $case_arr[$data2['WorkTable']['case_id']] = $getCasename[$data2['WorkTable']['case_id']];
+        $this->log($datas2, LOG_DEBUG);
+        if (!empty($datas2)) {
+            foreach($datas2 as $data2) {
+                if ($data2['WorkTable']['case_id'] == 0) {
+                    continue;
+                }
+                $case_arr[$data2['WorkTable']['case_id']] = $getCasename[$data2['WorkTable']['case_id']];
+            }
+        } else {
+            $case_arr = null;
         }
         if (empty($case_arr)) {
             $case_arr2 = null;
@@ -3313,12 +3377,17 @@ class ShiftManagementController extends AppController {
             } elseif (isset($this->request->data['erasure'])) {
                 // セッション削除
                 $this->Session->delete('schedule_staff');
-                $this->redirect(array('action'=>'input_schedule'));
+                $this->redirect(array('action'=>'input_schedule', '?date='.$date));
             // 登録
             } elseif (isset($this->request->data['commit'])) {
+                if (empty($staff_id)) {
+                    $this->Session->setFlash('【エラー】スタッフを選択してください。');
+                    return;
+                }
                 if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     $datas = $this->StaffMaster->find('first', array('fields'=>array('*', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    $this->log($datas, LOG_DEBUG);
                     // セッションの削除
                     $this->Session->delete('schedule_staff');
                     // ログ書き込み
@@ -3797,10 +3866,16 @@ class ShiftManagementController extends AppController {
             for($i=0;$i<count($arraykey);$i++){
                     unset($arrayValue[$arraykey[$i]]);	//重複していない要素を削除
             }
+            $arrayValue2 = null;
             if(count($arrayValue)!=0){
-                    return $arrayValue;
+                foreach($arrayValue as $key=>$value) {
+                    if (count($arrayValue[$key]) > 2) {
+                        $arrayValue2[] = $arrayValue[$key];
+                    }
+                }
+                return $arrayValue2;
             }else{
-                    return false;
+                return false;
             }
     }
     

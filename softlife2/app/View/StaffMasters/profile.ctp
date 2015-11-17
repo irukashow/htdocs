@@ -10,7 +10,31 @@
     echo $this->Html->css(array('print'),'stylesheet',array('media' => 'print'));
 ?>
 <?php require('profile_element.ctp'); ?>
-<?php require('common.ctp'); ?>
+<?php
+    // 職種のセット
+    function getShokushu($value, $list_shokushu) {
+        $ret = "";
+        //$list_shokushu = Configure::read("shokushu");
+        
+        if (!empty($value) && $value != 0) {
+            $ret = $list_shokushu[$value];  
+        }
+
+        return $ret;
+    }
+    function getShokushu2($array, $list_shokushu) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if (empty($ret)) {
+                $ret = getShokushu($value, $list_shokushu);
+            } else {
+                $ret = $ret.'<br>'.getShokushu($value, $list_shokushu);
+            }  
+        }
+        return $ret;
+    }
+?>
 <style>
 #loading{
     position:absolute;
@@ -112,7 +136,7 @@ window.onload = function(){
                         </tr>
                         <tr>
                             <td id='shokushu_shoukai' valign="top">
-                                <font style='font-size:140%;'><?=getShokushu2($data['StaffMaster']['shokushu_shoukai']) ?></font><br>
+                                <font style='font-size:130%;'><?=getShokushu2($data['StaffMaster']['shokushu_shoukai'], $list_shokushu) ?></font><br>
                             </td>
                             <td valign="top">
                     <!-- 保存した履歴書ファイルのリンク -->
@@ -255,11 +279,11 @@ window.onload = function(){
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>希望職種</td>
-                            <td style='width:70%;'><?=getShokushu2($data['StaffMaster']['shokushu_kibou']) ?></td>
+                            <td style='width:70%;'><?=getShokushu2($data['StaffMaster']['shokushu_kibou'], $list_shokushu) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>経験職種</td>
-                            <td style='width:70%;'><?=getShokushu2($data['StaffMaster']['shokushu_keiken']) ?></td>
+                            <td style='width:70%;'><?=getShokushu2($data['StaffMaster']['shokushu_keiken'], $list_shokushu) ?></td>
                         </tr>
                         <tr>
                             <td style='background-color: #e8ffff;width:30%;'>マンションギャラリー<br>経験</td>

@@ -237,7 +237,7 @@ function doSubmit(value, flag) {
     <td align="left" style="font-size: 90%;">
         <?php
             if (!empty($datas_order[$key])) {
-                echo $list_shokushu[$datas_order[$key][0]['OrderInfoDetail']['shokushu_id']];
+                echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[$datas_order[$key][0]['OrderInfoDetail']['shokushu_id']]);
                 if (!empty($datas_order[$key][0]['OrderInfoDetail']['shokushu_memo'])) {
                     echo '（'.$datas_order[$key][0]['OrderInfoDetail']['shokushu_memo'].'）';
                 }
@@ -321,7 +321,7 @@ function doSubmit(value, flag) {
   <tr>
       <td style="font-size: 90%;" align="left">
         <?php
-            echo $list_shokushu[$datas_order[$key][$i]['OrderInfoDetail']['shokushu_id']];
+            echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[$datas_order[$key][$i]['OrderInfoDetail']['shokushu_id']]);
             if (!empty($datas_order[$key][$i]['OrderInfoDetail']['shokushu_memo'])) {
                 echo '（'.$datas_order[$key][$i]['OrderInfoDetail']['shokushu_memo'].'）';
             }

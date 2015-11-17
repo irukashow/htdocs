@@ -113,8 +113,8 @@ class StaffMastersController extends AppController {
         //$this->log($this->User->getDataSource()->getLog(), LOG_DEBUG);
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
-        $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $conditions0 = array('item' => 17, 'sequence != ' => '99');
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order' => 'sequence'));
         $this->set('list_shokushu', $list_shokushu);
         // 表示件数の初期値
         $this->set('limit', $limit);
@@ -650,8 +650,8 @@ class StaffMastersController extends AppController {
         $pref_arr = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions));
         $this->set('pref_arr', $pref_arr); 
         // 職種マスタ配列
-        $conditions2 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions2));
+        $conditions2 = array('item' => 17, 'sequence != ' => '99');
+        $list_shokushu = $this->Item->find('list', array('fields' => array( 'id', 'value'), 'conditions' => $conditions2, 'order' => 'sequence'));
         $this->set('list_shokushu', $list_shokushu); 
         $this->set('staff_id', $staff_id); 
         // テーブルの設定

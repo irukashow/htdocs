@@ -96,10 +96,12 @@
                         echo "<col style='width:50px;'>";
                     }
                 }
+                if ($flag == 0) {
             ?>
                 <col style='width:120px;'>
                 <col style='width:120px;'>
                 <col style='width:120px;'>
+                <?php } ?>
             </colgroup>
             <thead>
             <tr>
@@ -112,7 +114,9 @@
                 <th id="case_<?=$data['OrderCalender']['case_id'] ?>" 
                     style='background:#99ccff;text-align: center;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;
                     color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
+                    <div id="<?=$data['OrderCalender']['case_id'] ?>"></div>
+                    <div id="<?=$year.'-'.sprintf('%02d', $month) ?>"></div>
+                    <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
                 <th style="background-color: #99ccff;" align="center">
                     <a href="#" onclick="setHidden();">
@@ -120,7 +124,9 @@
                     </a>
                 </th>
                 <?php } ?>
+                <?php if ($flag == 0) { ?>
                 <th colspan="3" align="center" style="background-color: #66CCFF;">未定</th>
+                <?php } ?>
             </tr>
             </thead>
             <tbody style="overflow: auto;">
@@ -421,7 +427,7 @@
                     }
             ?>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>
-                    <?php echo $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]; ?>
+                    <?php echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]); ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
@@ -431,9 +437,11 @@
                         }
                     }
                 ?>
+                <?php if ($flag == 0) { ?>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>受付</td>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>保育</td>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>その他</td>
+                <?php } ?>
             </tr>
             <tr id="OrderDetail17">
                 <td style='background-color: #e8ffff;' colspan="2">勤務時間</td>
@@ -565,9 +573,10 @@
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php 
-                    $ii = 0;
+                    $ii = 0; $count_end = 0;
                     for ($count=0; $count<$col+count($datas); $count++){
                         if ($ii == count($datas)) {
+                            $count_end = $count;
                             break;
                         }
                 ?>
@@ -587,10 +596,29 @@
                             echo '<td style="background-color: #e8ffff;"></td>';
                         }
                     }
+                    for ($count=$count_end; $count<$count_end+3; $count++){
+                        if ($count == $count_end) {
+                            $jj = 1;
+                            $shokushu_id = 2;
+                        } elseif ($count == $count_end+1) {
+                            $shokushu_id = 9;
+                            $jj = 2;
+                        } else {
+                            $shokushu_id = 0;
+                            $jj = 3;
+                        }
                 ?>
-                <td style='background-color: #e8ffff;'></td>
-                <td style='background-color: #e8ffff;'></td>
-                <td style='background-color: #e8ffff;'></td>
+                <td align='left' style='background-color: #e8ffff;'>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.case_id',array('type'=>'hidden', 'value'=>0)); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.order_id',array('type'=>'hidden', 'value'=>0)); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_num',array('type'=>'hidden','value'=>$jj)); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_id',array('type'=>'hidden','value'=>$shokushu_id)); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+                </td>
+                <?php
+                    }
+                ?>
             </tr>
             <!-- カレンダー部分 --> 
             <?php
@@ -630,7 +658,7 @@
                     } else {
                         $bgcolor_cal = '#e8ffff'; 
                     }
-                    echo '<td align="center" class="'.$class_mask.'" style="color:'.$style.';background-color: '.$bgcolor_cal.';" colspan="2">'.$m.'/'.$d.'('.$weekday[$i].')</td>';
+                    echo '<td align="center" class="'.$class_mask.'" style="color:'.$style.';background-color: '.$bgcolor_cal.';" colspan="2"><span id="null"></span>'.$m.'/'.$d.'('.$weekday[$i].')</td>';
                     if ($i==0 || $i==6) {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
                     } else {
@@ -660,20 +688,21 @@
                             }
                         }
             ?>
-            <?php
-                // 背景色
-                if (empty($class_name)) {
-                    if ($d%2 == 0) {
-                        $bgcolor_cal2 = '#CEF9DC'; 
+                <?php
+                    // 背景色
+                    if (empty($class_name)) {
+                        if ($d%2 == 0) {
+                            $bgcolor_cal2 = '#CEF9DC'; 
+                        } else {
+                            $bgcolor_cal2 = ''; 
+                        }
                     } else {
                         $bgcolor_cal2 = ''; 
                     }
-                } else {
-                    $bgcolor_cal2 = ''; 
-                }
-            ?>
+                ?>
                 <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>" style="background-color: <?=$bgcolor_cal2 ?>;">
                     <?php if (!empty($class_name)) { ?>
+                    <span id="null"></span>
                     <?php echo ''; ?>
                     <?php } else { ?>
                     <?php //echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
@@ -685,14 +714,26 @@
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $data_staff) {
+                                    $point3 = $point_arr[$d][$data_staff['StaffMaster']['id']];
+                                    if (empty($point3)) {
+                                        $point3_2 = '';
+                                    } else {
+                                        $point3_2 = explode(',', $point3);
+                                    }
+                                    if ($flag == 0) {
+                                        $point_str = ' ('.$point3_2[$count].')';
+                                    } else {
+                                        $point_str = '';
+                                    }
                                     echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
-                                    echo $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
+                                    echo $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'].$point_str;
                                     echo '</div>';
                                 }
                             }
                         }
                     ?>
                     <?php
+                    /**
                     $j = 0;
                     if (!empty($request_staffs)) {
                         foreach ($request_staffs as $data) {
@@ -755,13 +796,15 @@
                             }
                         }
                     }
+                     * 
+                     */
                     ?>
                     <?php } ?>
                 </td>
             <?php
                     if ($count == $cal_arr[$ii]) {
                         $ii += 1;
-                        echo '<td class="'.$class_mask.'" style="color:'.$style.';background-color: #e8ffff;">'.$d.'('.$weekday[$i].')</td>';
+                        echo '<td class="'.$class_mask.'" style="color:'.$style.';background-color: #e8ffff;"><span id="null"></span>'.$d.'('.$weekday[$i].')</td>';
                     }
                 }
                 // 背景色
@@ -771,34 +814,31 @@
                     $bgcolor_cal = ''; 
                 }
                 // 未定欄
-                if (!empty($staff_cell[$d][999])) {
-                    if (!empty($data_staffs[$d][999])) {
-                        $div2 = '';$div9 = '';$div999 = '';
-                        foreach($data_staffs[$d][999] as $key=>$data_staff) {
-                            // 受付
-                            if (in_array(2, explode(',', $staff_shokushu_arr[$data_staff['StaffMaster']['id']]))) {
+                if ($flag == 0) {
+                    for($k=$count+1; $k<=$count+3; $k++) {
+                        if (!empty($data_staffs[$d][$k])) {
+                            $div2 = '';
+                            foreach($data_staffs[$d][$k] as $key=>$data_staff) {
+                                $span[0] = '';$span[1] = '';
+                                // span
+                                $span[0] = '<span id=""></span>';
+                                $span[0] = $span[0].'<span id=""></span>';
+                                $span[1] = $span[0].'<span id="'.$k.'"></span>';
+                                // div
                                 $div2 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'">';
                                 $div2 .= $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
                                 $div2 .=  '</div>';
-                            } elseif (in_array(9, explode(',', $staff_shokushu_arr[$data_staff['StaffMaster']['id']]))) {
-                                $div9 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'">';
-                                $div9 .= $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
-                                $div9 .=  '</div>';
-                            } else {
-                                $div999 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'">';
-                                $div999 .= $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
-                                $div999 .=  '</div>';
                             }
-
+                            echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].$div2.'</td>';
+                        } else {
+                            $span[0] = '';$span[1] = '';
+                            // span
+                            $span[0] = '<span id=""></span>';
+                            $span[0] = $span[0].'<span id=""></span>';
+                            $span[1] = $span[0].'<span id="'.$k.'"></span>';
+                            echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].'</td>';
                         }
-                        echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$div2.'</td>';
-                        echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$div9.'</td>';
-                        echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$div999.'</td>';
                     }
-                } else {
-                    echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';"></td>';
-                    echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';"></td>';
-                    echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';"></td>';
                 }
             ?>
             </tr>
@@ -809,7 +849,7 @@
             <!-- カレンダー部分 END -->
             <!-- 職種 -->
             <tr>
-                <td style='width:80px;background-color: #e8ffff;' colspan="2" id="message" class="<?=$class_mask ?>">職種</td>
+                <td style='width:80px;background-color: #e8ffff;color: black;' colspan="2" id="message" class="<?=$class_mask ?>">職種</td>
             <?php 
                 $ii = 0;
                 for ($count=0; $count<$col+count($datas); $count++){
@@ -818,7 +858,7 @@
                     }
             ?>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>
-                    <?php echo $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]; ?>
+                    <?php echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]); ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
@@ -828,9 +868,11 @@
                         }
                     }
                 ?>
+                <?php if ($flag == 0) { ?>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>受付</td>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>保育</td>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>その他</td>
+                <?php } ?>
             </tr>
             <!-- 案件 -->
             <tr>
@@ -851,7 +893,9 @@
                     </a>
                 </th>
                 <?php } ?>
+                <?php if ($flag == 0) { ?>
                 <th colspan="3" align="center" style="background-color: #66CCFF;color:black;">未定</th>
+                <?php } ?>
             </tr>
             <!-- 売上給与統計 -->
             <tr id="OrderDetail20">

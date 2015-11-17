@@ -128,7 +128,14 @@ input[type=checkbox] {
             <!--- シフト希望表 --->
             <!-- カレンダー -->
         <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
-            
+            <!-- メッセージ -->
+            <?php
+                if (empty($msg)) {
+                    echo '';
+                } else {
+                    echo '<div style="font-size:130%;color:red;">'.$msg.'</div>';
+                }
+            ?>
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
                     <tr align="center">
                             <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false">&lt; 前の月</a></td>
@@ -136,7 +143,6 @@ input[type=checkbox] {
                             <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false">次の月 &gt;</a></td>
                     </tr>
             </table>
-
             <!-- 選択 -->
             <div data-role="fieldcontain">
                 <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
@@ -288,9 +294,9 @@ input[type=checkbox] {
     </div>			
     <div data-role="content">
         <p>以下の入力ができます。</p>
-        <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#page2"'>
-        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule2#page1"'>
-        <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule3#page1"'>
+        <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="?date=<?=$date1 ?>"'>
+        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule2?date=<?=$date1 ?>"'>
+        <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule3?date=<?=$date1 ?>"'>
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
         </div> 

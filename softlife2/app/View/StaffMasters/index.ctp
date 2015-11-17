@@ -3,7 +3,31 @@
     echo $this->Html->script('station3');
 ?>
 <?php require('index_element.ctp'); ?>
-<?php require('common.ctp'); ?>
+<?php
+    // 職種のセット
+    function getShokushu($value, $list_shokushu) {
+        $ret = "";
+        //$list_shokushu = Configure::read("shokushu");
+        
+        if (!empty($value) && $value != 0) {
+            $ret = $list_shokushu[$value];  
+        }
+
+        return $ret;
+    }
+    function getShokushu2($array, $list_shokushu) {
+        $ret = "";
+        $_array = explode(',', $array);
+        foreach ($_array as $key => $value) {
+            if (empty($ret)) {
+                $ret = getShokushu($value, $list_shokushu);
+            } else {
+                $ret = $ret.'<br>'.getShokushu($value, $list_shokushu);
+            }  
+        }
+        return $ret;
+    }
+?>
 
 <style>
 #loading{
@@ -269,7 +293,7 @@ function chkHankaku(textbox) {
     <td align="center"><?php echo $getTantou[$tantou_user]; ?></td>
     <td align="center"><?php echo getOjt($data['StaffMaster']['ojt']).'<br>'.$data['StaffMaster']['ojt_date']; ?></td>
     <td align="center"><?php echo '＜？＞'; ?></td>
-    <td align="left"><?php echo getShokushu2($data['StaffMaster']['shokushu_shoukai']); ?></td>
+    <td align="left"><?php echo getShokushu2($data['StaffMaster']['shokushu_shoukai'], $list_shokushu); ?></td>
     <td align="center">
 	<?php
             if (is_null($data['StaffMaster']['modified'])) {

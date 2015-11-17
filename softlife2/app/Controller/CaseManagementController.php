@@ -73,8 +73,8 @@ class CaseManagementController extends AppController {
         $name_arr = $this->User->find('list', array('fields' => array('username', 'name'), 'conditions' => $conditions));
         $this->set('name_arr', $name_arr); 
         // 職種マスタ配列
-        $conditions0 = array('item' => 17);
-        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0));
+        $conditions0 = array('item' => 17, 'sequence != ' => '99');
+        $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order' => 'sequence'));
         $this->set('list_shokushu', $list_shokushu);
         // 取引先配列
         $customer_array = $this->Customer->find('list', array('fields'=>array('id', 'corp_name')));
@@ -919,7 +919,7 @@ class CaseManagementController extends AppController {
             ),
         );
         // 職種マスタ配列
-        $conditions0 = array('item' => 17);
+        $conditions0 = array('item' => 17, 'sequence != ' => '99');
         $list_shokushu = $this->Item->find('list', array('fields' => array('id', 'value'), 'conditions' => $conditions0, 'order'=>array('sequence')));
         $this->set('list_shokushu', $list_shokushu);
         // 案件配列

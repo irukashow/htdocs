@@ -361,11 +361,18 @@ onload = function() {
     //FixedMidashi.create();
     //var width = 1200;
     // ヘッダを隠す
+    <?php
+        if ($flag == 0) {
+            $width_extra = 120*3;
+        } else {
+            $width_extra = 0;
+        }
+    ?>
     document.getElementById("header").style.display = 'none';
     document.getElementById("footer").style.display = 'none';
-    var width = <?=120+$col*120+count($datas)*50+120*3+30 ?>;
+    var width = <?=120+$col*120+count($datas)*50+$width_extra+30 ?>;
     if (width > 1200) {
-        document.body.style.width = '<?=120+$col*120+count($datas)*50+120*3+30 ?>px';
+        document.body.style.width = '<?=120+$col*120+count($datas)*50+$width_extra+30 ?>px';
     } else {
         document.body.style.width = '1300px';
     }
@@ -481,18 +488,8 @@ function getCELL() {
     for (var j=0; j<myTbl.rows[i].cells.length; j++) {
     var Cells=myTbl.rows[i].cells[j]; //i番行のj番列のセル "td"
 　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
-    Cells.onclick =function(){Mclk(this);}
+    //Cells.onclick =function(){Mclk(this);}
     Cells.ondblclick =function(){Mdblclk(this);}
-　  }
-　 }
- var myTbl2 = document.getElementById('table0');
-    // trをループ。rowsコレクションで,行位置取得。
-　for (var i=0; i<myTbl2.rows.length; i++) {
-     // tr内のtdをループ。cellsコレクションで行内セル位置取得。
-    for (var j=0; j<myTbl2.rows[i].cells.length; j++) {
-    var Cells2=myTbl2.rows[i].cells[j]; //i番行のj番列のセル "td"
-　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
-    Cells2.ondblclick =function(){Mdblclk2(this);}
 　  }
 　 }
 　}
@@ -530,7 +527,9 @@ function Mdblclk(Cell) {
      }
  }
     if (Cell.parentNode.rowIndex == 0) {
-        location.href = "<?=ROOTDIR ?>/ShiftManagement/setting";
+        //location.href = "<?=ROOTDIR ?>/ShiftManagement/setting";
+        window.open('<?=ROOTDIR ?>/CaseManagement/reg2/'+Cell.getElementsByTagName("div")[0].id+'/1?date='+Cell.getElementsByTagName("div")[1].id, 
+        'オーダー入力','width=1200,height=800,scrollbars=yes');
     } else if (Cell.parentNode.rowIndex < startrow || Cell.parentNode.rowIndex > startrow+31 || Cell.cellIndex < 0) {
         return false;
     }
@@ -539,8 +538,10 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+Cell.getElementsByTagName("span")[2].id
-            +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
+    if (Cell.getElementsByTagName("span")[0].id != '') {
+        window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+Cell.getElementsByTagName("span")[2].id
+                +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
+    }
 }
 function Mdblclk2(Cell) {
     window.open('<?=ROOTDIR ?>/CaseManagement/reg2/'+Cell.getElementsByTagName("div")[0].id+'/1?date='+Cell.getElementsByTagName("div")[1].id, 
@@ -598,17 +599,20 @@ function doAccount(year, month, mode) {
     input.setAttribute('value', mode);
     form.appendChild(input);
     for (var i=startrow; i<myTbl.rows.length; i++) {
-        for (var j=0; j<myTbl.rows[i].cells.length; j++) {
+        for (var j=1; j<myTbl.rows[i].cells.length; j++) {
             var val = [];
             Cell = myTbl.rows[i].cells[j];
-            if (Cell.innerHTML.length == 0) {
+            if (Cell.id == null) {
                 continue;
             }
             // spanタグがあって、divタグがないものはエラー（一時保存以外）
-            if (mode != 1 && Cell.getElementsByTagName("span").length > 0 && Cell.getElementsByTagName("DIV").length == 0) {
+            if (mode != 1 && Cell.getElementsByTagName("span").length > 1 && j < myTbl.rows[i].cells.length-3 && Cell.getElementsByTagName("DIV").length == 0) {
                 alert("【エラー】"+(i-startrow+1)+"日に埋まっていないシフトが存在します。");
                 return;
             }
+            // テスト
+            //alert(Cell.getElementsByTagName("span")[2].id);
+            
             for(k=0; k<Cell.getElementsByTagName("DIV").length; k++) {
                 // コピーの文字列を削る
                 var str = Cell.getElementsByTagName("DIV")[k].id;

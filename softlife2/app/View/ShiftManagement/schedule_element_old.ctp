@@ -600,7 +600,7 @@ function doAccount(year, month, mode) {
             // spanタグがあって、divタグがないものはエラー（一時保存以外）
             if (mode != 1 && Cell.getElementsByTagName("span").length > 0 && Cell.getElementsByTagName("DIV").length == 0) {
                 alert("【エラー】"+(i-startrow+1)+"日に埋まっていないシフトが存在します。");
-                return;
+                //return;
             }
             for(k=0; k<Cell.getElementsByTagName("DIV").length; k++) {
                 // コピーの文字列を削る

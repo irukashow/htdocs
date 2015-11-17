@@ -315,7 +315,7 @@ class UsersController extends AppController {
             $this->set('shokushu_id', $shokushu_id);
             // 登録していた値をセット
             if (empty($this->request->query['date'])) {
-                $date1 = date('Y-m');
+                $date1 = date('Y-m', strtotime('+1 month'));
                 $date2 = null;
             } else {
                 $date2 = $this->request->query['date'];
@@ -323,6 +323,16 @@ class UsersController extends AppController {
             }
             $this->Session->write('date2', $date2);
             $this->set('date1', $date1);
+            if (empty($this->request->query['err'])) {
+                $msg = '';
+            } elseif ($this->request->query['err'] == 1) {
+                $msg = '【情報】登録を完了いたしました。';
+            } elseif ($this->request->query['err'] == 2) {
+                $msg = '【エラー】登録時にエラーが発生しました。';
+            } else {
+                $msg = '';
+            }
+            $this->set('msg', $msg);
 
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
@@ -334,9 +344,10 @@ class UsersController extends AppController {
                     //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
                     // スタッフのシフト希望登録履歴
                     //　
-                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1));
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=1'));
                 } else {
                     $this->log('エラーが発生しました。', LOG_DEBUG);
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=2'));
                 }
             } elseif ($this->request->is('get')) {
                 //$this->log($this->request->data, LOG_DEBUG);

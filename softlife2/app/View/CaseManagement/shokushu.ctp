@@ -64,6 +64,7 @@
 </table>
 <!--- 職種マスタ管理 END --->
 <div style="clear:both;"></div>
+<div>※「表示順」を99にすると非表示になります。</div>
 <?php
     echo $this->Paginator->numbers (
         array (
