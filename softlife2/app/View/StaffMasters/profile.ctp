@@ -80,7 +80,6 @@ window.onload = function(){
     }
 ?>
 <?php foreach ($datas as $data){ ?>
-<?php echo $this->Form->create('StaffMaster'); ?>
 <table id='profile' border="0" style="margin:10px;width:98%;">
     <tr>
         <td style="width:50%;vertical-align: top;">
@@ -164,10 +163,58 @@ window.onload = function(){
                             </td>
                         </tr>
                     </table>
+                    
+                    <!-- 待ち合わせ -->
+                    <?php echo $this->Form->create('WorkTable'); ?>
+                    <?php
+                        $day = 1;
+                        $flag_shift = 1;
+                        if ($flag_shift == 0) {
+                            $display = 'none';
+                        } else {
+                            $display = 'normal';
+                        }
+                    ?>
+                    <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;display:<?=$display?>;">
+                        <tr>
+                            <td style='background-color: #FFC7AF;font-weight: bold;' colspan="3" align="center">
+                                待ち合わせ (12月5日土曜日)
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style='width:20%;'>
+                                <input type="checkbox" name="data[StaffMaster][appointment]" value="1" style="margin-left: 0px;vertical-align: -5px;">
+                                <font style="margin-left:0px;">待ち合わせ</font>
+                            </td>
+                            <td style='width:70%;'>
+                            <?php
+                                if (empty($data_ap['WorkTable']['ap'.$day])) {
+                                    $memo = '';
+                                } elseif ($data_ap['WorkTable']['ap'.$day] == 1) {
+                                    $memo = '';
+                                } else {
+                                    $memo = $data_ap['WorkTable']['ap'.$day];
+                                }
+                                echo $this->Form->input('appointment_memo',
+                                    array('label'=>false,'div'=>false,'maxlength'=>'30', 'placeholder'=>'待ち合わせメモ', 
+                                        'style'=>'width:95%;padding:3px;', 'value'=>$memo)); 
+                            ?> 
+                            </td>
+                            <td align="center" style='width:10%;'>
+                                <?php echo $this->Form->submit('登録', array('id'=>'button-create', 
+                                    'name' => 'register[]', 'div' => false, 'style'=>'font-size:100%;padding:4px 15px;')); ?>
+                            </td>
+                        </tr>
+                    </table>
+                    <?php echo $this->Form->end(); ?>
+                    
+                    <?php echo $this->Form->create('StaffMaster'); ?>
                     <?php if ($flag == 1) { ?>
                     <?php $comment1 = '完全削除するとデータが完全に消去されます。\n本当に実行しますか？'; ?>
                     <input type="submit" id="complete-delete" name="complete_delete[<?=$data['StaffMaster']['id'] ?>]" value="★★★ 完 全 削 除 ★★★" onclick="return confirm('<?=$comment1 ?>');">
                     <?php } ?>
+
                     <!-- 左項目１ -->
                     <table border='1' cellspacing="0" cellpadding="5" style="width:100%;margin-top: 10px;border-spacing: 0px;">
                         <tr>

@@ -45,9 +45,15 @@
                         ホームページをリニューアル中です。
                     </a>
                 </li>
+                <!--
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/message"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
+                -->
+                <li class="toplist_menu1"><a href="#message"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">メッセージ</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/schedule#page3"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">スケジュール</a></li>
+                <!--
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/work"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務について</a></li>
+                -->
+                <li class="toplist_menu1"><a href="#message"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">勤務について</a></li>
                 <li class="toplist_menu1"><a href="<?=ROOTDIR ?>/users/profile"  data-ajax="false" style="color: white;font-weight: normal;text-shadow: 1px 1px 3px #666666;">プロフィール</a></li>
                 
                 <li class="toplist_menu2"><a href="http://www.softlife.co.jp/" target="_blank">ソフトライフ ホームページ</a></li>
@@ -81,3 +87,14 @@
 <?php require('dialog_menu.ctp'); ?>
 <!--ダイアログメニュー end-->
 
+<!-- 制作中 -->
+<section id="message" data-role="dialog" data-close-btn-text="閉じる">
+  <header data-role="header">
+    <h3>　　メッセージ</h3>
+  </header>
+  <article data-role="content">
+    <p>現在、制作中です。</p>
+    <a href="#" data-role="button" data-rel="back">閉じる</a>
+  </article>
+</section>
+<!-- 制作中 END -->

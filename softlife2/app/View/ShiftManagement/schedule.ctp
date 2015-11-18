@@ -725,7 +725,8 @@
                                     } else {
                                         $point_str = '';
                                     }
-                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1">';
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" '
+                                            . 'ondblclick="window.open("'.ROOTDIR.'/StaffMasters/index/0/'.$data_staff['StaffMaster']['id'].'\"/profile\",\"スタッフ登録\",\"width=1200,height=900,scrollbars=yes\")">';
                                     echo $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'].$point_str;
                                     echo '</div>';
                                 }
@@ -825,7 +826,8 @@
                                 $span[0] = $span[0].'<span id=""></span>';
                                 $span[1] = $span[0].'<span id="'.$k.'"></span>';
                                 // div
-                                $div2 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'">';
+                                $div2 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'" '
+                                            . 'ondblclick="window.open("'.ROOTDIR.'/StaffMasters/index/0/'.$data_staff['StaffMaster']['id'].'\"/profile\",\"スタッフ登録\",\"width=1200,height=900,scrollbars=yes\")">';
                                 $div2 .= $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
                                 $div2 .=  '</div>';
                             }

@@ -489,7 +489,7 @@ function getCELL() {
     var Cells=myTbl.rows[i].cells[j]; //i番行のj番列のセル "td"
 　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
     //Cells.onclick =function(){Mclk(this);}
-    Cells.ondblclick =function(){Mdblclk(this);}
+    //Cells.ondblclick =function(){Mdblclk(this);}
 　  }
 　 }
 　}
