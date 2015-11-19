@@ -70,6 +70,14 @@ window.onload = function(){
     });
 }
   //-->
+    // 画面を閉じる
+    function doClose() {
+        if (window.opener) {
+            window.opener.location.reload();window.close();
+        } else {
+            window.close();
+        }
+    }
 </script>
 <div id="loading"><img src="<?=ROOTDIR ?>/img/loading.gif"></div>
 
@@ -168,7 +176,7 @@ window.onload = function(){
                     <?php echo $this->Form->create('WorkTable'); ?>
                     <?php
                         $day = 1;
-                        $flag_shift = 1;
+                        $flag_shift = 0;
                         if ($flag_shift == 0) {
                             $display = 'none';
                         } else {
@@ -179,7 +187,8 @@ window.onload = function(){
                         <tr>
                             <td style='background-color: #FFC7AF;font-weight: bold;' colspan="3" align="center">
                                 待ち合わせ (12月5日土曜日)
-                                
+                                <?php echo $this->Form->input('username', array('type'=>'hidden', 'value' => $username)); ?>
+                                <?php echo $this->Form->input('class', array('type'=>'hidden', 'value' => $class)); ?>
                             </td>
                         </tr>
                         <tr>
@@ -430,7 +439,7 @@ window.onload = function(){
                 ?>
                 <?php echo $this->Form->submit($strKaijo, array('name' => 'release', 'id' => 'button-release', 'div' => false, 'onclick' => 'return confirm("'.$comment.'");')); ?>
                 &nbsp;&nbsp;
-                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+                <?php print($this->Html->link('閉じる', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'doClose();'))); ?>
                 &nbsp;&nbsp;
                 <?php print($this->Html->link('印刷する', 'javascript:void(0);', array('id'=>'print', 'onclick' => "window.print();"))); ?>
                 &nbsp;&nbsp;

@@ -80,6 +80,8 @@ $(function() {
     &nbsp;
     <a href="<?=ROOTDIR ?>/SalesSalary/address/1" target="" onclick=''><font Style="font-size:95%;">スタッフ住所覧</font></a>
     &nbsp;
+    <a href="<?=ROOTDIR ?>/SalesSalary/modification/1" target="" onclick=''><font Style="font-size:95%;">個人情報変更</font></a>
+    &nbsp;
 </div>
 <!-- 見出し１ END -->
 

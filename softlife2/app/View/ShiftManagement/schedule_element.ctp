@@ -474,7 +474,12 @@ function deleteCookie( $cookieName ){
     // 過ぎた有効期限を設定することで削除できる
     document.cookie = $cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT"; 
 }
-
+</script>
+<script language="javascript">
+// スタッフプロフページ
+function getStaffProf(staff_id) {
+    //window.open("<?=ROOTDIR?>/StaffMasters/index/0/" + staff_id +"/profile","スタッフ登録","width=1200,height=900,scrollbars=yes");
+}
 </script>
 <script language="javascript">
 function getCELL() {
@@ -489,7 +494,7 @@ function getCELL() {
     var Cells=myTbl.rows[i].cells[j]; //i番行のj番列のセル "td"
 　       // onclickで 'Mclk'を実行。thisはクリックしたセル"td"のオブジェクトを返す。
     //Cells.onclick =function(){Mclk(this);}
-    //Cells.ondblclick =function(){Mdblclk(this);}
+    Cells.ondblclick =function(){Mdblclk(this);}
 　  }
 　 }
 　}
@@ -538,7 +543,10 @@ function Mdblclk(Cell) {
         return false;
     }
     //Cell.innerHTML += '<div id="d2" class="redips-drag t1" style="border-style: solid; cursor: move;">加藤愛子</div>';
-    if (Cell.getElementsByTagName("span")[0].id != '') {
+    if (Cell.getElementsByTagName("span")[0].id == '') {
+        window.open('<?=ROOTDIR ?>/ShiftManagement/select/0/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/0'
+                +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
+    } else {
         window.open('<?=ROOTDIR ?>/ShiftManagement/select/'+Cell.getElementsByTagName("span")[0].id+'/0/'+(Cell.parentNode.rowIndex-(startrow-1))+'/'+Cell.getElementsByTagName("span")[2].id
                 +'/'+Cell.getElementsByTagName("span")[1].id+'?date=<?=$year.'-'.$month ?>'+divs,'スタッフ選択','width=800,height=700,scrollbars=yes');
     }

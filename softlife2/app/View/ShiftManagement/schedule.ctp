@@ -710,6 +710,14 @@
                     <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
                     <span id="<?=$count+1 ?>"></span>
                     <?php
+                        // 待ち合わせ
+                        $order_id = setData($datas2,'order_id',$count,$record);
+                        $shokushu_num = setData($datas2,'shokushu_num',$count,$record);
+                        if (empty($data_aps[$order_id][$shokushu_num][$d])) {
+                            $style0 = '';
+                        } else {
+                            $style0 = 'background-color:#ffcc66;';
+                        }
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
@@ -725,8 +733,10 @@
                                     } else {
                                         $point_str = '';
                                     }
-                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" '
-                                            . 'ondblclick="window.open("'.ROOTDIR.'/StaffMasters/index/0/'.$data_staff['StaffMaster']['id'].'\"/profile\",\"スタッフ登録\",\"width=1200,height=900,scrollbars=yes\")">';
+                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" name="'.$data_staff['StaffMaster']['id'].'_'.$d.'" ' 
+                                            //. 'onClick="getStaffProf('.$data_staff['StaffMaster']['id']
+                                            .')" style="'.$style0.'">';
+                                    //echo '<input type="checkbox" onclick="alert();return false;">';
                                     echo $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'].$point_str;
                                     echo '</div>';
                                 }
@@ -818,16 +828,17 @@
                 if ($flag == 0) {
                     for($k=$count+1; $k<=$count+3; $k++) {
                         if (!empty($data_staffs[$d][$k])) {
-                            $div2 = '';
                             foreach($data_staffs[$d][$k] as $key=>$data_staff) {
-                                $span[0] = '';$span[1] = '';
+                                $this->log($data_staff, LOG_DEBUG);
+                                $span[0] = '';$span[1] = '';$div2 = '';
                                 // span
                                 $span[0] = '<span id=""></span>';
                                 $span[0] = $span[0].'<span id=""></span>';
                                 $span[1] = $span[0].'<span id="'.$k.'"></span>';
                                 // div
                                 $div2 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'" '
-                                            . 'ondblclick="window.open("'.ROOTDIR.'/StaffMasters/index/0/'.$data_staff['StaffMaster']['id'].'\"/profile\",\"スタッフ登録\",\"width=1200,height=900,scrollbars=yes\")">';
+                                            //. 'ondblclick="getStaffProf('.$data_staff['StaffMaster']['id']
+                                        .')">';
                                 $div2 .= $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
                                 $div2 .=  '</div>';
                             }

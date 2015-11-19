@@ -45,6 +45,11 @@ onload = function() {
     document.getElementById('content').style.padding = '20px 10px';
     document.getElementById('StaffMasterSearchName').focus();
 }
+// スタッフプロフページ
+function getStaffProf(staff_id) {
+    window.close();
+    window.open("<?=ROOTDIR?>/StaffMasters/index/0/" + staff_id +"/profile","スタッフ登録","width=1200,height=900,scrollbars=yes");
+}
 </script>
 <style type="text/css" media="screen">
   div.scroll_div { 
@@ -82,9 +87,9 @@ onload = function() {
 
 <div style="width:90%;margin-top: 20px;margin-left: auto; margin-right: auto;">
     <fieldset style="border:none;margin-bottom: 0px;">
-        <div style="font-size: 150%;color: red;float: left;">スタッフ選択 ～ <?=$month ?>月<?=$day ?>日 (<?=$week ?>) ～</div>
+        <div style="font-size: 150%;color: red;float: left;">スタッフ ～ <?=$month ?>月<?=$day ?>日 (<?=$week ?>) ～</div>
         <div style='float:right;'>
-        <?php print($this->Form->submit('完　了', array('id'=>'button-create', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+        <?php print($this->Form->submit('閉じる', array('id'=>'button-delete', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
         </div>
         <div style="clear:both;"></div>
 
@@ -99,25 +104,32 @@ onload = function() {
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>保存済スタッフ</th>
         </tr>
-        <?php if (!empty($datas2)) { ?>
-        <?php foreach ($datas2 as $key=>$data2) { ?>
+        <?php if (!empty($staff_ids)) { ?>
+        <?php foreach ($staff_ids as $key=>$staff_id) { ?>
         <tr style="background-color: #ddffff;">
             <td align="center" style="width:20%;">
-            <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
+            <?=$staff_id ?>
+                <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$staff_id ?>">
             </td>
-            <td align="left" style="width:70%;padding:0px 10px 0px 10px;">
+            <td align="left" style="width:70%;padding:5px 10px 5px 10px;">
             <?php
                 $point0 = explode(',', $datas22[$key]['StaffSchedule']['point']);
-                echo '<span style="font-size:120%;">'.$data2['StaffMaster']['name'].' ('.$point0[$col-1].')'.'</span>'; 
+                if ($col > 0) {
+                    $point1 = ' ('.$point0[$col-1].')';
+                } else {
+                    $point1 = '';
+                }
+                echo '<span style="font-size:120%;"><a href="" onclick="getStaffProf('.$staff_id.');">'.$staff_arr[$staff_id].'</a>'.$point1.'</span>'; 
                 if (!empty($datas22[$key]['StaffSchedule']['conditions'])) {
                     echo '<span style="color:red;margin-left:10px;">【条件あり】'.$datas22[$key]['StaffSchedule']['conditions'].'</span>';
                 }
             ?>
             </td>
             <td align="center">
+                <!--
                 <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
-                    'name' => 'erasure['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+                    'name' => 'erasure['.$staff_id.']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+                -->
             </td>
         </tr>
         <?php } ?>
@@ -135,7 +147,8 @@ onload = function() {
                 }
             ?>
             <td align="center" style="padding-top:5px;<?=$bgcolor ?>">
-                <input type="checkbox" name="data[StaffMaster][appointment]" value="1" style="margin-left: 20px;vertical-align: -5px;" <?=$checked ?>>
+                <?php echo $this->Form->input('appointment', array('type' => 'checkbox', 
+                    'value' => 1, 'checked' => $checked, 'div' => false, 'label' => false, 'style' => 'margin-left: 20px;margin-top: 2px;')); ?>
                 <font style="margin-left:-30px;">待ち合わせ</font>
             </td>
             <td align="center">
@@ -153,8 +166,17 @@ onload = function() {
                 ?>
             </td>
             <td align="center">
-                <?php echo $this->Form->submit('登録', array('id'=>'button-create', 
-                    'name' => 'register['.$data2['StaffMaster']['id'].']', 'div' => false, 'style'=>'font-size:110%;padding:4px 15px;')); ?>
+                <?php
+                    if ($col == 0) {
+                        $style = 'button-delete';
+                        $disabled = 'disabled';
+                    } else {
+                        $style = 'button-create';
+                        $disabled = '';
+                    }
+                ?>
+                <?php echo $this->Form->submit('登録', array('id'=>$style, 
+                    'name' => 'register['.$staff_id.']', 'div' => false, 'style'=>'font-size:110%;padding:4px 15px;', 'disabled'=>$disabled)); ?>
             </td>
         </tr>
         <?php } else { ?>
@@ -278,7 +300,7 @@ onload = function() {
     </div>
     
     <div style='margin-top: 10px;margin-left: 10px;'>
-<?php print($this->Form->submit('完　了', array('id'=>'button-create', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
+<?php print($this->Form->submit('閉じる', array('id'=>'button-delete', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>        
     </fieldset>

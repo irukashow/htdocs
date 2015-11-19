@@ -48,24 +48,24 @@
 <div id="main" style="width:100%;height:720px;margin-top: 0px;<?=$font_normal ?>;">
     <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: -5px;border-spacing: 0px;background-color: white;">
         <tr align="center">
-                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
-                <td style='background-color: #006699;color: white;width: 700px;'>
-                    <font style='font-size: 110%;'>
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" style="color:white;" class="load">◀</a>
-                            【<?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
-                                    'value'=>$year, 'style'=>'text-align: left;font-size: 100%;', 'class'=>'load2',
-                                    'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>&nbsp;年
-                                <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                                    'value'=>$month, 'style'=>'text-align: right;font-size: 100%;',  'class'=>'load2',
-                                    'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>
-                        <a href="#" style="color: white; text-decoration: none;" onclick="location.reload();" class="load">
-                            月&nbsp;稼働表】
-                        </a>
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" style="color:white;" class="load">▶</a>
-                    </font>
-                    <input type="hidden" name="month" value="<?=$y.'-'.$m ?>">
-                </td>
-                <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" class="load">次の月 &gt;</a></td>
+            <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
+            <td style='background-color: #006699;color: white;width: 700px;'>
+                <font style='font-size: 110%;'>
+                    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" style="color:white;" class="load">◀</a>
+                        【<?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
+                                'value'=>$year, 'style'=>'text-align: left;font-size: 100%;', 'class'=>'load2',
+                                'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>&nbsp;年
+                            <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
+                                'value'=>$month, 'style'=>'text-align: right;font-size: 100%;',  'class'=>'load2',
+                                'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>
+                    <a href="#" style="color: white; text-decoration: none;" onclick="location.reload();" class="load">
+                        月&nbsp;稼働表】
+                    </a>
+                    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" style="color:white;" class="load">▶</a>
+                </font>
+                <input type="hidden" name="month" value="<?=$y.'-'.$m ?>">
+            </td>
+            <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" class="load">次の月 &gt;</a></td>
         </tr>
     </table>
     

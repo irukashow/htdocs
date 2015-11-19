@@ -21,7 +21,7 @@ function chkPasswd(pwd1, pwd2) {
     <div data-role="content">
     <?php 
         if ($flag == 1) {
-            echo '<p><span style="color:red;">【情報】登録を完了しました。</span></p>';
+            echo '<p><span style="color:red;">【情報】プロフィールを変更いたしました。</span></p>';
         }
     ?>
         <b>プロフィールの変更</b>

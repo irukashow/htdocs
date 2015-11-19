@@ -830,7 +830,7 @@ class SalesSalaryController extends AppController {
     }
     
     /**
-     * 銀行口座
+     * 住所変更
      */
     public function address($flag = null) {
         // 所属が選択されていなければ元の画面に戻す
@@ -913,23 +913,13 @@ class SalesSalaryController extends AppController {
                 );
                 if (empty($flag) || $flag == 0) {
                     $options['conditions'] = array(
-                        'StaffMaster.bank_kouza_reg' => 1,
+                        'koushin_flag1' => 0,
                         'kaijo_flag' => 0,
                         $conditions2
                         );
                 } elseif ($flag == 1) {
                     $options['conditions'] = array(
-                        'StaffMaster.bank_kouza_reg' => 0,
-                        'kaijo_flag' => 0,
-                        $conditions2
-                        );
-                } elseif ($flag == 2) {
-                    foreach ($result as $value) {
-                        $array1[] = array('id' => $value['SalesSalary']['staff_id']);
-                    }
-                    $options['conditions'] = array(
-                        'StaffMaster.bank_kouza_reg' => 0,
-                        'OR' => $array1,
+                        'koushin_flag1' => 1,
                         'kaijo_flag' => 0,
                         $conditions2
                         );
@@ -1000,12 +990,200 @@ class SalesSalaryController extends AppController {
             );
             if (empty($flag) || $flag == 0) {
                 $options['conditions'] = array(
-                    'koushin_flag1 != ' => 1,
+                    'koushin_flag1' => 0,
                     'kaijo_flag' => 0
                     );
             } elseif ($flag == 1) {
                 $options['conditions'] = array(
                     'koushin_flag1' => 1,
+                    'kaijo_flag' => 0
+                    );
+            }
+            $this->paginate = $options;
+            // スタッフデータ
+            $datas = $this->paginate('StaffMaster');
+            $this->set('datas', $datas);
+            //$this->log($this->StaffMaster->getDataSource()->getlog(), LOG_DEBUG);
+            //$this->log($datas, LOG_DEBUG);
+        }
+    }
+    
+    /**
+     * 個人情報変更
+     */
+    public function modification($flag = null) {
+        // 所属が選択されていなければ元の画面に戻す
+        if (is_null($this->Session->read('selected_class')) || $this->Session->read('selected_class') == '0') {
+            //$this->log($this->Session->read('selected_class'));
+            $this->Session->setFlash('右上の所属を選んでください。');
+            $this->redirect($this->referer());
+        }
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout", $this->title_for_layout);
+        // タブの状態
+        $this->set('active1', '');
+        $this->set('active2', '');
+        $this->set('active3', '');
+        $this->set('active4', '');
+        $this->set('active5', '');
+        $this->set('active6', 'active');
+        $this->set('active7', '');
+        $this->set('active8', '');
+        $this->set('active9', '');
+        $this->set('active10', '');
+        // 絞り込みセッションを消去
+        $this->Session->delete('filter');
+        // ユーザー名前
+        $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+        $this->set('user_name', $name);
+        $selected_class = $this->Session->read('selected_class');
+        $this->set('selected_class', $selected_class);
+        // テーブルの設定
+        $this->StaffMaster->setSource('staff_'.$selected_class);
+        // 引数の受け取り
+        if (isset($this->params['named']['limit'])) {
+            $limit = $this->params['named']['limit'];
+        } else {
+            $limit = '10';
+        }
+        $this->set('limit', $limit);
+        if (isset($this->params['named']['page'])) {
+            $page = $this->params['named']['page'];
+        } else {
+            $page = '1';
+        }
+        $this->set('flag', $flag);
+
+        // post時の処理
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->log($this->request->data, LOG_DEBUG);
+            // 検索
+            if (isset($this->request->data['search'])) {
+                $conditions2 = array('kaijo_flag' => 0);
+                // 登録番号で検索
+                if (!empty($this->request->data['search_id'])){
+                    $search_id = $this->request->data['search_id'];
+                    $conditions2 += array('id' => $search_id);
+                }
+                // 氏名で検索
+                if (!empty($this->request->data['search_name'])){
+                    $search_name = $this->request->data['search_name'];
+                    //$conditions2 += array( 'OR' => array(array('StaffMaster.name_sei LIKE ' => '%'.$search_name.'%'), array('StaffMaster.name_mei LIKE ' => '%'.$search_name.'%')));
+                    //$conditions2 += array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.preg_replace('/(\s|　)/','',$search_name).'%');
+                    //$this->log(preg_replace('/(\s|　)/','',$search_name), LOG_DEBUG);
+                    $keyword = mb_convert_kana($search_name, 's');
+                    $ary_keyword = preg_split('/[\s]+/', $keyword, -1, PREG_SPLIT_NO_EMPTY);
+                    // 漢字で検索
+                    foreach( $ary_keyword as $val ){
+                        // 漢字で検索
+                        $conditions1_1[] = array('CONCAT(StaffMaster.name_sei, StaffMaster.name_mei) LIKE ' => '%'.$val.'%');
+                        // かなで検索
+                        $conditions1_2[] = array('CONCAT(StaffMaster.name_sei2, StaffMaster.name_mei2)  LIKE ' => '%'.mb_convert_kana($val, "C", "UTF-8").'%');
+                    }
+                    $conditions2[] = array('OR' => array($conditions1_1, $conditions1_2));
+                    $this->log($conditions2, LOG_DEBUG);
+                }
+                // スタッフの抽出条件
+                $options = array(
+                    'fields'=> array('StaffMaster.*'),
+                    'conditions' => $conditions2,
+                    'limit' => $limit,
+                );
+                if (empty($flag) || $flag == 0) {
+                    $options['conditions'] = array(
+                        'koushin_flag2' => 0,
+                        'koushin_flag4' => 0,
+                        'kaijo_flag' => 0,
+                        $conditions2
+                        );
+                } elseif ($flag == 1) {
+                    $options['conditions'] = array(
+                        'OR' => array(
+                            'koushin_flag2' => 1,
+                            'koushin_flag4' => 1,
+                        ),
+                        'kaijo_flag' => 0,
+                        $conditions2
+                        );
+                }
+                $this->paginate = $options;
+                // スタッフデータ
+                $datas = $this->paginate('StaffMaster');
+                $this->set('datas', $datas);
+                $this->log($datas, LOG_DEBUG);
+            // 登録
+            } elseif (isset($this->request->data['register'])) {
+                $datas2 = $this->request->data['StaffMaster'];
+                $flag_update = true;
+                foreach($datas2 as $data2) {
+                    if ($data2['edit'] == 1) {
+                        $data = array(
+                            'koushin_flag2' => 0,
+                            'koushin_flag4' => 0,
+                            'modified' => "'" . date("Y-m-d H:i:s") . "'",
+                        );
+                        $conditions = array(
+                            'id' => $data2['id'],
+                        );
+                        if ($this->StaffMaster->updateAll($data, $conditions)) {   
+                        } else {
+                            $flag_update = false;
+                        }
+                    } 
+                }
+                if ($flag_update) {
+                    $this->Session->setFlash('【情報】登録を完了しました。');
+                } else {
+                    $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
+                } 
+                $this->redirect(array('limit' => $limit, 'page' => $page, $flag));
+            // 所属の変更
+            } elseif (isset($this->request->data['class'])) {
+                $this->selected_class = $this->request->data['class'];
+                //$this->Session->setFlash($class);
+                $this->set('selected_class', $this->selected_class);
+                $this->Session->write('selected_class', $this->selected_class);
+                // テーブル変更
+                $this->StaffMaster->setSource('staff_'.$this->Session->read('selected_class'));
+                $this->redirect(array('limit' => $limit, 'page' => 1, $flag));  
+            // 表示件数および登録済みフラグの変更
+            } elseif (isset($this->request->data['limit'])) {
+                // 登録済みフラグの変更
+                $this->StaffMaster->saveAll($this->request->data['StaffMaster']);
+                // 表示件数の変更
+                $limit = $this->request->data['limit'];
+                $count = $this->request->data['count'];
+                $this->set('limit', $limit);
+                if ($page*$limit > $count) {
+                    $this->redirect(array('limit' => $limit, 'page' => 1, $flag));
+                } else {
+                    $this->redirect(array('limit' => $limit, 'page' => $page, $flag));
+                }
+            }
+        } else {
+            // スタッフの抽出条件
+            $options = array(
+                'fields'=> array('StaffMaster.*'),
+                'conditions' => array(
+                    //'SalesSalary.class' => $selected_class,
+                    ),
+                'limit' => $limit,
+                //'group' => array('staff_id'),
+                //'joins' => $joins
+            );
+            if (empty($flag) || $flag == 0) {
+                $options['conditions'] = array(
+                    'koushin_flag2' => 0,
+                    'koushin_flag4' => 0,
+                    'kaijo_flag' => 0
+                    );
+            } elseif ($flag == 1) {
+                $options['conditions'] = array(
+                    'OR' => array(
+                        'koushin_flag2' => 1,
+                        'koushin_flag4' => 1
+                    ),
                     'kaijo_flag' => 0
                     );
             }
