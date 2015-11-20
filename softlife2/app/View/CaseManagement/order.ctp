@@ -289,9 +289,11 @@ function changeColor(col, day, flag) {
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                     
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_id',array('type'=>'select','div'=>false,'label'=>false, 'options' => $list_shokushu,
-                        'value'=>setData($datas2,'shokushu_id',$count,$record), 'empty'=>array(''=>'職種を選んでください'), 'style'=>'width:200px;text-align: left;')); ?>
+                        'value'=>setData($datas2,'shokushu_id',$count,$record), 'disabled'=>'disabled', 
+                        'empty'=>array(''=>'職種を選んでください'), 'style'=>'width:200px;text-align: left;color:black;')); ?>
                     （<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.shokushu_memo',array('type'=>'text','div'=>false,'label'=>false, 'placeholder'=>'備考',
-                        'value'=>setData($datas2,'shokushu_memo',$count,$record), 'style'=>'width:85%;text-align: left;')); ?>）
+                        'value'=>setData($datas2,'shokushu_memo',$count,$record), 'disabled'=>'disabled', 
+                        'style'=>'width:85%;text-align: left;')); ?>）
                 </td>
                 <?php } ?>
             </tr>
@@ -302,9 +304,9 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_from',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record))); ?>&nbsp;～
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'disabled'=>'disabled', 'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_from',$count,$record))); ?>&nbsp;～
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.worktime_to',
-                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record))); ?>
+                            array('type'=>'text','id'=>'time','div'=>false,'label'=>false,'disabled'=>'disabled', 'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'worktime_to',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -313,9 +315,11 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_from',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_from',$count,$record))); ?>&nbsp;～
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;',
+                            'disabled'=>'disabled', 'value'=>setData($datas2,'resttime_from',$count,$record))); ?>&nbsp;～
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.resttime_to',
-                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 'value'=>setData($datas2,'resttime_to',$count,$record))); ?>
+                        array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:50px;text-align: left;', 
+                            'disabled'=>'disabled', 'value'=>setData($datas2,'resttime_to',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -327,7 +331,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_shiharai',
-                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'value'=>setData($datas2,'juchuu_shiharai',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'juchuu_shiharai',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -335,7 +340,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     金額：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_money',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;', 'value'=>setData($datas2,'juchuu_money',$count,$record))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;', 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'juchuu_money',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -343,7 +349,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_koutsuuhi',
-                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'value'=>setData($datas2,'juchuu_koutsuuhi',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'juchuu_koutsuuhi',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -351,7 +358,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     計算方法：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.juchuu_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:140px;text-align: left;', 'value'=>setData($datas2,'juchuu_cal',$count,$record))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:140px;text-align: left;', 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'juchuu_cal',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -362,7 +370,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     <?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_shiharai',
-                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 'value'=>setData($datas2,'kyuuyo_shiharai',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'label'=>false,'legend'=>false,'options'=>$list1, 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'kyuuyo_shiharai',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -370,7 +379,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     金額：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_money',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;', 'value'=>setData($datas2,'kyuuyo_money',$count,$record))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: left;', 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'kyuuyo_money',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -378,7 +388,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     交通費：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_koutsuuhi',
-                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 'value'=>setData($datas2,'kyuuyo_koutsuuhi',$count,$record))); ?>
+                            array('type'=>'radio','div'=>false,'legend'=>false,'label'=>false, 'options'=>$list2, 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'kyuuyo_koutsuuhi',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -386,7 +397,8 @@ function changeColor(col, day, flag) {
                 <?php for ($count=0; $count<$row; $count++){ ?>
                 <td style=''>
                     計算方法：<?php echo $this->Form->input('OrderInfoDetail.'.$count.'.kyuuyo_cal',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:140px;text-align: left;', 'value'=>setData($datas2,'kyuuyo_cal',$count,$record))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:140px;text-align: left;', 
+                                'disabled'=>'disabled', 'value'=>setData($datas2,'kyuuyo_cal',$count,$record))); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -478,15 +490,15 @@ function changeColor(col, day, flag) {
                         <?php if (empty($datas1) || empty($datas1[$count])) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
-                                        'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
+                                        'value'=>1, 'disabled'=>'disabled', 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
                         <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
-                                        'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
+                                        'value'=>1, 'disabled'=>'disabled', 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
                         <?php } else { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas1[$count]['OrderCalender']['d'.$d],
-                                        'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
+                                        'value'=>1, 'disabled'=>'disabled', 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
                         <?php } ?>
                         
                     </div>

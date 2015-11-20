@@ -148,12 +148,22 @@
                 -->
             <tr id="OrderDetail0">
                 <td style='background-color: #e8ffff;' colspan="2">弊社担当</td>
-                <?php foreach ($datas as $data){ ?>
+                <?php 
+                    $total_col = 0;
+                    foreach ($datas as $key=>$data){
+                        $from = $total_col;
+                        //$to = $total_col + $data[0]['cnt'] - 1;
+                ?>
                 <td style='background:white;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
-
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.tantou',
+                            array('type'=>'text','div'=>false,'label'=>false, 
+                                'value'=>NZ($data['OrderCalender']['tantou']), 'style'=>'text-align: left;width:95%;')); ?>
                 </td>
                 <td style="background-color: #e8ffff;">担当</td>
-                <?php } ?>
+                <?php
+                        $total_col += $data[0]['cnt'];
+                    } 
+                ?>
                 <td colspan="3" rowspan="18" align="center" style="background-color: white;"></td>
             </tr>
             <tr id="OrderDetail1">
@@ -469,7 +479,8 @@
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
-                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
+                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 
+                            'rows'=>2, 'value'=>$datas2[$count]['OrderCalender']['work_time_memo'])); ?>
                 </td>
                 <?php
                         if ($count == $cal_arr[$ii]) {
@@ -1022,23 +1033,25 @@
                 <td style="background-color: white;height:85px;">
                     <?php
                         if (is_null($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'])) {
-                            //echo '交通費支給：不明';
+                            echo $this->Form->input('OrderCalender.'.$count.'.koutsuuhi',
+                                    array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3',
+                                        'value'=>$datas2[$count]['OrderCalender']['koutsuuhi'], 'style'=>'text-align: left;width: 95%;font-size:90%;')); 
                         } elseif ($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'] == 0) {
                             echo '交通費支給：なし';
                         } elseif ($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'] == 1) {
-                            echo '交通費支給：あり';
+                            echo '交通費支給：あり<br>';
+                            echo $this->Form->input('OrderCalender.'.$count.'.koutsuuhi',
+                                    array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3',
+                                        'value'=>$datas2[$count]['OrderCalender']['koutsuuhi'], 'style'=>'text-align: left;width: 95%;font-size:90%;')); 
                         } else {
                             //echo '交通費支給：不明';
                         }
                     ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.koutsuuhi',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3',
-                                'value'=>$datas2[$count]['OrderCalender']['koutsuuhi'], 'style'=>'text-align: left;width: 95%;font-size:90%;')); ?>
                 </td>
                 <?php
                         if ($count == $cal_arr[$ii]) {
                             $ii += 1;
-                            echo '<td style="background-color: #99ccff;color:black;"><b>交通</b></td>';
+                            echo '<td style="background-color: #99ccff;color:black;"><b>交通費</b></td>';
                         }
                     }
                 ?>

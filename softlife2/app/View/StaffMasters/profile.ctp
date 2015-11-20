@@ -305,8 +305,12 @@ window.onload = function(){
                             </td>
                         </tr>
                         <tr>
-                            <td style='background-color: #e8ffff;width:30%;'>生年月日</td>
-                            <td style='width:70%;'><?=$data['StaffMaster']['birthday'] ?></td>
+                            <td style='background-color: #e8ffff;width:30%;'>生年月日（初期ﾊﾟｽ）</td>
+                            <td style='width:70%;'>
+                            <?=date('Y年n月j日', strtotime($data['StaffMaster']['birthday'])) ?>
+                                (<?=convGtJDate(date('Y-m-d', strtotime($data['StaffMaster']['birthday']))) ?>)
+                                (<?=date('Ymd', strtotime($data['StaffMaster']['birthday'])) ?>)
+                            </td>
                         </tr>
                     </table>  
                     

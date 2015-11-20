@@ -3440,6 +3440,7 @@ class ShiftManagementController extends AppController {
         $this->set('datas1', null);
         $this->set('order_id', $order_id);
         $this->set('shokushu_num', $shokushu_num);
+        $staff_ids = null;
         //$staff_cell = $this->Session->read('staff_cell');
         //$this->Session->write('staff_cell', $staff_cell);
         // 職種マスタ配列

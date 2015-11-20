@@ -1495,7 +1495,7 @@ class CaseManagementController extends AppController {
             $conditions1 = array('id' => $order_id, 'case_id' => $case_id);
             $data = $this->OrderInfo->find('first', array('conditions' => $conditions1));
             $this->set('data', $data);
-            $conditions2 = array('class'=>$selected_class, 'order_id' => $order_id);
+            $conditions2 = array('class'=>$selected_class, 'order_id' => $order_id, 'flag' => 1);
             $datas2 = $this->WorkTable->find('all', array('conditions'=>$conditions2));
             $this->set('datas2', $datas2);
             // スタッフの総和

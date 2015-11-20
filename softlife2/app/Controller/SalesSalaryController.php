@@ -637,6 +637,8 @@ class SalesSalaryController extends AppController {
         $this->set('active10', '');
         // 絞り込みセッションを消去
         $this->Session->delete('filter');
+        // 初期化
+        $array1 = null;
         // ユーザー名前
         $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
         $this->set('user_name', $name);
@@ -671,8 +673,11 @@ class SalesSalaryController extends AppController {
                     ),
                 'group' => array('staff_id'),
         ));
-        foreach($result as $value) {
-            $data_salary[$value['SalesSalary']['staff_id']] = $value['SalesSalary']['sum'];
+        $this->log($result, LOG_DEBUG);
+        if (count($result) > 0) {
+            foreach($result as $value) {
+                $data_salary[$value['SalesSalary']['staff_id']] = $value['SalesSalary']['sum'];
+            }
         }
         //$this->log($data_salary, LOG_DEBUG);
         $this->set('data_salary', $data_salary);
@@ -725,24 +730,36 @@ class SalesSalaryController extends AppController {
                         $conditions2
                         );
                 } elseif ($flag == 2) {
-                    foreach ($result as $value) {
-                        $array1[] = array('id' => $value['SalesSalary']['staff_id']);
-                    }
-                    $options['conditions'] = array(
-                        'OR' => array(
-                            array(
-                                'bank_kouza_reg' => 1,
-                                'koushin_flag3' => 1,
+                    if (count($result) > 0) {
+                        $this->log('これ！', LOG_DEBUG);
+                        foreach ($result as $value) {
+                            $array1[] = array('id' => $value['SalesSalary']['staff_id']);
+                        }
+                        $options['conditions'] = array(
+                                'OR' => array(
+                                    array(
+                                        'bank_kouza_reg' => 1,
+                                        'koushin_flag3' => 1,
 
-                                ),
-                            array(
-                                'bank_kouza_reg' => 0,
-                                'OR' => $array1,
-                                ),
-                            ),
-                            'kaijo_flag' => 0,
-                            $conditions2
-                        );
+                                        ),
+                                    array(
+                                        'bank_kouza_reg' => 0,
+                                        'OR' => $array1,
+                                        )
+                                    ),
+                                'kaijo_flag' => 0,
+                                $conditions2
+                            );
+                    } else {
+                        $options['conditions'] = array(
+                                array(
+                                    'bank_kouza_reg' => 1,
+                                    'koushin_flag3' => 1,
+                                    ),
+                                'kaijo_flag' => 0,
+                                $conditions2
+                            );
+                    }
                 }
                 $this->paginate = $options;
                 // スタッフデータ
@@ -802,29 +819,39 @@ class SalesSalaryController extends AppController {
                     'kaijo_flag' => 0
                     );
             } elseif ($flag == 2) {
-                foreach ($result as $value) {
-                    $array1[] = array('id' => $value['SalesSalary']['staff_id']);
-                }
-                $options['conditions'] = array(
-                    'OR' => array(
+                if (count($result) > 0) {
+                    foreach ($result as $value) {
+                        $array1[] = array('id' => $value['SalesSalary']['staff_id']);
+                    }
+                    $options['conditions'] = array(
+                        'OR' => array(
+                            array(
+                                'bank_kouza_reg' => 1,
+                                'koushin_flag3' => 1,
+
+                                ),
+                            array(
+                                'bank_kouza_reg' => 0,
+                                'OR' => $array1,
+                                ),
+                            ),
+                            'kaijo_flag' => 0,
+                        );
+                } else {
+                    $options['conditions'] = array(
                         array(
                             'bank_kouza_reg' => 1,
                             'koushin_flag3' => 1,
-
                             ),
-                        array(
-                            'bank_kouza_reg' => 0,
-                            'OR' => $array1,
-                            ),
-                        ),
                         'kaijo_flag' => 0,
                     );
+                }
             }
             $this->paginate = $options;
             // スタッフデータ
             $datas = $this->paginate('StaffMaster');
             $this->set('datas', $datas);
-            //$this->log($this->StaffMaster->getDataSource()->getlog(), LOG_DEBUG);
+            $this->log($this->StaffMaster->getDataSource()->getlog(), LOG_DEBUG);
             //$this->log($datas, LOG_DEBUG);
         }
     }

@@ -211,6 +211,37 @@
         return $ret; 
     }
 
+//JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
+function convGtJDate($src) {
+    list($year, $month, $day) = explode("-", $src);
+    if (!@checkdate($month, $day, $year) || $year < 1869 || strlen($year) !== 4
+            || strlen($month) !== 2 || strlen($day) !== 2) return false;
+    $date = str_replace("-", "", $src);
+    $gengo = "";
+    $wayear = 0;
+    if ($date >= 19890108) {
+        $gengo = "平成";
+        $wayear = $year - 1988;
+    } elseif ($date >= 19261225) {
+        $gengo = "昭和";
+        $wayear = $year - 1925;
+    } elseif ($date >= 19120730) {
+        $gengo = "大正";
+        $wayear = $year - 1911;
+    } else {
+        $gengo = "明治";
+        $wayear = $year - 1868;
+    }
+    switch ($wayear) {
+        case 1:
+            $wadate = $gengo."元年".ltrim($month, '0')."月".ltrim($day, '0')."日";
+            break;
+        default:
+            $wadate = $gengo.sprintf("%02d", $wayear)."年".ltrim($month, '0')."月".ltrim($day, '0')."日";
+    }
+    return $wadate;
+}
+
     /**
     // 都道府県の表示
     function getPref($code) {

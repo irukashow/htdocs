@@ -295,8 +295,14 @@ input[type=checkbox] {
     <div data-role="content">
         <p>以下の入力ができます。</p>
         <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="?date=<?=$date1 ?>"'>
+        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
+        <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
+        <!--
         <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule2?date=<?=$date1 ?>"'>
+        -->
+        <!--
         <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule3?date=<?=$date1 ?>"'>
+        -->
         <div style='float:left;'>       
             <input type="button" value="ホーム" data-theme="b" data-icon="home" onclick='location.href="<?=ROOTDIR ?>/users/index#home"'>
         </div> 
@@ -311,16 +317,15 @@ input[type=checkbox] {
     </div>
 </div>
 <!-- 制作中 -->
-<!--
-<div id="dialog" data-role="dialog">
-     <div data-role="header">
-         <h1 id="dlog_title">　　メッセージ</h1>
-     </div>
-     <div data-role="content">
-         <p id="dlog_content">現在、制作中です。</p>
-     </div>
- </div>
--->
+<section id="message" data-role="dialog" data-close-btn-text="閉じる">
+  <header data-role="header">
+    <h3>　　メッセージ</h3>
+  </header>
+  <article data-role="content">
+    <p>現在、調整中です。</p>
+    <a href="#" data-role="button" data-rel="back">閉じる</a>
+  </article>
+</section>
 <!-- 制作中 END -->
 
 <!--ダイアログメニュー-->

@@ -271,28 +271,29 @@ function doSubmit(value, flag) {
         ?>
     </td>
     <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/reg2/<?php echo $data['CaseManagement']['id'] ?>/2','オーダー情報','width=1200,height=800,scrollbars=yes');" class="link_prof">
-            【リンク】
-        </a><br>
         <?php
             if (empty($order_update_date[$key])) {
                 echo '<font color=red>未入力</font>';
             } else {
+        ?>
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/CaseManagement/reg2/<?php echo $data['CaseManagement']['id'] ?>/2','オーダー情報','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            【リンク】
+        </a><br>
+        <?php
                 echo date('Y-m-d', strtotime($order_update_date[$key]['CaseLog']['created']));
             }
         ?>
     </td>
     <td align="center" style="font-size: 90%;" rowspan="<?=$row ?>">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m') ?>','オーダー情報','width=1200,height=800,scrollbars=yes');" class="link_prof">
-        <!--
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m') ?>" class="link_prof">
-        -->
-            【リンク】
-        </a><br>
         <?php
             if (empty($shift_update_date[$key])) {
                 echo '<font color=red>未入力</font>';
-            } else {
+            } else {  
+        ?>
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m') ?>','オーダー情報','width=1200,height=800,scrollbars=yes');" class="link_prof">
+            【リンク】
+        </a><br>
+        <?php
                 echo date('Y-m-d', strtotime($shift_update_date[$key]['WorkTable']['modified']));
             }
         ?>
