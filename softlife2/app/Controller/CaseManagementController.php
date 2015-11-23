@@ -1266,8 +1266,13 @@ class CaseManagementController extends AppController {
                         if (empty($id)) {
                             continue;
                         }
-                        $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
-                        $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
+                        if (strstr($id, 'u')) {
+                            $res = $this->User->find('first', array('conditions'=>array('username'=>ltrim($id, 'u'))));
+                            $result2[$key] = $res['User']['name_sei'].' '.$res['User']['name_mei'];
+                        } else {
+                            $res = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+                            $result2[$key] = $res['StaffMaster']['name_sei'].' '.$res['StaffMaster']['name_mei'];
+                        }
                     }
                 } else {
                     $result2 = null;
@@ -1842,10 +1847,18 @@ class CaseManagementController extends AppController {
         //$session_name = null;
         // テーブルの設定
         $this->StaffMaster->setSource('staff_'.$selected_class);
+        // スタッフ配列
+        $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $staff_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name')));
+        $this->set('staff_arr', $staff_arr);
+        // 社員配列
+        $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
+        $user_arr = $this->User->find('list', array('fields'=>array('username', 'name'), 'conditions'=>array('FIND_IN_SET('.substr($selected_class, 0,1).'3, busho_id)')));
+        $this->set('user_arr', $user_arr);
         
         // post時の処理
         if ($this->request->is('post') || $this->request->is('put')) {
-            //$this->log($this->request->data, LOG_DEBUG);
+            $this->log($this->request->data, LOG_DEBUG);
             // 検索
             if (isset($this->request->data['search'])) {
                 $search_name = $this->data['StaffMaster']['search_name'];
@@ -1872,22 +1885,22 @@ class CaseManagementController extends AppController {
                 if (!empty($session_id)) {
                     $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     foreach($session_id as $key=>$staff_id) {
-                        if (empty($datas2)) {
-                            $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        if (strstr($staff_id, 'u')) {
+                            $datas2[$key] = array('id'=>$staff_id, 'name'=>$user_arr[ltrim($staff_id, 'u')]);
                         } else {
-                            $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                            $datas2[$key] = array('id'=>$staff_id, 'name'=>$staff_arr[$staff_id]);
                         }
                     }
                     $this->set('datas2', $datas2);
                 }
-            // 選択
+            // 選択（スタッフ）
             } elseif (isset($this->request->data['select'])) {
                 $id_array = array_keys($this->request->data['select']);
                 $id = $id_array[0];
                 // 選択は５つまで
                 $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
                 if (count($session_id) == 5) {
-                    $this->Session->setFlash('【エラー】選択できるのは5つまでです。');
+                    $this->Session->setFlash('【エラー】選択できるのは5人までです。');
                     $this->redirect(array('action' => 'select', $order_id ,$col));
                     return;
                 }
@@ -1911,14 +1924,52 @@ class CaseManagementController extends AppController {
                 // 選択済みスタッフ
                 $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                 foreach($session_id as $key=>$staff_id) {
-                    if (empty($datas2)) {
-                        $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    if (strstr($staff_id, 'u')) {
+                        $datas2[$key] = array('id'=>$staff_id, 'name'=>$user_arr[ltrim($staff_id, 'u')]);
                     } else {
-                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        $datas2[$key] = array('id'=>$staff_id, 'name'=>$staff_arr[$staff_id]);
                     }
                 }
                 $this->set('datas2', $datas2);
                 //$this->log($datas2, LOG_DEBUG);
+            // 選択（社員）
+            } elseif (isset($this->request->data['select2'])) {
+                $id = 'u'.$this->request->data['StaffMaster']['select_user'];
+                $this->log($id, LOG_DEBUG);
+                // 選択は５つまで
+                $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
+                if (count($session_id) == 5) {
+                    $this->Session->setFlash('【エラー】選択できるのは5人までです。');
+                    $this->redirect(array('action' => 'select', $order_id ,$col));
+                    return;
+                }
+                // セッション格納
+                if (empty($session_id)) {
+                    $session_id[0] = $id;
+                } else {
+                    $flag = false;
+                    for($i=0; $i<count($session_id) ;$i++) {
+                        if ($session_id[$i] == $id) {
+                            $flag = true;
+                            break;
+                        }
+                    }
+                    if (!$flag) {
+                        $session_id[] = $id;
+                    }
+                }
+                $this->Session->write('staff_id-'.$order_id.'_'.$col, $session_id);
+                $this->log($session_id, LOG_DEBUG);
+                // 選択済みスタッフ
+                foreach($session_id as $key=>$staff_id) {
+                    if (strstr($staff_id, 'u')) {
+                        $datas2[$key] = array('id'=>$staff_id, 'name'=>$user_arr[ltrim($staff_id, 'u')]);
+                    } else {
+                        $datas2[$key] = array('id'=>$staff_id, 'name'=>$staff_arr[$staff_id]);
+                    }
+                }
+                $this->set('datas2', $datas2);
+                $this->log($datas2, LOG_DEBUG);
             // 決定
             } elseif (isset($this->request->data['decision'])) {
                 $this->log($this->request->data, LOG_DEBUG);
@@ -1996,12 +2047,11 @@ class CaseManagementController extends AppController {
             $session_id = null;
             // 選択済みスタッフ
             if (!empty($session_id)) {
-                $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                 foreach($session_id as $key=>$staff_id) {
-                    if (empty($datas2)) {
-                        $datas2[0] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                    if (strstr($staff_id, 'u')) {
+                        $datas2[$key] = array('id'=>$staff_id, 'name'=>$user_arr[ltrim($staff_id, 'u')]);
                     } else {
-                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        $datas2[$key] = array('id'=>$staff_id, 'name'=>$staff_arr[$staff_id]);
                     }
                 }
                 $this->set('datas2', $datas2);
@@ -2030,9 +2080,12 @@ class CaseManagementController extends AppController {
                     $this->Session->write('staff_id-'.$order_id.'_'.$col, $staff);
                     // セッション
                     $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
-                    $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
                     foreach($session_id as $key=>$staff_id) {
-                        $datas2[$key] = $this->StaffMaster->find('first', array('fields'=>array('id', 'name'), 'conditions'=>array('id'=>$staff_id)));
+                        if (strstr($staff_id, 'u')) {
+                            $datas2[$key] = array('id'=>$staff_id, 'name'=>$user_arr[ltrim($staff_id, 'u')]);
+                        } else {
+                            $datas2[$key] = array('id'=>$staff_id, 'name'=>$staff_arr[$staff_id]);
+                        }
                     }
                 }
                 $this->set('datas2', $datas2);

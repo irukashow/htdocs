@@ -85,14 +85,14 @@ function setArray($array) {
         $ret = '';
     } else {
         foreach($array as $key=>$value) {
-            if (empty($value['StaffMaster']['name'])) {
+            if (empty($value['name'])) {
                 $ret = '';
                 continue;
             }
             if ($key == 0) {
-                $ret = $value['StaffMaster']['name'];
+                $ret = $value['name'];
             } else {
-                $ret = $ret.'<br>'.$value['StaffMaster']['name'];
+                $ret = $ret.'<br>'.$value['name'];
             }
         }
     }

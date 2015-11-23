@@ -25,20 +25,41 @@
     $national_holiday = japan_holiday($y);
 ?>
 <?php
-function setShokushu($shokushu_ids, $list_shokushu) {
-    $shokushu_id = explode(',', $shokushu_ids);
-    $ret = '';
-    foreach ($shokushu_id as $id) {
-        if (empty($id)) {
-            continue;
+// 職種を表示する
+function setShokushu($id, $shokushu_arr, $list_shokushu) {
+    if (strstr($id, 'u')) {
+        return '受付';
+    } else {
+        $shokushu_ids = explode(',', $shokushu_arr[$id]);
+        $ret = '';
+        foreach ($shokushu_ids as $shokushu_id) {
+            if (empty($shokushu_id)) {
+                continue;
+            }
+            if (empty($ret)) {
+                $ret = trim(mb_convert_kana($list_shokushu[$shokushu_id], 's'));
+            } else {
+                $ret = $ret.', '.trim(mb_convert_kana($list_shokushu[$shokushu_id], 's'));
+            }
         }
-        if (empty($ret)) {
-            $ret = trim(mb_convert_kana($list_shokushu[$id], 's'));
-        } else {
-            $ret = $ret.', '.trim(mb_convert_kana($list_shokushu[$id], 's'));
-        }
+        return $ret;
     }
-    return $ret;
+}
+// IDを表示関数
+function setID($id) {
+    if (strstr($id, 'u')) {
+        return '社員';
+    } else {
+        return $id; 
+    }
+}
+// スタッフか社員かで氏名を取得する関数
+function setName($id, $staff_arr, $user_arr) {
+    if (strstr($id, 'u')) {
+        return $user_arr[ltrim($id, 'u')];
+    } else {
+        return $staff_arr[$id]; 
+    }
 }
 ?>
 <style>
@@ -110,7 +131,10 @@ window.onload = function(){
 ?>
     &nbsp;&nbsp;
     <span style="padding-top: 0px;border-style: none;">
-        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');" id='button-create'>手入力</a>
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');" id='button-create'>スタッフシフト</a>
+    </span>
+    <span style="padding-top: 0px;border-style: none;">
+        <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule2?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');" id='button-create'>社員シフト</a>
     </span>
     <div style="float:right;margin-top: 5px;">
         <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
@@ -195,17 +219,25 @@ window.onload = function(){
     <?php foreach($datas1 as $key => $data1) { ?>
     <tr>
         <td align="center" style="padding: 0px 10px;">
-            <?=$data1['StaffSchedule']['staff_id']; ?>
+            <?=setID($data1['StaffSchedule']['staff_id']); ?>
         </td>
         <td align="left" style="padding: 0px 10px;">
+        <?php
+            if (strstr($data1['StaffSchedule']['staff_id'], 'u')) {
+                echo $user_arr[ltrim($data1['StaffSchedule']['staff_id'], 'u')];
+            } else {
+        ?>
             <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/StaffMasters/index/0/<?php echo $data1['StaffSchedule']['staff_id']; ?>/profile','スタッフ登録','width=1200,height=900,scrollbars=yes');" class="link_prof">
-        <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
+                <?=$staff_arr[$data1['StaffSchedule']['staff_id']]; ?>
             </a>
+        <?php  
+            }
+        ?>
         </td>
         <td align="center">
             <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule/<?=$data1['StaffSchedule']['staff_id']; ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
         </td>
-        <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffMaster']['shokushu_shoukai'], $list_shokushu); ?></td>
+        <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffSchedule']['staff_id'], $staff_shokushu_arr, $list_shokushu); ?></td>
 <?php
     $d = 1;
     while (checkdate($m, $d, $y)) {

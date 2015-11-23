@@ -31,7 +31,7 @@ onload = function() {
 <?php echo $this->Form->submit('検　索', array('name' => 'search', 'div' => false, 'style' => 'display:none;')); ?>
     
     <!-- 選択済みスタッフ -->
-    <table border='1' cellspacing="0" cellpadding="2" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+    <table border='1' cellspacing="0" cellpadding="2" style='width: 100%;margin-top: 0px;border-spacing: 0px;'>
         <tr>
             <th colspan="3" style='background:#99ccff;text-align: center;'>選択済みスタッフ</th>
         </tr>
@@ -39,19 +39,26 @@ onload = function() {
         <?php foreach ($datas2 as $key=>$data2) { ?>
         <tr style="background-color: #ddffff;">
             <td align="center" style="width:15%;">
-                <?=$data2['StaffMaster']['id']; ?>
-                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data2['StaffMaster']['id']; ?>">
+                <?php
+                    $id = $data2['id'];
+                    if (strstr($id, 'u')) {
+                        echo '社員 ('.$id.')';
+                    } else {
+                        echo $id;
+                    }
+                ?>
+                <input type="hidden" name="staff_id<?=$key ?>" value="<?=$data2['id']; ?>">
             </td>
-            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['StaffMaster']['name']; ?></td>
+            <td align="left" style="width:75%;padding:0px 10px 0px 10px;"><?=$data2['name']; ?></td>
             <td align="center">
                 <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
-                    'name' => 'erasure['.$data2['StaffMaster']['id'].']','div' => false, 'style'=>'padding: 3px 15px;')); ?>
+                    'name' => 'erasure['.$data2['id'].']','div' => false, 'style'=>'padding: 3px 15px;')); ?>
             </td>
         </tr>
         <?php } ?>
         <?php } else { ?>
         <tr align="center">
-            <td colspan="3">選択済みのデータはありません</td>
+            <td colspan="3">選択済みのスタッフはいません</td>
         </tr>
         <?php } ?>
     </table>
@@ -74,7 +81,7 @@ onload = function() {
         <tr>
             <td align="center"><?=$data1['StaffMaster']['id']; ?></td>
             <td align="left" style="padding: 0 10px 0 10px;">
-                <?=$data1['StaffMaster']['name_sei'].' '.$data1['StaffMaster']['name_mei']; ?>
+                <?=$data1['StaffMaster']['name']; ?>
             </td>
             <td align="center">
                 <?php echo $this->Form->submit('選　択', 
@@ -89,6 +96,21 @@ onload = function() {
         <?php } ?>
     </table>
     </div>
+    
+    <!-- 社員選択 -->
+    <table border='1' cellspacing="0" cellpadding="2" style='width: 100%;margin-top: 10px;border-spacing: 0px;'>
+        <tr>
+            <th colspan="3" style='background:#99ccff;text-align: center;'>社員から選択</th>
+        </tr>
+        <tr style="background-color: #ffffcc;">
+            <td style='text-align: center;' style="width:15%;">氏　名</td>
+            <td align="center" style="width:75%;">
+                <?php echo $this->Form->input('select_user',array('label'=>false,
+                    'div'=>false,'options'=>$user_arr, 'empty'=>array(''=>'選択してください'), 'style'=>'width:95%;padding:3px;')); ?>
+            </td>
+            <td align="center" style="width:10%;"><?php echo $this->Form->submit('選　択', array('name' => 'select2', 'div' => false, 'id' => 'button-create')); ?></td>
+        </tr>
+    </table>
         
     <div style='margin-top: 10px;margin-left: 10px;'>
 <?php echo $this->Form->submit('決定する', array('name' => 'decision','div' => false, 'onclick' => '')); ?>

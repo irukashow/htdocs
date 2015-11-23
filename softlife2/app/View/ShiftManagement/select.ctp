@@ -108,7 +108,13 @@ function getStaffProf(staff_id) {
         <?php foreach ($staff_ids as $key=>$staff_id) { ?>
         <tr style="background-color: #ddffff;">
             <td align="center" style="width:20%;">
-            <?=$staff_id ?>
+            <?php
+                if (strstr($staff_id, 'u')) {
+                    echo '社員：'.$staff_id;
+                } else {
+                    echo $staff_id;
+                }
+            ?>
                 <input type="hidden" name="staff_id4<?=$key ?>" value="<?=$staff_id ?>">
             </td>
             <td align="left" style="width:70%;padding:5px 10px 5px 10px;">
@@ -119,7 +125,12 @@ function getStaffProf(staff_id) {
                 } else {
                     $point1 = '';
                 }
-                echo '<span style="font-size:120%;"><a href="" onclick="getStaffProf('.$staff_id.');">'.$staff_arr[$staff_id].'</a>'.$point1.'</span>'; 
+                if (strstr($staff_id, 'u')) {
+                    $name = $user_arr[ltrim($staff_id, 'u')];
+                } else {
+                    $name = $staff_arr[$staff_id];
+                }
+                echo '<span style="font-size:120%;"><a href="" onclick="getStaffProf('.$staff_id.');">'.$name.'</a>'.$point1.'</span>'; 
                 if (!empty($datas22[$key]['StaffSchedule']['conditions'])) {
                     echo '<span style="color:red;margin-left:10px;">【条件あり】'.$datas22[$key]['StaffSchedule']['conditions'].'</span>';
                 }

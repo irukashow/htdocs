@@ -733,7 +733,7 @@
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
                                 foreach($data_staffs[$d][$count+1] as $data_staff) {
-                                    $point3 = $point_arr[$d][$data_staff['StaffMaster']['id']];
+                                    $point3 = $point_arr[$d][$data_staff['id']];
                                     if (empty($point3)) {
                                         $point3_2 = '';
                                     } else {
@@ -744,11 +744,11 @@
                                     } else {
                                         $point_str = '';
                                     }
-                                    echo '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" name="'.$data_staff['StaffMaster']['id'].'_'.$d.'" ' 
+                                    echo '<div id="'.$data_staff['id'].'" class="redips-drag t1" name="'.$data_staff['id'].'_'.$d.'" ' 
                                             //. 'onClick="getStaffProf('.$data_staff['StaffMaster']['id']
                                             .')" style="'.$style0.'">';
                                     //echo '<input type="checkbox" onclick="alert();return false;">';
-                                    echo $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'].$point_str;
+                                    echo $data_staff['name'].$point_str;
                                     echo '</div>';
                                 }
                             }
@@ -839,18 +839,18 @@
                 if ($flag == 0) {
                     for($k=$count+1; $k<=$count+3; $k++) {
                         if (!empty($data_staffs[$d][$k])) {
+                            $span[0] = '';$span[1] = '';$div2 = '';
+                            // span
+                            $span[0] = '<span id=""></span>';
+                            $span[0] = $span[0].'<span id=""></span>';
+                            $span[1] = $span[0].'<span id="'.$k.'"></span>';
                             foreach($data_staffs[$d][$k] as $key=>$data_staff) {
                                 $this->log($data_staff, LOG_DEBUG);
-                                $span[0] = '';$span[1] = '';$div2 = '';
-                                // span
-                                $span[0] = '<span id=""></span>';
-                                $span[0] = $span[0].'<span id=""></span>';
-                                $span[1] = $span[0].'<span id="'.$k.'"></span>';
                                 // div
-                                $div2 .= '<div id="'.$data_staff['StaffMaster']['id'].'" class="redips-drag t1" style="'.$style.'" '
+                                $div2 .= '<div id="'.$data_staff['id'].'" class="redips-drag t1" style="'.$style.'" '
                                             //. 'ondblclick="getStaffProf('.$data_staff['StaffMaster']['id']
                                         .')">';
-                                $div2 .= $data_staff['StaffMaster']['name_sei'].' '.$data_staff['StaffMaster']['name_mei'];
+                                $div2 .= $data_staff['name'];
                                 $div2 .=  '</div>';
                             }
                             echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].$div2.'</td>';
