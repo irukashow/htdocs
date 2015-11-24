@@ -96,11 +96,11 @@ window.onload = function(){
     &nbsp;&nbsp;
     <b><font Style="font-size:95%;color: yellow;">[スタッフシフト希望]</font></b>
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" class="load"><font Style="font-size:95%;">シフト作成</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target="" id="shift" class="load" onclick=''><font Style="font-size:95%;">確定シフト</font></a>        <!-- alert("制作中");return false; -->
+    <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" class="load"><font Style="font-size:95%;">確定シフト</font></a>        <!-- alert("制作中");return false; -->
     &nbsp;
-    <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
+    <a href="<?=ROOTDIR ?>/ShiftManagement/setting"><font Style="font-size:95%;">詳細設定</font></a>
     &nbsp;
 
 </div>
@@ -235,7 +235,15 @@ window.onload = function(){
         ?>
         </td>
         <td align="center">
+            <?php
+                if (strstr($data1['StaffSchedule']['staff_id'], 'u')) {
+            ?>
+            <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule2/<?=ltrim($data1['StaffSchedule']['staff_id'], 'u'); ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
+            <?php
+                } else {
+            ?>
             <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule/<?=$data1['StaffSchedule']['staff_id']; ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
+            <?php } ?>
         </td>
         <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffSchedule']['staff_id'], $staff_shokushu_arr, $list_shokushu); ?></td>
 <?php

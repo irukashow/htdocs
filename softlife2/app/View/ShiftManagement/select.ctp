@@ -131,7 +131,7 @@ function getStaffProf(staff_id) {
                     $name = $staff_arr[$staff_id];
                 }
                 echo '<span style="font-size:120%;"><a href="" onclick="getStaffProf('.$staff_id.');">'.$name.'</a>'.$point1.'</span>'; 
-                if (!empty($datas22[$key]['StaffSchedule']['conditions'])) {
+                if ($datas22[$key]['StaffSchedule']['work_flag'] == 2) {
                     echo '<span style="color:red;margin-left:10px;">【条件あり】'.$datas22[$key]['StaffSchedule']['conditions'].'</span>';
                 }
             ?>

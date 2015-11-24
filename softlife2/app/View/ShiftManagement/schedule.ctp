@@ -101,6 +101,8 @@
                 <col style='width:120px;'>
                 <col style='width:120px;'>
                 <col style='width:120px;'>
+                <col style='width:120px;'>
+                <col style='width:120px;'>
                 <?php } ?>
             </colgroup>
             <thead>
@@ -125,7 +127,7 @@
                 </th>
                 <?php } ?>
                 <?php if ($flag == 0) { ?>
-                <th colspan="3" align="center" style="background-color: #66CCFF;">未定</th>
+                <th colspan="5" align="center" style="background-color: #66CCFF;">未定</th>
                 <?php } ?>
             </tr>
             </thead>
@@ -164,7 +166,7 @@
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
-                <td colspan="3" rowspan="18" align="center" style="background-color: white;"></td>
+                <td colspan="5" rowspan="18" align="center" style="background-color: white;"></td>
             </tr>
             <tr id="OrderDetail1">
                 <td style='background-color: #e8ffff;' colspan="2">事業主</td>
@@ -448,9 +450,10 @@
                     }
                 ?>
                 <?php if ($flag == 0) { ?>
-                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>受付</td>
+                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;' colspan="2">受付</td>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>保育</td>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>その他</td>
+                <td style='background-color: #FFFFCC;color:red;font-weight: bold;'>条件付き</td>
                 <?php } ?>
             </tr>
             <tr id="OrderDetail17">
@@ -492,7 +495,8 @@
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
-                
+                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
+                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
             </tr>
             <tr id="OrderDetail18">
                 <td style='background-color: #e8ffff;' colspan="2">休憩時間</td>
@@ -539,6 +543,8 @@
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
             </tr>
             <tr id="">
                 <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
@@ -559,6 +565,8 @@
                         }
                     }
                 ?>
+                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
@@ -607,16 +615,22 @@
                             echo '<td style="background-color: #e8ffff;"></td>';
                         }
                     }
-                    for ($count=$count_end; $count<$count_end+3; $count++){
+                    for ($count=$count_end; $count<$count_end+5; $count++){
                         if ($count == $count_end) {
                             $jj = 1;
                             $shokushu_id = 2;
                         } elseif ($count == $count_end+1) {
-                            $shokushu_id = 9;
                             $jj = 2;
-                        } else {
-                            $shokushu_id = 0;
+                            $shokushu_id = 2;
+                        } elseif ($count == $count_end+2) {
+                            $shokushu_id = 9;
                             $jj = 3;
+                        } elseif ($count == $count_end+3) {
+                            $shokushu_id = 0;
+                            $jj = 4;
+                        } elseif ($count == $count_end+4) {
+                            $shokushu_id = 0;
+                            $jj = 5;
                         }
                 ?>
                 <td align='left' style='background-color: #e8ffff;'>
@@ -837,7 +851,7 @@
                 }
                 // 未定欄
                 if ($flag == 0) {
-                    for($k=$count+1; $k<=$count+3; $k++) {
+                    for($k=$count+1; $k<=$count+5; $k++) {
                         if (!empty($data_staffs[$d][$k])) {
                             $span[0] = '';$span[1] = '';$div2 = '';
                             // span
@@ -893,9 +907,10 @@
                     }
                 ?>
                 <?php if ($flag == 0) { ?>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>受付</td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;' colspan="2">受付</td>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>保育</td>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>その他</td>
+                <td style='background-color: #FFFFCC;color:red;font-weight: bold;'>条件付き</td>
                 <?php } ?>
             </tr>
             <!-- 案件 -->
@@ -918,7 +933,7 @@
                 </th>
                 <?php } ?>
                 <?php if ($flag == 0) { ?>
-                <th colspan="3" align="center" style="background-color: #66CCFF;color:black;">未定</th>
+                <th colspan="5" align="center" style="background-color: #66CCFF;color:black;">未定</th>
                 <?php } ?>
             </tr>
             <!-- 売上給与統計 -->
@@ -942,7 +957,7 @@
                         }
                     }
                 ?>
-                <td colspan="3" rowspan="10" style="background-color: white;"></td>
+                <td colspan="5" rowspan="10" style="background-color: white;"></td>
             </tr>
             <tr id="OrderDetail21">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">売上見込み合計</td>
@@ -1118,8 +1133,8 @@
                 <td rowspan="3" colspan="2" style="height:75px;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">総計</td>
                 <td colspan="2" algin="center" style="font-size:110%;height:30px;background-color: #ffccff;">今月の売上見込み</td>
                 <td colspan="2" algin="center" style="font-size:110%;background-color: #ffcccc;">人件費見込み合計</td>
-            <?php if ($col > 4) { ?>
-                <td colspan="<?=$col-4 ?>" rowspan="2"style="background-color: white;"></td>
+            <?php if ($col > 5) { ?>
+                <td colspan="<?=$col-5 ?>" rowspan="2"style="background-color: white;"></td>
             </tr>
             <?php } ?>
             <tr id="OrderDetail29" style="background-color:white;">

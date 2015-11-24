@@ -55,7 +55,7 @@ function doSubmit(value, flag) {
     if (confirm('本当に' + msg + '処理を行いますか？') == false) {
         return;
     }
-    var form = document.getElementById("frm");
+    var form = document.getElementById("staff_master");
     var elm1 = document.createElement("input");
     elm1.setAttribute("name", "case_id");
     elm1.setAttribute("type", "hidden");
@@ -66,6 +66,9 @@ function doSubmit(value, flag) {
     elm2.setAttribute("type", "hidden");
     elm2.setAttribute("value", flag);
     form.appendChild(elm2);
+    
+    form.setAttribute('action', '<?=ROOTDIR ?>/CaseManagement/index');
+    form.setAttribute('method', 'post');
     form.submit();
 }
 </script>
@@ -313,8 +316,18 @@ function doSubmit(value, flag) {
         </a><br>
         <?php echo $this->Html->link('【稼働表】', array(), array()); ?><br>
         <br>
-        <a type="button" href="#" onclick="doSubmit(<?=$data['CaseManagement']['id'] ?>, 1);" class="link_prof">【削除】</a><br>
-        <a type="button" href="#" onclick="doSubmit(<?=$data['CaseManagement']['id'] ?>, 2);" class="link_prof">【クローズ】</a>
+        <?php
+            if ($flag == 1) {
+                $delete = '完全削除';
+        ?>
+        <button name="cancel[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に削除取り消ししますか？');">削除取り消し</button><br>
+        <?php
+            } else {
+                $delete = '削除';
+            }
+        ?>
+        <button name="delete[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に削除してよろしいですか？');"><?=$delete?></button><br>
+        <button name="close[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当にクローズしてよろしいですか？');">クローズ</button>
     </td>
   </tr>
 <?php if ($row > 1) { ?>

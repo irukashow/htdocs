@@ -363,7 +363,7 @@ onload = function() {
     // ヘッダを隠す
     <?php
         if ($flag == 0) {
-            $width_extra = 120*3;
+            $width_extra = 120*5;
         } else {
             $width_extra = 0;
         }
@@ -614,7 +614,7 @@ function doAccount(year, month, mode) {
                 continue;
             }
             // spanタグがあって、divタグがないものはエラー（一時保存以外）
-            if (mode != 1 && Cell.getElementsByTagName("span").length > 1 && j < myTbl.rows[i].cells.length-3 && Cell.getElementsByTagName("DIV").length == 0) {
+            if (mode != 1 && Cell.getElementsByTagName("span").length > 1 && j < myTbl.rows[i].cells.length-5 && Cell.getElementsByTagName("DIV").length == 0) {
                 alert("【エラー】"+(i-startrow+1)+"日に埋まっていないシフトが存在します。");
                 return;
             }

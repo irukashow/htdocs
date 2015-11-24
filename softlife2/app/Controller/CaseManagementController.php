@@ -67,6 +67,11 @@ class CaseManagementController extends AppController {
         } else {
             $limit = '10';
         }
+        // フラグ
+        if (empty($flag)) {
+            $flag = 0;
+        }
+        $this->set('flag', $flag);
         // 登録担当者
         $conditions = array('area' => substr($selected_class, 0, 1));
         $this->User->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
@@ -102,36 +107,57 @@ class CaseManagementController extends AppController {
                 ))
         )); 
         
-        //$this->log($this->request->data, LOG_DEBUG);
+        $this->log($this->request->data, LOG_DEBUG);
         // POSTの場合
         if ($this->request->is('post') || $this->request->is('put')) {
-            // 初期表示
-            if ($flag == 1) {
-                $conditions2 = array('kaijo_flag' => 1);
-            } elseif ($flag == 2) {
-                $conditions3 = array('kaijo_flag' => 2);
-            } else {
-                $flag = 0;
-                $conditions2 = array('kaijo_flag' => 0);
-            }
-            $this->set('flag', $flag);
-            
             // フラグの書き換え
-            if (isset($this->request->data['case_id']) && isset($this->request->data['flag'])) {
+            if (isset($this->request->data['delete'])) {
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                // 完全削除
+                if ($flag == 1) {
+                    if ($this->CaseManagement->delete($id)) {
+                        $this->Session->setFlash('【情報】完全削除いたしました。');
+                    } else {
+                        $this->Session->setFlash('【エラー】完全削除時にエラーが発生しました。');
+                    }
+                } else {
+                    // 登録する内容を設定
+                    $data = array('CaseManagement' => array('id' => $id, 'kaijo_flag' => 1));
+                    // 登録する項目（フィールド指定）
+                    $fields = array('kaijo_flag');
+                    // 更新登録
+                    if ($this->CaseManagement->save($data, false, $fields)) {
+                        $this->Session->setFlash('【情報】削除が完了しました。');
+                    } else {
+                        $this->Session->setFlash('【エラー】削除時にエラーが発生しました。');
+                    }
+                }
+                $this->redirect(array('action' => 'index', $flag));
+            } elseif (isset($this->request->data['close'])) {
+                $id_array = array_keys($this->request->data['close']);
+                $id = $id_array[0];
                 // 登録する内容を設定
-                $data = array('CaseManagement' => array('id' => $this->request->data['case_id'], 'kaijo_flag' => $this->request->data['flag']));
+                $data = array('CaseManagement' => array('id' => $id, 'kaijo_flag' => 2));
                 // 登録する項目（フィールド指定）
                 $fields = array('kaijo_flag');
-                // 新規登録
+                // 更新登録
                 $this->CaseManagement->save($data, false, $fields);
-                if($this->request->data['flag'] == 1) {
-                    $msg = '削除';
-                } elseif($this->request->data['flag'] == 2) {
-                    $msg = 'クローズ';
+                $this->Session->setFlash('【情報】クローズ処理が完了しました。');
+                $this->redirect(array('action' => 'index', $flag));
+            // 削除取り消し
+            } elseif (isset($this->request->data['cancel'])) {
+                $id_array = array_keys($this->request->data['cancel']);
+                $id = $id_array[0];
+                // 登録する内容を設定
+                $data = array('CaseManagement' => array('id' => $id, 'kaijo_flag' => 0));
+                // 登録する項目（フィールド指定）
+                $fields = array('kaijo_flag');
+                // 更新登録
+                if ($this->CaseManagement->save($data, false, $fields)) {
+                    $this->Session->setFlash('【情報】処理を取り消しました。');
                 }
-                $this->redirect(array('action' => 'index', 0));
-                $this->Session->setFlash($msg.'処理を完了しました。');
-                return;
+                $this->redirect(array('action' => 'index', $flag));
             // 絞り込み
             } elseif(isset($this->request->data['search'])) {
                 // 依頼主で検索（部分一致）

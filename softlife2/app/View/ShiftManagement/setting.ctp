@@ -89,7 +89,7 @@ function doSubmit() {
 </div>
 <!-- 見出し１ END -->
 
-<div style="height: 900px;">
+<div style="height: auto;">
 <?php echo $this->Form->create('CaseManagement'); ?>
 <p style="font-size: 110%;">１．【シフト表】案件の並び順、および背景色の変更</p>
 <?php

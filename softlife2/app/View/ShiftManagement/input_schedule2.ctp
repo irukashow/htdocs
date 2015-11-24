@@ -124,6 +124,30 @@ $(function() {
             }
         } 
     });
+    // カスタム選択・解除
+    <?php for($i=1; $i<=5; $i++) { ?>
+    $('#SelectWeek<?=$i?>').on('change', function(){
+        if($("#SelectWeek<?=$i?>:checked").val()) {
+            for(i=0; i<31; i++) {
+                if ($("#Holiday"+(i+1)).val() == 1) {
+                    continue;
+                }
+                if ($("#WeekD"+(i+1)).val() == <?=$i?>) {
+                    $("#check"+(i+1)).prop({'checked':'checked'});
+                }
+            }
+        } else {
+            for(i=0; i<31; i++) {
+                if ($("#Holiday"+(i+1)).val() == 1) {
+                    continue;
+                }
+                if ($("#WeekD"+(i+1)).val() == <?=$i?>) {
+                    $("#check"+(i+1)).prop({'checked':false});
+                }
+            }
+        } 
+    });
+    <?php } ?>
     // チェックした日を◎（可能）に
     $('#n1').click(function(){
         for(i=0; i<31; i++) {
@@ -233,7 +257,7 @@ $(function() {
     <!-- 月選択 END -->
     
     <!-- 制御 -->
-    <table border="1" style="width:60%;margin-top: 5px;">
+    <table border="1" style="width:80%;margin-top: 5px;">
         <tr>
             <td>
                 <div style="float: left;">
@@ -245,8 +269,17 @@ $(function() {
                 <div style="float: left;">
                     <label for="SelectHoliday">
                         <input type="checkbox" name="SelectHoliday" id="SelectHoliday">
-                        土日祝選択・解除
+                        土日祝選択・解除&nbsp;&nbsp;
                     </label> 
+                </div>
+                <div style="float: left;">
+                    <!-- カスタム選択 -->
+                    <?php echo $this->Form->input(false,array('name'=>'check1', 'id'=>'SelectWeek1', 'type'=>'checkbox','div'=>true,'label'=>'月&nbsp;')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check2', 'id'=>'SelectWeek2', 'type'=>'checkbox','div'=>true,'label'=>'火&nbsp;')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check3', 'id'=>'SelectWeek3','type'=>'checkbox','div'=>true,'label'=>'水&nbsp;')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check4', 'id'=>'SelectWeek4','type'=>'checkbox','div'=>true,'label'=>'木&nbsp;')); ?>
+                    <?php echo $this->Form->input(false,array('name'=>'check5', 'id'=>'SelectWeek5','type'=>'checkbox','div'=>true,'label'=>'金&nbsp;')); ?>
+                    <!-- カスタム選択 END -->
                 </div>
             </td>
             <td>
@@ -312,6 +345,7 @@ $(function() {
             } else {
                 echo '<input type="hidden" id="Holiday'.$d.'" value="0">';
             }
+            echo '<input type="hidden" id="WeekD'.$d.'" value="'.$i.'">';
             echo $this->Form->input('StaffSchedule.'.$d.'.id', array('type'=>'hidden', 'value'=>$datas3[$d-1]['StaffSchedule']['id']));
             echo $this->Form->input('StaffSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $selected_class));
             echo $this->Form->input('StaffSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => 'u'.$uid));
@@ -338,6 +372,7 @@ $(function() {
             } else {
                 echo '<input type="hidden" id="Holiday'.$d.'" value="0">';
             }
+            echo '<input type="hidden" id="WeekD'.$d.'" value="'.$i.'">';
             echo $this->Form->input('StaffSchedule.'.$d.'.id', array('type'=>'hidden'));
             echo $this->Form->input('StaffSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $selected_class));
             echo $this->Form->input('StaffSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => 'u'.$uid));
