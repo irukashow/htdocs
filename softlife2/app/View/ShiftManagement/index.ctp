@@ -137,9 +137,9 @@ window.onload = function(){
         <a href="javascript:void(0);" onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule2?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');" id='button-create'>社員シフト</a>
     </span>
     <div style="float:right;margin-top: 5px;">
-        <?php echo $this->Paginator->counter(array('format' => __('総件数  <b>{:count}</b> 件')));?>
+        <?php echo $this->Paginator->counter(array('format' => __('合計  <b>{:count}</b> 名')));?>
         &nbsp;&nbsp;&nbsp;
-        表示件数：
+        表示数：
         <?php
             $list = array('5'=>'5','10'=>'10','20'=>'20','50'=>'50','100'=>'100');
             echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'options' => $list, 'selected' => $limit,

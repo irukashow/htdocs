@@ -198,7 +198,7 @@ $(function() {
                              <input type="hidden" name="username" value="<?=$data2['User']['username']; ?>">
                          </td>
                          <td align="left" style="padding:0px 10px 0px 10px;width: 75%;font-size: 110%;background-color: #ffffcc;">
-                             <?=$data2['User']['name']; ?>
+                             <?=$data2['User']['name'].'（社員）'; ?>
                          </td>
                          <td align="center" style="background-color: #ddffff;">
                              <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 

@@ -317,17 +317,24 @@ function doSubmit(value, flag) {
         <?php echo $this->Html->link('【稼働表】', array(), array()); ?><br>
         <br>
         <?php
-            if ($flag == 1) {
+            if ($flag == 0) {
+                $delete = '削除';
+        ?>
+        <button name="delete[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に削除してよろしいですか？');">削除</button><br>
+        <button name="close[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当にクローズしてよろしいですか？');">クローズ</button>
+        <?php
+            } elseif ($flag == 1) {
                 $delete = '完全削除';
         ?>
-        <button name="cancel[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に削除取り消ししますか？');">削除取り消し</button><br>
+        <button name="cancel[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に削除を取り消しますか？');">削除取り消し</button><br>
+        <button name="delete[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に＜完全削除＞してよろしいですか？');">完全削除</button><br>
         <?php
             } else {
-                $delete = '削除';
+        ?>
+        <button name="cancel[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当にクローズを取り消しますか？');">クローズ<br>取り消し</button>
+        <?php
             }
         ?>
-        <button name="delete[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当に削除してよろしいですか？');"><?=$delete?></button><br>
-        <button name="close[<?=$data['CaseManagement']['id'] ?>]" onclick="return confirm('【確認】本当にクローズしてよろしいですか？');">クローズ</button>
     </td>
   </tr>
 <?php if ($row > 1) { ?>

@@ -155,7 +155,11 @@ class CaseManagementController extends AppController {
                 $fields = array('kaijo_flag');
                 // 更新登録
                 if ($this->CaseManagement->save($data, false, $fields)) {
-                    $this->Session->setFlash('【情報】処理を取り消しました。');
+                    if ($flag == 1) {
+                        $this->Session->setFlash('【情報】削除を取り消しました。');
+                    } elseif ($flag == 2) {
+                        $this->Session->setFlash('【情報】クローズを取り消しました。');
+                    }
                 }
                 $this->redirect(array('action' => 'index', $flag));
             // 絞り込み
@@ -417,8 +421,8 @@ class CaseManagementController extends AppController {
                 
         // ページネーション
         //$conditions2 = array('id' => $case_id, 'kaijo_flag' => $flag);
-        //$conditions2 = array('kaijo_flag' => $flag);
-        $conditions2 = null;
+        $conditions2 = array('kaijo_flag' => $flag);
+        //$conditions2 = null;
         $this->paginate = array('CaseManagement' => array(
             'fields' => '*' ,
             'limit' =>  '1',
@@ -775,6 +779,19 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['insert_billing'])) { 
                 $this->Session->write('insert_billing', 1);
                 $this->set('insert_billing', 1);
+                // 登録する内容を設定
+                $data2 = array('CaseManagement' => array('id' => $this->request->data['CaseManagement']['id'], 'class' => $selected_class,
+                    'case_name' => $this->request->data['CaseManagement']['case_name'], 'username' => $this->request->data['CaseManagement']['username'], 
+                    //'contract_type' => $this->request->data['CaseManagement']['contract_type'], 
+                    //'distributor'.($count_distributor+1) => $this->request->data['CaseManagement']['distributor']
+                        ));
+                // 登録する項目（フィールド指定）
+                $fields = array('case_name','class', 'username'); 
+                // 更新登録
+                $this->CaseManagement->save($data2, false, $fields);
+                if ($case_id == 0) {
+                    $case_id = $this->CaseManagement->getLastInsertID();
+                } 
                 $this->redirect(array('action'=>'./reg1/'.$case_id.'/'.$koushin_flag));
             // 請求先削除
             } elseif (isset($this->request->data['delete_billing'])) { 

@@ -1235,7 +1235,7 @@ class ShiftManagementController extends AppController {
         $data2 = null;
         $list_premonth = null;
         // 案件名の取得
-        $conditions1 = array('class'=>$selected_class);
+        $conditions1 = array('class'=>$selected_class, 'kaijo_flag'=>0);
         $getCasename = $this->CaseManagement->find('list', array('fields'=>array('id', 'case_name'), 'conditions' => $conditions1, 'order' => array('sequence')));
         $this->set('getCasename', $getCasename);
         //$this->log($getCasename, LOG_DEBUG);
