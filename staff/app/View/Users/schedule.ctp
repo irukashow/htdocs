@@ -105,7 +105,7 @@ input[type=checkbox] {
     vertical-align: middle;
 }
 </style>
-<div id="page2" data-role="page">
+<div id="page2" data-role="page" data-url="<?=ROOTDIR ?>/users/schedule?date=<?=$date1 ?>">
         <?php
             if ($class == '11') {
                 $area = '関西';
@@ -138,9 +138,9 @@ input[type=checkbox] {
             ?>
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
                     <tr align="center">
-                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false">&lt; 前の月</a></td>
+                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false" style="font-size:120%;">&lt; 前の月</a></td>
                             <td><div style="font-size:130%;">【<?php echo $y ?>年<?php echo $m ?>月】</div></td>
-                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false">次の月 &gt;</a></td>
+                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false" style="font-size:120%;">次の月 &gt;</a></td>
                     </tr>
             </table>
             <!-- 選択 -->
@@ -272,7 +272,7 @@ input[type=checkbox] {
             </table>
             <!-- カレンダー END-->
             <div style='float:left;'>
-                <input type="submit" value="登　録" data-theme="e" data-icon="check" data-inline="true">
+                <input type="submit" value="入力確認" data-theme="e" data-icon="check" data-inline="true">
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="<?=ROOTDIR ?>/users/schedule#page3";'>
             </div>  
             <?php echo $this->Form->end(); ?>
@@ -295,8 +295,8 @@ input[type=checkbox] {
     <div data-role="content">
         <p>以下の入力ができます。</p>
         <input type="button" value="１．シフト希望" data-icon="arrow-r" data-iconpos="right" onclick='location.href="?date=<?=$date1 ?>"'>
-        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
-        <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message"'>
+        <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message_s"'>
+        <input type="button" value="３．スタッフシフト表" data-icon="arrow-r" data-iconpos="right" onclick='location.href="#message_s"'>
         <!--
         <input type="button" value="２．確定スケジュール" data-icon="arrow-r" data-iconpos="right" onclick='location.href="<?=ROOTDIR ?>/users/schedule2?date=<?=$date1 ?>"'>
         -->
@@ -317,7 +317,7 @@ input[type=checkbox] {
     </div>
 </div>
 <!-- 制作中 -->
-<section id="message" data-role="dialog" data-close-btn-text="閉じる">
+<section id="message_s" data-role="dialog" data-close-btn-text="閉じる">
   <header data-role="header">
     <h3>　　メッセージ</h3>
   </header>

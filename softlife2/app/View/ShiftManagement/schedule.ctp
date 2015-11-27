@@ -52,7 +52,7 @@
     }
     $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); 
 ?>
-<div style="width:100;margin-top: 0px;<?=$font_normal ?>;">
+<div style="width:100%;margin-top: 0px;<?=$font_normal ?>;">
     <table border='1' cellspacing="0" cellpadding="3" style="width:1200px;margin-top: -5px;border-spacing: 0px;background-color: white;">
             <tr align="center">
                     <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
@@ -131,7 +131,7 @@
                 <?php } ?>
             </tr>
             </thead>
-            <tbody style="overflow: auto;">
+            <tbody>
                 <!--
             <tr style="">
                 <td class="redips-trash" style='background-color: #999999;color: white;' colspan="2">削除</td>
@@ -767,73 +767,6 @@
                                 }
                             }
                         }
-                    ?>
-                    <?php
-                    /**
-                    $j = 0;
-                    if (!empty($request_staffs)) {
-                        foreach ($request_staffs as $data) {
-                            $point = $data['StaffSchedule']['point'];
-                            if (!empty($point)) {
-                                $point2 = explode(',', $point);
-                            } else {
-                                $point2 = null;
-                            }
-                            if (date('j', strtotime($data['StaffSchedule']['work_date'])) == $d 
-                                    && chkShokushu(setData($datas2,'shokushu_id',$count,$record), $data['StaffSchedule']['shokushu_id'])) {
-                                $datas3[$count][$d][$j]['staff_id'] = $data['StaffSchedule']['staff_id'];
-                                $datas3[$count][$d][$j]['name'] = $data['StaffMaster']['name_sei'].' '.$data['StaffMaster']['name_mei'];
-                                $datas3[$count][$d][$j]['point'] = setPoint($point2, $count);
-
-                                $j++;
-                            }
-                        }
-                        // ポイント順、ID順に並び替え
-                        if (!empty($datas3[$count][$d])) {
-                            foreach ($datas3[$count][$d] as $key => $value){
-                                $key_point[$key] = $value['point'];
-                                $key_staff_id[$key] = $value['staff_id'];
-                            }
-                            if (!array_multisort($key_point, SORT_DESC ,$key_staff_id , SORT_ASC , $datas3[$count][$d])) {
-                                $this->log($key_point, LOG_DEBUG);
-                                $this->log($key_staff_id, LOG_DEBUG);
-                            }
-                            // 初期化
-                            $key_point = null;
-                            $key_staff_id = null;
-
-                            // 優先順に表示
-                            $flag3 = false;
-                            $flag2 = false;
-                            $flag1 = false;
-                            foreach ($datas3[$count][$d] as $key => $value){
-                                if ($value['point'] == 3) {
-                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                        echo $value['name'].' ('.$value['point'].')';
-                                        echo '</div>';
-                                    $flag3 = true;
-                                } elseif ($flag3 == false && $value['point'] == 2) {
-                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                        echo $value['name'].' ('.$value['point'].')';
-                                        echo '</div>';
-                                        $flag2 = true;
-                                } elseif (($flag3 == false && $flag2 == false) && $value['point'] == 1) {
-                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                        echo $value['name'].' ('.$value['point'].')';
-                                        echo '</div>';
-                                        $flag1 = true;
-                                } elseif (($flag3 == false && $flag2 == false && $flag1 == false) && $value['point'] == 0) {
-                                        echo '<div id="'.$value['staff_id'].'" class="redips-drag t1">';
-                                        echo $value['name'].' ('.$value['point'].')';
-                                        echo '</div>';
-                                } else {
-                                    //echo $value['staff_id'].'('.$value['point'].')'.'<br>';
-                                }
-                            }
-                        }
-                    }
-                     * 
-                     */
                     ?>
                     <?php } ?>
                 </td>

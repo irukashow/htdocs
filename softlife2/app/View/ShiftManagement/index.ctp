@@ -239,10 +239,12 @@ window.onload = function(){
                 if (strstr($data1['StaffSchedule']['staff_id'], 'u')) {
             ?>
             <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule2/<?=ltrim($data1['StaffSchedule']['staff_id'], 'u'); ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
+            <button name="delete[<?=$data1['StaffSchedule']['staff_id']; ?>]" onclick="return window.confirm('【確認】本当に削除いたしますか？');">削除</button>
             <?php
                 } else {
             ?>
             <button onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/input_schedule/<?=$data1['StaffSchedule']['staff_id']; ?>?date=<?=$date2 ?>','シフト希望','width=1200,height=800,scrollbars=yes');return false;">編集</button>
+            <button name="delete[<?=$data1['StaffSchedule']['staff_id']; ?>]" onclick="return window.confirm('【確認】本当に削除いたしますか？');">削除</button>
             <?php } ?>
         </td>
         <td align="left" style="padding: 0px 10px;font-size: 90%;"><?=setShokushu($data1['StaffSchedule']['staff_id'], $staff_shokushu_arr, $list_shokushu); ?></td>
@@ -266,14 +268,29 @@ window.onload = function(){
         $nodata = true;
         foreach ($datas2[$key] as $data2) {
             if ($y.'-'.sprintf("%02d", $m).'-'.sprintf("%02d", $d) == $data2['StaffSchedule']['work_date']) {
+                // 条件
+                if (empty($data2['StaffSchedule']['conditions'])) {
+                    $comment3 = '';
+                    $style2 = '';
+                } else {
+                    $comment3 = 'alert("【シフト条件】\n'.$data2['StaffSchedule']['conditions'].'");';
+                    $style2 = 'background-color:#E6FFE9;';
+                }
                 // 出力
                 if ($data2['StaffSchedule']['work_flag'] == 0) {
-                    echo "<td align=\"center\" style='".$style."'>－</td>";
+                    if (empty($comment3)) {
+                        echo "<td align=\"center\" style='".$style.$style2."'>－</td>";
+                    } else {
+                        echo "<td align=\"center\" style='".$style.$style2."'><a href='#' title='".$data2['StaffSchedule']['conditions']."' onclick='".$comment3."'>－</a></td>";
+                    }
                 } elseif ($data2['StaffSchedule']['work_flag'] == 1) {
-                    echo "<td align=\"center\" style='".$style."'>○</td>";
+                    if (empty($comment3)) {
+                        echo "<td align=\"center\" style='".$style.$style2."'>○</td>";
+                    } else {
+                        echo "<td align=\"center\" style='".$style.$style2."'><b><a href='#' title='".$data2['StaffSchedule']['conditions']."' onclick='".$comment3."'>○</a></b></td>";
+                    }
                 } elseif($data2['StaffSchedule']['work_flag'] == 2) {
-                    $comment3 = 'alert("【シフト条件】\n'.$data2['StaffSchedule']['conditions'].'");';
-                    echo "<td align=\"center\" style='".$style."'><a href='#' title='".$data2['StaffSchedule']['conditions']."' onclick='".$comment3."'>△</a></td>";
+                    echo "<td align=\"center\" style='".$style.$style2."'><b><a href='#' title='".$data2['StaffSchedule']['conditions']."' onclick='".$comment3."'>△</a></b></td>";
                 }
                 $nodata = false;
             }

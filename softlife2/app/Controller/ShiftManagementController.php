@@ -75,7 +75,7 @@ class ShiftManagementController extends AppController {
         $this->StaffMaster->virtualFields['name'] = 'CONCAT(name_sei, " ", name_mei)';
         $staff_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'name')));
         $this->set('staff_arr', $staff_arr);
-        $this->log($staff_arr, LOG_DEBUG);
+        //$this->log($staff_arr, LOG_DEBUG);
         // スタッフ職種配列
         $conditions10 = null;
         $staff_shokushu_arr = $this->StaffMaster->find('list', array('fields'=>array('id', 'shokushu_shoukai'), 'conditions'=>$conditions10));
@@ -114,7 +114,7 @@ class ShiftManagementController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
             $this->log($this->request->data, LOG_DEBUG);
             $conditions2 = null;
-            if (isset($this->data['search'])) {
+            if (isset($this->request->data['search'])) {
                 // 氏名での検索
                 if (!empty($this->data['StaffSchedule']['search_name'])){
                     $search_name = $this->data['StaffSchedule']['search_name'];
@@ -132,9 +132,14 @@ class ShiftManagementController extends AppController {
                     }
                     $options['conditions'] += array('OR'=>array($conditions1, $conditions2));
                 }
+            // スケジュール削除
+            } elseif (isset($this->request->data['delete'])) {
+                $id_array = array_keys($this->request->data['delete']);
+                $id = $id_array[0];
+                
             // 職種
-            } elseif (!empty($this->data['StaffSchedule']['search_shokushu'])){
-                $search_shokushu = $this->data['StaffSchedule']['search_shokushu'];
+            } elseif (!empty($this->request->data['StaffSchedule']['search_shokushu'])){
+                $search_shokushu = $this->request->data['StaffSchedule']['search_shokushu'];
                 $options['conditions'] += array('FIND_IN_SET('.$search_shokushu.', StaffMaster.shokushu_shoukai)');
             // 所属の変更
             } elseif (isset($this->request->data['class'])) {

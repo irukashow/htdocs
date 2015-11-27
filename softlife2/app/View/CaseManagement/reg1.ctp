@@ -298,12 +298,14 @@ $(function() {
                     <?php echo $this->Form->input('director_corp',array('type'=>'select', 'label'=>false,'div'=>'display: inline; ','empty'=>'指揮命令者の企業名を選択してください', 
                         'options'=>$customer_arr, 'style'=>'width:100%;padding:5px;')); ?>
                             </td>
+                            <!--
                             <td>
                     <?php echo $this->Form->submit('選 択',array('div'=>'display: inline; ', 'name'=>'select_director_corp', 'id'=>'button-create', 'label'=>false)); ?>
                             </td>
+                            -->
                         </tr>
                         <tr>
-                            <td colspan="2">
+                            <td colspan="1">
                     <?php echo $this->Form->input('director',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '指揮命令者','style'=>'width:30%;')); ?>様
                     <?php echo $this->Form->input('position',array('label'=>false,'div'=>false,'maxlength'=>'50', 'placeholder' => '役職','style'=>'width:30%;')); ?>
                             </td>
@@ -544,10 +546,13 @@ $(function() {
     <div style='margin-left: 10px;'>
 <?php echo $this->Form->submit('登録する', array('name' => 'submit','div' => false)); ?>
     &nbsp;&nbsp;
-    <!--
-<?php echo $this->Form->submit('登録キャンセル', array('name' => 'delete','div' => false, 'id'=>'button-delete', 'onclick'=>'return confirm("登録をキャンセルしますか？")')); ?>
-    &nbsp;&nbsp; 
-    -->
+    
+<?php
+    if ($koushin_flag == 0) {
+        echo $this->Form->submit('登録取り止め', array('name' => 'delete','div' => false, 'id'=>'button-delete', 'onclick'=>'return confirm("【確認】登録を取り止めますか？")')); 
+        echo '&nbsp;&nbsp;';
+    }
+?>
 <?php print($this->Html->link('閉 じ る', 'javascript:void(0);', array('id'=>'button-delete', 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>

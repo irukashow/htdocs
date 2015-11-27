@@ -338,17 +338,20 @@ class UsersController extends AppController {
             if ($this->request->is('post') || $this->request->is('put')) {
                 $this->log($this->request->data, LOG_DEBUG);
                 $this->log($this->request->data['StaffSchedule'], LOG_DEBUG);
-                
+ 
+                $this->Session->write('datas_schedule', $this->request->data['StaffSchedule']);
+                $this->redirect(array('controller' => 'users', 'action' => 'schedule_confirm', '?date='.$date1));
+                /**
                 // データを登録する
                 if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
-                    //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
-                    // スタッフのシフト希望登録履歴
-                    //　
-                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=1'));
+                    $this->Session->write('datas_schedule', $this->request->data['StaffSchedule']);
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule_confirm', '?date='.$date1));
                 } else {
                     $this->log('エラーが発生しました。', LOG_DEBUG);
                     $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=2'));
                 }
+                 * 
+                 */
             } elseif ($this->request->is('get')) {
                 //$this->log($this->request->data, LOG_DEBUG);
                 for ($i=1; $i<=31; $i++) {
@@ -360,6 +363,68 @@ class UsersController extends AppController {
                 }
                 //$this->log($data, LOG_DEBUG);
                 $this->set('data', $data);
+            } else {
+                
+            }
+        }
+
+	/**
+	 * スケジュール（シフト希望）
+	 */
+	public function schedule_confirm(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+                return;
+            }
+            $this->set('class', $class);
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            // 職種IDのセット
+            $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+            $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
+            $this->set('shokushu_id', $shokushu_id);
+            // 登録していた値をセット
+            if (empty($this->request->query['date'])) {
+                $date1 = date('Y-m', strtotime('+1 month'));
+                $date2 = null;
+            } else {
+                $date2 = $this->request->query['date'];
+                $date1 = $date2;
+            }
+            $this->Session->write('date2', $date2);
+            $this->set('date1', $date1);
+            // セッションの読み込み
+            $datas = $this->Session->read('datas_schedule');
+            $this->log($datas, LOG_DEBUG);
+            
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                // データを登録する
+                if ($this->StaffSchedule->saveAll($datas)) {
+                    //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+                    // セッションの削除
+                    //　
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=1'));
+                } else {
+                    $this->log('エラーが発生しました。', LOG_DEBUG);
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=2'));
+                }
+            } elseif ($this->request->is('get')) {
+                if (empty($datas)) {
+                    $this->log('エラーが発生しました。', LOG_DEBUG);
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=2'));
+                } else {
+                    $this->set('data', $datas);
+                }
             } else {
                 
             }

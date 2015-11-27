@@ -376,15 +376,15 @@ onload = function() {
     } else {
         document.body.style.width = '1300px';
     }
+    //document.body.style.width = '100%';
+    //document.body.style.height = '100%';
     document.getElementById("headline").style.width = '1200px';
     document.getElementById("menu_table").style.width = '1200px';
-    /**
-    if (120+<?=$col ?>*120+20 > width) {
-        document.body.style.width = '<?=120+$col*120+20 ?>px';
-    } else {
-        document.body.style.width = width + 'px';
-    }
-        **/
+    // スクロールバーを消す
+    //document.body.style.overflow = 'hidden';
+    // シフト表にスクロールバーを表示する
+    //document.getElementById("table1").overflow = "scroll";
+    //document.getElementById("table1").height = "100%";
     // 待機マーク
     $(function() {
         /**
