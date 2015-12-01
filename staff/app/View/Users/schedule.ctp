@@ -34,17 +34,29 @@
 ?>
 <script type="text/javascript">
 <!--
+onload = function() {
+    for(i=0; i<31; i++) {
+        $('#flag1_'+(i+1)).val([0]).checkboxradio('refresh');
+        $('#flag2_'+(i+1)).val([0]).checkboxradio('refresh');
+        $('#flag0_'+(i+1)).val([0]).checkboxradio('refresh');
+    }
+}
 $(function() {
     // 全選択・全解除
     $('#SelectAll').on('change', function(){
         if($("#SelectAll:checked").val()) {
             for(i=0; i<31; i++) {
-                $("#check"+(i+1)).prop({'checked':'checked'});
+                $('#flag1_'+(i+1)).val([1]).checkboxradio('refresh');
+                $('#flag2_'+(i+1)).val([0]).checkboxradio('refresh');
+                $('#flag0_'+(i+1)).val([1]).checkboxradio('refresh');
             }
+            $('#SelectClear').val([0]).checkboxradio('refresh');
+            $('#SelectHoliday').val([0]).checkboxradio('refresh');
         }
         else {
             for(i=0; i<31; i++) {
-                $("#check"+(i+1)).prop({'checked':false});
+                $('#flag1_'+(i+1)).val([0]).checkboxradio('refresh');
+                $('#flag0_'+(i+1)).val([0]).checkboxradio('refresh');
             }
         } 
     });
@@ -53,44 +65,34 @@ $(function() {
         if($("#SelectHoliday:checked").val()) {
             for(i=0; i<31; i++) {
                 if ($("#Holiday"+(i+1)).val() == 0) {
+                    $('#flag1_'+(i+1)).val([0]).checkboxradio('refresh');
+                    $('#flag0_'+(i+1)).val([0]).checkboxradio('refresh');
                     continue;
                 }
-                $("#check"+(i+1)).prop({'checked':'checked'});
+                $('#flag1_'+(i+1)).val([1]).checkboxradio('refresh');
+                $('#flag0_'+(i+1)).val([1]).checkboxradio('refresh');
             }
-        }
-        else {
+            $('#SelectClear').val([0]).checkboxradio('refresh');
+            $('#SelectAll').val([0]).checkboxradio('refresh');
+        } else {
             for(i=0; i<31; i++) {
                 if ($("#Holiday"+(i+1)).val() == 0) {
                     continue;
                 }
-                $("#check"+(i+1)).prop({'checked':false});
+                $('#flag1_'+(i+1)).val([0]).checkboxradio('refresh');
+                $('#flag0_'+(i+1)).val([0]).checkboxradio('refresh');
             }
         } 
     });
-    // チェックした日を◎（可能）に
-    $('#n1').click(function(){
-        for(i=0; i<31; i++) {
-            //alert($("#work_flag"+(i+1)).val());
-            if ($("#check"+(i+1)).prop('checked')) {
-                $("#work_flag"+(i+1)).val("1").selectmenu('refresh');
-            }
-        }
-    });
-    // チェックした日を△（条件付き）に
-    $('#n2').click(function(){
-        for(i=0; i<31; i++) {
-            //alert($("#work_flag"+(i+1)).val());
-            if ($("#check"+(i+1)).prop('checked')) {
-                $("#work_flag"+(i+1)).val("2").selectmenu('refresh');
-            }
-        }
-    });
-    // チェックした日を✕（不可）に
-    $('#n3').click(function(){
-        for(i=0; i<31; i++) {
-            //alert($("#work_flag"+(i+1)).val());
-            if ($("#check"+(i+1)).prop('checked')) {
-                $("#work_flag"+(i+1)).val("0").selectmenu('refresh');
+    // すべてクリアする
+    $('#SelectClear').on('change', function(){
+        if($("#SelectClear:checked").val()) {
+            for(i=0; i<31; i++) {
+                $('#flag0_'+(i+1)).val([0]).checkboxradio('refresh');
+                $('#flag1_'+(i+1)).val([0]).checkboxradio('refresh');
+                $('#flag2_'+(i+1)).val([0]).checkboxradio('refresh');
+                $('#SelectAll').val([0]).checkboxradio('refresh');
+                $('#SelectHoliday').val([0]).checkboxradio('refresh');
             }
         }
     });
@@ -106,25 +108,25 @@ input[type=checkbox] {
 }
 </style>
 <div id="page2" data-role="page" data-url="<?=ROOTDIR ?>/users/schedule?date=<?=$date1 ?>">
-        <?php
-            if ($class == '11') {
-                $area = '関西';
-            } elseif ($class == '21') {
-                $area = '関東';
-            } elseif ($class == '31') {
-                $area = '中部';
-            } else {
-                $area = '？';
-            }
-        ?>
-        <div data-role="header" data-theme="c">
-            <h1>シフト希望<span style="font-size: 90%;margin-left: 5px;">（<?=$area ?>エリア）</span></h1>
-                <!--
-                <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
-                -->
-                <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
-        </div>
-        <div data-role="content" style="font-size: 70%;">
+    <?php
+        if ($class == '11') {
+            $area = '関西';
+        } elseif ($class == '21') {
+            $area = '関東';
+        } elseif ($class == '31') {
+            $area = '中部';
+        } else {
+            $area = '？';
+        }
+    ?>
+    <div data-role="header" data-theme="c">
+        <h1>シフト希望<span style="font-size: 90%;margin-left: 5px;">（<?=$area ?>エリア）</span></h1>
+            <!--
+            <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" data-inline="true" onclick="location.reload();"></a>
+            -->
+            <a href="#dialog_menu" class="ui-btn-right" data-role="button" data-transition="slidedown" data-icon="bars" data-iconpos="notext"></a>
+    </div>
+        <div data-role="content" style="font-size: 80%;">
             <!--- シフト希望表 --->
             <!-- カレンダー -->
         <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
@@ -133,45 +135,58 @@ input[type=checkbox] {
                 if (empty($msg)) {
                     echo '';
                 } else {
-                    echo '<div style="font-size:130%;color:red;">'.$msg.'</div>';
+                    echo '<div style="font-size:120%;color:red;margin-bottom:5px;margin-top:-5px;">'.$msg.'</div>';
                 }
             ?>
-            <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 10px;border-spacing: 0px;background-color: white;">
-                    <tr align="center">
-                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false" style="font-size:120%;">&lt; 前の月</a></td>
-                            <td><div style="font-size:130%;">【<?php echo $y ?>年<?php echo $m ?>月】</div></td>
-                            <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false" style="font-size:120%;">次の月 &gt;</a></td>
-                    </tr>
+            <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 0px;border-spacing: 0px;background-color: white;">
+                <tr align="center">
+                    <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" data-ajax="false" style="font-size:110%;">&lt; 前の月</a></td>
+                    <td style="background-color: #D7EEFF;"><div style="font-size:120%;">【<?php echo $y ?>年<?php echo $m ?>月】</div></td>
+                    <td><a href="<?=ROOTDIR ?>/users/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" data-ajax="false" style="font-size:110%;">次の月 &gt;</a></td>
+                </tr>
             </table>
+            
+            <?php
+                if (empty($data)) {
+            ?>
+            <div style="margin-top: 5px;font-size: 120%;">
+                <font style="color:blue;font-size:100%;">【未申請】</font>勤務可能な日を◎に、不可の日を✕に、可能かもしれない日を△にしてください。
+            </div>
             <!-- 選択 -->
             <div data-role="fieldcontain">
                 <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                     <input type="checkbox" name="SelectAll" id="SelectAll">
-                    <label for="SelectAll">全選択・全解除</label> 
+                    <label for="SelectAll">全てを◎</label> 
                     <input type="checkbox" name="SelectHoliday" id="SelectHoliday">
-                    <label for="SelectHoliday">土日祝選択・解除</label> 
+                    <label for="SelectHoliday">土日祝を◎</label> 
+                    <input type="checkbox" name="SelectClear" id="SelectClear">
+                    <label for="SelectClear">すべてクリア</label> 
                 </fieldset>
             </div>
             <!-- 選択 END -->
-            <!-- 制御 -->
-            <div data-role="fieldcontain">
-              <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                <input type="radio" name="number" id="n1" value="1" />
-                <label for="n1">◎：可能</label>
-                <input type="radio" name="number" id="n2" value="2" />
-                <label for="n2">△：条件付き</label>
-                <input type="radio" name="number" id="n3" value="0" />
-                <label for="n3">✕：不可</label>
-              </fieldset>
-            </div>
-            <!-- 制御 END -->
             <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
                 <tr align="center" style="background-color: #cccccc;">
                     <th style="width:10%">日付</th>
-                    <th style="width:10%">選択</th>
-                    <th style="width:10%">勤務可能</th>
-                    <th style="width:30%">条件（△の場合）</th>
+                    <th style="width:40%">勤務可能</th>
+                    <th style="width:50%">備考</th>
                 </tr>
+            <?php
+                } else {
+            ?>
+            <div style="margin-top: 5px;font-size: 120%;">
+                <font style="color:red;font-size:100%;">【申請済】<?=date('Y年n月j日 H時i分', strtotime($data[1]['modified'])) ?></font>
+                　<a href="<?=ROOTDIR ?>/users/schedule_edit?date=<?=$date1 ?>" data-ajax="false">変更</a>
+            </div>
+            <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
+                <tr align="center" style="background-color: #cccccc;">
+                    <th style="width:15%">日付</th>
+                    <th style="width:25%">勤務可能</th>
+                    <th style="width:60%">備考</th>
+                </tr>
+            <?php
+                }
+            ?>
+
         <?php
             // 曜日の配列作成
             $weekday = array( "日", "月", "火", "水", "木", "金", "土" );
@@ -220,19 +235,12 @@ input[type=checkbox] {
                     echo $this->Form->input('StaffSchedule.'.$d.'.class', array('type'=>'hidden', 'value' => $class));
                     echo $this->Form->input('StaffSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => $id));
                     echo $this->Form->input('StaffSchedule.'.$d.'.shokushu_id', array('type'=>'hidden', 'value' => $shokushu_id));
-                    echo '</td>';
-                    echo '<td align="center">';
-                    //echo '<label>';
-                    echo '<input type="checkbox" name="data[StaffSchedule]['.$d.'][check]" id="check'.$d.'">';
-                    //echo '</label>';
-                    echo '</td>';
                     $list_work = array('0'=>'✕', '1'=>'◎','2'=>'△'); 
                     echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.work_flag', array('type'=>'select', 'id'=>'work_flag'.$d , 'value'=>$data[$d]['work_flag'], 'legend'=>false,
-                        'label'=>false, 'div'=>false,'style'=>'font-weight:bold;','data-mini'=>'true', 'options'=>$list_work));   
+                    echo $list_work[$data[$d]['work_flag']];   
                     echo '</td>';
-                    echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;','style'=>'font-size:90%;','data-inline'=>'true', 'value'=>$data[$d]['conditions']));
+                    echo '<td align="left">';
+                    echo $data[$d]['conditions'];
                     echo '</td>';
                     echo '</tr>';
                 } else {
@@ -251,14 +259,18 @@ input[type=checkbox] {
                     echo $this->Form->input('StaffSchedule.'.$d.'.shokushu_id', array('type'=>'hidden', 'value' => $shokushu_id));
                     echo '</td>';
                     echo '<td align="center">';
-                    //echo '<label>';
-                    echo '<input type="checkbox" name="data[StaffSchedule]['.$d.'][check]" id="check'.$d.'">';
-                    //echo '</label>';
-                    echo '</td>';
-                    $list_work = array('0'=>'✕', '1'=>'◎','2'=>'△'); 
-                    echo '<td align="center">';
-                    echo $this->Form->input('StaffSchedule.'.$d.'.work_flag', array('type'=>'select', 'id'=>'work_flag'.$d, 'legend'=>false,
-                        'label'=>false, 'div'=>false,'style'=>'font-weight:bold;','data-mini'=>'true', 'options'=>$list_work));
+        ?>
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                    <input type="radio" name="data[StaffSchedule][<?=$d ?>][work_flag]" id="flag1_<?=$d ?>" value="1">
+                    <label for="flag1_<?=$d ?>">◎</label> 
+                    <input type="radio" name="data[StaffSchedule][<?=$d ?>][work_flag]" id="flag2_<?=$d ?>" value="2">
+                    <label for="flag2_<?=$d ?>">△</label> 
+                    <input type="radio" name="data[StaffSchedule][<?=$d ?>][work_flag]" id="flag0_<?=$d ?>" value="0">
+                    <label for="flag0_<?=$d ?>">✕</label> 
+                </fieldset>
+            </div>   
+        <?php
                     echo '</td>';
                     echo '<td align="center">';
                     echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;','style'=>'font-size:90%;','data-inline'=>'true'));
@@ -272,7 +284,13 @@ input[type=checkbox] {
             </table>
             <!-- カレンダー END-->
             <div style='float:left;'>
+            <?php
+                if (empty($data)) {
+            ?>
                 <input type="submit" value="入力確認" data-theme="e" data-icon="check" data-inline="true">
+            <?php
+                }
+            ?>
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="<?=ROOTDIR ?>/users/schedule#page3";'>
             </div>  
             <?php echo $this->Form->end(); ?>

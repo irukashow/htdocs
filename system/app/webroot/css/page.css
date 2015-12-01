@@ -1,0 +1,339 @@
+.rdio label {
+	margin-right: 30px;
+}
+.headTitle {
+	font-size: 14px; font-weight: bold;
+}
+.table {
+	border-top-color: rgb(204, 204, 204); border-left-color: rgb(204, 204, 204); border-top-width: 1px; border-left-width: 1px; border-top-style: solid; border-left-style: solid; background-color: white;
+}
+th {
+	text-align: center;
+}
+.td1 {
+	text-align: center; border-right-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid;
+}
+.tdData {
+	
+}
+.tdData:hover td {
+	background-color: rgb(255, 0, 0);
+}
+.td2 {
+	text-align: left; border-right-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid;
+}
+.td2back {
+	text-align: left; border-right-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; background-color: rgb(238, 238, 255);
+}
+.menutd {
+	padding: 1px;
+}
+.sel {
+	background-color: rgb(238, 238, 238);
+}
+.sel:hover {
+	background-color: rgb(255, 221, 221);
+}
+.sel2 {
+	background-color: rgb(255, 255, 170);
+}
+.calH1 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH2 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH3 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH4 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH5 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH6 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH7 {
+	padding: 3px; text-align: center; font-weight: bold; background-color: rgb(221, 221, 221);
+}
+.calH1 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH2 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH3 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH4 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH5 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH6 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH7 div {
+	margin: auto; width: 100%; text-align: center;
+}
+.calH1:hover {
+	opacity: 0.8;
+}
+.calH2:hover {
+	opacity: 0.8;
+}
+.calH3:hover {
+	opacity: 0.8;
+}
+.calH4:hover {
+	opacity: 0.8;
+}
+.calH5:hover {
+	opacity: 0.8;
+}
+.calH6:hover {
+	opacity: 0.8;
+}
+.calH7:hover {
+	opacity: 0.8;
+}
+.calH1 {
+	color: rgb(204, 0, 0);
+}
+.calH7 {
+	color: rgb(10, 25, 205);
+}
+.calD1 .calD2 .calD3 .calD4 .calD5 {
+	padding: 3px; color: rgb(51, 51, 51); background-color: rgb(255, 255, 255);
+}
+.calD1 {
+	color: rgb(204, 0, 0); background-color: rgb(243, 216, 216);
+}
+.calD7 {
+	color: rgb(10, 25, 205); background-color: rgb(236, 239, 254);
+}
+td.none {
+	text-align: center; font-size: 24px; background-color: rgb(238, 238, 238);
+}
+div span.remonth {
+	width: 230px; display: inline-block;
+}
+div span.remonth a.button {
+	padding: 5px 20px; color: rgb(255, 255, 255); display: inline-block; opacity: 0.8; background-color: rgb(0, 0, 255);
+}
+div span.remonth a.button:hover {
+	color: rgb(0, 0, 255); background-color: rgb(255, 255, 255);
+}
+div.day {
+	width: 100%; text-align: center; border-bottom-color: rgb(153, 153, 153); border-bottom-width: 1px; border-bottom-style: dotted;
+}
+div.disp {
+	width: 100%; text-align: left; cursor: pointer; min-height: 200px;
+}
+div.disp:hover {
+	background-color: rgb(255, 255, 204);
+}
+div.no.disp:hover {
+	cursor: auto; background-color: inherit;
+}
+div.disp2 {
+	width: 100%; text-align: left; overflow: hidden; font-size: 11px; cursor: pointer; min-height: 68px;
+}
+div.disp2:hover {
+	background-color: rgb(204, 255, 204);
+}
+div.no.disp2:hover {
+	cursor: auto; background-color: inherit;
+}
+div.disp3 {
+	width: 100%; text-align: left; overflow: hidden; font-size: 11px; border-top-color: rgb(153, 153, 153); border-top-width: 1px; border-top-style: solid; cursor: pointer; min-height: 30px;
+}
+div.disp3:hover {
+	background-color: rgb(204, 204, 255);
+}
+div.no.disp3:hover {
+	cursor: auto; background-color: inherit;
+}
+div.disp4 {
+	width: 100%; text-align: left; overflow: hidden; font-size: 11px; border-top-color: rgb(153, 153, 153); border-top-width: 1px; border-top-style: solid; min-height: 60px;
+}
+table.schedule {
+	border-width: 2px; border-color: rgb(85, 85, 85);
+}
+table.schedule td.td2 {
+	border-width: 2px; border-color: rgb(85, 85, 85);
+}
+div .btn {
+	color: blue; text-decoration: underline; cursor: pointer;
+}
+div .btn:hover {
+	font-weight: bold; background-color: yellow;
+}
+div .btn2 {
+	color: red; text-decoration: underline; cursor: pointer;
+}
+div .btn2:hover {
+	font-weight: bold; background-color: yellow;
+}
+.l1 {
+	background-color: rgb(187, 255, 187);
+}
+#menu1 td {
+	background-color: rgb(187, 255, 187);
+}
+.l2 {
+	background-color: rgb(255, 255, 238);
+}
+#menu2 td {
+	background-color: rgb(255, 255, 238);
+}
+.l3 {
+	background-color: rgb(170, 238, 255);
+}
+#menu3 td {
+	background-color: rgb(170, 238, 255);
+}
+.l4 {
+	background-color: rgb(255, 170, 153);
+}
+#menu4 td {
+	background-color: rgb(255, 170, 153);
+}
+td.otona {
+	background-color: rgb(255, 204, 204);
+}
+.tr1 {
+	height: 50px;
+}
+.sub1 {
+	font-size: 14px; font-weight: bold; text-decoration: underline;
+}
+.sub2 {
+	font-size: 18px; font-weight: bold;
+}
+.sub3 {
+	font-size: 24px; font-weight: bold;
+}
+.sub2 {
+	font-size: 18px; font-weight: bold;
+}
+.list {
+	background-color: rgb(255, 255, 255);
+}
+.td3 {
+	text-align: center; border-right-color: rgb(204, 204, 204); border-bottom-color: rgb(204, 204, 204); border-right-width: 1px; border-bottom-width: 1px; border-right-style: solid; border-bottom-style: solid; background-color: rgb(255, 255, 255);
+}
+.td3e {
+	border-right-color: rgb(204, 204, 204); border-right-width: 3px; border-right-style: solid;
+}
+.sat {
+	color: blue; background-color: rgb(255, 255, 102);
+}
+.sun {
+	color: red; background-color: rgb(255, 255, 102);
+}
+.order {
+	background-color: rgb(255, 255, 102);
+}
+.s {
+	background-color: rgb(204, 204, 204);
+}
+.s0 {
+	background-color: rgb(255, 95, 23);
+}
+.s1 {
+	background-color: rgb(45, 255, 87);
+}
+.s2 {
+	background-color: rgb(48, 249, 178);
+}
+.s3 {
+	background-color: rgb(201, 255, 47);
+}
+.s4 {
+	background-color: rgb(50, 238, 255);
+}
+.s5 {
+	background-color: rgb(44, 124, 255);
+}
+.s6 {
+	background-color: rgb(123, 60, 255);
+}
+.s7 {
+	background-color: rgb(255, 54, 127);
+}
+.s8 {
+	background-color: rgb(203, 255, 211);
+}
+.s9 {
+	background-color: rgb(177, 249, 208);
+}
+.s10 {
+	background-color: rgb(237, 255, 190);
+}
+.s11 {
+	background-color: rgb(194, 238, 255);
+}
+.s12 {
+	background-color: rgb(186, 211, 255);
+}
+.s13 {
+	background-color: rgb(220, 194, 255);
+}
+.s14 {
+	background-color: rgb(255, 190, 218);
+}
+.s15 {
+	background-color: rgb(255, 199, 175);
+}
+.s16 {
+	background-color: rgb(255, 102, 255);
+}
+.s17 {
+	background-color: rgb(204, 102, 255);
+}
+.s18 {
+	background-color: rgb(153, 102, 255);
+}
+.s19 {
+	background-color: rgb(102, 102, 255);
+}
+.s20 {
+	background-color: rgb(51, 102, 255);
+}
+.s21 {
+	background-color: rgb(0, 102, 255);
+}
+.s22 {
+	background-color: rgb(0, 0, 255);
+}
+.s23 {
+	background-color: rgb(0, 0, 128);
+}
+.s24 {
+	background-color: rgb(0, 128, 128);
+}
+.s25 {
+	background-color: rgb(0, 128, 0);
+}
+.s26 {
+	background-color: rgb(0, 255, 0);
+}
+.s27 {
+	background-color: rgb(0, 255, 255);
+}
+.s28 {
+	background-color: rgb(255, 255, 0);
+}
+.s29 {
+	background-color: rgb(255, 0, 0);
+}
+.s30 {
+	background-color: rgb(128, 128, 0);
+}
+div.ctl .floatL {
+	margin-right: 15px; float: left;
+}

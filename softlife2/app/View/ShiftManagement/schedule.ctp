@@ -662,7 +662,7 @@
                         $i = 0;
                     }
                 //-------------スタイルシート設定-----------------------------------
-                    if( $i == 0 ){ //日曜日の文字色
+                    if( $i == 0 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
                         $style = "#C30";
                     }
                     else if( $i == 6 ){ //土曜日の文字色
@@ -684,7 +684,7 @@
                         $bgcolor_cal = '#e8ffff'; 
                     }
                     echo '<td align="center" class="'.$class_mask.'" style="color:'.$style.';background-color: '.$bgcolor_cal.';" colspan="2"><span id="null"></span>'.$m.'/'.$d.'('.$weekday[$i].')</td>';
-                    if ($i==0 || $i==6) {
+                    if ($i==0 || $i==6 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
                     } else {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';

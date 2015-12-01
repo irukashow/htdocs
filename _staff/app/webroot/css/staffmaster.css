@@ -1,0 +1,218 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2015/05/22, 16:12:27
+    Author     : M-YOKOI
+*/
+/** 仮登録ボタン **/
+#pre_regist {
+  background: #f6ff78;
+  background-image: -webkit-linear-gradient(top, #f6ff78, #d6cd2b);
+  background-image: -moz-linear-gradient(top, #f6ff78, #d6cd2b);
+  background-image: -ms-linear-gradient(top, #f6ff78, #d6cd2b);
+  background-image: -o-linear-gradient(top, #f6ff78, #d6cd2b);
+  background-image: linear-gradient(to bottom, #f6ff78, #d6cd2b);
+  -webkit-border-radius: 10;
+  -moz-border-radius: 10;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px #666666;
+  font-family: Arial;
+  color: #996600;
+  font-size: 14px;
+  //font-weight: bold;
+  padding: 8px 10px 8px 10px;
+  text-decoration: none;
+}
+
+#pre_regist:hover {
+  background: #ffffd9;
+  background-image: -webkit-linear-gradient(top, #ffffd9, #fff98f);
+  background-image: -moz-linear-gradient(top, #ffffd9, #fff98f);
+  background-image: -ms-linear-gradient(top, #ffffd9, #fff98f);
+  background-image: -o-linear-gradient(top, #ffffd9, #fff98f);
+  background-image: linear-gradient(to bottom, #ffffd9, #fff98f);
+  text-decoration: none;
+}
+
+/** クリアボタン **/
+#clear {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 10;
+  -moz-border-radius: 10;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px #666666;
+  font-family: Meiryo, メイリオ, sans-serif;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+}
+
+#clear:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+/* 登録解除 */
+#button-release {
+  background: #ff7575;
+  background-image: -webkit-linear-gradient(top, #ff7575, #cc2d2d);
+  background-image: -moz-linear-gradient(top, #ff7575, #cc2d2d);
+  background-image: -ms-linear-gradient(top, #ff7575, #cc2d2d);
+  background-image: -o-linear-gradient(top, #ff7575, #cc2d2d);
+  background-image: linear-gradient(to bottom, #ff7575, #cc2d2d);
+  -webkit-border-radius: 10;
+  -moz-border-radius: 10;
+  border-radius: 10px;
+  font-family: Meiryo, メイリオ, sans-serif;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 8px 10px 8px 10px;
+  text-decoration: none;
+}
+
+#button-release:hover {
+  background: #cc1919;
+  background-image: -webkit-linear-gradient(top, #cc1919, #7a0000);
+  background-image: -moz-linear-gradient(top, #cc1919, #7a0000);
+  background-image: -ms-linear-gradient(top, #cc1919, #7a0000);
+  background-image: -o-linear-gradient(top, #cc1919, #7a0000);
+  background-image: linear-gradient(to bottom, #cc1919, #7a0000);
+  text-decoration: none;
+}
+
+/* 印刷 */
+#print {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 10;
+  -moz-border-radius: 10;
+  border-radius: 10px;
+  font-family: Meiryo, メイリオ, sans-serif;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 8px 10px 8px 10px;
+  text-decoration: none;
+}
+
+#print:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+/** 登録ページなど **/
+.regist {
+    border: 1px solid black;
+    border-spacing: 3px;
+    text-align: center;
+    width:100px;
+    margin-top: 10px;
+}
+
+div.pageNav03 {
+//overflow: hidden;
+//margin: 0 0 10px;
+//padding: 10px;
+//background: #eee;
+}
+
+div.pageNav03 span {
+float: left;
+padding: 5px 10px;
+//margin: 0 1px 1px 0;
+border:1px solid black;
+border-radius: 5px;
+//background-color: #eef2f0;
+}
+
+div.pageNav03 span a {
+float: left;
+//padding: 5px 10px;
+background: #fff;
+}
+
+span.current{
+float: left;
+font-weight: bold;
+padding: 5px 10px;
+background: #fff;
+color: #006699;
+}
+
+/** 一覧テーブル **/
+table#staff_master {
+border-collapse: separate;
+border-spacing: 2px;
+border-top: 0.5px solid #999;
+border-left: 1px solid #999;
+//border-radius: 8px;
+border: 1px #006699 solid;
+margin-top: 10px;
+background-color: #fff9ff;
+}
+/**
+table#staff_master tr:first-child td:last-child {
+border-radius: 0 8px 0 0;
+}
+table#staff_master tr:last-child td:first-child {
+border-radius: 0 0 0 8px;
+}
+table#staff_master tr:last-child td:last-child {
+border-radius: 0 0 8px 0;
+}
+**/
+table#staff_master tr th{
+    background-color: #006699;
+    padding: 5px;
+    text-align: center;
+    //font-weight: bold;
+    //color: white;
+}
+
+table#staff_master tr th a{
+    background-color: #006699;
+    //font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+/** プロフィールへのリンク **/
+a.link_prof {
+text-decoration: none;
+color: blue;
+}
+
+/** プロフィールのヘッダ **/
+#header_profile {
+color: whitesmoke;
+background-color: #45bcd2;
+text-shadow: 1px 1px 3px #666666;
+border:1px solid #0099cc;
+padding:8px;
+vertical-align: middle;   
+}
+
+

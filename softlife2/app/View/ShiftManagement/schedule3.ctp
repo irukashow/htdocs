@@ -212,7 +212,7 @@ window.onload = function(){
                     $i = 0;
                 }
             //-------------スタイルシート設定-----------------------------------
-                if( $i == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
+                if( $i == 0 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
                     $style = "#C30";
                 }
                 else if( $i == 6 ){ //土曜日の文字色
@@ -226,7 +226,7 @@ window.onload = function(){
                 echo '<tr style="">';
                 /** カレンダー部分 **/
                 echo '<td align="center" style="color:'.$style.';background-color: #e8ffff;height:30px;">'.$m.'/'.$d.'('.$weekday[$i].')';
-                if ($i==0 || $i==6 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
+                if ($i==0 || $i==6 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                     echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
                 } else {
                     echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';

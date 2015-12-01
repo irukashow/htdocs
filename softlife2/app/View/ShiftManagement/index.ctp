@@ -175,15 +175,15 @@ window.onload = function(){
     $d = 1;
     while (checkdate($m, $d, $y)) {
         // 日付出力（土日祝には色付け）
-        if (date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
+        if (date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
         } elseif(date("w", mktime(0, 0, 0, $m, $d, $y)) == 6) {
                 $style = 'color:blue;';
-                /**
-        } elseif(!empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
+        /**
+        } elseif(!empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
-                 * 
-                 */
+        * 
+        */
         } else {
                 $style = '';
         }
@@ -252,7 +252,7 @@ window.onload = function(){
     $d = 1;
     while (checkdate($m, $d, $y)) {
         // 日付出力（土日祝には色付け）
-        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
+        if(date("w", mktime(0, 0, 0, $m, $d, $y)) == 0 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                 $style = 'color:red;';
         } elseif(date("w", mktime(0, 0, 0, $m, $d, $y)) == 6) {
                 $style = 'color:blue;';

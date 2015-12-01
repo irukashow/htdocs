@@ -309,6 +309,7 @@ class UsersController extends AppController {
             $this->set('class', $class);
             // テーブル変更
             $this->StaffMaster->setSource('staff_'.$class);
+            $data3 = null;
             // 職種IDのセット
             $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
             $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
@@ -326,9 +327,9 @@ class UsersController extends AppController {
             if (empty($this->request->query['err'])) {
                 $msg = '';
             } elseif ($this->request->query['err'] == 1) {
-                $msg = '【情報】登録を完了いたしました。';
+                $msg = '【情報】'.date('n月', strtotime($date1.'-01')).'の申請を完了いたしました。';
             } elseif ($this->request->query['err'] == 2) {
-                $msg = '【エラー】登録時にエラーが発生しました。';
+                $msg = '【エラー】申請時にエラーが発生しました。';
             } else {
                 $msg = '';
             }
@@ -338,14 +339,98 @@ class UsersController extends AppController {
             if ($this->request->is('post') || $this->request->is('put')) {
                 $this->log($this->request->data, LOG_DEBUG);
                 $this->log($this->request->data['StaffSchedule'], LOG_DEBUG);
- 
+                
+                $this->Session->write('datas_schedule', $this->request->data['StaffSchedule']);
+                $this->redirect(array('controller' => 'users', 'action' => 'schedule_confirm', '?date='.$date1));
+            } elseif ($this->request->is('get')) {
+                //$this->log($this->request->data, LOG_DEBUG);
+                for ($i=1; $i<=31; $i++) {
+                    $data2[$i] = $this->StaffSchedule->find('first', 
+                            array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
+                    if (!empty($data2[$i])) {
+                        $data3[$i] = $data2[$i]['StaffSchedule'];
+                    }
+                }
+                $this->log($data3, LOG_DEBUG);
+                $this->set('data', $data3);
+            } else {
+                
+            }
+        }
+        
+	/**
+	 * スケジュール（シフト希望）：編集
+	 */
+	public function schedule_edit(){
+            // レイアウト関係
+            $this->layout = "main";
+            $this->set("title_for_layout",$this->title_for_layout);
+            // ユーザー名前
+            $id = $this->Auth->user('id');
+            $this->set('id', $id);
+            $name = $this->Auth->user('name_sei').' '.$this->Auth->user('name_mei');
+            $this->set('name', $name);
+            $class = $this->Session->read('class');
+            if (empty($class)) {
+                $this->redirect('logout');
+                return;
+            }
+            $this->set('class', $class);
+            // テーブル変更
+            $this->StaffMaster->setSource('staff_'.$class);
+            $data3 = null;
+            // 職種IDのセット
+            $data = $this->StaffMaster->find('first', array('conditions'=>array('id'=>$id)));
+            $shokushu_id = $data['StaffMaster']['shokushu_shoukai'];
+            $this->set('shokushu_id', $shokushu_id);
+            // 登録していた値をセット
+            if (empty($this->request->query['date'])) {
+                $date1 = date('Y-m', strtotime('+1 month'));
+                $date2 = null;
+            } else {
+                $date2 = $this->request->query['date'];
+                $date1 = $date2;
+            }
+            $this->Session->write('date2', $date2);
+            $this->set('date1', $date1);
+            if (empty($this->request->query['err'])) {
+                $msg = '';
+            } elseif ($this->request->query['err'] == 1) {
+                $msg = '【情報】'.date('n月', strtotime($date1.'-01')).'の申請を完了いたしました。';
+            } elseif ($this->request->query['err'] == 2) {
+                $msg = '【エラー】申請時にエラーが発生しました。';
+            } elseif ($this->request->query['err'] == 3) {
+                $msg = '【エラー】△の日には、備考欄に理由をご記入ください。';
+            } else {
+                $msg = '';
+            }
+            $this->set('msg', $msg);
+
+            // POSTの場合
+            if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
+                // チェック
+                /**
+                for($d=1; $d<=31; $d++) {
+                    if ($this->request->data['StaffSchedule'][$d]['work_flag'] == 2) {
+                        if (empty($this->request->data['StaffSchedule'][$d]['conditions'])) {
+                            $this->redirect(array('controller' => 'users', '?date='.$date1.'&err=3'));
+                            //$this->set('msg', '【エラー】△の日には、備考欄に理由をご記入ください。');
+                            break;
+                        }
+                    }
+                }
+                 * 
+                 */
                 $this->Session->write('datas_schedule', $this->request->data['StaffSchedule']);
                 $this->redirect(array('controller' => 'users', 'action' => 'schedule_confirm', '?date='.$date1));
                 /**
                 // データを登録する
                 if ($this->StaffSchedule->saveAll($this->request->data['StaffSchedule'])) {
-                    $this->Session->write('datas_schedule', $this->request->data['StaffSchedule']);
-                    $this->redirect(array('controller' => 'users', 'action' => 'schedule_confirm', '?date='.$date1));
+                    //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
+                    // スタッフのシフト希望登録履歴
+                    //　
+                    $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=1'));
                 } else {
                     $this->log('エラーが発生しました。', LOG_DEBUG);
                     $this->redirect(array('controller' => 'users', 'action' => 'schedule', '?date='.$date1.'&err=2'));
@@ -355,14 +440,14 @@ class UsersController extends AppController {
             } elseif ($this->request->is('get')) {
                 //$this->log($this->request->data, LOG_DEBUG);
                 for ($i=1; $i<=31; $i++) {
-                    $data[$i] = $this->StaffSchedule->find('first', 
+                    $data2[$i] = $this->StaffSchedule->find('first', 
                             array('conditions'=>array('staff_id'=>$id, 'class'=>$class, 'work_date'=>$date1.'-'.sprintf("%02d", $i))));
-                    if (!empty($data[$i])) {
-                        $data[$i] = $data[$i]['StaffSchedule'];
+                    if (!empty($data2[$i])) {
+                        $data3[$i] = $data2[$i]['StaffSchedule'];
                     }
                 }
-                //$this->log($data, LOG_DEBUG);
-                $this->set('data', $data);
+                $this->log($data3, LOG_DEBUG);
+                $this->set('data', $data3);
             } else {
                 
             }
@@ -405,9 +490,11 @@ class UsersController extends AppController {
             // セッションの読み込み
             $datas = $this->Session->read('datas_schedule');
             $this->log($datas, LOG_DEBUG);
+            $this->set('msg', null);
             
             // POSTの場合
             if ($this->request->is('post') || $this->request->is('put')) {
+                $this->log($this->request->data, LOG_DEBUG);
                 // データを登録する
                 if ($this->StaffSchedule->saveAll($datas)) {
                     //$this->log($this->StaffSchedule->getDataSource()->getLog(), LOG_DEBUG);
@@ -944,6 +1031,61 @@ class UsersController extends AppController {
             }
 
 	}
+
+    /**
+     * アカウント問い合わせ
+     */
+    public function account(){
+        // ログイン中の時は追い返す
+        $user = $this->Auth->user();
+        if(is_null($user) == false){
+            $this->redirect(array('action' => 'index'));
+        }
+       
+        // レイアウト関係
+        $this->layout = "main";
+        $this->set("title_for_layout","ログイン");
+        // 所属の配列
+        $class = array('11', '12', '21', '22', '31', '32');
+        
+        // 初期値設定
+        $flag = 0;
+        $this->set('data', null);
+        $this->set('msg', null);
+        
+        $this->log($this->request->data, LOG_DEBUG);
+        // ログイン認証
+    	if ($this->request->is('post') || $this->request->is('put')) {
+            if (empty($this->request->data['StaffMaster']['email']) || empty($this->request->data['StaffMaster']['birthday'])) {
+                $this->set('msg', '【エラー】未入力項目があります。');
+                return;
+            }
+            foreach ($class as $cls) {
+                // テーブルの設定
+                $this->StaffMaster->setSource('staff_'.$cls);
+                // ユーザー名に「＠」を使用できないという前提でusernameに「＠」を含んでいる場合はemail認証
+                $address = $this->request->data['StaffMaster']['email'];
+                $result = $this->StaffMaster->find('first', array('conditions'=>array('OR'=>array('email1'=>$address, 'email2'=>$address))));
+                if (!empty($result)) {
+                    $flag = 1;
+                    if ($result['StaffMaster']['birthday'] == date('Y-m-d', strtotime($this->request->data['StaffMaster']['birthday']))) {
+                        $this->set('class', $cls);
+                        $this->set('data', $result);
+                    } else {
+                        $this->Session->setFlash('【エラー】生年月日が異なります。');
+                        $this->set('msg', '【エラー】生年月日が異なります。');
+                    }
+                    break;
+                }
+            }
+            if ($flag == 0) {
+                $this->Session->setFlash('【エラー】メールアドレスが存在しません。');
+                $this->set('msg', '【エラー】メールアドレスが存在しません。');
+            }
+        } else {
+            
+        }
+    }
     
     /**
      * ログイン処理を行う。

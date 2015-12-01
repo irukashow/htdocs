@@ -1,0 +1,1 @@
+<a href='<?=ROOTDIR ?>/register'>仮登録ページ</a>

@@ -108,7 +108,7 @@
                                         {
                                                 $style = 'color:blue;';
                                         }
-                                        elseif(!empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))]))  
+                                        elseif(!empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))]))  
                                         {
                                                 $style = 'color:red;';
                                         }

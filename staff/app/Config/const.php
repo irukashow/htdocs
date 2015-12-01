@@ -2,10 +2,10 @@
 //ユーザ定義定数
 //呼び出し方:    echo HEADER;
 define("HEADER","スタッフ専用サイト");
-define("FOOTER","Version 0.0.1 20150727 Copyright &copy; 2015 softlife co., ltd.");
+define("FOOTER","Version 0.0.6 20151118 Copyright &copy; 2015 softlife co., ltd.");
 define("ROOTDIR","/staff");
-define("MEMBER_URL","http://localhost/softlife2");
-define("STAFF_URL","http://localhost/staff");
+define("MEMBER_URL","http://softlife.biz");
+define("STAFF_URL","http://staff.softlife.biz");
  
 //配列
 //呼び出し方:    $fuga = Configure::read("fuga");

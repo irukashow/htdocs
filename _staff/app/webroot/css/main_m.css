@@ -1,0 +1,179 @@
+﻿/*--ページ、ヘッダー、コンテンツ--*/
+.ui-page{
+	background:#ffffff;
+}
+.ui-header{
+	//background: linear-gradient(#a9a9a9, #c0c0c0);
+	//background: -moz-linear-gradient(#a9a9a9, #c0c0c0);
+	//background: -webkit-linear-gradient(#a9a9a9, #c0c0c0);
+	background:  linear-gradient(#006699, #003366);
+	background: -moz-linear-gradient(#006699, #003366);
+	background: -webkit-linear-gradient(#006699, #003366);
+	border:1px solid #c0c0c0;
+}
+.ui-header .ui-title{
+	color:#ffffff;
+	text-shadow:none;
+	text-align:left;
+	margin:0.5em 5% 0.5em;
+}
+.ui-content{
+	background:#ffffff;
+        font-family:Meiryo, メイリオ,'lucida grande',verdana,helvetica,arial,sans-serif;
+}
+
+/*--トップページ 画像--*/
+.logo{
+	padding:5px 0px 10px;
+	text-align:center;
+}
+.logo img{
+	width:60%;
+}
+.main_img img{
+	width:100%;
+}
+.sub_img{
+	padding:10px 0px;
+	text-align:center;
+}
+.sub_img img{
+	width:90%;
+}
+
+/*---下層ページの画像---*/
+.img_w{
+	width:100%;
+}
+
+/*--ページトップへ--*/
+.pagetop{
+	padding:10px 5px;
+	text-align:right;
+	background:#efefef;
+}
+/*--フッター--*/
+#footer{
+	text-align:center;
+	padding:20px 0px;
+	font-size:11px;
+	background:#efefef;
+}
+
+
+
+/*------------リスト・ボタン系-----------------*/
+/*--文字省略なし(ヘッダー・フッター含む)---*/
+.ui-header .ui-title,
+.ui-footer .ui-title,
+.ui-btn-inner,
+.ui-li-heading,
+.ui-li .ui-btn-text a.ui-link-inherit,
+.ui-li-desc
+{
+	overflow: visible;
+	white-space: normal;
+}
+
+/*-ボタンコーナー部分-*/
+.ui-btn-corner-all{
+	border-radius:5px;
+}
+/*-ボタンサイズ-*/
+.ui-btn-inner{
+	padding:5px 20px;
+}
+/*-ヘッダー ボタンコーナー部分-*/
+.ui-header .ui-btn-corner-all{
+	border-radius:15px;
+}
+/*-リストビュー リスト名部分-*/
+.ui-li .ui-btn-text a.ui-link-inherit{
+	font-size:13px;
+}
+.ui-li-has-thumb .ui-btn-inner a.ui-link-inherit{
+	min-height: 20px;
+	padding-left:60px;
+}
+/*-リストビュー サムネイル部分-*/
+.ui-listview .ui-li-thumb {
+	max-height: 36px;
+	max-width: 36px;
+	left: 8px;
+	top:  12px; 
+}
+
+/*--トップ　リストビュー(ニュース)--*/
+li.toplist_news{
+	background:#ffffff;
+	font-size:13px;
+	line-height:13px;
+}
+li.toplist_news:hover{
+	font-weight:normal;
+}
+li.toplist_news.ui-btn-active{
+	border-color:#c0c0c0;
+	text-shadow:none;
+}
+li.toplist_news.ui-btn-active:visited,
+li.toplist_news.ui-btn-active:hover,
+li.toplist_news.ui-btn-active a.ui-link-inherit{
+	color:#5994bf;
+}
+li.toplist_news p{
+	font-size:11px;
+	font-weight:bold;
+}
+li.toplist_news.ui-btn-up-c{
+	font-weight:100;
+}
+
+/*--トップ　リストビュー(メニュー)の背景色、タップ時--*/
+li.toplist_menu1{
+	//background:#dcdcdc;
+        background:#459ed2;
+}
+li.toplist_menu2{
+	background:#efefef;
+}
+
+.toplist_menu1.ui-btn-active{
+	border-color:#c0c0c0;
+        color: white;
+	text-shadow:none;
+}
+li.toplist_menu1.ui-btn-active:visited,
+li.toplist_menu1.ui-btn-active:hover,
+li.toplist_menu1.ui-btn-active a.ui-link-inherit{
+	color:#5994bf;
+}
+li.toplist_menu2.ui-btn-active{
+	border-color:#c0c0c0;
+	text-shadow:none;
+}
+li.toplist_menu2.ui-btn-active:visited,
+li.toplist_menu2.ui-btn-active:hover,
+li.toplist_menu2.ui-btn-active a.ui-link-inherit{
+	color:#5994bf;
+}
+/*-- 郵便番号の横並び --*/
+.yoko >.ui-input-text{
+   width:5em;
+   display:inline-block;
+   margin: 5px 0px 0px 0px;
+}
+/*-- ボタンの横並び --*/
+.yoko >.ui-btn-hidden{
+   width:5em;
+   display:inline-block;
+   margin: 5px 0px 0px 0px;
+}
+/*-- セレクトの横並び --*/
+.yoko >.ui-select{
+   //width:5em;
+   display:inline-block;
+   margin: 5px 0px 0px 0px;
+}
+
+

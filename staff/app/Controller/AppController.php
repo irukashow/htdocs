@@ -43,6 +43,8 @@ class AppController extends Controller {
     public function beforeFilter() {
         // 認証コンポーネントをViewで利用可能にしておく
         $this->set('auth',$this->Auth);
+        // ログイン前にアカウント確認ページも表示可能に
+        $this->Auth->allow('login', 'account');
         
         // 所属のセット
         $username = $this->Auth->user('username');

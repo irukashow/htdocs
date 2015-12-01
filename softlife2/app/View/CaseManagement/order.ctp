@@ -7,6 +7,7 @@
     echo $this->Html->script('fixed_midashi');
     echo $this->Html->css('jquery.timepicker');
 ?>
+<?php require('holiday.ctp'); ?>
 <?php
     // 初期値
     //$y = date('Y');
@@ -17,16 +18,16 @@
     $m = $mm;
 
     // 日付の指定がある場合
-    if(!empty($_GET['date']))
-    {
+    if(!empty($_GET['date'])) {
             $arr_date = explode('-', $_GET['date']);
 
-            if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1]))
-            {
+            if(count($arr_date) == 2 and is_numeric($arr_date[0]) and is_numeric($arr_date[1])) {
                     $y = (int)$arr_date[0];
                     $m = (int)$arr_date[1];
             }
     }
+    // 祝日取得
+    $national_holiday = japan_holiday($y);
 ?>
 <?php
 //JQueryのコントロールを使ったりして2000-12-23等の形式の文字列が渡すように限定するかんじ
@@ -463,7 +464,7 @@ function changeColor(col, day, flag) {
                         $i = 0;
                     }
                 //-------------スタイルシート設定-----------------------------------
-                    if( $i == 0 ){ //日曜日の文字色
+                    if( $i == 0 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
                         $style = "#C30";
                     }
                     else if( $i == 6 ){ //土曜日の文字色
@@ -478,11 +479,12 @@ function changeColor(col, day, flag) {
                     // 日付セル作成とスタイルシートの挿入
                     echo '<tr style="'.$style2.';">';
                     echo '<td align="center" style="color:'.$style.';background-color: #e8ffff;">'.$m.'/'.$d.'('.$weekday[$i].')</td>';
-                    if ($i==0 || $i==6) {
+                    if ($i==0 || $i==6 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
                     } else {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';
                     }
+                    echo '<input type="hidden" id="WeekD'.$d.'" value="'.$i.'">';
                     for ($count=0; $count<$row; $count++){
             ?>
                 <td id="Cell<?=$count ?>D<?=$d ?>">

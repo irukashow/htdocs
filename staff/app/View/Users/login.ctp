@@ -21,7 +21,9 @@
         <!--
         <?=$this->Form->input('ログイン', array('type' => 'submit', 'label' => false, 'div' => false, 'data-icon' => "check"));?>
         -->
-
+        <div style="margin: 20px 0px; float: left;background-color: white;">
+            ※ログインの「アカウントID」および「初期パスワード」がお分かりにならない方は<a href="<?=ROOTDIR ?>/users/account">こちら</a>へお進みください。
+        </div>
         <?=$this->Form->end();?>
 
     </div>

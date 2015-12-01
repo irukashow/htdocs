@@ -96,12 +96,18 @@ $(function() {
     $('#SelectAll').on('change', function(){
         if($("#SelectAll:checked").val()) {
             for(i=0; i<31; i++) {
-                $("#check"+(i+1)).prop({'checked':'checked'});
+                $("#work_flag"+(i+1)).val("1");
+            }
+            for (j=0; j<=6; j++) {
+                $("#SelectWeek"+j).prop({'checked':'checked'});
             }
         }
         else {
             for(i=0; i<31; i++) {
-                $("#check"+(i+1)).prop({'checked':false});
+                $("#work_flag"+(i+1)).val("0");
+            }
+            for (j=0; j<=6; j++) {
+                $("#SelectWeek"+j).prop({'checked':false});
             }
         } 
     });
@@ -110,70 +116,101 @@ $(function() {
         if($("#SelectHoliday:checked").val()) {
             for(i=0; i<31; i++) {
                 if ($("#Holiday"+(i+1)).val() == 0) {
+                    $("#work_flag"+(i+1)).val("0");
                     continue;
                 }
-                $("#check"+(i+1)).prop({'checked':'checked'});
+                $("#work_flag"+(i+1)).val("1");
             }
-        }
-        else {
+            for(j=1; j<6; j++) {
+                $("#SelectWeek"+j).prop({'checked':false});
+            }
+            $("#SelectWeek0").prop({'checked':'checked'});
+            $("#SelectWeek6").prop({'checked':'checked'});
+        } else {
             for(i=0; i<31; i++) {
                 if ($("#Holiday"+(i+1)).val() == 0) {
+                    $("#work_flag"+(i+1)).val("0");
                     continue;
                 }
-                $("#check"+(i+1)).prop({'checked':false});
+                $("#work_flag"+(i+1)).val("0");
             }
+            for(j=1; j<6; j++) {
+                $("#SelectWeek"+j).prop({'checked':false});
+            }
+            $("#SelectWeek0").prop({'checked':false});
+            $("#SelectWeek6").prop({'checked':false});
+        } 
+    });
+    // 平日選択・解除
+    $('#SelectWeekday').on('change', function(){
+        if($("#SelectWeekday:checked").val()) {
+            for(i=0; i<31; i++) {
+                if ($("#Holiday"+(i+1)).val() == 1) {
+                    $("#work_flag"+(i+1)).val("0");
+                    continue;
+                }
+                $("#work_flag"+(i+1)).val("1");
+            }
+            for(j=1; j<6; j++) {
+                $("#SelectWeek"+j).prop({'checked':'checked'});
+            }
+            $("#SelectWeek0").prop({'checked':false});
+            $("#SelectWeek6").prop({'checked':false});
+        } else {
+            for(i=0; i<31; i++) {
+                if ($("#Holiday"+(i+1)).val() == 1) {
+                    $("#work_flag"+(i+1)).val("0");
+                    continue;
+                }
+                $("#work_flag"+(i+1)).val("0");
+            }
+            for(j=1; j<6; j++) {
+                $("#SelectWeek"+j).prop({'checked':false});
+            }
+            $("#SelectWeek0").prop({'checked':false});
+            $("#SelectWeek6").prop({'checked':false});
         } 
     });
     // カスタム選択・解除
-    <?php for($i=1; $i<=5; $i++) { ?>
+    <?php for($i=0; $i<=6; $i++) { ?>
     $('#SelectWeek<?=$i?>').on('change', function(){
         if($("#SelectWeek<?=$i?>:checked").val()) {
             for(i=0; i<31; i++) {
+                /**
                 if ($("#Holiday"+(i+1)).val() == 1) {
+                    $("#work_flag"+(i+1)).val("0");
                     continue;
                 }
+                **/
                 if ($("#WeekD"+(i+1)).val() == <?=$i?>) {
-                    $("#check"+(i+1)).prop({'checked':'checked'});
+                    $("#work_flag"+(i+1)).val("1");
                 }
             }
         } else {
             for(i=0; i<31; i++) {
+                /**
                 if ($("#Holiday"+(i+1)).val() == 1) {
+                    $("#work_flag"+(i+1)).val("0");
                     continue;
                 }
+                **/
                 if ($("#WeekD"+(i+1)).val() == <?=$i?>) {
-                    $("#check"+(i+1)).prop({'checked':false});
+                    $("#work_flag"+(i+1)).val("0");
                 }
             }
         } 
     });
     <?php } ?>
-    // チェックした日を◎（可能）に
-    $('#n1').click(function(){
-        for(i=0; i<31; i++) {
-            //alert($("#work_flag"+(i+1)).val());
-            if ($("#check"+(i+1)).prop('checked')) {
-                $("#work_flag"+(i+1)).val("1");
-            }
-        }
-    });
-    // チェックした日を△（条件付き）に
-    $('#n2').click(function(){
-        for(i=0; i<31; i++) {
-            //alert($("#work_flag"+(i+1)).val());
-            if ($("#check"+(i+1)).prop('checked')) {
-                $("#work_flag"+(i+1)).val("2");
-            }
-        }
-    });
-    // チェックした日を✕（不可）に
-    $('#n3').click(function(){
-        for(i=0; i<31; i++) {
-            //alert($("#work_flag"+(i+1)).val());
-            if ($("#check"+(i+1)).prop('checked')) {
+    // 全クリア
+    $('#SelectClear').on('change', function(){
+        if($("#SelectClear:checked").val()) {
+            for(i=0; i<31; i++) {
                 $("#work_flag"+(i+1)).val("0");
             }
-        }
+            for (j=0; j<=6; j++) {
+                $("#SelectWeek"+j).prop({'checked':false});
+            }
+        } 
     });
 });
 -->
@@ -201,8 +238,16 @@ $(function() {
                              <?=$data2['User']['name'].'（社員）'; ?>
                          </td>
                          <td align="center" style="background-color: #ddffff;">
+                             <?php 
+                                if (!empty($datas3)) { 
+                                    $disabled = 'disabled';
+                                } else {
+                                    $disabled = '';
+                                }
+                            ?>
                              <?php echo $this->Form->submit('削除', array('id'=>'button-delete', 
-                                 'name' => 'erasure['.$data2['User']['username'].']', 'div' => false, 'style'=>'font-size:110%;padding:2px 15px 2px 15px;')); ?>
+                                 'name' => 'erasure['.$data2['User']['username'].']', 'div' => false, 
+                                 'style'=>'font-size:110%;padding:2px 15px 2px 15px;', 'disabled'=>$disabled)); ?>
                          </td>
                      </tr>
                      <?php } else { ?>
@@ -257,38 +302,80 @@ $(function() {
     <!-- 月選択 END -->
     
     <!-- 制御 -->
-    <table border="1" style="width:80%;margin-top: 5px;">
+    <table border="1" style="width:85%;margin-top: 5px;">
         <tr>
             <td>
                 <div style="float: left;">
                     <label for="SelectAll">
-                        <input type="checkbox" name="SelectAll" id="SelectAll">
-                        全選択・全解除&nbsp;&nbsp;
+                        <input type="radio" name="select" id="SelectAll" style="vertical-align: -3px;">
+                        全て◎&nbsp;&nbsp;
                     </label> 
                 </div>
                 <div style="float: left;">
                     <label for="SelectHoliday">
-                        <input type="checkbox" name="SelectHoliday" id="SelectHoliday">
-                        土日祝選択・解除&nbsp;&nbsp;
+                        <input type="radio" name="select" id="SelectHoliday" style="vertical-align: -3px;">
+                        土日祝を◎&nbsp;&nbsp;
                     </label> 
                 </div>
                 <div style="float: left;">
+                    <label for="SelectWeekday">
+                        <input type="radio" name="select" id="SelectWeekday" style="vertical-align: -3px;">
+                        平日を◎（祝日除く）&nbsp;&nbsp;
+                    </label> 
+                </div>
+                <div style="float: left;">
+                    <label for="SelectClear">
+                        <input type="radio" name="select" id="SelectClear" style="vertical-align: -3px;">
+                        全てクリア&nbsp;&nbsp;
+                    </label> 
+                </div>
+                <div style="float: left;">
+                【カスタム選択】
+                </div>
+                <div style="float: left;">
                     <!-- カスタム選択 -->
-                    <?php echo $this->Form->input(false,array('name'=>'check1', 'id'=>'SelectWeek1', 'type'=>'checkbox','div'=>true,'label'=>'月&nbsp;')); ?>
-                    <?php echo $this->Form->input(false,array('name'=>'check2', 'id'=>'SelectWeek2', 'type'=>'checkbox','div'=>true,'label'=>'火&nbsp;')); ?>
-                    <?php echo $this->Form->input(false,array('name'=>'check3', 'id'=>'SelectWeek3','type'=>'checkbox','div'=>true,'label'=>'水&nbsp;')); ?>
-                    <?php echo $this->Form->input(false,array('name'=>'check4', 'id'=>'SelectWeek4','type'=>'checkbox','div'=>true,'label'=>'木&nbsp;')); ?>
-                    <?php echo $this->Form->input(false,array('name'=>'check5', 'id'=>'SelectWeek5','type'=>'checkbox','div'=>true,'label'=>'金&nbsp;')); ?>
+                    <label for="SelectWeek1">
+                        <input type="checkbox" name="select1" id="SelectWeek1" style="vertical-align: -3px;">
+                        月&nbsp;
+                    </label>
+                </div>
+                <div style="float: left;">
+                    <label for="SelectWeek2">
+                        <input type="checkbox" name="select2" id="SelectWeek2" style="vertical-align: -3px;">
+                        火&nbsp;
+                    </label> 
+                </div>
+                <div style="float: left;">
+                    <label for="SelectWeek3">
+                        <input type="checkbox" name="select3" id="SelectWeek3" style="vertical-align: -3px;">
+                        水&nbsp;
+                    </label> 
+                </div>
+                <div style="float: left;">
+                    <label for="SelectWeek4">
+                        <input type="checkbox" name="select4" id="SelectWeek4" style="vertical-align: -3px;">
+                        木&nbsp;
+                    </label>
+                </div>
+                <div style="float: left;">
+                    <label for="SelectWeek5">
+                        <input type="checkbox" name="select5" id="SelectWeek5" style="vertical-align: -3px;">
+                        金&nbsp;
+                    </label>
+                </div>
+                <div style="float: left;">
+                    <label for="SelectWeek6">
+                        <input type="checkbox" name="select6" id="SelectWeek6" style="vertical-align: -3px;">
+                        土&nbsp;
+                    </label>
+                </div>
+                <div style="float: left;">
+                    <label for="SelectWeek0">
+                        <input type="checkbox" name="select0" id="SelectWeek0" style="vertical-align: -3px;">
+                        日&nbsp;
+                    </label>
                     <!-- カスタム選択 END -->
                 </div>
-            </td>
-            <td>
-                <input type="radio" name="number" id="n1" value="1" />
-                <label for="n1">◎：可能</label>
-                <input type="radio" name="number" id="n2" value="2" />
-                <label for="n2">△：条件付き</label>
-                <input type="radio" name="number" id="n3" value="0" />
-                <label for="n3">✕：不可</label>
             </td>
         </tr>
     </table>
@@ -297,7 +384,6 @@ $(function() {
     <table border='1' cellspacing="0" cellpadding="3" style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;">
         <tr align="center" style="background-color: #cccccc;">
             <th style="width:10%">日付</th>
-            <th style="width:5%">選択</th>
             <th style="width:10%">勤務可能</th>
             <th style="width:30%">条件（△の場合）</th>
         </tr>
@@ -318,7 +404,7 @@ $(function() {
             $i = 0;
         }
     //-------------スタイルシート設定-----------------------------------
-        if( $i == 0 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
+        if( $i == 0 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])){ //日曜日の文字色
             $style = "#C30";
         }
         else if( $i == 6 ){ //土曜日の文字色
@@ -340,7 +426,7 @@ $(function() {
             // 日付セル作成とスタイルシートの挿入
             echo '<tr style="'.$style2.';">';
             echo '<td align="center" style="color:'.$style.';">'.$m.'/'.$d.'('.$weekday[$i].')';
-            if ($i==0 || $i==6 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
+            if ($i==0 || $i==6 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                 echo '<input type="hidden" id="Holiday'.$d.'" value="1">';
             } else {
                 echo '<input type="hidden" id="Holiday'.$d.'" value="0">';
@@ -351,23 +437,20 @@ $(function() {
             echo $this->Form->input('StaffSchedule.'.$d.'.staff_id', array('type'=>'hidden', 'value' => 'u'.$uid));
             echo $this->Form->input('StaffSchedule.'.$d.'.shokushu_id', array('type'=>'hidden', 'value' => $datas3[$d-1]['StaffSchedule']['shokushu_id']));
             echo '</td>';
-            echo '<td align="center" style="padding-left:25px;">';
-            echo '<input type="checkbox" name="data[StaffSchedule]['.$d.'][check]" id="check'.$d.'">';
-            echo '</td>';
             $list_work = array('0'=>'✕', '1'=>'◎','2'=>'△'); 
             echo '<td align="center">';
             echo $this->Form->input('StaffSchedule.'.$d.'.work_flag', array('type'=>'select', 'id'=>'work_flag'.$d , 'value'=>$datas3[$d-1]['StaffSchedule']['work_flag'], 'legend'=>false,
                 'label'=>false, 'div'=>false,'style'=>'font-weight:bold;','options'=>$list_work));   
             echo '</td>';
             echo '<td align="center">';
-            echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;','style'=>'font-size:100%;width:95%;', 'value'=>$datas3[$d-1]['StaffSchedule']['conditions']));
+            echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;','style'=>'font-size:100%;width:80%;', 'value'=>$datas3[$d-1]['StaffSchedule']['conditions']));
             echo '</td>';
             echo '</tr>';
         } else {
             // 日付セル作成とスタイルシートの挿入
             echo '<tr style="'.$style2.';">';
             echo '<td align="center" style="color:'.$style.';">'.$m.'/'.$d.'('.$weekday[$i].')';
-            if ($i==0 || $i==6 || !empty($national_holiday[date("Ymd", mktime(0, 0, 0, $m, $d, $y))])) {
+            if ($i==0 || $i==6 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                 echo '<input type="hidden" id="Holiday'.$d.'" value="1">';
             } else {
                 echo '<input type="hidden" id="Holiday'.$d.'" value="0">';
@@ -379,16 +462,13 @@ $(function() {
             echo $this->Form->input('StaffSchedule.'.$d.'.work_date', array('type'=>'hidden', 'value' => $selected_date));
             echo $this->Form->input('StaffSchedule.'.$d.'.shokushu_id', array('type'=>'hidden', 'value' => 2));
             echo '</td>';
-            echo '<td align="center" style="padding-left:25px;">';
-            echo '<input type="checkbox" name="data[StaffSchedule]['.$d.'][check]" id="check'.$d.'">';
-            echo '</td>';
             $list_work = array('0'=>'✕', '1'=>'◎','2'=>'△'); 
             echo '<td align="center">';
             echo $this->Form->input('StaffSchedule.'.$d.'.work_flag', array('type'=>'select', 'id'=>'work_flag'.$d, 'legend'=>false,
                 'label'=>false, 'div'=>false,'style'=>'font-weight:bold;','options'=>$list_work));
             echo '</td>';
             echo '<td align="center">';
-            echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;', 'style'=>'font-size:100%;width:95%;'));
+            echo $this->Form->input('StaffSchedule.'.$d.'.conditions',array('label'=>false, 'div'=>'float:left;', 'style'=>'font-size:100%;width:80%;'));
             echo '</td>';
             echo '</tr>';
         }

@@ -130,14 +130,14 @@ input[type=checkbox] {
         <?php echo $this->Form->create('StaffSchedule', array('name' => 'form')); ?>
             <!-- メッセージ -->
             <b>入力確認ページ（<?php echo $y ?>年<?php echo $m ?>月）</b>
-            <p>以下の内容で間違いなければ、下の登録ボタンを押してください。</p>
+            <p>以下の内容で間違いなければ、下の申請ボタンを押してください。</p>
 
             <table border='1' cellspacing="0" cellpadding="3" 
                    style="width:100%;margin-top: 5px;margin-bottom: 10px;border-spacing: 0px;background-color: white;font-size:80%;">
                 <tr align="center" style="background-color: #cccccc;">
-                    <th style="width:15%">日付</th>
-                    <th style="width:20%">勤務可能</th>
-                    <th style="width:75%">条件（△の場合）</th>
+                    <th style="width:10%">日付</th>
+                    <th style="width:40%">勤務可能</th>
+                    <th style="width:50%">備考</th>
                 </tr>
         <?php
             // 曜日の配列作成
@@ -206,7 +206,7 @@ input[type=checkbox] {
             </table>
             <!-- カレンダー END-->
             <div style='float:left;'>
-                <input type="submit" value="登　録" data-theme="e" data-icon="check" data-inline="true">
+                <input type="submit" value="申　請" data-theme="e" data-icon="check" data-inline="true">
                 <input type="button" value="戻　る" data-inline="true" onclick='location.href="<?=ROOTDIR ?>/users/schedule?date=<?=$date1 ?>";'>
             </div>  
             <?php echo $this->Form->end(); ?>
