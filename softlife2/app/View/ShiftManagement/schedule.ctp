@@ -27,7 +27,7 @@
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
         &nbsp;&nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">シフト作成（旧）</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">シフト作成（新）</font></a>
     </div>
     <div style="float:right;">
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
@@ -430,7 +430,7 @@
             </tr>
             <!-- 給与 END -->
             <tr>
-                <td style='width:80px;background-color: #e8ffff;' colspan="2" id="message">職種</td>
+                <td style='width:80px;background-color: #e8ffff;' colspan="2">職種<span id="message" style="display:none;"></span></td>
             <?php 
                 $ii = 0;
                 for ($count=0; $count<$col+count($datas); $count++){
@@ -492,8 +492,7 @@
                         }
                     }
                 ?>
-                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
-                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
+                <td colspan="2" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
@@ -520,7 +519,7 @@
                 ?>
             </tr>
             <tr id="">
-                <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ[<span id="help01">?</span>]</td>
+                <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
             <?php 
                 $ii = 0;
                 for ($count=0; $count<$col+count($datas); $count++){
@@ -540,8 +539,7 @@
                     }
                 }
             ?>
-                <td style='background-color: #FFFFDD;'></td>
-                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;' colspan="2"></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
@@ -565,8 +563,7 @@
                         }
                     }
                 ?>
-                <td style='background-color: #FFFFDD;'></td>
-                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;' colspan="2"></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
@@ -800,14 +797,26 @@
                                 $div2 .= $data_staff['name'];
                                 $div2 .=  '</div>';
                             }
-                            echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].$div2.'</td>';
+                            if ($k == $count+1) {
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;">'.$span[1].$div2.'</td>';
+                            } elseif ($k == $count+2) {
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;">'.$span[1].$div2.'</td>';
+                            } else {
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].$div2.'</td>';
+                            }
                         } else {
                             $span[0] = '';$span[1] = '';
                             // span
                             $span[0] = '<span id=""></span>';
                             $span[0] = $span[0].'<span id=""></span>';
                             $span[1] = $span[0].'<span id="'.$k.'"></span>';
-                            echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].'</td>';
+                            if ($k == $count+1) {
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;">'.$span[1].'</td>';
+                            } elseif ($k == $count+2) {
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;">'.$span[1].'</td>';
+                            } else {
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].'</td>';
+                            }
                         }
                     }
                 }

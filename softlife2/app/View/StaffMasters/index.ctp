@@ -213,7 +213,11 @@ function chkHankaku(textbox) {
   <tr style="font-size: 100%;">
       <th><?php echo $this->Paginator->sort('',"");?></th>
       <th style="width:10%;"><?php echo $this->Paginator->sort('id','写真<br>登録番号', array('escape' => false));?></th>
-      <th style="width:10%;"><?php echo $this->Paginator->sort('name_sei','氏名<br>登録年月日', array('escape' => false));?></th>
+      <th style="width:10%;">
+          <span style="background-color: #006699;color: white;">氏名</span><br>
+              <?php echo $this->Paginator->sort('created','登録年月日');?><br>
+                  <?php echo $this->Paginator->sort('staff_modified','スタッフ更新日');?>
+      </th>
       <th style="width:5%;"><?php echo $this->Paginator->sort('age','年齢<br>性別', array('escape' => false));?></th>
     <th style="width:8%;"><?php echo $this->Paginator->sort('tantou','担当者');?></th>
     <th style="width:7%;"><?php echo $this->Paginator->sort('ojt_date','OJT実施<br>実施年月日', array('escape' => false));?></th>
@@ -279,6 +283,13 @@ function chkHankaku(textbox) {
                 echo '---';
             } else {
                 echo date('Y-m-d', strtotime($data['StaffMaster']['created'])); 
+            }
+            echo '<br>';
+            // スタッフによる更新日付
+            if (date('Y-m-d', strtotime($data['StaffMaster']['staff_modified'])) == '1970-01-01') {
+                echo '---';
+            } else {
+                echo date('Y-m-d', strtotime($data['StaffMaster']['staff_modified'])); 
             }
         ?>
     </td>
