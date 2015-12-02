@@ -439,7 +439,13 @@
                     }
             ?>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>
-                    <?php echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]); ?>
+                    <?php 
+                        if (empty(setData($datas2,'shokushu_id',$count,$record))) {
+                            echo '';
+                        } else {
+                            echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]);
+                        }
+                    ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
@@ -469,21 +475,32 @@
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
                     <?php if (empty($datas2) || empty($datas2[$count])) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                                   array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
                     <?php } elseif ($datas2[$count]['OrderCalender']['year'] != $year || $datas2[$count]['OrderCalender']['month'] != $month) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                       <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                                   array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
                     <?php } else { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas2[$count]['OrderCalender']['id'])); ?>
-                    <?php } ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['case_id'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
+                       <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['case_id'])); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 
+                                'rows'=>2, 'value'=>$datas2[$count]['OrderCalender']['work_time_memo'])); ?>
+                        <?php } ?>
+
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
-                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 
-                            'rows'=>2, 'value'=>$datas2[$count]['OrderCalender']['work_time_memo'])); ?>
                 </td>
                 <?php
                         if ($count == $cal_arr[$ii]) {
@@ -526,6 +543,7 @@
                     if ($ii == count($datas)) {
                         break;
                     }
+                    if (!empty($datas2[$count])) {
             ?>
                 <td style='background-color: #FFFFDD;vertical-align: top;'>
                     <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
@@ -533,6 +551,11 @@
                            onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
             <?php
+                    } else {
+            ?>
+                <td style='background-color: #FFFFDD;vertical-align: top;'></td>
+            <?php
+                    }
                     if ($count == $cal_arr[$ii]) {
                         $ii += 1;
                         echo '<td style="background-color: #e8ffff;">推奨</td>';
@@ -836,18 +859,24 @@
                     if ($ii == count($datas)) {
                         break;
                     }
+                    if (!empty($datas2[$count])) {
             ?>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>
                     <?php echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]); ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td  class="'.$class_mask.'" style="background-color: #e8ffff;color:black;">職種</td>';
-                        }
-                    }
+                    } else {
                 ?>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'></td>
+                <?php
+                    }
+                    if ($count == $cal_arr[$ii]) {
+                        $ii += 1;
+                        echo '<td  class="'.$class_mask.'" style="background-color: #e8ffff;color:black;">職種</td>';
+                    }
+                }
+            ?>
                 <?php if ($flag == 0) { ?>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;' colspan="2">受付</td>
                 <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>保育</td>
@@ -989,10 +1018,9 @@
                 ?>
                 <td style="background-color: white;height:85px;">
                     <?php
-                        if (is_null($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'])) {
+                        if (empty($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'])) {
                             echo $this->Form->input('OrderCalender.'.$count.'.koutsuuhi',
-                                    array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3',
-                                        'value'=>$datas2[$count]['OrderCalender']['koutsuuhi'], 'style'=>'text-align: left;width: 95%;font-size:90%;')); 
+                                    array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>'3', 'style'=>'text-align: left;width: 95%;font-size:90%;')); 
                         } elseif ($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'] == 0) {
                             echo '交通費支給：なし';
                         } elseif ($datas2[$count]['OrderInfoDetail']['kyuuyo_koutsuuhi'] == 1) {

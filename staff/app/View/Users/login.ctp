@@ -36,6 +36,7 @@
      </div>
      <div data-role="content">
          <p id="dlog_content">ログインに失敗しました。<br>アカウントかパスワードが異なります。</p>
+         <a href="#" data-role="button" data-rel="back">閉じる</a>
      </div>
  </div>
 <!-- ログインエラー END -->

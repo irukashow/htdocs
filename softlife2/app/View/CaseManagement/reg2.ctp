@@ -551,6 +551,7 @@ function doAlert(str, element) {
                 <?php } ?>
             </tr>
             <!-- 推奨スタッフ END -->
+            <!--
             <tr id="OrderDetail12">
                 <td rowspan="1" style='background-color: #e8ffff;'>
                 </td>
@@ -567,6 +568,7 @@ function doAlert(str, element) {
             </tr>
 <?php echo $this->Form->end(); ?>
 <?php echo $this->Form->create('OrderCalender', array('name'=>'form2')); ?>
+-->
             <tr>
                 <!-- カレンダー月指定 -->
                 <td rowspan="1" align="center" style='background-color: #e8ffff;'>
@@ -719,7 +721,7 @@ function doAlert(str, element) {
         <!-- ページ選択 END -->
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('(3) 登録する', array('name' => 'register2','div' => false, 'onclick' => 'form1.submit();form2.submit();')); ?>
+<?php echo $this->Form->submit('(2) 登録する', array('name' => 'register2','div' => false)); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
 <!--

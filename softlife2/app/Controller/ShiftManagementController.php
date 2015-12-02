@@ -1538,13 +1538,16 @@ class ShiftManagementController extends AppController {
             } else {
                 $ret = null;
             }
-            //$this->log($ret, LOG_DEBUG);
+            $shokushu_id = $data['OrderInfoDetail']['shokushu_id'];
+            if (empty($shokushu_id)) {
+                $shokushu_id = 0;
+            }
             if (empty($datas3[$key])) {
                 $list_premonth[$key] = null;
                 // ワークテーブル配列
                 $data_wk[$key] = array('WkShift' => array('month' => $year.'-'.$month.'-01', 'order_id' => $data['OrderInfoDetail']['order_id'], 
                     'shokushu_num' => $data['OrderInfoDetail']['shokushu_num'], 'column' => $key+1, 
-                    'shokushu_id' => $data['OrderInfoDetail']['shokushu_id'], 
+                    'shokushu_id' => $shokushu_id, 
                     'pre_month' =>  '', 
                     'recommend_staff' => $ret[$key], 'class' => $selected_class));
             } else {
@@ -1554,7 +1557,7 @@ class ShiftManagementController extends AppController {
                 // ワークテーブル配列
                 $data_wk[$key] = array('WkShift' => array('month' => $year.'-'.$month.'-01', 'order_id' => $data['OrderInfoDetail']['order_id'], 
                     'shokushu_num' => $data['OrderInfoDetail']['shokushu_num'], 'column' => $key+1, 
-                    'shokushu_id' => $data['OrderInfoDetail']['shokushu_id'], 
+                    'shokushu_id' => $shokushu_id, 
                     'pre_month' =>  implode(',', $datas3[$key]),
                     'recommend_staff' => $ret[$key], 'class' => $selected_class));
                 // 氏名に変換

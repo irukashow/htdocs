@@ -164,7 +164,7 @@ input[type=checkbox] {
                     <input type="checkbox" name="SelectHoliday" id="SelectHoliday">
                     <label for="SelectHoliday">土日祝を◎</label> 
                     <input type="checkbox" name="SelectClear" id="SelectClear">
-                    <label for="SelectClear">すべてクリア</label> 
+                    <label for="SelectClear">全てクリア</label> 
                 </fieldset>
             </div>
             <!-- 選択 END -->

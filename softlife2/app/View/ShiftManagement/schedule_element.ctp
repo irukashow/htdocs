@@ -196,6 +196,10 @@ function setColor($case_id, $list_array) {
 }
 // 時給（受注）
 function setHMoney($count, $data_array) {
+    $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']);
     if ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] != 1) {
         $ret = 0;
@@ -205,6 +209,9 @@ function setHMoney($count, $data_array) {
 // 日給（受注）
 function setDMoney($count, $data_array) {
     $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     if ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] == 1) {
         $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']*setWorktime($count, $data_array) );
     } elseif ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] == 2) {
@@ -215,6 +222,9 @@ function setDMoney($count, $data_array) {
 // 残業代（受注）
 function setZMoney($count, $data_array) {
     $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     if ($data_array[$count]['OrderInfoDetail']['juchuu_shiharai'] == 1) {
         $ret = number_format($data_array[$count]['OrderInfoDetail']['juchuu_money']*1.25);
     }
@@ -228,6 +238,9 @@ function setUriSum($count, $data_array, $kadou_num) {
 // 日給（給与）
 function setDMoney2($count, $data_array) {
     $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     if ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 1) {
         $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']*setWorktime($count, $data_array));
     } elseif ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 2) {
@@ -238,6 +251,9 @@ function setDMoney2($count, $data_array) {
 // 時給（給与）
 function setHMoney2($count, $data_array) {
     $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     if ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 1) {
         $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']);
     }
@@ -246,6 +262,9 @@ function setHMoney2($count, $data_array) {
 // 残業代（給与）
 function setZMoney2($count, $data_array) {
     $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     if ($data_array[$count]['OrderInfoDetail']['kyuuyo_shiharai'] == 1) {
         $ret = number_format($data_array[$count]['OrderInfoDetail']['kyuuyo_money']*1.25);
     }
@@ -254,6 +273,9 @@ function setZMoney2($count, $data_array) {
 // 研修中（給与）
 function setTrMoney2($count, $data_array) {
     $ret = 0;
+    if (empty($data_array[$count])) {
+        return $ret;
+    }
     if (is_null($data_array[$count]['OrderCalender']['staff_money_tr'])) {
         $ret = '1,000';
     } else {
@@ -370,7 +392,7 @@ onload = function() {
     document.getElementById("header").style.display = 'none';
     document.getElementById("footer").style.display = 'none';
     var width = <?=120+$col*120+count($datas)*50+$width_extra+30 ?>;
-    if (width > 1200) {
+    if (width > 1300) {
         document.body.style.width = '<?=120+$col*120+count($datas)*50+$width_extra+30 ?>px';
     } else {
         document.body.style.width = '1300px';
