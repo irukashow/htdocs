@@ -27,9 +27,7 @@
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
         &nbsp;&nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">試作１</font></a>
-        &nbsp;&nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">試作２</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">シフト作成（新）</font></a>
     </div>
     <div style="float:right;">
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
@@ -81,7 +79,7 @@
     <div id="redips-drag" style="margin-top: 5px;margin-bottom: 10px;">  
         <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
-               style="width:<?=120+$col*100+count($datas)*50 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
+               style="width:<?=120+$col*120+count($datas)*50 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
             <colgroup> 
               <col style='width:25px;'>
               <col style='width:95px;'>
@@ -92,7 +90,7 @@
                     if ($ii == count($datas)) {
                         break;
                     }
-                    echo "<col style='width:110px;'>";
+                    echo "<col style='width:120px;'>";
                     if ($count == $cal_arr[$ii]) {
                         $ii += 1;
                         echo "<col style='width:50px;'>";
@@ -100,11 +98,11 @@
                 }
                 if ($flag == 0) {
             ?>
-                <col style='width:110px;'>
-                <col style='width:110px;'>
-                <col style='width:110px;'>
-                <col style='width:110px;'>
-                <col style='width:110px;'>
+                <col style='width:120px;'>
+                <col style='width:120px;'>
+                <col style='width:120px;'>
+                <col style='width:120px;'>
+                <col style='width:120px;'>
                 <?php } ?>
             </colgroup>
             <thead>
@@ -550,7 +548,7 @@
                 <td style='background-color: #FFFFDD;vertical-align: top;'>
                     <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
                     <input type="button" value="スタッフ選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/select2/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?date=<?=$year.'-'.$month ?>&<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
+                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
             <?php
                     } else {
@@ -768,15 +766,15 @@
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
                                 //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
-                                foreach($data_staffs[$d][$count+1] as $data_staff) {
-                                    $point3 = $point_arr[$d][$data_staff['id']];
+                                foreach($data_staffs[$d][$count+1] as $key=>$data_staff) {
+                                    $point3 = $points[$d][$count+1];
                                     if (empty($point3)) {
                                         $point3_2 = '';
                                     } else {
                                         $point3_2 = explode(',', $point3);
                                     }
                                     if ($flag == 0) {
-                                        $point_str = '('.$point3_2[$count].')';
+                                        $point_str = ' ('.$point3_2[$key].')';
                                     } else {
                                         $point_str = '';
                                     }

@@ -71,7 +71,7 @@ $(function() {
 $(document).ready(function() { 
   $('.check').click(function() {
     $.blockUI({
-      message: '処理中...少々お待ちください。',
+      message: '<?=$this->Html->image('busy.gif'); ?> 処理中...少々お待ちください。',
       css: {
         border: 'none',
         padding: '10px',
@@ -84,7 +84,7 @@ $(document).ready(function() {
         opacity: 0.6
       }
     });
-    setTimeout($.unblockUI, 10000);
+    setTimeout($.unblockUI, 20000);
   });
   $('.load').click(function() {
     $.blockUI({

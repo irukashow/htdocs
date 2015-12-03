@@ -1,4 +1,4 @@
-<?php require 'schedule_element1.ctp'; ?>
+<?php require 'schedule_element.ctp'; ?>
 <?php
     if ($flag == 0) {
         $disabled = '';
@@ -17,24 +17,9 @@
 <!-- 見出し１ -->
 <div id='headline' style="padding:2px 10px 2px 10px;">
     <div style="float:left;padding-top:6px;">
-        ★ シフト管理
-        &nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
-        &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">シフト作成</font></a>
-        &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">確定シフト</font></a>
-        &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
-        &nbsp;&nbsp;&nbsp;
-        <b><font Style="font-size:95%;color: yellow;">[試作１]</font></b> 
-        &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">試作２</font></a> 
+        ★ シフト編集（案件単位）
     </div>
     <div style="float:right;">
-        <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
-        <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
-            &nbsp;
             <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
             &nbsp;
         <input type="button" name="check_duplication" value="チェック" id="<?=$button_type3 ?>" class="check"
@@ -54,37 +39,14 @@
     }
     $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); 
 ?>
-<div style="width:100%;margin-top: 0px;<?=$font_normal ?>;">
-    <table border='1' cellspacing="0" cellpadding="3" style="width:1200px;margin-top: -5px;border-spacing: 0px;background-color: white;">
-            <tr align="center">
-                    <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
-                    <td style='background-color: #006699;color: white;width: 700px;'>
-                        <font style='font-size: 110%;'>
-                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" style="color:white;" class="load">◀</a>
-                                【<?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
-                                        'value'=>$year, 'style'=>'text-align: left;font-size: 100%;', 'class'=>'load2',
-                                        'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>&nbsp;年
-                                    <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                                        'value'=>$month, 'style'=>'text-align: right;font-size: 100%;',  'class'=>'load2',
-                                        'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>
-                            <a href="#" style="color: white; text-decoration: none;" onclick="location.reload();" class="load">
-                                月&nbsp;シフト表】
-                            </a>
-                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" style="color:white;" class="load">▶</a>
-                        </font>
-                        <input type="hidden" name="month" value="<?=$y.'-'.$m ?>">
-                    </td>
-                    <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" class="load">次の月 &gt;</a></td>
-            </tr>
-    </table>
-        
-    <div id="" style="margin-top: 10px;margin-bottom: 10px;"> 
+<div style="width:100%;margin-top: 0px;<?=$font_normal ?>;">        
+    <div id="redips-drag" style="margin-top: 5px;margin-bottom: 10px;">  
         <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
-               style="width:<?=60+$col*30+count($datas)*50 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;font-size:80%;">
+               style="width:<?=120+$col*100+count($datas)*50 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
             <colgroup> 
-              <col style='width:20px;'>
-              <col style='width:40px;'>
+              <col style='width:25px;'>
+              <col style='width:95px;'>
             <?php 
                 $class_mask = 'redips-mark';
                 $ii = 0;
@@ -92,7 +54,7 @@
                     if ($ii == count($datas)) {
                         break;
                     }
-                    echo "<col style='width:30px;'>";
+                    echo "<col style='width:110px;'>";
                     if ($count == $cal_arr[$ii]) {
                         $ii += 1;
                         echo "<col style='width:50px;'>";
@@ -100,6 +62,11 @@
                 }
                 if ($flag == 0) {
             ?>
+                <col style='width:110px;'>
+                <col style='width:110px;'>
+                <col style='width:110px;'>
+                <col style='width:110px;'>
+                <col style='width:110px;'>
                 <?php } ?>
             </colgroup>
             <thead>
@@ -112,18 +79,19 @@
                     color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
                     <div id="<?=$data['OrderCalender']['case_id'] ?>"></div>
                     <div id="<?=$year.'-'.sprintf('%02d', $month) ?>"></div>
-                    <?php echo mb_strimwidth($getCasename[$data['OrderCalender']['case_id']],0, 53, '...'); ?><br>
-                    <input type="button" value="選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/schedule_edit/<?=$data['OrderCalender']['case_id'] ?>?date=<?=$year.'-'.$month ?>','スタッフ選択','width=1200,height=800,scrollbars=yes');">
+                    <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
                 <th style="background-color: #99ccff;" align="center">
                 </th>
+                <?php } ?>
+                <?php if ($flag == 0) { ?>
+                <th colspan="5" align="center" style="background-color: #66CCFF;">未定</th>
                 <?php } ?>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td style='width:80px;background-color: #e8ffff;' colspan="2" align="center">職種<span id="message" style="display:none;"></span></td>
+                <td style='width:80px;background-color: #e8ffff;' colspan="2">職種<span id="message" style="display:none;"></span></td>
             <?php 
                 $ii = 0;
                 for ($count=0; $count<$col+count($datas); $count++){
@@ -131,16 +99,29 @@
                         break;
                     }
             ?>
-                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;' align="center">
-                    <?php echo mb_substr(preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]), 0, 1); ?>
+                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>
+                    <?php 
+                        if (empty(setData($datas2,'shokushu_id',$count,$record))) {
+                            echo '';
+                        } else {
+                            echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]);
+                        }
+                    ?>
+                    <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
                         if ($count == $cal_arr[$ii]) {
                             $ii += 1;
-                            echo '<td style="background-color: #e8ffff;" align="center">職種</td>';
+                            echo '<td style="background-color: #e8ffff;">職種</td>';
                         }
                     }
                 ?>
+                <?php if ($flag == 0) { ?>
+                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;' colspan="2">受付</td>
+                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>保育</td>
+                <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>その他</td>
+                <td style='background-color: #FFFFCC;color:red;font-weight: bold;'>条件付き</td>
+                <?php } ?>
             </tr>
             <tr id="OrderDetail17" style="display:none;">
                 <td style='background-color: #e8ffff;' colspan="2">勤務時間</td>
@@ -155,21 +136,32 @@
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
                     <?php if (empty($datas2) || empty($datas2[$count])) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                                   array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
                     <?php } elseif ($datas2[$count]['OrderCalender']['year'] != $year || $datas2[$count]['OrderCalender']['month'] != $month) { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                       <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                                   array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
                     <?php } else { ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas2[$count]['OrderCalender']['id'])); ?>
-                    <?php } ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['case_id'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
+                       <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['case_id'])); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
+                        <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 
+                                'rows'=>2, 'value'=>$datas2[$count]['OrderCalender']['work_time_memo'])); ?>
+                        <?php } ?>
+
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
-                        array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 
-                            'rows'=>2, 'value'=>$datas2[$count]['OrderCalender']['work_time_memo'])); ?>
                 </td>
                 <?php
                         if ($count == $cal_arr[$ii]) {
@@ -178,6 +170,66 @@
                         }
                     }
                 ?>
+                <td colspan="2" rowspan="2" style='background-color: #FFFFDD;'></td>
+                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
+                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
+                <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
+            </tr>
+            <tr id="">
+                <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
+            <?php 
+                $ii = 0;
+                for ($count=0; $count<$col+count($datas); $count++){
+                    if ($ii == count($datas)) {
+                        break;
+                    }
+                    if (!empty($datas2[$count])) {
+            ?>
+                <td style='background-color: #FFFFDD;vertical-align: top;'>
+                    <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
+                    <input type="button" value="スタッフ選択" 
+                           onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/select2/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?date=<?=$year.'-'.$month ?>&<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
+                </td>
+            <?php
+                    } else {
+            ?>
+                <td style='background-color: #FFFFDD;vertical-align: top;'></td>
+            <?php
+                    }
+                    if ($count == $cal_arr[$ii]) {
+                        $ii += 1;
+                        echo '<td style="background-color: #e8ffff;">推奨</td>';
+                    }
+                }
+            ?>
+                <td style='background-color: #FFFFDD;' colspan="2"></td>
+                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
+            </tr>
+            <tr id="">
+                <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
+                <?php 
+                    $ii = 0;
+                    for ($count=0; $count<$col+count($datas); $count++){
+                        if ($ii == count($datas)) {
+                            break;
+                        }
+                ?>
+                <td style='background-color: #FFFFDD;'>
+                    <?php echo setPMStaff($count, $list_premonth); ?>
+                </td>
+                <?php
+                        if ($count == $cal_arr[$ii]) {
+                            $ii += 1;
+                            echo '<td style="background-color: #e8ffff;">前月</td>';
+                        }
+                    }
+                ?>
+                <td style='background-color: #FFFFDD;' colspan="2"></td>
+                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
+                <td style='background-color: #FFFFDD;'></td>
             </tr>
             <tr style="display:none;">
                 <!-- カレンダー月指定 -->
@@ -192,11 +244,11 @@
                     <?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;', 
                         'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>年<br>
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
+                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
                     <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
                         'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>月
-                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
+                        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php 
@@ -327,20 +379,52 @@
                         if ($d%2 == 0) {
                             $bgcolor_cal2 = '#CEF9DC'; 
                         } else {
-                            $bgcolor_cal2 = '#66cccc'; 
+                            $bgcolor_cal2 = ''; 
                         }
                     } else {
                         $bgcolor_cal2 = ''; 
                     }
                 ?>
                 <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>" style="background-color: <?=$bgcolor_cal2 ?>;">
-                    <?php if (empty($class_name)) { ?>
+                    <?php if (!empty($class_name)) { ?>
+                    <span id="null"></span>
+                    <?php echo ''; ?>
+                    <?php } else { ?>
+                    <?php //echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
+                    <span id="<?=setData($datas2,'order_id',$count,$record) ?>"></span>
+                    <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
+                    <span id="<?=$count+1 ?>"></span>
                     <?php
+                        // 待ち合わせ
+                        $order_id = setData($datas2,'order_id',$count,$record);
+                        $shokushu_num = setData($datas2,'shokushu_num',$count,$record);
+                        if (empty($data_aps[$order_id][$shokushu_num][$d])) {
+                            $style0 = '';
+                        } else {
+                            $style0 = 'background-color:#ffcc66;';
+                        }
                         if (!empty($staff_cell[$d][$count+1])) {
                             if (!empty($data_staffs[$d][$count+1])) {
-                                    echo '<script>';
-                                    echo 'document.getElementById("Cell'.$count.'D'.$d.'").style.backgroundColor = "#FFFFCC"';
-                                    echo '</script>';
+                                //$this->log($data_staffs[$d][$count+1], LOG_DEBUG);
+                                foreach($data_staffs[$d][$count+1] as $data_staff) {
+                                    $point3 = $point_arr[$d][$data_staff['id']];
+                                    if (empty($point3)) {
+                                        $point3_2 = '';
+                                    } else {
+                                        $point3_2 = explode(',', $point3);
+                                    }
+                                    if ($flag == 0) {
+                                        $point_str = '('.$point3_2[$count].')';
+                                    } else {
+                                        $point_str = '';
+                                    }
+                                    echo '<div id="'.$data_staff['id'].'" class="redips-drag t1" name="'.$data_staff['id'].'_'.$d.'" ' 
+                                            //. 'onClick="getStaffProf('.$data_staff['StaffMaster']['id']
+                                            .')" style="'.$style0.'">';
+                                    //echo '<input type="checkbox" onclick="alert();return false;">';
+                                    echo $data_staff['name'].$point_str;
+                                    echo '</div>';
+                                }
                             }
                         }
                     ?>
@@ -349,7 +433,7 @@
             <?php
                     if ($count == $cal_arr[$ii]) {
                         $ii += 1;
-                        echo '<td class="'.$class_mask.'" style="color:'.$style.';background-color: #e8ffff;" align="center"><span id="null"></span>'.$d.'('.$weekday[$i].')</td>';
+                        echo '<td class="'.$class_mask.'" style="color:'.$style.';background-color: #e8ffff;"><span id="null"></span>'.$d.'('.$weekday[$i].')</td>';
                     }
                 }
                 // 背景色
@@ -357,6 +441,48 @@
                     $bgcolor_cal = '#CEF9DC'; 
                 } else {
                     $bgcolor_cal = ''; 
+                }
+                $count = $extra - 5;
+                // 未定欄
+                if ($flag == 0) {
+                    for($k=$count+1; $k<=$count+5; $k++) {
+                        if (!empty($data_staffs[$d][$k])) {
+                            $span[0] = '';$span[1] = '';$div2 = '';
+                            // span
+                            $span[0] = '<span id=""></span>';
+                            $span[0] = $span[0].'<span id=""></span>';
+                            $span[1] = $span[0].'<span id="'.$k.'"></span>';
+                            foreach($data_staffs[$d][$k] as $key=>$data_staff) {
+                                $this->log($data_staff, LOG_DEBUG);
+                                // div
+                                $div2 .= '<div id="'.$data_staff['id'].'" class="redips-drag t1" style="'.$style.'" '
+                                            //. 'ondblclick="getStaffProf('.$data_staff['StaffMaster']['id']
+                                        .')">';
+                                $div2 .= $data_staff['name'];
+                                $div2 .=  '</div>';
+                            }
+                            if ($k == $count+1) {
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;">'.$span[1].$div2.'</td>';
+                            } elseif ($k == $count+2) {
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;">'.$span[1].$div2.'</td>';
+                            } else {
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].$div2.'</td>';
+                            }
+                        } else {
+                            $span[0] = '';$span[1] = '';
+                            // span
+                            $span[0] = '<span id=""></span>';
+                            $span[0] = $span[0].'<span id=""></span>';
+                            $span[1] = $span[0].'<span id="'.$k.'"></span>';
+                            if ($k == $count+1) {
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;">'.$span[1].'</td>';
+                            } elseif ($k == $count+2) {
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;">'.$span[1].'</td>';
+                            } else {
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].'</td>';
+                            }
+                        }
+                    }
                 }
             ?>
             </tr>
@@ -367,24 +493,37 @@
             <!-- カレンダー部分 END -->
             <!-- 職種 -->
             <tr>
-                <td style='width:80px;background-color: #e8ffff;color: black;' colspan="2" id="message" class="<?=$class_mask ?>" align="center">職種</td>
+                <td style='width:80px;background-color: #e8ffff;color: black;' colspan="2" id="message" class="<?=$class_mask ?>">職種</td>
             <?php 
                 $ii = 0;
                 for ($count=0; $count<$col+count($datas); $count++){
                     if ($ii == count($datas)) {
                         break;
                     }
+                    if (!empty($datas2[$count])) {
             ?>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;' align="center">
-                    <?php echo mb_substr(preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]), 0, 1); ?>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>
+                    <?php echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]); ?>
+                    <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td  class="'.$class_mask.'" style="background-color: #e8ffff;color:black;" align="center">職種</td>';
-                        }
-                    }
+                    } else {
                 ?>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'></td>
+                <?php
+                    }
+                    if ($count == $cal_arr[$ii]) {
+                        $ii += 1;
+                        echo '<td  class="'.$class_mask.'" style="background-color: #e8ffff;color:black;">職種</td>';
+                    }
+                }
+            ?>
+                <?php if ($flag == 0) { ?>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;' colspan="2">受付</td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>保育</td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>その他</td>
+                <td style='background-color: #FFFFCC;color:red;font-weight: bold;'>条件付き</td>
+                <?php } ?>
             </tr>
             <!-- 案件 -->
             <tr>
@@ -394,10 +533,13 @@
                 <th id="case_<?=$data['OrderCalender']['case_id'] ?>" 
                     style='background:#99ccff;text-align: center;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;
                     color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo mb_strimwidth($getCasename[$data['OrderCalender']['case_id']],0, 53, '...'); ?>
+                <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
                 <th style="background-color: #99ccff;" align="center">
                 </th>
+                <?php } ?>
+                <?php if ($flag == 0) { ?>
+                <th colspan="5" align="center" style="background-color: #66CCFF;color:black;">未定</th>
                 <?php } ?>
             </tr>
             </tbody>
@@ -410,27 +552,7 @@
     <div style='margin-left: 10px;'>
 <button type="button" id="<?=$button_type2 ?>" style="cursor: pointer;border:1px solid black;" class="check" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>一時保存</button>
     &nbsp;&nbsp;
-<?php
-    if ($flag == 0) {
-        $commet2 = '★ 確定する ★';
-        $commet3 = '【注意！】当月シフトを確定しますか？';
-        $button_type = 'button-release';
-    } elseif ($flag == 1) {
-        $commet2 = '★ 確定解除 ★';
-        $commet3 = '【注意！】当月のシフト確定を解除しますか？';
-        $button_type = 'button-release';
-    } else {
-        $commet2 = 'エラー';
-        $button_type = '';
-    }
-?>
-<?php print($this->Form->submit($commet2, array('type'=>'button', 'id'=>$button_type, 'name'=>'confirm','div' => false, 'label'=>false,  'class'=>'check',
-    'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$y.','.sprintf("%02d", $m).', 2);'))); ?>
-    &nbsp;&nbsp;
-<?php print($this->Form->submit('>>スタッフ送信<<', array('id'=>'button-create', 'name'=>'send', 'div' => false, 'style' => 'padding:10px 20px', 'onclick'=>'alert("工事中");return false;'))); ?>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<?php $comment2 = '【注意！】いままで保存した当月のシフトデータは消去されます。\nシフトの全クリアを実行しますか？'; ?>
-<?php print($this->Form->submit('シフトの全クリア', array('id'=>'button-delete', 'class'=>'check', 'name'=>'all_clear', 'div'=>false, 'onclick'=>'return window.confirm(\''.$comment2.'\');'))); ?>
+<?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'div'=>false, 'style'=>'' , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>  
 </div>
