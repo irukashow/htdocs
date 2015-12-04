@@ -84,7 +84,7 @@ $(document).ready(function() {
         opacity: 0.6
       }
     });
-    setTimeout($.unblockUI, 20000);
+    setTimeout($.unblockUI, 30000);
   });
   $('.load').click(function() {
     $.blockUI({
@@ -118,7 +118,7 @@ $(document).ready(function() {
         opacity: 0.6
       }
     });
-    setTimeout($.unblockUI, 10000);
+    setTimeout($.unblockUI, 20000);
   });
   
 }); 

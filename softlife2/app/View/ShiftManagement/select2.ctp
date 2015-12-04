@@ -8,7 +8,8 @@ onload = function() {
 }
 // 閉じる時の親画面の制御
 function doSubmit() {
-window.opener.location = "<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=$date ?>&point=true";
+window.opener.doReload();
+//window.opener.location = "<?=ROOTDIR ?>/ShiftManagement/schedule_new2/limit:<?=$limit ?>/page:<?=$page ?>/hidden:<?=$hidden ?>?date=<?=$date ?>&point=true";
 window.close();
 }
 </script>
@@ -117,10 +118,11 @@ window.close();
         </tr>
     </table>
         
-    <div style='margin-top: 10px;margin-left: 10px;'>
+    <div style='margin-top: 10px;margin-left: 10px;' class="check">
 <?php echo $this->Form->submit('決定する', array('name' => 'decision','div' => false, 'onclick' => '')); ?>
     &nbsp;&nbsp;
-<?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name' => 'close', 'div' => false, 'onclick'=>'doSubmit();'))); ?>
+<?php print($this->Form->input('閉 じ る', array('type'=>'button', 'label'=>false,
+    'id'=>'button-delete', 'name' => 'close', 'div' => false, 'onclick'=>'doSubmit();', 'style' => 'cursor:pointer;'))); ?>
     </div>
 <?php echo $this->Form->end(); ?>        
     </fieldset>
