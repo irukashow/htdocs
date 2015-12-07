@@ -814,7 +814,7 @@
                             $span[0] = $span[0].'<span id=""></span>';
                             $span[1] = $span[0].'<span id="'.$k.'"></span>';
                             foreach($data_staffs[$d][$k] as $key=>$data_staff) {
-                                $this->log($data_staff, LOG_DEBUG);
+                                //$this->log($data_staff, LOG_DEBUG);
                                 // div
                                 $div2 .= '<div id="'.$data_staff['id'].'" class="redips-drag t1" style="'.$style.'" '
                                             //. 'ondblclick="getStaffProf('.$data_staff['StaffMaster']['id']

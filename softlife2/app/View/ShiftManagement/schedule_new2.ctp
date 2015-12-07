@@ -35,10 +35,10 @@
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
         <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
             &nbsp;
-            <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
+            <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$year ?>,<?=sprintf("%02d", $month) ?>, 1);" <?=$disabled ?>>
             &nbsp;
         <input type="button" name="check_duplication" value="チェック" id="<?=$button_type3 ?>" class="check"
-               style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 2);" <?=$disabled ?>>
+               style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$year ?>,<?=sprintf("%02d", $month) ?>, 2);" <?=$disabled ?>>
         &nbsp;&nbsp;&nbsp;
         <input type="text" value="<?=displayCommit($flag); ?>" style="text-align: center;width: 100px;font-size: 110%;vertical-align: -1px;font-family: メイリオ;<?=commitStyle($flag); ?>" disabled="disabled">
     </div>
@@ -100,7 +100,7 @@
      </div>
     <div style="clear:both;"></div>
 
-    <div id="redips-drag" style="margin-top: 0px;margin-bottom: 10px;">  
+    <div id="redips-drag" style="margin-top: 0px;margin-bottom: 5px;">  
         <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
                style="margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
@@ -159,7 +159,7 @@
             <tr id="OrderDetail0">
                 <td style='background-color: #e8ffff;' colspan="2">弊社担当</td>
                 <?php 
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                         //$to = $total_col + $data[0]['cnt'] - 1;
@@ -226,12 +226,19 @@
             </tr>
             <tr id="OrderDetail6">
                 <td style='background-color: #e8ffff;' colspan="2">待ち合わせ</td>
-                <?php foreach ($datas as $data){ ?>
+                <?php
+                    $total_col = $start_count;
+                    foreach ($datas as $key=>$data){
+                        $from = $total_col;
+                ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;')); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.appointment',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;', 'value'=>$data['OrderCalender']['appointment'])); ?>
                 </td>
-                <?php } ?>
+                <?php
+                        $total_col += $data[0]['cnt'];
+                    } 
+                ?>
                 <td style="background-color: #e8ffff;">待ち合</td>
             </tr>
             <tr id="OrderDetail7">
@@ -264,13 +271,13 @@
             <tr id="OrderDetail9">
                 <td style='background-color: #e8ffff;' colspan="2">クリーニング</td>
                 <?php 
-                $total_col = 0;
+                $total_col = $start_count;
                 foreach ($datas as $data){ 
                     $from = $total_col;
                     ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$from.'.cleanning',
-                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;width:95%;')); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.cleanning',
+                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;width:95%;', 'value'=>$data['OrderCalender']['cleanning'],)); ?>
                 </td>
                 <?php
                         $total_col += $data[0]['cnt'];
@@ -649,7 +656,7 @@
                 </td>
                 <?php
                     }
-                    $count_end = $ii;
+                    $count_end = $record;
                     for ($count=$count_end; $count<$count_end+5; $count++){
                         if ($count == $count_end) {
                             $jj = 1;
@@ -833,7 +840,7 @@
                             $span[0] = $span[0].'<span id=""></span>';
                             $span[1] = $span[0].'<span id="'.$k.'"></span>';
                             foreach($data_staffs[$d][$k] as $key=>$data_staff) {
-                                $this->log($data_staff, LOG_DEBUG);
+                                //$this->log($data_staff, LOG_DEBUG);
                                 // div
                                 $div2 .= '<div id="'.$data_staff['id'].'" class="redips-drag t1" style="'.$style.'" '
                                             //. 'ondblclick="getStaffProf('.$data_staff['StaffMaster']['id']
@@ -1072,7 +1079,7 @@
                     備考
                 </td>
                 <?php
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                 ?>
@@ -1090,7 +1097,7 @@
             <tr id="OrderDetail26">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">注意事項</td>
                 <?php
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                 ?>
@@ -1108,7 +1115,7 @@
             <tr id="OrderDetail27">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">契約書</td>
                 <?php
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                 ?>
@@ -1168,9 +1175,20 @@
 <div id="Div" style="display: none;"><p id="Mbox0">セルをクリックしたらここに書き出します。</p>
  <p id="Mbox1">インデックス値は '0'から始まります。</p>
 </div>
+    <!-- ページネーション -->
+    <div class="pageNav03 load" style="margin-top:-5px; margin-bottom: 30px;width:1200px;">
+    <?php
+            echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
+            echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
+            echo $this->Paginator->numbers(array('separator' => ''));
+            echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
+            echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+    ?>
+     </div>
+    <div style="clear:both;"></div>
     
-    <div style='margin-left: 10px;'>
-<button type="button" id="<?=$button_type2 ?>" style="cursor: pointer;border:1px solid black;" class="check" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>一時保存</button>
+    <div style='margin-left: 10px;margin-top: 5px;'>
+    <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$year ?>,<?=sprintf("%02d", $month) ?>, 1);" <?=$disabled ?>>
     &nbsp;&nbsp;
 <?php
     if ($flag == 0) {
@@ -1187,7 +1205,7 @@
     }
 ?>
 <?php print($this->Form->submit($commet2, array('type'=>'button', 'id'=>$button_type, 'name'=>'confirm','div' => false, 'label'=>false,  'class'=>'check',
-    'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$y.','.sprintf("%02d", $m).', 2);'))); ?>
+    'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$year.','.sprintf("%02d", $month).', 2);'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('>>スタッフ送信<<', array('id'=>'button-create', 'name'=>'send', 'div' => false, 'style' => 'padding:10px 20px', 'onclick'=>'alert("工事中");return false;'))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

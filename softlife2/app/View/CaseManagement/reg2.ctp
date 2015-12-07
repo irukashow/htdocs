@@ -212,13 +212,13 @@ function setAllSelect4(col, element, week) {
 // 職種の詳細を隠す
 function setHidden() {
     target = document.getElementById("ActiveDisplay");
-    if (document.getElementById("OrderDetail12").style.display == 'none') {
-        for(i=1; i<=12; i++) {
+    if (document.getElementById("OrderDetail11").style.display == 'none') {
+        for(i=1; i<=11; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'table-row';
         }
         //target.innerHTML = '<span>詳細を隠す</span>';
     } else {
-        for(i=1; i<=12; i++) {
+        for(i=1; i<=11; i++) {
             document.getElementById("OrderDetail"+i).style.display = 'none';
         }
         //target.innerHTML = '<span>詳細を表示する</span>';

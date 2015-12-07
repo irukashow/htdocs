@@ -12,7 +12,7 @@ App::uses('AppModel', 'Model');
  * CakePHP ShiftManagement
  * @author M-YOKOI
  */
-class ShiftManagement extends AppModel {
+class ShiftManagement extends AppModel {  
     public $virtualFields = array(  
         'sm_name_sei2' => 'StaffMaster.name_sei2',  
     );  

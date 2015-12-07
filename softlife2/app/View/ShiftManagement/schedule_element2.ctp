@@ -32,7 +32,6 @@
         echo $this->Html->script('redips-drag-min');
     }
     echo $this->Html->script('script');
-    //echo $this->Html->css('evol.colorpicker.min');
     echo $this->Html->css('staffmaster');
     echo $this->Html->css('style_1');
 ?>
@@ -609,11 +608,29 @@ function doAccount(year, month, mode) {
     input.setAttribute('name', 'month');
     input.setAttribute('value', year+"-"+month+"-01");
     form.appendChild(input);
-    // データ列数
+    // limit
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'limit');
+    input.setAttribute('value', <?=$limit ?>);
+    form.appendChild(input);
+    // page数
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'page');
+    input.setAttribute('value', <?=$page ?>);
+    form.appendChild(input);
+    // データ総列数
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
     input.setAttribute('name', 'col');
     input.setAttribute('value', <?=$col ?>);
+    form.appendChild(input);
+    // スタート列
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'count_from');
+    input.setAttribute('value', <?=$start_count ?>);
     form.appendChild(input);
     // フラグ
     var input = document.createElement('input');
@@ -648,10 +665,12 @@ function doAccount(year, month, mode) {
                 continue;
             }
             // spanタグがあって、divタグがないものはエラー（一時保存以外）
+            /**
             if (mode != 1 && Cell.getElementsByTagName("span").length > 1 && j < myTbl.rows[i].cells.length-5 && Cell.getElementsByTagName("DIV").length == 0) {
                 alert("【エラー】"+(i-startrow+1)+"日に埋まっていないシフトが存在します。");
                 return;
             }
+            **/
             // テスト
             //alert(Cell.getElementsByTagName("span")[2].id);
             
@@ -677,7 +696,7 @@ function doAccount(year, month, mode) {
             }
         }
     }
-    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule_new2');
+    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule_new2/hidden:<?=$hidden ?>');
     form.setAttribute('method', 'post');
     form.submit();
 }

@@ -1885,10 +1885,10 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['select'])) {
                 $id_array = array_keys($this->request->data['select']);
                 $id = $id_array[0];
-                // 選択は５つまで
+                // 選択は1５人まで
                 $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
-                if (count($session_id) == 5) {
-                    $this->Session->setFlash('【エラー】選択できるのは5人までです。');
+                if (count($session_id) == 15) {
+                    $this->Session->setFlash('【エラー】選択できるのは15人までです。');
                     $this->redirect(array('action' => 'select', $order_id ,$col));
                     return;
                 }
@@ -1924,10 +1924,10 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['select2'])) {
                 $id = 'u'.$this->request->data['StaffMaster']['select_user'];
                 $this->log($id, LOG_DEBUG);
-                // 選択は５つまで
+                // 選択は1５人まで
                 $session_id = $this->Session->read('staff_id-'.$order_id.'_'.$col);
-                if (count($session_id) == 5) {
-                    $this->Session->setFlash('【エラー】選択できるのは5人までです。');
+                if (count($session_id) == 15) {
+                    $this->Session->setFlash('【エラー】選択できるのは15人までです。');
                     $this->redirect(array('action' => 'select', $order_id ,$col));
                     return;
                 }
@@ -1968,7 +1968,7 @@ class CaseManagementController extends AppController {
                 }
                 // データベースに保存
                 // 登録する内容を設定
-                for($i=0; $i<5 ;$i++) {
+                for($i=0; $i<15 ;$i++) {
                     if (!empty($this->request->data['staff_id'.$i])) {
                         $staff_ids[$i] = $this->request->data['staff_id'.$i];
                     } else {
