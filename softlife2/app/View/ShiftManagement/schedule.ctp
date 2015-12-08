@@ -19,26 +19,26 @@
     <div style="float:left;padding-top:6px;">
         ★ シフト管理
         &nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/index?date=<?php echo date('Y-m', strtotime($year .'-' . $month . ' 0 month')); ?>" target=""><font Style="font-size:95%;">スタッフシフト希望</font></a>
         &nbsp;
-        <b><font Style="font-size:95%;color: yellow;">[シフト作成]</font></b> 
+        <b><font Style="font-size:95%;color: yellow;">シフト作成</font></b> 
         &nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">確定シフト</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule3?date=<?php echo date('Y-m', strtotime($year .'-' . $month . ' 0 month')); ?>" target=""><font Style="font-size:95%;">確定シフト</font></a>
         &nbsp;
         <a href="<?=ROOTDIR ?>/ShiftManagement/setting" target="" onclick=''><font Style="font-size:95%;">詳細設定</font></a>
         &nbsp;&nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">試作１</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new?date=<?php echo date('Y-m', strtotime($year .'-' . $month . ' 0 month')); ?>" target=""><font Style="font-size:95%;">試作１</font></a>
         &nbsp;&nbsp;&nbsp;
-        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_new2?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' 0 month')); ?>" target=""><font Style="font-size:95%;">試作２</font></a>
+        <a href="<?=ROOTDIR ?>/ShiftManagement/schedule_old2?date=<?php echo date('Y-m', strtotime($year .'-' . $month . ' 0 month')); ?>" target=""><font Style="font-size:95%;">シフト（旧）</font></a>
     </div>
     <div style="float:right;">
         <?php $comment = '【注意！】いままで保存した当月のシフトデータは消去されます。\n自動割付を実行しますか？'; ?>
         <input type="submit" name="assignment" value="シフト自動割付" id="<?=$button_type2 ?>" class="check" style="margin-left: 50px;" onclick="return window.confirm('<?=$comment ?>');" <?=$disabled ?>>
             &nbsp;
-            <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>
+            <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$year ?>,<?=sprintf("%02d", $month) ?>, 1);" <?=$disabled ?>>
             &nbsp;
         <input type="button" name="check_duplication" value="チェック" id="<?=$button_type3 ?>" class="check"
-               style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 2);" <?=$disabled ?>>
+               style="cursor: pointer;border:1px solid black;padding: 5px 10px;" onclick="doAccount(<?=$year ?>,<?=sprintf("%02d", $month) ?>, 2);" <?=$disabled ?>>
         &nbsp;&nbsp;&nbsp;
         <input type="text" value="<?=displayCommit($flag); ?>" style="text-align: center;width: 100px;font-size: 110%;vertical-align: -1px;font-family: メイリオ;<?=commitStyle($flag); ?>" disabled="disabled">
     </div>
@@ -55,51 +55,93 @@
     $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); 
 ?>
 <div style="width:100%;margin-top: 0px;<?=$font_normal ?>;">
-    <table border='1' cellspacing="0" cellpadding="3" style="width:1200px;margin-top: -5px;border-spacing: 0px;background-color: white;">
+    <table border='1' cellspacing="0" cellpadding="3" style="width:1300px;margin-top: -5px;border-spacing: 0px;background-color: white;">
             <tr align="center">
-                    <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
+                    <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule/limit:<?=$limit ?>/hidden:<?=$hidden ?>?date=<?php echo date('Y-m', strtotime($year .'-' . $month . ' -1 month')); ?>" class="load">&lt; 前の月</a></td>
                     <td style='background-color: #006699;color: white;width: 700px;'>
                         <font style='font-size: 110%;'>
-                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" style="color:white;" class="load">◀</a>
+                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule/limit:<?=$limit ?>/hidden:<?=$hidden ?>?date=<?=date('Y-m', strtotime($year .'-' . $month . ' -1 month')); ?>" style="color:white;" class="load">◀</a>
                                 【<?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
-                                        'value'=>$year, 'style'=>'text-align: left;font-size: 100%;', 'class'=>'load2',
+                                        'value'=>$year, 'style'=>'text-align: left;font-size: 100%;', 'class'=>'load',
                                         'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>&nbsp;年
                                     <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                                        'value'=>$month, 'style'=>'text-align: right;font-size: 100%;',  'class'=>'load2',
+                                        'value'=>$month, 'style'=>'text-align: right;font-size: 100%;',  'class'=>'load',
                                         'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>
                             <a href="#" style="color: white; text-decoration: none;" onclick="location.reload();" class="load">
                                 月&nbsp;稼働表】
                             </a>
-                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" style="color:white;" class="load">▶</a>
+                            <a href="<?=ROOTDIR ?>/ShiftManagement/schedule/limit:<?=$limit ?>/hidden:<?=$hidden ?>?date=<?=date('Y-m', strtotime($year .'-' . $month . ' +1 month')); ?>" style="color:white;" class="load">▶</a>
                         </font>
-                        <input type="hidden" name="month" value="<?=$y.'-'.$m ?>">
+                        <input type="hidden" name="month" value="<?=$year.'-'.$month ?>">
                     </td>
-                    <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?php echo date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>" class="load">次の月 &gt;</a></td>
+                    <td style=''><a href="<?=ROOTDIR ?>/ShiftManagement/schedule/limit:<?=$limit ?>/hidden:<?=$hidden ?>?date=<?php echo date('Y-m', strtotime($year .'-' . $month . ' +1 month')); ?>" class="load">次の月 &gt;</a></td>
             </tr>
     </table>
-        
-    <div id="redips-drag" style="margin-top: 5px;margin-bottom: 10px;">  
+     
+    <!-- ページネーション -->
+    <div class="pageNav03" style="margin-top:5px; margin-bottom: 0px;width:1300px;">
+        <div class="load" style="float:left;">
+    <?php
+            echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
+            echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
+            echo $this->Paginator->numbers(array('separator' => ''));
+            echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
+            echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+    ?>
+        </div>
+        <div style="float:left;margin: 0px 15px;">
+            <table border='1' cellspacing="0" cellpadding="5" class="data" 
+                   style="margin-top: -2px;margin-bottom: 2px;border-spacing: 0px;table-layout: fixed;font-size: 85%;width:450px;">
+                <tr>
+                    <th style="background-color: #99ccff;width:50px;" align="center">案件絞込</th>
+                    <th style="padding: 5px 20px;background-color: #FFFFEE;">
+                        <?php
+                            echo $this->Form->input(false, 
+                                array('type'=>'select', 'label' => false, 'div' => false, 'name' => 'select_case', 'class'=>'load', 'style' => 'width:80%;font-size:110%;', 
+                                    'empty' => array('' => '案件を選んでください'), 'options' =>$case_arr, 'selected'=>$case_id,
+                                    'onchange' => 'form.submit();')); 
+                        ?>
+                        <button type="button" onclick="location.href='<?=ROOTDIR ?>/ShiftManagement/schedule/limit:3/hidden:<?=$hidden ?>?date=<?=$year.'-'.$month ?>'">クリア</button>
+                    </th>
+                </tr>
+            </table>
+        </div>
+        <div style="float:right;margin-top: 5px;">
+            <?php echo $this->Paginator->counter(array('format' => __('総案件数  <b>{:count}</b> 件')));?>
+            &nbsp;&nbsp;&nbsp;
+            表示案件数：
+            <?php
+                $list = array('1'=>'1','3'=>'3','5'=>'5','10'=>'10');
+                echo $this->Form->input('limit', array('name' => 'limit', 'type' => 'select','label' => false,'div' => false, 'class'=>'load2', 'options' => $list, 'selected' => $limit,
+                    'onchange' => 'form.submit();'));
+            ?>
+        </div>
+        <div style="clear:both;"></div>
+     </div>
+    <div style="clear:both;"></div>
+
+    <div id="redips-drag" style="margin-top: 0px;margin-bottom: 5px;">  
         <!-- 職種入力 -->   
         <table border='1' cellspacing="0" cellpadding="5" id="table1"
-               style="width:<?=120+$col*100+count($datas)*50 ?>px;margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
+               style="margin-top: 0px;margin-bottom: 0px;border-spacing: 0px;table-layout: fixed;">
             <colgroup> 
               <col style='width:25px;'>
               <col style='width:95px;'>
             <?php 
                 $class_mask = 'redips-mark';
                 $ii = 0;
-                for ($count=0; $count<$col+count($datas); $count++){
-                    if ($ii == count($datas)) {
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
                         break;
                     }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=0; $count<$ii; $count++){
                     echo "<col style='width:110px;'>";
-                    if ($count == $cal_arr[$ii]) {
-                        $ii += 1;
-                        echo "<col style='width:50px;'>";
-                    }
                 }
                 if ($flag == 0) {
             ?>
+                <col style='width:50px;'>
                 <col style='width:110px;'>
                 <col style='width:110px;'>
                 <col style='width:110px;'>
@@ -110,7 +152,7 @@
             <thead>
             <tr>
                 <th style='background:#99ccff;text-align: center;width:120px;height: 30px;' colspan="2">
-                    <a href="#" onclick="setHidden();">
+                    <a href="#" onclick="doHidden();" class="load">
                         <span id="ActiveDisplay" onclick="">【表示切り替え】</span>
                     </a>
                 </th>
@@ -122,38 +164,22 @@
                     <div id="<?=$year.'-'.sprintf('%02d', $month) ?>"></div>
                     <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
-                <th style="background-color: #99ccff;" align="center">
-                    <a href="#" onclick="setHidden();">
+                <?php } ?>
+                <th style='background:#99ccff;text-align: center;'>
+                    <a href="#" onclick="doHidden();" class="load">
                         <span id="ActiveDisplay" onclick="">表示</span>
                     </a>
                 </th>
-                <?php } ?>
                 <?php if ($flag == 0) { ?>
                 <th colspan="5" align="center" style="background-color: #66CCFF;">未定</th>
                 <?php } ?>
             </tr>
             </thead>
             <tbody>
-                <!--
-            <tr style="">
-                <td class="redips-trash" style='background-color: #999999;color: white;' colspan="2">削除</td>
-                <?php for ($count=0; $count<$col; $count++){ ?>
-                <td class="redips-trash" style='background-color: #999999;color: white;'>
-                    <?php echo $count+1; ?>
-                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.case_id',array('type'=>'hidden', 'value'=>setData($datas2,'case_id',$count,$record))); ?>
-                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.order_id',array('type'=>'hidden', 'value'=>setData($datas2,'order_id',$count,$record))); ?>
-                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_num',array('type'=>'hidden','value'=>setData($datas2,'shokushu_num',$count,$record))); ?>
-                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.shokushu_id',array('type'=>'hidden','value'=>setData($datas2,'shokushu_id',$count,$record))); ?>
-                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('WorkTable.'.($count+1).'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                </td>
-                <?php } ?>
-            </tr>
-                -->
             <tr id="OrderDetail0">
                 <td style='background-color: #e8ffff;' colspan="2">弊社担当</td>
                 <?php 
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                         //$to = $total_col + $data[0]['cnt'] - 1;
@@ -163,12 +189,14 @@
                             array('type'=>'text','div'=>false,'label'=>false, 
                                 'value'=>NZ($data['OrderCalender']['tantou']), 'style'=>'text-align: left;width:95%;')); ?>
                 </td>
-                <td style="background-color: #e8ffff;">担当</td>
                 <?php
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
+                <td style="background-color: #e8ffff;">担当</td>
+                <?php if ($flag == 0) { ?>
                 <td colspan="5" rowspan="18" align="center" style="background-color: white;"></td>
+                <?php } ?>
             </tr>
             <tr id="OrderDetail1">
                 <td style='background-color: #e8ffff;' colspan="2">事業主</td>
@@ -176,8 +204,8 @@
                 <td style='background:#ffffcc;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_entrepreneur[$data['OrderCalender']['case_id']]); ?>
                 </td>
-                <td style="background-color: #e8ffff;">事業</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">事業</td>
             </tr>
             <tr id="OrderDetail2">
                 <td style='background-color: #e8ffff;' colspan="2">販売会社</td>
@@ -185,8 +213,8 @@
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_client[$data['OrderCalender']['case_id']]); ?>
                 </td>
-                <td style="background-color: #e8ffff;">販売</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">販売</td>
             </tr>
             <tr id="OrderDetail3">
                 <td style='background-color: #e8ffff;' colspan="2">指揮命令者/<br>担当者</td>
@@ -194,8 +222,8 @@
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>様
                 </td>
-                <td style="background-color: #e8ffff;">指揮</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">指揮</td>
             </tr>
             <tr id="OrderDetail4">
                 <td style='background-color: #e8ffff;' colspan="2">現場住所</td>
@@ -203,8 +231,8 @@
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_address[$data['OrderCalender']['case_id']]); ?>
                 </td>
-                <td style="background-color: #e8ffff;">現場</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">住所</td>
             </tr>
             <tr id="OrderDetail5">
                 <td style='background-color: #e8ffff;' colspan="2">現場連絡先</td>
@@ -213,18 +241,25 @@
                 <?php echo 'TEL:'.NZ($list_telno[$data['OrderCalender']['case_id']]); ?><br>
                 <?php echo 'FAX:'.NZ($list_faxno[$data['OrderCalender']['case_id']]); ?>
                 </td>
-                <td style="background-color: #e8ffff;">連絡</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">連絡先</td>
             </tr>
             <tr id="OrderDetail6">
                 <td style='background-color: #e8ffff;' colspan="2">待ち合わせ</td>
-                <?php foreach ($datas as $data){ ?>
+                <?php
+                    $total_col = $start_count;
+                    foreach ($datas as $key=>$data){
+                        $from = $total_col;
+                ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('OrderInfoDetail.0.juchuu_cal',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;')); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.appointment',
+                            array('type'=>'textarea','div'=>false,'label'=>false,'rows'=>2, 'style'=>'text-align: left;width: 95%;', 'value'=>$data['OrderCalender']['appointment'])); ?>
                 </td>
-                <td style="background-color: #e8ffff;">待合</td>
-                <?php } ?>
+                <?php
+                        $total_col += $data[0]['cnt'];
+                    } 
+                ?>
+                <td style="background-color: #e8ffff;">待ち合</td>
             </tr>
             <tr id="OrderDetail7">
                 <td style='background-color: #e8ffff;' colspan="2">請求先担当者</td>
@@ -232,8 +267,8 @@
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_bill[$data['OrderCalender']['case_id']]); ?> 様
                 </td>
-                <td style="background-color: #e8ffff;">請・担</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">請｜担</td>
             </tr>
             <tr id="OrderDetail8">
                 <td style='background-color: #e8ffff;' colspan="2">請求書締日</td>
@@ -241,8 +276,8 @@
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_cutoff[$data['OrderCalender']['case_id']]); ?>
                 </td>
-                <td style="background-color: #e8ffff;">請・締</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">請｜締</td>
             </tr>
             <tr id="OrderDetail19">
                 <td style='background-color: #e8ffff;' colspan="2">請求書郵送日</td>
@@ -250,25 +285,25 @@
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo NZ($list_cutoff[$data['OrderCalender']['case_id']]); ?>
                 </td>
-                <td style="background-color: #e8ffff;">請・郵</td>
                 <?php } ?>
+                <td style="background-color: #e8ffff;">請｜郵</td>
             </tr>
             <tr id="OrderDetail9">
                 <td style='background-color: #e8ffff;' colspan="2">クリーニング</td>
                 <?php 
-                $total_col = 0;
+                $total_col = $start_count;
                 foreach ($datas as $data){ 
                     $from = $total_col;
                     ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                    <?php echo $this->Form->input('OrderInfoDetail.'.$from.'.cleanning',
-                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;width:95%;')); ?>
+                    <?php echo $this->Form->input('OrderCalender.'.$from.'.cleanning',
+                            array('type'=>'text','div'=>false,'label'=>false, 'style'=>'text-align: left;width:95%;', 'value'=>$data['OrderCalender']['cleanning'],)); ?>
                 </td>
-                <td style="background-color: #e8ffff;">ｸﾘｰﾆﾝｸﾞ</td>
                 <?php
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
+                <td style="background-color: #e8ffff;">ｸﾘｰﾆﾝｸﾞ</td>
             </tr>
             <!-- 受注 -->
             <?php $list1 = array('1'=>'時給', '2'=>'日給', '3'=>'月給'); ?>
@@ -278,66 +313,66 @@
                 <td rowspan="2" style='background-color: #e8ffff;'>単価</td>
                 <?php 
                     $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
+                    for($k=0; $k<$limit; $k++) {
+                        if (empty($datas[$k])) {
                             break;
                         }
+                        $ii = $ii + $datas[$k][0]['cnt'];
+                    }
+                    for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.juchuu_money_d',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70px;text-align: right;', 
                                 //'onchange'=>'calUri1(this,'.$count.')', 
                                 'value'=>setDMoney($count, $datas2))); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">請｜日</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">請｜日</td>
             </tr>
             <tr id="OrderDetail11">
                 <?php 
                     $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
+                    for($k=0; $k<$limit; $k++) {
+                        if (empty($datas[$k])) {
                             break;
                         }
+                        $ii = $ii + $datas[$k][0]['cnt'];
+                    }
+                    for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.juchuu_money_h',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70px;text-align: right;', 
                                 'value'=>setHMoney($count, $datas2))); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">請｜時</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">請｜時</td>
             </tr>
             <tr id="OrderDetail12">
                 <td rowspan="1" style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php 
                     $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
+                    for($k=0; $k<$limit; $k++) {
+                        if (empty($datas[$k])) {
                             break;
                         }
+                        $ii = $ii + $datas[$k][0]['cnt'];
+                    }
+                    for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.juchuu_money_z',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 'value'=>setZMoney($count, $datas2))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70px;text-align: right;', 'value'=>setZMoney($count, $datas2))); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">請｜残</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">請｜残</td>
             </tr>
             <!-- 受注 END -->
             <!-- 給与 -->
@@ -346,99 +381,102 @@
                 <td style='background-color: #e8ffff;'>時給</td>
                 <?php 
                     $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
+                    for($k=0; $k<$limit; $k++) {
+                        if (empty($datas[$k])) {
                             break;
                         }
+                        $ii = $ii + $datas[$k][0]['cnt'];
+                    }
+                    for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.staff_money_h',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 'value'=>setHMoney2($count, $datas2))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70px;text-align: right;', 'value'=>setHMoney2($count, $datas2))); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">ス｜時</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">ス｜時</td>
             </tr>
             <tr id="OrderDetail14">
                 <td style='background-color: #e8ffff;'>基本日給</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.staff_money_d',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70px;text-align: right;', 
                                 'value'=>setDMoney2($count, $datas2),
                                 //'onchange'=>'calJinkenhi1(this,'.$count.')'
                                 )); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">ス｜日</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">ス｜日</td>
             </tr>
             <tr id="OrderDetail15">
                 <td style='background-color: #e8ffff;'>残業／ｈ</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.staff_money_z',
-                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:90px;text-align: right;', 'value'=>setZMoney2($count, $datas2))); ?>
+                            array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:70px;text-align: right;', 'value'=>setZMoney2($count, $datas2))); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">ス｜残</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">ス｜残</td>
             </tr>
             <tr id="OrderDetail16">
                 <td style='background-color: #e8ffff;'>研修中（時給）</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: white;'>
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.staff_money_tr',
                             array('type'=>'text','div'=>false,'label'=>false,
-                                'style'=>'width:90px;text-align: right;', 'value'=>setTrMoney2($count, $datas2))); ?>
+                                'style'=>'width:70px;text-align: right;', 'value'=>setTrMoney2($count, $datas2))); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">ス｜研</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">ス｜研</td>
             </tr>
             <!-- 給与 END -->
             <tr>
                 <td style='width:80px;background-color: #e8ffff;' colspan="2">職種<span id="message" style="display:none;"></span></td>
             <?php 
                 $ii = 0;
-                for ($count=0; $count<$col+count($datas); $count++){
-                    if ($ii == count($datas)) {
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
                         break;
                     }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
             ?>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>
                     <?php 
@@ -451,12 +489,9 @@
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">職種</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">職種</td>
                 <?php if ($flag == 0) { ?>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;' colspan="2">受付</td>
                 <td style='background-color: #FFFFCC;font-weight: bold;color:#555555;'>保育</td>
@@ -468,10 +503,13 @@
                 <td style='background-color: #e8ffff;' colspan="2">勤務時間</td>
             <?php 
                 $ii = 0;
-                for ($count=0; $count<$col+count($datas); $count++){
-                    if ($ii == count($datas)) {
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
                         break;
                     }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
             ?>
                 <td style='background-color: #FFFFDD;'>
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
@@ -495,7 +533,7 @@
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
                         <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
-                            array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 
+                            array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:90%;text-align: left;background-color: #ffffcc;', 
                                 'rows'=>2, 'value'=>$datas2[$count]['OrderCalender']['work_time_memo'])); ?>
                         <?php } ?>
 
@@ -505,52 +543,54 @@
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">勤務</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">勤務</td>
+                <?php if ($flag == 0) { ?>
                 <td colspan="2" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
                 <td colspan="1" rowspan="2" style='background-color: #FFFFDD;'></td>
+                <?php } ?>
             </tr>
             <tr id="OrderDetail18">
                 <td style='background-color: #e8ffff;' colspan="2">休憩時間</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style='background-color: #FFFFDD;'>
                     <?php echo setData($datas2,'resttime_from',$count,$record); ?>&nbsp;～
                     <?php echo setData($datas2,'resttime_to',$count,$record); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">休憩</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">休憩</td>
             </tr>
-            <tr id="">
+            <tr id="OrderDetail28">
                 <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ</td>
             <?php 
                 $ii = 0;
-                for ($count=0; $count<$col+count($datas); $count++){
-                    if ($ii == count($datas)) {
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
                         break;
                     }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                     if (!empty($datas2[$count])) {
             ?>
                 <td style='background-color: #FFFFDD;vertical-align: top;'>
                     <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
                     <input type="button" value="スタッフ選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/ShiftManagement/select2/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?date=<?=$year.'-'.$month ?>&<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
+                           onclick="openSelectStaff(<?=$datas2[$count]['OrderCalender']['order_id'] ?>, <?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>);">
                 </td>
             <?php
                     } else {
@@ -558,40 +598,45 @@
                 <td style='background-color: #FFFFDD;vertical-align: top;'></td>
             <?php
                     }
-                    if ($count == $cal_arr[$ii]) {
-                        $ii += 1;
-                        echo '<td style="background-color: #e8ffff;">推奨</td>';
-                    }
                 }
             ?>
+                <td style="background-color: #e8ffff;">推奨</td>
+                <?php if ($flag == 0) { ?>
                 <td style='background-color: #FFFFDD;' colspan="2"></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
                 <td style='background-color: #FFFFDD;'></td>
+                <?php } ?>
             </tr>
-            <tr id="">
-                <td style='background-color: #e8ffff;' colspan="2">前月スタッフ</td>
+            <?php
+                //$border_style1 = 'border-bottom-style:double;border-bottom-width:5px;';
+                $border_style1 = 'border-bottom-style:none;';
+            ?>
+            <tr id="OrderDetail29">
+                <td style='background-color: #e8ffff;<?=$border_style1 ?>' colspan="2">前月スタッフ</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
-                <td style='background-color: #FFFFDD;'>
+                <td style='background-color: #FFFFDD;<?=$border_style1 ?>'>
                     <?php echo setPMStaff($count, $list_premonth); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">前月</td>';
-                        }
                     }
                 ?>
-                <td style='background-color: #FFFFDD;' colspan="2"></td>
-                <td style='background-color: #FFFFDD;'></td>
-                <td style='background-color: #FFFFDD;'></td>
-                <td style='background-color: #FFFFDD;'></td>
+                <td style="background-color: #e8ffff;<?=$border_style1 ?>">前月</td>
+                <?php if ($flag == 0) { ?>
+                <td style='background-color: #FFFFDD;<?=$border_style1 ?>' colspan="2"></td>
+                <td style='background-color: #FFFFDD;<?=$border_style1 ?>'></td>
+                <td style='background-color: #FFFFDD;<?=$border_style1 ?>'></td>
+                <td style='background-color: #FFFFDD;<?=$border_style1 ?>'></td>
+                <?php } ?>
             </tr>
             <tr style="display:none;">
                 <!-- カレンダー月指定 -->
@@ -614,12 +659,14 @@
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php 
-                    $ii = 0; $count_end = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            $count_end = $count;
+                    $ii = 0;
+                    for($k=0; $k<$limit; $k++) {
+                        if (empty($datas[$k])) {
                             break;
                         }
+                        $ii = $ii + $datas[$k][0]['cnt'];
+                    }
+                    for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td align='left' style='background-color: #e8ffff;'>
                     <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
@@ -632,11 +679,8 @@
                     <?php echo $this->Form->input('WorkTable.'.($count+1).'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;"></td>';
-                        }
                     }
+                    $count_end = $record;
                     for ($count=$count_end; $count<$count_end+5; $count++){
                         if ($count == $count_end) {
                             $jj = 1;
@@ -705,17 +749,25 @@
                     } else {
                         $bgcolor_cal = '#e8ffff'; 
                     }
-                    echo '<td align="center" class="'.$class_mask.'" style="color:'.$style.';background-color: '.$bgcolor_cal.';" colspan="2"><span id="null"></span>'.$m.'/'.$d.'('.$weekday[$i].')</td>';
+                    if ($d == 1) {
+                        $border_double = 'border-top-style:double;border-top-width:5px;'; 
+                    } else {
+                        $border_double = '';
+                    }
+                    echo '<td align="center" class="'.$class_mask.'" style="color:'.$style.';background-color: '.$bgcolor_cal.';'.$border_double.'" colspan="2"><span id="null"></span>'.$m.'/'.$d.'('.$weekday[$i].')</td>';
                     if ($i==0 || $i==6 || !empty($national_holiday[date("Y-m-d", mktime(0, 0, 0, $m, $d, $y))])) {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="1">';
                     } else {
                         echo '<input type="hidden" id="HolidayD'.$d.'" value="0">';
                     }
                     $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
+                    for($k=0; $k<$limit; $k++) {
+                        if (empty($datas[$k])) {
                             break;
                         }
+                        $ii = $ii + $datas[$k][0]['cnt'];
+                    }
+                    for ($count=$start_count; $count<$start_count + $ii; $count++){
                         if (empty($datas2) || empty($datas2[$count])) {
                             $class_name = 'redips-mark';
                             if (empty($kadou[$count])) {
@@ -741,13 +793,13 @@
                         if ($d%2 == 0) {
                             $bgcolor_cal2 = '#CEF9DC'; 
                         } else {
-                            $bgcolor_cal2 = ''; 
+                            $bgcolor_cal2 = '#66cccc'; 
                         }
                     } else {
                         $bgcolor_cal2 = ''; 
                     }
                 ?>
-                <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>" style="background-color: <?=$bgcolor_cal2 ?>;">
+                <td id="Cell<?=$count ?>D<?=$d ?>" class="<?=$class_name ?>" style="background-color: <?=$bgcolor_cal2 ?>;<?=$border_double ?>">
                     <?php if (!empty($class_name)) { ?>
                     <span id="null"></span>
                     <?php echo ''; ?>
@@ -793,17 +845,15 @@
                     <?php } ?>
                 </td>
             <?php
-                    if ($count == $cal_arr[$ii]) {
-                        $ii += 1;
-                        echo '<td class="'.$class_mask.'" style="color:'.$style.';background-color: #e8ffff;"><span id="null"></span>'.$d.'('.$weekday[$i].')</td>';
-                    }
                 }
+                echo '<td align="center" class="'.$class_mask.'" style="color:'.$style.';background-color: '.$bgcolor_cal.';'.$border_double.'"><span id="null"></span>'.$d.'('.$weekday[$i].')</td>';
                 // 背景色
                 if ($d%2 == 0) {
                     $bgcolor_cal = '#CEF9DC'; 
                 } else {
                     $bgcolor_cal = ''; 
                 }
+                $count = $extra - 5;
                 // 未定欄
                 if ($flag == 0) {
                     for($k=$count+1; $k<=$count+5; $k++) {
@@ -823,11 +873,11 @@
                                 $div2 .=  '</div>';
                             }
                             if ($k == $count+1) {
-                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;">'.$span[1].$div2.'</td>';
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;'.$border_double.'">'.$span[1].$div2.'</td>';
                             } elseif ($k == $count+2) {
-                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;">'.$span[1].$div2.'</td>';
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;'.$border_double.'">'.$span[1].$div2.'</td>';
                             } else {
-                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].$div2.'</td>';
+                                echo '<td id="Cell'.$count.'D'.$d.'" class="" style="height:30px;background-color:'.$bgcolor_cal.';'.$border_double.'">'.$span[1].$div2.'</td>';
                             }
                         } else {
                             $span[0] = '';$span[1] = '';
@@ -836,11 +886,11 @@
                             $span[0] = $span[0].'<span id=""></span>';
                             $span[1] = $span[0].'<span id="'.$k.'"></span>';
                             if ($k == $count+1) {
-                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;">'.$span[1].'</td>';
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-right-style: dotted;'.$border_double.'">'.$span[1].'</td>';
                             } elseif ($k == $count+2) {
-                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;">'.$span[1].'</td>';
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';border-left-style: dotted;'.$border_double.'">'.$span[1].'</td>';
                             } else {
-                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';">'.$span[1].'</td>';
+                                echo '<td class="" style="height:30px;background-color:'.$bgcolor_cal.';'.$border_double.'">'.$span[1].'</td>';
                             }
                         }
                     }
@@ -854,42 +904,42 @@
             <!-- カレンダー部分 END -->
             <!-- 職種 -->
             <tr>
-                <td style='width:80px;background-color: #e8ffff;color: black;' colspan="2" id="message" class="<?=$class_mask ?>">職種</td>
+                <td style='width:80px;background-color: #e8ffff;color: black;border-top-style:double;border-top-width:5px;' colspan="2" id="message" class="<?=$class_mask ?>">職種</td>
             <?php 
                 $ii = 0;
-                for ($count=0; $count<$col+count($datas); $count++){
-                    if ($ii == count($datas)) {
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
                         break;
                     }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                     if (!empty($datas2[$count])) {
             ?>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;border-top-style:double;border-top-width:5px;'>
                     <?php echo preg_replace('/^[ 　]+|[ 　]+$/', '', $list_shokushu[setData($datas2,'shokushu_id',$count,$record)]); ?>
                     <?php echo setKakko(setData($datas2,'shokushu_memo',$count,$record)); ?>
                 </td>
                 <?php
                     } else {
                 ?>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'></td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;border-top-style:double;border-top-width:5px;'></td>
                 <?php
-                    }
-                    if ($count == $cal_arr[$ii]) {
-                        $ii += 1;
-                        echo '<td  class="'.$class_mask.'" style="background-color: #e8ffff;color:black;">職種</td>';
                     }
                 }
             ?>
+                <td style="background-color: #e8ffff;border-top-style:double;border-top-width:5px;">職種</td>
                 <?php if ($flag == 0) { ?>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;' colspan="2">受付</td>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>保育</td>
-                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;'>その他</td>
-                <td style='background-color: #FFFFCC;color:red;font-weight: bold;'>条件付き</td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;border-top-style:double;border-top-width:5px;' colspan="2">受付</td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;border-top-style:double;border-top-width:5px;'>保育</td>
+                <td style='background-color: #FFFFCC;color:#555555;font-weight: bold;border-top-style:double;border-top-width:5px;'>その他</td>
+                <td style='background-color: #FFFFCC;color:red;font-weight: bold;border-top-style:double;border-top-width:5px;'>条件付き</td>
                 <?php } ?>
             </tr>
             <!-- 案件 -->
             <tr>
                 <th style='background:#99ccff;text-align: center;width:120px;height: 30px;' colspan="2" class="<?=$class_mask ?>">
-                    <a href="#" onclick="setHidden();">
+                    <a href="#" class="load" onclick="doHidden();">
                         <span id="ActiveDisplay" onclick="">【表示切り替え】</span>
                     </a>
                 </th>
@@ -899,12 +949,12 @@
                     color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
                 <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
                 </th>
-                <th style="background-color: #99ccff;" align="center">
-                    <a href="#" onclick="setHidden();">
+                <?php } ?>
+                <th style='background:#99ccff;text-align: center;' class="<?=$class_mask ?>">
+                    <a href="#" class="load" onclick="doHidden();">
                         <span id="ActiveDisplay" onclick="">表示</span>
                     </a>
                 </th>
-                <?php } ?>
                 <?php if ($flag == 0) { ?>
                 <th colspan="5" align="center" style="background-color: #66CCFF;color:black;">未定</th>
                 <?php } ?>
@@ -913,76 +963,81 @@
             <tr id="OrderDetail20">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">予定稼働人数</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style="background-color: white;height:30px;text-align: right;padding-right: 10px;">
                     <?=$kadou[$count] ?>
                     <input type="hidden" id="running_num<?=$count?>" value="<?=$kadou[$count] ?>">
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">稼働</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">稼働数</td>
+                <?php if ($flag == 0) { ?>
                 <td colspan="5" rowspan="10" style="background-color: white;"></td>
+                <?php } ?>
             </tr>
             <tr id="OrderDetail21">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">売上見込み合計</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style="background-color: white;height:30px;">
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.uriage',
                             array('type'=>'text','id'=>'uri1_'.$count,'div'=>false,'label'=>false,
-                                'value'=>setUriSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 80%;', 'disabled')); ?>
+                                'value'=>setUriSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 70%;', 'disabled')); ?>
                     <input type="hidden" name="data[OrderCalender][<?=$count ?>][uriage]" value="<?=setUriSum($count, $datas2, $kadou[$count]) ?>">
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">売上</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">売上</td>
             </tr>
             <tr id="OrderDetail22">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">人件費見込み合計</td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style="background-color: white;height:30px;">
                     \ <?php echo $this->Form->input('OrderCalender.'.$count.'.jinkenhi',
                             array('type'=>'text','id'=>'jinkenhi1_'.$count,'div'=>false,'label'=>false,
-                                'value'=>setJinkenhiSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 80%;', 'disabled')); ?>
+                                'value'=>setJinkenhiSum($count, $datas2, $kadou[$count]), 'style'=>'text-align: right;width: 70%;', 'disabled')); ?>
                     <input type="hidden" name="data[OrderCalender][<?=$count ?>][jinkenhi]" value="<?=setJinkenhiSum($count, $datas2, $kadou[$count]) ?>">
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #e8ffff;">人件</td>';
-                        }
                     }
                 ?>
+                <td style="background-color: #e8ffff;">人件費</td>
             </tr>
             <tr id="OrderDetail23">
                 <td colspan="2" style="height:40px;text-align: center;background-color: #ffecde;color:black;" class="<?=$class_mask ?>">物件別売上見込み</td>
                 <?php 
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
+                        if (empty($data[0]['cnt'])) {
+                            continue;
+                        }
                         $from = $total_col;
                         //$to = $total_col + $data[0]['cnt'] - 1;
                 ?>
@@ -993,7 +1048,7 @@
                             $ret += str_replace(',', '', setUriSum($i, $datas2, $kadou[$i]));
                         }
                         if ($data[0]['cnt'] == 1) {
-                            $width = '80%';
+                            $width = '70%';
                         } else {
                             $width = '90px';
                         }
@@ -1003,20 +1058,23 @@
                     ?>
                     <input type="hidden" name="data[OrderCalender][<?=$from ?>][uriage_case]" value="<?=number_format($ret) ?>">
                 </td>
-                <td style="background-color: #e8ffff;">売上計</td>
                 <?php
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
+                <td style="height:40px;text-align: center;background-color: #ffecde;color:black;" class="<?=$class_mask ?>">物件別</td>
             </tr>
             <tr id="OrderDetail24">
                 <td colspan="2" style="height:85px;text-align: center;background-color: #99ccff;color:black;" class="<?=$class_mask ?>"><b>交通費について<br>（ｲﾚｷﾞｭﾗｰ別途）</b></td>
                 <?php 
-                    $ii = 0;
-                    for ($count=0; $count<$col+count($datas); $count++){
-                        if ($ii == count($datas)) {
-                            break;
-                        }
+                $ii = 0;
+                for($k=0; $k<$limit; $k++) {
+                    if (empty($datas[$k])) {
+                        break;
+                    }
+                    $ii = $ii + $datas[$k][0]['cnt'];
+                }
+                for ($count=$start_count; $count<$start_count + $ii; $count++){
                 ?>
                 <td style="background-color: white;height:85px;">
                     <?php
@@ -1036,19 +1094,16 @@
                     ?>
                 </td>
                 <?php
-                        if ($count == $cal_arr[$ii]) {
-                            $ii += 1;
-                            echo '<td style="background-color: #99ccff;color:black;"><b>交通費</b></td>';
-                        }
                     }
                 ?>
+                <td style="height:85px;text-align: center;background-color: #99ccff;color:black;" class="<?=$class_mask ?>">交通費</td>
             </tr>
             <tr id="OrderDetail25">
                 <td rowspan="1" align="center" style='background-color: #e8ffff;height:165px;color:black;' colspan="2" class="<?=$class_mask ?>">
                     備考
                 </td>
                 <?php
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                 ?>
@@ -1057,16 +1112,16 @@
                         array('type'=>'textarea','div'=>false,'label'=>false, 
                             'value'=>$data['OrderCalender']['remarks'], 'style'=>'width:90%;text-align: left;font-size:90%;font-weight:bold;', 'rows'=>10)); ?>
                 </td>
-                <td style="background-color: #e8ffff;">備考</td>
                 <?php
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
+                <td style="background-color: #e8ffff;">備考</td>
             </tr>
             <tr id="OrderDetail26">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">注意事項</td>
                 <?php
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                 ?>
@@ -1075,16 +1130,16 @@
                             array('type'=>'text','div'=>false,'label'=>false,
                                 'value'=>$data['OrderCalender']['caution'], 'style'=>'text-align:left;width: 95%;font-size:90%;')); ?>
                 </td>
-                <td style="background-color: #e8ffff;">注意</td>
                 <?php
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
+                <td style="background-color: #e8ffff;">注意</td>
             </tr>
             <tr id="OrderDetail27">
                 <td colspan="2" style="height:30px;text-align: center;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">契約書</td>
                 <?php
-                    $total_col = 0;
+                    $total_col = $start_count;
                     foreach ($datas as $key=>$data){
                         $from = $total_col;
                 ?>
@@ -1093,15 +1148,16 @@
                             array('type'=>'text','div'=>false,'label'=>false,
                                 'value'=>$data['OrderCalender']['contract'], 'style'=>'text-align:center;width: 95%;font-size:90%;')); ?>
                 </td>
-                <td style="background-color: #e8ffff;">契約書</td>
                 <?php
                         $total_col += $data[0]['cnt'];
                     } 
                 ?>
+                <td style="background-color: #e8ffff;">契約書</td>
             </tr>
+            <?php if ($flag == 1) { ?>
             <!-- 月の合計 -->
             <?php if (!empty($datas) && !empty($datas2)) { ?>
-            <tr  id="OrderDetail28" style="background-color:white;">
+            <tr id="OrderDetail28" style="background-color:white;">
                 <td rowspan="3" colspan="2" style="height:75px;background-color: #e8ffff;color:black;" class="<?=$class_mask ?>">総計</td>
                 <td colspan="2" algin="center" style="font-size:110%;height:30px;background-color: #ffccff;">今月の売上見込み</td>
                 <td colspan="2" algin="center" style="font-size:110%;background-color: #ffcccc;">人件費見込み合計</td>
@@ -1136,15 +1192,27 @@
                 </td>
             </tr>
             <?php } ?>
+            <?php } ?>
             </tbody>
         </table>
     </div>
 <div id="Div" style="display: none;"><p id="Mbox0">セルをクリックしたらここに書き出します。</p>
  <p id="Mbox1">インデックス値は '0'から始まります。</p>
 </div>
+    <!-- ページネーション -->
+    <div class="pageNav03 load" style="margin-top:-5px; margin-bottom: 30px;width:1200px;">
+    <?php
+            echo $this->Paginator->first('<< 最初', array(), null, array('class' => 'first disabled'));
+            echo $this->Paginator->prev('< 前へ', array(), null, array('class' => 'prev disabled'));
+            echo $this->Paginator->numbers(array('separator' => ''));
+            echo $this->Paginator->next('次へ >', array(), null, array('class' => 'next disabled'));
+            echo $this->Paginator->last('最後 >>', array(), null, array('class' => 'last disabled'));
+    ?>
+     </div>
+    <div style="clear:both;"></div>
     
-    <div style='margin-left: 10px;'>
-<button type="button" id="<?=$button_type2 ?>" style="cursor: pointer;border:1px solid black;" class="check" onclick="doAccount(<?=$y ?>,<?=sprintf("%02d", $m) ?>, 1);" <?=$disabled ?>>一時保存</button>
+    <div style='margin-left: 10px;margin-top: 5px;'>
+    <input type="button" id="<?=$button_type2 ?>" class="check" value="一時保存" style="cursor: pointer;border:1px solid black;" onclick="doAccount(<?=$year ?>,<?=sprintf("%02d", $month) ?>, 1);" <?=$disabled ?>>
     &nbsp;&nbsp;
 <?php
     if ($flag == 0) {
@@ -1161,7 +1229,7 @@
     }
 ?>
 <?php print($this->Form->submit($commet2, array('type'=>'button', 'id'=>$button_type, 'name'=>'confirm','div' => false, 'label'=>false,  'class'=>'check',
-    'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$y.','.sprintf("%02d", $m).', 2);'))); ?>
+    'style' => 'padding: 10px 15px;font-size: 110%;cursor:pointer;', 'onclick' => 'doCommit("'.$commet3.'",'.$year.','.sprintf("%02d", $month).', 2);'))); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('>>スタッフ送信<<', array('id'=>'button-create', 'name'=>'send', 'div' => false, 'style' => 'padding:10px 20px', 'onclick'=>'alert("工事中");return false;'))); ?>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

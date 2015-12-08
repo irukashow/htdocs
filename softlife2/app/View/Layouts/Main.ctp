@@ -103,7 +103,7 @@ $(document).ready(function() {
     });
     setTimeout($.unblockUI, 10000);
   });
-  $('.load2').change(function() {
+  $('.load2').click(function() {
     $.blockUI({
       message: '<?=$this->Html->image('busy.gif'); ?> ロード中...少々お待ちください。',
       css: {

@@ -293,7 +293,7 @@ function doAlert(str, element) {
         <!-- 基本情報 -->
         <table border='1' cellspacing="0" cellpadding="5" style='width: 1000px;margin-top: 10px;border-spacing: 0px;'>
             <tr>
-                <th colspan="5" style='background:#99ccff;text-align: center;font-size:110%;'>登録済オーダー</th>
+                <th colspan="6" style='background:#99ccff;text-align: center;font-size:110%;'>登録済オーダー</th>
             </tr>
             <?php
                 if (!empty($selected_date)) {
@@ -310,14 +310,20 @@ function doAlert(str, element) {
                     <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
                             .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
                 </td>
-                <td align="center" style="background-color: #ffffcc;width: 50px;">
+                <td align="center" style="background-color: #ffffcc;width: 70px;border-right-style: none;">
+                    <?php echo $this->Form->input('コピー',
+                            array('type'=>'submit','div'=>false,'label'=>false,
+                                'name'=>'copy_order['.$data0['OrderInfo']['id'].']','id'=>'button-create', 'div'=>false,
+                                'onclick' => 'alert("制作前です。");return false;', 'style'=>'margin-top:-10px;padding:5px 10px 5px 10px;')); ?>
+                </td>
+                <td align="center" style="background-color: #ffffcc;width: 70px;border-left-style: none;">
                     <?php echo $this->Form->input('削　除',
                             array('type'=>'submit','div'=>false,'label'=>false,
-                                'name'=>'delete_order['.$data0['OrderInfo']['id'].']','id'=>'button-delete', 
+                                'name'=>'delete_order['.$data0['OrderInfo']['id'].']','id'=>'button-delete', 'div'=>false,
                                 'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding:3px 10px 3px 10px;')); ?>
                 </td>
                 <?php } else { ?>
-                <td colspan="3">
+                <td colspan="4">
                     <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id'].$date2 ?>">
                     <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
                             .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
@@ -329,7 +335,7 @@ function doAlert(str, element) {
             <?php } ?>
             <?php if (empty($datas0)) { ?>
             <tr>
-                <td align="center" colspan="5" style="background-color: #fff9ff;">登録されたデータはありません。</td>
+                <td align="center" colspan="6" style="background-color: #fff9ff;">登録されたデータはありません。</td>
             </tr>
             <?php } ?>
             <?php 
@@ -340,7 +346,7 @@ function doAlert(str, element) {
                 }
             ?>
             <tr>
-                <td align="center" colspan="5" style="<?=$style ?>">
+                <td align="center" colspan="6" style="<?=$style ?>">
                     <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/">▶ 新規登録 ◀</a>
                 </td>
             </tr>
@@ -545,7 +551,7 @@ function doAlert(str, element) {
                         }
                     ?>
                     <input type="button" value="スタッフ選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>',
+                           onclick="form1.submit();window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>',
                                 'スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
                 <?php } ?>

@@ -88,7 +88,7 @@ class CaseManagementController extends AppController {
         //$this->log($customer_array, LOG_DEBUG);
         // 表示件数の初期値
         $this->set('limit', $limit);
-        $conditions1 = null;$conditions2 = null;$conditions3 = null;
+        $conditions1 = null;$conditions2 = array(1=>1);$conditions3 = null;
         // Paginationの設定
         $this->paginate = array(
         //モデルの指定
@@ -279,7 +279,7 @@ class CaseManagementController extends AppController {
             //$this->request->params['named']['page'] = 1;
             $datas = $this->paginate('CaseManagement', $conditions2);
             $this->set('datas', $datas);
-            //$this->log($this->CaseManagement->getDataSource()->getLog(), LOG_DEBUG);
+            $this->log($datas, LOG_DEBUG);
             
         } elseif ($this->request->is('get')) {
             // プロフィールページへ
@@ -576,7 +576,7 @@ class CaseManagementController extends AppController {
         $conditions1 = array('area' => substr($selected_class, 0, 1));
         $this->User->virtualFields['busho'] = 'CONCAT(busho_name, "　", name_sei, " ", name_mei)';
         $name_arr = $this->User->find('list', array('fields' => array('username', 'busho'), 'conditions' => $conditions1, 'order' => array('busho_id'=>'asc')));
-        $this->set('name_arr', $name_arr); 
+        $this->set('name_arr', $name_arr);
         // 取引先マスタのセット
         $conditions2 = array('class' => $selected_class, 'kaijo_flag' => 0);
         $this->Customer->virtualFields['corp_name2'] = 'CONCAT("（", LEFT(corp_name_kana,1), "）", corp_name)';
@@ -908,19 +908,6 @@ class CaseManagementController extends AppController {
             if (isset($this->request->data['insert'])) {
                 $row = $this->request->data['OrderInfo']['shokushu_num'];
                 $this->set('row', $row);
-                /**
-                if (!empty($order_id)) {
-                    // 既存データがある場合はチェック
-                    $conditions = array('OrderInfoDetail.case_id' => $case_id, 'OrderInfoDetail.order_id' => $order_id);
-                    $result = $this->OrderInfoDetail->find('count', array('conditions' => $conditions));
-                    if ($result > $row) {
-                        $this->Session->setFlash('【エラー】登録済みの職種データがあります。');
-                        $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id));
-                        return;
-                    }
-                }
-                 * 
-                 */
                 // データを登録する
                 $data4 = $this->request->data;
                 if ($this->OrderInfo->save($data4)) {
@@ -1123,6 +1110,12 @@ class CaseManagementController extends AppController {
                 $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                         '('.$order_id.')'.$result2['OrderInfo']['order_name'], 26, $this->request->clientIp()); // (26)職種・カレンダー消去コード:26
                 $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag));
+            // コピー（オーダーごと）
+            } elseif (isset($this->request->data['copy_order'])) {
+                $id_array = array_keys($this->request->data['copy_order']);
+                $id = $id_array[0];
+                // 
+                
             // 削除（オーダーごと）
             } elseif (isset($this->request->data['delete_order'])) {
                 // オーダー名の取得

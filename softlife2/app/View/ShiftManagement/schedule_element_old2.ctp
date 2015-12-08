@@ -32,6 +32,7 @@
         echo $this->Html->script('redips-drag-min');
     }
     echo $this->Html->script('script');
+    //echo $this->Html->css('evol.colorpicker.min');
     echo $this->Html->css('staffmaster');
     echo $this->Html->css('style_1');
 ?>
@@ -383,23 +384,16 @@ onload = function() {
     // ヘッダを隠す
     <?php
         if ($flag == 0) {
-            $width_extra = 110*5;
+            $width_extra = 120*5;
         } else {
             $width_extra = 0;
-        }
-        $width_data = 0;
-        for($a=0; $a<$limit; $a++) {
-            if (empty($datas[$a])) {
-                break;
-            }
-            $width_data = $width_data + $datas[$a][0]['cnt'];
         }
     ?>
     document.getElementById("header").style.display = 'none';
     document.getElementById("footer").style.display = 'none';
-    var width = <?=120+$width_data*110+50+$width_extra+30 ?>;
+    var width = <?=120+$col*120+count($datas)*50+$width_extra+30 ?>;
     if (width > 1300) {
-        document.body.style.width = '<?=120+$width_data*110+50+$width_extra+30 ?>px';
+        document.body.style.width = '<?=120+$col*120+count($datas)*50+$width_extra+30 ?>px';
     } else {
         document.body.style.width = '1300px';
     }
@@ -412,30 +406,30 @@ onload = function() {
     // シフト表にスクロールバーを表示する
     //document.getElementById("table1").overflow = "scroll";
     //document.getElementById("table1").height = "100%";
+    // 待機マーク
+    $(function() {
+        /**
+        //ページの読み込みが完了したのでアニメーションはフェードアウトさせる
+        $("#loading").fadeOut();
+        //ページの表示準備が整ったのでコンテンツをフェードインさせる
+        $("#table1").fadeIn();
+        **/
+    });
     //getCELL();
     edit = getCookie("edit");
     // シフト編集モードのセット
-    setHidden(<?=$hidden ?>);
+    if (edit == 1) {
+        for(i=0; i<=29; i++) {
+            document.getElementById("OrderDetail"+i).style.display = 'none';
+            //document.getElementById("OrderDetail0_"+i).style.display = 'none';
+        }
+    } else {
+        for(i=0; i<=29; i++) {
+            document.getElementById("OrderDetail"+i).style.display = 'table-row';
+            //document.getElementById("OrderDetail0_"+i).style.display = 'table-row';
+        }
+    }
     REDIPS.drag.dropMode = 'multiple';
-}
-// リロード関数
-function doReload() {
-    window.location.href = "<?=ROOTDIR ?>/ShiftManagement/schedule_new2/limit:<?=$limit ?>/page:<?=$page ?>/hidden:<?=$hidden ?>?date=<?=$year.'-'.$month ?>&point=true";
-    $.blockUI({
-      message: '<?=$this->Html->image('busy.gif'); ?> 処理中...少々お待ちください。',
-      css: {
-        border: 'none',
-        padding: '10px',
-        backgroundColor: 'white',
-        opacity: .5,
-        color: 'black'
-      },
-      overlayCSS: {
-        backgroundColor: '#000',
-        opacity: 0.6
-      }
-    });
-    setTimeout($.unblockUI, 20000);
 }
 </script>
 <script>
@@ -445,30 +439,21 @@ function setCalender(year, month) {
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;
     var value2 = options2[month.options.selectedIndex].value;
-    location.href="<?=ROOTDIR ?>/ShiftManagement/schedule_new2/limit:<?=$limit ?>/hidden:<?=$hidden ?>?date=" +value1 + "-" + value2;
-}
-// スタッフ選択ページを開く
-function openSelectStaff(order_id, col) {
-    window.open('<?=ROOTDIR ?>/ShiftManagement/select2/'+order_id+'/'+col
-        +'?date=<?=$year.'-'.$month ?>&limit=<?=$limit ?>&page=<?=$page ?>&hidden=<?=$hidden ?>','スタッフ選択','width=800,height=600,scrollbars=yes');
+    location.href="<?=ROOTDIR ?>/ShiftManagement/schedule_old2?date=" +value1 + "-" + value2;
 }
 // 職種の詳細を隠す
-function doHidden() {
-    if (<?=$hidden ?> == 1) {
-        hidden = 0;
-    } else {
-        hidden = 1;
-    }
-    location.href = "<?=ROOTDIR ?>/ShiftManagement/schedule_new2/limit:<?=$limit ?>/page:<?=$page ?>/hidden:"+hidden+"?date=<?=$year.'-'.sprintf('%02d',$month) ?>";
-}
-function setHidden(flag) {
-    if (flag == 0) {
+function setHidden() {
+    target = document.getElementById("ActiveDisplay");
+    if (document.getElementById("OrderDetail1").style.display == 'none') {
         for(i=0; i<=29; i++) {
             var id1 = "OrderDetail"+i;
             //var id2 = "OrderDetail0_"+i;
             document.getElementById(id1).style.display = 'table-row'; 
             //document.getElementById(id2).style.display = 'table-row'; 
         }
+        deleteCookie("edit");
+        document.cookie = "edit=0;";
+        //target.innerHTML = '<span>シフト編集</span>';
     } else {
         for(i=0; i<=29; i++) {
             var id1 = "OrderDetail"+i;
@@ -476,6 +461,9 @@ function setHidden(flag) {
             document.getElementById(id1).style.display = 'none';
             //document.getElementById(id2).style.display = 'none';
         }
+        deleteCookie("edit");
+        document.cookie = "edit=1;";
+        //target.innerHTML = '<span>全表示</span>';
     }
 }
 // クッキーの取得
@@ -503,9 +491,9 @@ function getCookie(key) {
 　return "";
 }
 // クッキーを削除する関数
-function deleteCookie( cookieName ){
+function deleteCookie( $cookieName ){
     // 過ぎた有効期限を設定することで削除できる
-    document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT"; 
+    document.cookie = $cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT"; 
 }
 </script>
 <script language="javascript">
@@ -608,29 +596,11 @@ function doAccount(year, month, mode) {
     input.setAttribute('name', 'month');
     input.setAttribute('value', year+"-"+month+"-01");
     form.appendChild(input);
-    // limit
-    var input = document.createElement('input');
-    input.setAttribute('type', 'hidden');
-    input.setAttribute('name', 'limit');
-    input.setAttribute('value', <?=$limit ?>);
-    form.appendChild(input);
-    // page数
-    var input = document.createElement('input');
-    input.setAttribute('type', 'hidden');
-    input.setAttribute('name', 'page');
-    input.setAttribute('value', <?=$page ?>);
-    form.appendChild(input);
-    // データ総列数
+    // データ列数
     var input = document.createElement('input');
     input.setAttribute('type', 'hidden');
     input.setAttribute('name', 'col');
     input.setAttribute('value', <?=$col ?>);
-    form.appendChild(input);
-    // スタート列
-    var input = document.createElement('input');
-    input.setAttribute('type', 'hidden');
-    input.setAttribute('name', 'count_from');
-    input.setAttribute('value', <?=$start_count ?>);
     form.appendChild(input);
     // フラグ
     var input = document.createElement('input');
@@ -665,12 +635,10 @@ function doAccount(year, month, mode) {
                 continue;
             }
             // spanタグがあって、divタグがないものはエラー（一時保存以外）
-            /**
             if (mode != 1 && Cell.getElementsByTagName("span").length > 1 && j < myTbl.rows[i].cells.length-5 && Cell.getElementsByTagName("DIV").length == 0) {
                 alert("【エラー】"+(i-startrow+1)+"日に埋まっていないシフトが存在します。");
                 return;
             }
-            **/
             // テスト
             //alert(Cell.getElementsByTagName("span")[2].id);
             
@@ -696,7 +664,7 @@ function doAccount(year, month, mode) {
             }
         }
     }
-    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule_new2/hidden:<?=$hidden ?>');
+    form.setAttribute('action', '<?=ROOTDIR ?>/ShiftManagement/schedule_old2');
     form.setAttribute('method', 'post');
     form.submit();
 }
