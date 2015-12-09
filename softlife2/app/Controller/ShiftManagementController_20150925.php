@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  */
 class ShiftManagementController extends AppController {
     public $uses = array('StaffSchedule' ,'WorkTable' ,'Item', 'User', 'TimeCard',
-        'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalender', 'Customer', 'WkShift');
+        'StaffMaster', 'CaseManagement', 'OrderInfo', 'OrderInfoDetail', 'OrderCalendar', 'Customer', 'WkShift');
     public $title_for_layout = "シフト管理 - 派遣管理システム";
     
     public function index($date = null) {
@@ -345,26 +345,26 @@ class ShiftManagementController extends AppController {
         // 登録していた値をセット
         // 登録データのセット
         //$conditions1 = array('id' => $order_id, 'case_id' => $case_id);
-        $conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-        $col = $this->OrderCalender->find('count', array('conditions' => $conditions1));
+        $conditions1 = array('class'=>$selected_class, 'OrderCalendar.year' => $year, 'OrderCalendar.month' => $month);
+        $col = $this->OrderCalendar->find('count', array('conditions' => $conditions1));
         $this->set('col', $col);
         // 案件あたりの職種数
-        //$conditions1 = array('class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-        $datas = $this->OrderCalender->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
+        //$conditions1 = array('class'=>$selected_class, 'OrderCalendar.year' => $year, 'OrderCalendar.month' => $month);
+        $datas = $this->OrderCalendar->find('all', array('fields'=>array('case_id', 'count(case_id) as cnt'), 
             'conditions' => $conditions1, 'group' => array('case_id'), 'order' => array('sequence', 'case_id', 'order_id')));
         $this->set('datas', $datas);
         //$this->log($datas, LOG_DEBUG);
         // 職種以下
         $option = array();
-        $option['fields'] = array('OrderInfoDetail.*', 'OrderCalender.*'); 
-        $option['order'] = array('OrderCalender.sequence' => 'asc', 'OrderInfoDetail.case_id' => 'asc', 'OrderInfoDetail.order_id' => 'asc', 'OrderInfoDetail.shokushu_num' => 'asc');
-        $option['conditions'] = array('OrderInfoDetail.class'=>$selected_class, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month); 
+        $option['fields'] = array('OrderInfoDetail.*', 'OrderCalendar.*'); 
+        $option['order'] = array('OrderCalendar.sequence' => 'asc', 'OrderInfoDetail.case_id' => 'asc', 'OrderInfoDetail.order_id' => 'asc', 'OrderInfoDetail.shokushu_num' => 'asc');
+        $option['conditions'] = array('OrderInfoDetail.class'=>$selected_class, 'OrderCalendar.year' => $year, 'OrderCalendar.month' => $month); 
         $option['joins'] = array(
         array(
             'type' => 'RIGHT',   //LEFT, INNER, OUTER
-            'table' => 'order_calenders',
-            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
-            'conditions' => array('OrderInfoDetail.order_id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num')
+            'table' => 'order_calendars',
+            'alias' => 'OrderCalendar',    //下でPost.user_idと書くために
+            'conditions' => array('OrderInfoDetail.order_id = OrderCalendar.order_id AND OrderInfoDetail.shokushu_num = OrderCalendar.shokushu_num')
             ),
         );
         // オーダー入力欄以下
@@ -458,7 +458,7 @@ class ShiftManagementController extends AppController {
         foreach($datas5 as $data5) {
             $data = array('sequence' => $data5['CaseManagement']['sequence']);
             $condtion2 = array('case_id' => $data5['CaseManagement']['id'] );
-            $this->OrderCalender->updateAll($data, $condtion2);
+            $this->OrderCalendar->updateAll($data, $condtion2);
         }
 
         // post時の処理
@@ -982,14 +982,14 @@ class ShiftManagementController extends AppController {
                 $this->CaseManagement->save($data, false, $fields);
                 $data_2 = array('sequence' => $row-1);
                 $condtion = array('case_id' => $id );
-                $this->OrderCalender->updateAll($data_2, $condtion);
+                $this->OrderCalendar->updateAll($data_2, $condtion);
                 // $id2を$row
                 $data2 = array('CaseManagement' => array('id' => $id2, 'sequence' => $row));
                 $fields2 = array('sequence');
                 $this->CaseManagement->save($data2, false, $fields2);
                 $data2_2 = array('sequence' => $row);
                 $condtion2 = array('case_id' => $id2 );
-                $this->OrderCalender->updateAll($data2_2, $condtion2);
+                $this->OrderCalendar->updateAll($data2_2, $condtion2);
             } elseif ($direction == 'down') {
                 if ($row == $record) {
                     return;
@@ -1000,14 +1000,14 @@ class ShiftManagementController extends AppController {
                 $this->CaseManagement->save($data, false, $fields);
                 $data_2 = array('sequence' => $row+1);
                 $condtion = array('case_id' => $id );
-                $this->OrderCalender->updateAll($data_2, $condtion);
+                $this->OrderCalendar->updateAll($data_2, $condtion);
                 // $id2を$row
                 $data2 = array('CaseManagement' => array('id' => $id2, 'sequence' => $row));
                 $fields2 = array('sequence');
                 $this->CaseManagement->save($data2, false, $fields2);
                 $data2_2 = array('sequence' => $row);
                 $condtion2 = array('case_id' => $id2 );
-                $this->OrderCalender->updateAll($data2_2, $condtion2);
+                $this->OrderCalendar->updateAll($data2_2, $condtion2);
             }
         } else {
 

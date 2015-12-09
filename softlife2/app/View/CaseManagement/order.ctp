@@ -121,10 +121,10 @@ onload = function() {
     // チェックのあるセルを着色
     for(var col=0; col<<?=$row ?> ;col++) {
         for(var i=1; i<=31 ;i++) {
-            if (document.getElementById("OrderCalender"+col+"D"+i) == null) {
+            if (document.getElementById("OrderCalendar"+col+"D"+i) == null) {
                 break;
             }
-            if (document.getElementById("OrderCalender"+col+"D"+i).checked) {
+            if (document.getElementById("OrderCalendar"+col+"D"+i).checked) {
                 changeColor(col, i, 1);
             } else {
                 changeColor(col, i, 0);
@@ -135,7 +135,7 @@ onload = function() {
 </script>
 <script>
 // カレンダー月指定
-function setCalender(case_id, yyyy, mm, order_id, year, month) {
+function setCalendar(case_id, yyyy, mm, order_id, year, month) {
     if (order_id == '') {
         alert("オーダーを指定してください。");
     }
@@ -149,10 +149,10 @@ function setCalender(case_id, yyyy, mm, order_id, year, month) {
 function setAllSelect(col, element) {
     for(var i=1; i<=31 ;i++) {
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -164,10 +164,10 @@ function setAllSelect2(col, element) {
             continue;
         }
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -406,7 +406,7 @@ function changeColor(col, day, flag) {
             <!-- 給与 END -->
 
 <?php echo $this->Form->end(); ?>
-<?php echo $this->Form->create('OrderCalender', array('name'=>'form2')); ?>
+<?php echo $this->Form->create('OrderCalendar', array('name'=>'form2')); ?>
             <tr>
                 <!-- カレンダー月指定 -->
                 <td rowspan="1" align="center" style='background-color: #e8ffff;'>
@@ -419,30 +419,30 @@ function changeColor(col, day, flag) {
                     ?>
                     <?php echo $this->Form->input(false,array('name'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;',
-                        'onchange'=>'setCalender('.$case_id.','.$yyyy.','.$mm.','.$order_id.', this, document.form2.month)')); ?>年<br>
+                        'onchange'=>'setCalendar('.$case_id.','.$yyyy.','.$mm.','.$order_id.', this, document.form2.month)')); ?>年<br>
                         <a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$yyyy ?>/<?=$mm ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
                     <?php echo $this->Form->input(false,array('name'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
                         'value'=>$month, 'style'=>'text-align: right;', 
-                        'onchange'=>'setCalender('.$case_id.','.$yyyy.','.$mm.','.$order_id.', document.form2.year, this)')); ?>月
+                        'onchange'=>'setCalendar('.$case_id.','.$yyyy.','.$mm.','.$order_id.', document.form2.year, this)')); ?>月
                         <a href="<?=ROOTDIR ?>/CaseManagement/order/<?=$case_id ?>/<?=$yyyy ?>/<?=$mm ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php for ($count=0; $count<$row; $count++){ ?>
                     <?php if (empty($datas1) || empty($datas1[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
-                    <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden')); ?>
+                    <?php } elseif ($datas1[$count]['OrderCalendar']['year'] != $year || $datas1[$count]['OrderCalendar']['month'] != $month) { ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden')); ?>
                     <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas1[$count]['OrderCalender']['id'])); ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas1[$count]['OrderCalendar']['id'])); ?>
                     <?php } ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
                 <td align='center' style='background-color: #e8ffff;'>
                 </td>
                 <?php } ?>
@@ -490,16 +490,16 @@ function changeColor(col, day, flag) {
                 <td id="Cell<?=$count ?>D<?=$d ?>">
                     <div style='color:<?=$style ?>;' class='input checkbox'>
                         <?php if (empty($datas1) || empty($datas1[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
                                         'value'=>1, 'disabled'=>'disabled', 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
-                        <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
+                        <?php } elseif ($datas1[$count]['OrderCalendar']['year'] != $year || $datas1[$count]['OrderCalendar']['month'] != $month) { ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
                                         'value'=>1, 'disabled'=>'disabled', 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
                         <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
-                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas1[$count]['OrderCalender']['d'.$d],
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.d'.$d,
+                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas1[$count]['OrderCalendar']['d'.$d],
                                         'value'=>1, 'disabled'=>'disabled', 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
                         <?php } ?>
                         

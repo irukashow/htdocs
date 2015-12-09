@@ -86,7 +86,7 @@ $(function() {
                 <td style='background-color: #e8ffff;width:30%;' colspan="2">担当者（所属・氏名）</td>
                 <td>
                 <?php echo $this->Form->input('username',array('type'=>'select', 'label'=>false,'div'=>false,'empty'=>'担当者を選択してください', 
-                                        'options'=>$name_arr, 'style'=>'width:70%;padding:5px;')); ?>
+                                        'options'=>$name_arr, 'style'=>'width:70%;')); ?>
                 </td>
             </tr>
             <tr>
@@ -116,8 +116,8 @@ $(function() {
                         </tr>
                         <tr>
                             <td>
-                                <?php echo $this->Form->input('client_busho',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
-                                <?php echo $this->Form->input('client_tantou',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>様 
+                                <?php echo $this->Form->input('client_busho',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;')); ?>
+                                <?php echo $this->Form->input('client_tantou',array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;')); ?>様 
                             </td>
                         </tr>
                     </table>
@@ -392,8 +392,8 @@ $(function() {
                         </tr>
                         <tr>
                             <td>
-                                <?php echo $this->Form->input('billing_busho'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;padding:5px;')); ?>
-                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;padding:5px;')); ?>様 
+                                <?php echo $this->Form->input('billing_busho'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '部署', 'style'=>'width:50%;')); ?>
+                                <?php echo $this->Form->input('billing_tantou'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '担当者', 'style'=>'width:40%;')); ?>様 
                             </td>
                         </tr>                                              
                     </table>
@@ -449,10 +449,14 @@ $(function() {
                 <td>
                     <?php
                         if (!empty($data_billing[$j])) {
-                            echo $data_billing[$j]['Customer']['kouza_bank'].'&nbsp;&nbsp;'.$data_billing[$j]['Customer']['kouza_shiten'].'<br>';
-                            echo '名義：'.$data_billing[$j]['Customer']['kouza_meigi'].'<br>';
-                            echo '締日：'.$data_billing[$j]['Customer']['bill_cutoff'].'&nbsp;&nbsp;&nbsp;&nbsp;請求書到着日：'.$data_billing[$j]['Customer']['bill_arrival'].'<br>';
-                            echo '備考：'.$data_billing[$j]['Customer']['remarks'];
+                            echo '<table border="1" cellspacing="0" cellpadding="5" style="table-layout:fixed;border-collapse: collapse;border: 1px black solid;">';
+                            echo '<col width="50px" />';echo '<col width="250px" />';echo '<col width="100px" />';echo '<col width="250px" />';
+                            echo '<tr><td  style="background-color:#e8ffff;">口座</td><td colspan="3">'.$data_billing[$j]['Customer']['kouza_bank'].'&nbsp;&nbsp;'.$data_billing[$j]['Customer']['kouza_shiten'].'</td></tr>';
+                            echo '<tr><td style="background-color:#e8ffff;">名義</td><td colspan="3">'.$data_billing[$j]['Customer']['kouza_meigi'].'</td></tr>';
+                            echo '<tr><td style="background-color:#e8ffff;">締日</td><td>'.$data_billing[$j]['Customer']['bill_cutoff'].'</td>'
+                                    . '<td style="background-color:#e8ffff;">請求書到着日</td><td>'.$data_billing[$j]['Customer']['bill_arrival'].'</td></tr>';
+                            echo '<tr><td style="background-color:#e8ffff;">備考</td><td colspan="3">'.$data_billing[$j]['Customer']['remarks'].'</td></tr>';
+                            echo '</table>';
                         }
                     ?>
                 </td>
@@ -460,7 +464,7 @@ $(function() {
             <tr>
                 <td style='background-color: #e8ffff;width:20%;'>請求割合</td>
                 <td>
-                    <?php echo $this->Form->input('bill_percentage'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '請求割合', 'style'=>'width:50px;padding:5px;')); ?>% 
+                    <?php echo $this->Form->input('bill_percentage'.($j+1),array('type'=>'text', 'label'=>false,'div'=>false, 'placeholder' => '請求割合', 'style'=>'width:50px;')); ?>% 
                 </td>
             </tr> 
             <?php } ?>

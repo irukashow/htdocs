@@ -115,7 +115,7 @@ onload = function() {
 </script>
 <script>
 // カレンダー月指定
-function setCalender(case_id, koushin_flag, order_id, year, month) {
+function setCalendar(case_id, koushin_flag, order_id, year, month) {
     var options1 = year.options;
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;
@@ -126,10 +126,10 @@ function setCalender(case_id, koushin_flag, order_id, year, month) {
 function setAllSelect(col, element) {
     for(var i=1; i<=31 ;i++) {
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -141,10 +141,10 @@ function setAllSelect2(col, element) {
             continue;
         }
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }

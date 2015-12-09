@@ -1049,14 +1049,14 @@ table#admin td{
 }
 
 /** カレンダー **/
-table#calender {
+table#calendar {
     width: 90%;
 }
-table#calender th {
+table#calendar th {
     background: #EEEEEE;
 }
-table#calender th,
-table#calender td {
+table#calendar th,
+table#calendar td {
     border: 1px solid #CCCCCC;
     text-align: center;
     padding: 5px;

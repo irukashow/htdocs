@@ -6,8 +6,8 @@ App::uses('AppModel', 'Model');
  * CakePHP Account
  * @author M-YOKOI
  */
-class OrderCalender extends AppModel {
-    var $name = 'OrderCalender';
+class OrderCalendar extends AppModel {
+    var $name = 'OrderCalendar';
 
     // デフォルトのソート条件は何もなし
     var $order = array();

@@ -276,10 +276,10 @@ function setTrMoney2($count, $data_array) {
     if (empty($data_array[$count])) {
         return $ret;
     }
-    if (is_null($data_array[$count]['OrderCalender']['staff_money_tr'])) {
+    if (is_null($data_array[$count]['OrderCalendar']['staff_money_tr'])) {
         $ret = '1,000';
     } else {
-        $ret = number_format(str_replace(',', '', $data_array[$count]['OrderCalender']['staff_money_tr']));
+        $ret = number_format(str_replace(',', '', $data_array[$count]['OrderCalendar']['staff_money_tr']));
     }
     return $ret;
 }
@@ -434,7 +434,7 @@ onload = function() {
 </script>
 <script>
 // カレンダー月指定
-function setCalender(year, month) {
+function setCalendar(year, month) {
     var options1 = year.options;
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;

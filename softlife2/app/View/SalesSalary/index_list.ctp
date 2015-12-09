@@ -2,7 +2,7 @@
     echo $this->Html->css('staffmaster');
     echo $this->Html->script('fixed_midashi');
 ?>
-<?php require('calender.ctp'); ?>
+<?php require('calendar.ctp'); ?>
 <?php
     // 所属
     $list_division = array(

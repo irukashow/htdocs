@@ -128,10 +128,10 @@ onload = function() {
     // チェックのあるセルを着色
     for(var col=0; col<<?=$row ?> ;col++) {
         for(var i=1; i<=31 ;i++) {
-            if (document.getElementById("OrderCalender"+col+"D"+i) == null) {
+            if (document.getElementById("OrderCalendar"+col+"D"+i) == null) {
                 break;
             }
-            if (document.getElementById("OrderCalender"+col+"D"+i).checked) {
+            if (document.getElementById("OrderCalendar"+col+"D"+i).checked) {
                 changeColor(col, i, 1);
             } else {
                 changeColor(col, i, 0);
@@ -142,7 +142,7 @@ onload = function() {
 </script>
 <script>
 // カレンダー月指定
-function setCalender(case_id, koushin_flag, order_id, year, month) {
+function setCalendar(case_id, koushin_flag, order_id, year, month) {
     var options1 = year.options;
     var value1 = options1[year.options.selectedIndex].value;
     var options2 = month.options;
@@ -153,10 +153,10 @@ function setCalender(case_id, koushin_flag, order_id, year, month) {
 function setAllSelect(col, element) {
     for(var i=1; i<=31 ;i++) {
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -168,10 +168,10 @@ function setAllSelect2(col, element) {
             continue;
         }
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -183,10 +183,10 @@ function setAllSelect3(col, element) {
             continue;
         }
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -201,10 +201,10 @@ function setAllSelect4(col, element, week) {
             continue;
         }
         if (element.checked) {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=true;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=true;
             changeColor(col, i, 1);
         } else {
-            document.getElementById("OrderCalender"+col+"D"+i).checked=false;
+            document.getElementById("OrderCalendar"+col+"D"+i).checked=false;
             changeColor(col, i, 0);
         }
     }
@@ -256,6 +256,20 @@ function doAlert(str, element) {
         element.focus();
     }
 }
+// 推奨スタッフ選択小画面表示
+function openWindow(case_id, flag, order_id, count) {
+    var form = document.getElementById('OrderInfoDetailReg2Form');
+    var input = document.createElement('input');
+    input.setAttribute('type', 'hidden');
+    input.setAttribute('name', 'select_staff');
+    input.setAttribute('value', "1");
+    form.appendChild(input);
+    form.setAttribute('action', '<?=ROOTDIR ?>/CaseManagement/reg2/'+case_id+'/'+flag+'/'+order_id);
+    form.setAttribute('method', 'post');
+    form.submit();
+    
+    window.open('<?=ROOTDIR ?>/CaseManagement/select/'+order_id+'/'+count,'スタッフ選択','width=800,height=600,scrollbars=yes');
+}
 </script>
 <style type="text/css" media="screen">
   div.scroll_div { 
@@ -304,7 +318,7 @@ function doAlert(str, element) {
             ?>
             <?php foreach($datas0 as $key=>$data0) { ?>
             <tr>
-                <td align="center" style='background-color: #e8ffff;width:20%;'><?=setNum($key+1) ?></td>
+                <td align="center" style='background-color: #e8ffff;width:20%;'><?='【'.($key+1).'】' ?></td>
                 <?php if ($data0['OrderInfo']['id'] == $order_id) { ?>
                 <td colspan="3" style="background-color: #ffffcc;">
                     <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
@@ -314,22 +328,23 @@ function doAlert(str, element) {
                     <?php echo $this->Form->input('コピー',
                             array('type'=>'submit','div'=>false,'label'=>false,
                                 'name'=>'copy_order['.$data0['OrderInfo']['id'].']','id'=>'button-create', 'div'=>false,
-                                'onclick' => 'alert("制作前です。");return false;', 'style'=>'margin-top:-10px;padding:5px 10px 5px 10px;')); ?>
+                                'onclick' => 'return confirm("【確認】このオーダーをコピーしてもよろしいですか？");', 'style'=>'margin-top:-10px;padding:5px 10px 5px 10px;')); ?>
                 </td>
                 <td align="center" style="background-color: #ffffcc;width: 70px;border-left-style: none;">
                     <?php echo $this->Form->input('削　除',
                             array('type'=>'submit','div'=>false,'label'=>false,
                                 'name'=>'delete_order['.$data0['OrderInfo']['id'].']','id'=>'button-delete', 'div'=>false,
-                                'onclick' => 'return confirm("削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding:3px 10px 3px 10px;')); ?>
+                                'onclick' => 'return confirm("【確認】削除してもよろしいですか？");', 'style'=>'margin-top:-10px;padding:3px 10px 3px 10px;')); ?>
                 </td>
                 <?php } else { ?>
-                <td colspan="4">
+                <td colspan="3">
                     <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$data0['OrderInfo']['id'].$date2 ?>">
                     <?php echo '自&nbsp;'.convGtJDate($data0['OrderInfo']['period_from'])
                             .'&nbsp;～&nbsp;至&nbsp;'.convGtJDate($data0['OrderInfo']['period_to']).'&nbsp;&nbsp;&nbsp;'.$data0['OrderInfo']['order_name']; ?>
                     </a>
                 </td>
-                <td></td>
+                <td style="width: 70px;border-right-style: none;"></td>
+                <td style="width: 70px;border-left-style: none;"></td>
                 <?php } ?>
             </tr>
             <?php } ?>
@@ -381,8 +396,9 @@ function doAlert(str, element) {
             </tr>
         </table>
         <!-- 追加ボタン -->
-        <div style="margin-left: 400px;">
-            <?php echo $this->Form->submit('▼ (1) 登 録（職種入力へ） ▼',array('label'=>false,'name'=>'insert','id'=>'', 'style'=>'font-size:110%;')); ?>
+        <div style="margin-top: 5px;text-align: center;">
+            <?php echo $this->Form->submit('▼ 登 録 ①（職種・勤務日入力へ） ▼',array('label'=>false,'name'=>'insert','div'=>false, 'style'=>'font-size:110%;')); ?><br>
+            <div style="margin-top:5px;margin-bottom: 5px;">※以下の入力が終わったら、最下部の【登 録 ②】も必ず押してください。</div>
         </div>
         <?php echo $this->Form->end(); ?>
         <!-- 追加ボタン END -->
@@ -550,9 +566,7 @@ function doAlert(str, element) {
                             $staff_id = null;
                         }
                     ?>
-                    <input type="button" value="スタッフ選択" 
-                           onclick="form1.submit();window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$order_id ?>/<?=$count ?>',
-                                'スタッフ選択','width=800,height=600,scrollbars=yes');">
+                    <input type="button" value="スタッフ選択" onclick="openWindow(<?=$case_id ?>,<?=$koushin_flag ?>,<?=$order_id ?>,<?=$count ?>);">
                 </td>
                 <?php } ?>
             </tr>
@@ -573,7 +587,7 @@ function doAlert(str, element) {
                 <?php } ?>
             </tr>
 <?php echo $this->Form->end(); ?>
-<?php echo $this->Form->create('OrderCalender', array('name'=>'form2')); ?>
+<?php echo $this->Form->create('OrderCalendar', array('name'=>'form2')); ?>
 -->
             <tr>
                 <!-- カレンダー月指定 -->
@@ -587,30 +601,30 @@ function doAlert(str, element) {
                     ?>
                     <?php echo $this->Form->input(false,array('name'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;',
-                        'onchange'=>'setCalender('.$case_id.','.$koushin_flag.','.$order_id.', this, document.form2.month)')); ?>年<br>
+                        'onchange'=>'setCalendar('.$case_id.','.$koushin_flag.','.$order_id.', this, document.form2.month)')); ?>年<br>
                         <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
                     <?php echo $this->Form->input(false,array('name'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
                         'value'=>$month, 'style'=>'text-align: right;', 
-                        'onchange'=>'setCalender('.$case_id.','.$koushin_flag.','.$order_id.', document.form2.year, this)')); ?>月
+                        'onchange'=>'setCalendar('.$case_id.','.$koushin_flag.','.$order_id.', document.form2.year, this)')); ?>月
                         <a href="<?=ROOTDIR ?>/CaseManagement/reg2/<?=$case_id ?>/<?=$koushin_flag ?>/<?=$order_id ?>?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php for ($count=0; $count<$row; $count++){ ?>
                     <?php if (empty($datas1) || empty($datas1[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
-                    <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden')); ?>
+                    <?php } elseif ($datas1[$count]['OrderCalendar']['year'] != $year || $datas1[$count]['OrderCalendar']['month'] != $month) { ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden')); ?>
                     <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas1[$count]['OrderCalender']['id'])); ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas1[$count]['OrderCalendar']['id'])); ?>
                     <?php } ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.order_id',array('type'=>'hidden', 'value'=>$order_id)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.case_id',array('type'=>'hidden','value'=>$case_id)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$count+1)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.year',array('type'=>'hidden','value'=>'')); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.month',array('type'=>'hidden','value'=>'')); ?>
                 <td align='center' style='background-color: #e8ffff;'>
                     <?php echo $this->Form->input(false,array('name'=>'check1', 'type'=>'checkbox','div'=>true,'label'=>'全選択・全解除',
                         'value'=>1, 'style'=>'text-align: left;margin-top:2px;',
@@ -685,18 +699,18 @@ function doAlert(str, element) {
                 <td id="Cell<?=$count ?>D<?=$d ?>">
                     <div style='color:<?=$style ?>;' class='input checkbox'>
                         <?php if (empty($datas1) || empty($datas1[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
                                         'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
-                        <?php } elseif ($datas1[$count]['OrderCalender']['year'] != $year || $datas1[$count]['OrderCalender']['month'] != $month ) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
+                        <?php } elseif ($datas1[$count]['OrderCalendar']['year'] != $year || $datas1[$count]['OrderCalendar']['month'] != $month ) { ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.d'.$d,
                                     array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>0,
                                         'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
                         <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.d'.$d,
-                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas1[$count]['OrderCalender']['d'.$d],
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.d'.$d,
+                                    array('type'=>'checkbox','div'=>false,'legend'=>false,'label'=>'選択', 'checked'=>$datas1[$count]['OrderCalendar']['d'.$d],
                                         'value'=>1, 'onclick'=>'changeColor('.$count.','.$d.',this.checked);')); ?>
-                        <input type="hidden" name="shokushu_num" value="<?=$datas1[$count]['OrderCalender']['shokushu_num'] ?>">
+                        <input type="hidden" name="shokushu_num" value="<?=$datas1[$count]['OrderCalendar']['shokushu_num'] ?>">
                         <?php } ?>
                         
                     </div>
@@ -727,7 +741,7 @@ function doAlert(str, element) {
         <!-- ページ選択 END -->
     </fieldset>
     <div style='margin-left: 10px;'>
-<?php echo $this->Form->submit('(2) 登録する', array('name' => 'register2','div' => false)); ?>
+<?php echo $this->Form->submit('★ 登 録 ② ★', array('name' => 'register2','div' => false)); ?>
     &nbsp;&nbsp;
 <?php print($this->Form->submit('閉 じ る', array('id'=>'button-delete', 'name'=>'close','div' => false , 'onclick'=>'window.opener.location.reload();window.close();'))); ?>
 <!--

@@ -5,7 +5,7 @@
     //echo $this->Html->script('header');
     echo $this->Html->css('style_1');
 ?>
-<?php require('calender.ctp'); ?>
+<?php require('calendar.ctp'); ?>
 <?php
     function setID($id) {
         echo '<input type="hidden" id="'.$id.'" name="'.$id.'">';

@@ -75,10 +75,10 @@
                             <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>" style="color:white;" class="load">◀</a>
                                 【<?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                                         'value'=>$year, 'style'=>'text-align: left;font-size: 100%;', 'class'=>'load2',
-                                        'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>&nbsp;年
+                                        'onchange'=>'setCalendar(this, document.getElementById("month"))')); ?>&nbsp;年
                                     <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
                                         'value'=>$month, 'style'=>'text-align: right;font-size: 100%;',  'class'=>'load2',
-                                        'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>
+                                        'onchange'=>'setCalendar(document.getElementById("year"), this)')); ?>
                             <a href="#" style="color: white; text-decoration: none;" onclick="location.reload();" class="load">
                                 月&nbsp;稼働表】
                             </a>
@@ -109,10 +109,10 @@
                     </a>
                 </th>
                 <?php foreach ($datas as $key=>$data){ ?>
-                <th id="case_<?=$data['OrderCalender']['case_id'] ?>" 
-                    style='background:#99ccff;text-align: center;background-color: <?=setBGColor($data['OrderCalender']['case_id'], $list_bgcolor) ?>;
-                    color: <?=setColor($data['OrderCalender']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo $getCasename[$data['OrderCalender']['case_id']]; ?>
+                <th id="case_<?=$data['OrderCalendar']['case_id'] ?>" 
+                    style='background:#99ccff;text-align: center;background-color: <?=setBGColor($data['OrderCalendar']['case_id'], $list_bgcolor) ?>;
+                    color: <?=setColor($data['OrderCalendar']['case_id'], $list_color) ?>;' colspan="<?=$data[0]['cnt'] ?>">
+                <?php echo $getCasename[$data['OrderCalendar']['case_id']]; ?>
                 </th>
                 <?php } ?>
             </tr>
@@ -138,7 +138,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">事業主</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='background:#ffffcc;text-align: center;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_entrepreneur[$data['OrderCalender']['case_id']]); ?>
+                <?php echo NZ($list_entrepreneur[$data['OrderCalendar']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -146,7 +146,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">販売会社</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_client[$data['OrderCalender']['case_id']]); ?>
+                <?php echo NZ($list_client[$data['OrderCalendar']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -154,7 +154,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">指揮命令者/<br>担当者</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_director[$data['OrderCalender']['case_id']]); ?>様
+                <?php echo NZ($list_director[$data['OrderCalendar']['case_id']]); ?>様
                 </td>
                 <?php } ?>
             </tr>
@@ -162,7 +162,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">現場住所</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_address[$data['OrderCalender']['case_id']]); ?>
+                <?php echo NZ($list_address[$data['OrderCalendar']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -170,8 +170,8 @@
                 <td style='background-color: #e8ffff;' colspan="2">現場連絡先</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo 'TEL:'.NZ($list_telno[$data['OrderCalender']['case_id']]); ?><br>
-                <?php echo 'FAX:'.NZ($list_faxno[$data['OrderCalender']['case_id']]); ?>
+                <?php echo 'TEL:'.NZ($list_telno[$data['OrderCalendar']['case_id']]); ?><br>
+                <?php echo 'FAX:'.NZ($list_faxno[$data['OrderCalendar']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -188,7 +188,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">請求先担当者</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_bill[$data['OrderCalender']['case_id']]); ?> 様
+                <?php echo NZ($list_bill[$data['OrderCalendar']['case_id']]); ?> 様
                 </td>
                 <?php } ?>
             </tr>
@@ -196,7 +196,7 @@
                 <td style='background-color: #e8ffff;' colspan="2">請求書締日</td>
                 <?php foreach ($datas as $data){ ?>
                 <td style='text-align: center;background-color: white;' colspan="<?=$data[0]['cnt'] ?>">
-                <?php echo NZ($list_cutoff[$data['OrderCalender']['case_id']]); ?>
+                <?php echo NZ($list_cutoff[$data['OrderCalendar']['case_id']]); ?>
                 </td>
                 <?php } ?>
             </tr>
@@ -294,20 +294,20 @@
                 <td style='background-color: #ffffcc;'>
                     <?php echo setData($datas2,'worktime_from',$count,$record).'～'.setData($datas2,'worktime_to',$count,$record) ?>
                     <?php if (empty($datas2) || empty($datas2[$count])) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
-                    <?php } elseif ($datas2[$count]['OrderCalender']['year'] != $year || $datas2[$count]['OrderCalender']['month'] != $month) { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden')); ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden')); ?>
+                    <?php } elseif ($datas2[$count]['OrderCalendar']['year'] != $year || $datas2[$count]['OrderCalendar']['month'] != $month) { ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden')); ?>
                     <?php } else { ?>
-                        <?php echo $this->Form->input('OrderCalender.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas2[$count]['OrderCalender']['id'])); ?>
+                        <?php echo $this->Form->input('OrderCalendar.'.$count.'.id',array('type'=>'hidden', 'value'=>$datas2[$count]['OrderCalendar']['id'])); ?>
                     <?php } ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['case_id'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['order_id'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalender']['shokushu_num'])); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.work_time_memo',
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.case_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalendar']['case_id'])); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.order_id',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalendar']['order_id'])); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.shokushu_num',array('type'=>'hidden','value'=>$datas2[$count]['OrderCalendar']['shokushu_num'])); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.username', array('type'=>'hidden', 'value' => $username)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.class', array('type'=>'hidden', 'value' => $selected_class)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.year',array('type'=>'hidden','value'=>$year)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.month',array('type'=>'hidden','value'=>$month)); ?>
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.work_time_memo',
                         array('type'=>'textarea','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;background-color: #ffffcc;', 'rows'=>2)); ?>
                 </td>
                 <?php } ?>
@@ -325,9 +325,9 @@
                 <td style='background-color: #e8ffff;' colspan="2">推奨スタッフ[<span id="help01">?</span>]</td>
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td style='background-color: #ffffcc;vertical-align: top;'>
-                    <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>
+                    <?php echo setArray($list_staffs2[$datas2[$count]['OrderCalendar']['order_id']][$datas2[$count]['OrderCalendar']['shokushu_num']]); ?>
                     <input type="button" value="スタッフ選択" 
-                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$datas2[$count]['OrderCalender']['order_id'] ?>/<?=$datas2[$count]['OrderCalender']['shokushu_num']-1 ?>?<?=setArray2($list_staffs[$datas2[$count]['OrderCalender']['order_id']][$datas2[$count]['OrderCalender']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
+                           onclick="window.open('<?=ROOTDIR ?>/CaseManagement/select/<?=$datas2[$count]['OrderCalendar']['order_id'] ?>/<?=$datas2[$count]['OrderCalendar']['shokushu_num']-1 ?>?<?=setArray2($list_staffs[$datas2[$count]['OrderCalendar']['order_id']][$datas2[$count]['OrderCalendar']['shokushu_num']]); ?>','スタッフ選択','width=800,height=600,scrollbars=yes');">
                 </td>
                 <?php } ?>
             </tr>
@@ -351,17 +351,17 @@
                     ?>
                     <?php echo $this->Form->input(false, array('id'=>'year', 'type'=>'select','div'=>false,'label'=>false, 'options' => $year_arr,
                         'value'=>$year, 'style'=>'text-align: left;', 
-                        'onchange'=>'setCalender(this, document.getElementById("month"))')); ?>年<br>
+                        'onchange'=>'setCalendar(this, document.getElementById("month"))')); ?>年<br>
                         <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' -1 month')); ?>">▲</a>
                     <?php $month_arr = array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'); ?>
                     <?php echo $this->Form->input(false, array('id'=>'month', 'type'=>'select','div'=>false,'label'=>false, 'options' => $month_arr,
-                        'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalender(document.getElementById("year"), this)')); ?>月
+                        'value'=>$month, 'style'=>'text-align: right;', 'onchange'=>'setCalendar(document.getElementById("year"), this)')); ?>月
                         <a href="<?=ROOTDIR ?>/ShiftManagement/schedule?date=<?=date('Y-m', strtotime($y .'-' . $m . ' +1 month')); ?>">▼</a>
                 </td>
                 <!-- カレンダー月指定 END -->
                 <?php for ($count=0; $count<$col; $count++){ ?>
                 <td align='left' style='background-color: #e8ffff;'>
-                    <?php echo $this->Form->input('OrderCalender.'.$count.'.remarks',
+                    <?php echo $this->Form->input('OrderCalendar.'.$count.'.remarks',
                         array('type'=>'text','div'=>false,'label'=>false,'style'=>'width:100px;text-align: left;', 'rows'=>2)); ?>
                 </td>
                 <?php } ?>
@@ -420,9 +420,9 @@
                     for ($count=0; $count<$col; $count++){
                         if (empty($datas2) || empty($datas2[$count])) {
                             $class_name = 'redips-mark';
-                        } elseif ($datas2[$count]['OrderCalender']['d'.$d] == 0) {
+                        } elseif ($datas2[$count]['OrderCalendar']['d'.$d] == 0) {
                             $class_name = 'redips-mark';
-                        } elseif ($datas2[$count]['OrderCalender']['d'.$d] == 1) {
+                        } elseif ($datas2[$count]['OrderCalendar']['d'.$d] == 1) {
                             $class_name = '';
                         }
             ?>
@@ -430,7 +430,7 @@
                     <?php if (!empty($class_name)) { ?>
                     <?php echo ''; ?>
                     <?php } else { ?>
-                    <?php //echo $datas2[$count]['OrderCalender']['d'.$d]; ?>
+                    <?php //echo $datas2[$count]['OrderCalendar']['d'.$d]; ?>
                     <span id="<?=setData($datas2,'order_id',$count,$record) ?>"></span>
                     <span id="<?=setData($datas2,'shokushu_num',$count,$record) ?>"></span>
                     <?php

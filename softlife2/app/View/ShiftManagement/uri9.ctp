@@ -1,7 +1,7 @@
 <?php
     echo $this->Html->css('staffmaster');
 ?>
-<?php require('calender.ctp'); ?>
+<?php require('calendar.ctp'); ?>
 <style>
 #loading{
     position:absolute;

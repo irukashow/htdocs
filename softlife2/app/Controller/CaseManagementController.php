@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  */
 class CaseManagementController extends AppController {
     public $uses = array('CaseManagement', 'Item', 'User', 'Customer', 'OrderInfo', 
-        'OrderInfoDetail', 'OrderCalender', 'CaseLog', 'StaffMaster', 'WorkTable', 'ReportTable');
+        'OrderInfoDetail', 'OrderCalendar', 'CaseLog', 'StaffMaster', 'WorkTable', 'ReportTable');
     
     public $components = array('RequestHandler');
     
@@ -874,7 +874,7 @@ class CaseManagementController extends AppController {
         }
         $this->set('row', $row);
         $option = array();
-        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalendar.*'); 
         $option['order'] = array('OrderInfo.id' => 'asc');
         $option['joins'] = array(
         array(
@@ -885,9 +885,9 @@ class CaseManagementController extends AppController {
             ),
         array(
             'type' => 'LEFT',   //LEFT, INNER, OUTER
-            'table' => 'order_calenders',
-            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
-            'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
+            'table' => 'order_calendars',
+            'alias' => 'OrderCalendar',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalendar.order_id AND OrderInfoDetail.shokushu_num = OrderCalendar.shokushu_num'
             ),
         );
         // 職種マスタ配列
@@ -920,7 +920,7 @@ class CaseManagementController extends AppController {
                     $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
                     $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                             '('.$order_id.')'.$this->request->data['OrderInfo']['order_name'], 21, $this->request->clientIp()); // (2)オーダー名登録コード:21
-                    $this->Session->setFlash('２．次に、職種情報とスケジュールを入力してください。');
+                    $this->Session->setFlash('②次に、職種情報と勤務スケジュールを入力してください。');
                     // 月の差分
                     $diff_month = date('n', strtotime($data4['OrderInfo']['period_to']) - strtotime($data4['OrderInfo']['period_from']));
                     $this->log($diff_month, LOG_DEBUG);
@@ -930,11 +930,11 @@ class CaseManagementController extends AppController {
                         'order_id' => $order_id,
                         'class' => $selected_class,
                     );
-                    $result2 = $this->OrderCalender->find('first', array('conditions'=>$conditions3));
+                    $result2 = $this->OrderCalendar->find('first', array('conditions'=>$conditions3));
                     if (empty($result2)) {
                         $sequence = 0;
                     } else {
-                        $sequence = $result2['OrderCalender']['sequence'];
+                        $sequence = $result2['OrderCalendar']['sequence'];
                     }
                     // 契約期間の空のカレンダーを作成
                     $datas3 = null;
@@ -951,28 +951,33 @@ class CaseManagementController extends AppController {
                                 'sequence' => $sequence,
                                 'class' => $selected_class,
                             );
-                            $count = $this->OrderCalender->find('count', array('conditions'=>$conditions2));
+                            $count = $this->OrderCalendar->find('count', array('conditions'=>$conditions2));
                             if ($count == 0) {
-                                $datas3[] = array('OrderCalender'=>$conditions2);
+                                $datas3[] = array('OrderCalendar'=>$conditions2);
                             }
                         }
                     }
                     if (!empty($datas3)) {
-                        $this->OrderCalender->saveAll($datas3);
+                        $this->OrderCalendar->saveAll($datas3);
                     }
                     // 契約期間外の月を削除
                     $conditions5 = array('case_id' => $case_id,'order_id' => $order_id,'class' => $selected_class);
-                    $datas5 = $this->OrderCalender->find('all', array('conditions'=>$conditions5));
+                    $datas5 = $this->OrderCalendar->find('all', array('conditions'=>$conditions5));
                     foreach($datas5 as $data5) {
-                        if (strtotime($data4['OrderInfo']['period_from']) > strtotime($data5['OrderCalender']['year'].'-'.$data5['OrderCalender']['month'].'-31') 
-                                || strtotime($data4['OrderInfo']['period_to']) < strtotime($data5['OrderCalender']['year'].'-'.$data5['OrderCalender']['month'].'-01') ) {
-                            $this->log($data5['OrderCalender']['year'].'/'.$data5['OrderCalender']['month'].'はダメ！', LOG_DEBUG);
-                            $this->OrderCalender->delete($data5['OrderCalender']['id']);
+                        if (strtotime($data4['OrderInfo']['period_from']) > strtotime($data5['OrderCalendar']['year'].'-'.$data5['OrderCalendar']['month'].'-31') 
+                                || strtotime($data4['OrderInfo']['period_to']) < strtotime($data5['OrderCalendar']['year'].'-'.$data5['OrderCalendar']['month'].'-01') ) {
+                            $this->log($data5['OrderCalendar']['year'].'/'.$data5['OrderCalendar']['month'].'はダメ！', LOG_DEBUG);
+                            $this->OrderCalendar->delete($data5['OrderCalendar']['id']);
                         }
                     }
-                    // 職種を減らした場合、減らした職種のOrderCalendarを削除
+                    // 職種を減らした場合、減らした職種のOrderInfoDetail、OrderCalendarを削除
                     $conditions6 = array('case_id' => $case_id,'order_id' => $order_id,'class' => $selected_class, 'shokushu_num > ' => $row);
-                    if (!$this->OrderCalender->deleteAll($conditions6, false)) {
+                    if (!$this->OrderCalendar->deleteAll($conditions6, false)) {
+                        $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
+                        $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id, 'row'=>$row));
+                        exit();
+                    }
+                    if (!$this->OrderInfoDetail->deleteAll($conditions6, false)) {
                         $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
                         $this->redirect(array('action' => 'reg2', $case_id, $koushin_flag, $order_id, 'row'=>$row));
                         exit();
@@ -1034,15 +1039,15 @@ class CaseManagementController extends AppController {
                 $year = $this->request->data['year'];
                 $month = $this->request->data['month'];
                 // 年月のセット
-                $datas = $this->request->data['OrderCalender'];
+                $datas = $this->request->data['OrderCalendar'];
                 for ($i=0; $i<count($datas) ;$i++) {
-                    $this->request->data['OrderCalender'][$i]['year'] = $this->request->data['year'];
-                    $this->request->data['OrderCalender'][$i]['month'] = $this->request->data['month'];
+                    $this->request->data['OrderCalendar'][$i]['year'] = $this->request->data['year'];
+                    $this->request->data['OrderCalendar'][$i]['month'] = $this->request->data['month'];
                 }
-                $datas3 = $this->request->data['OrderCalender'];
+                $datas3 = $this->request->data['OrderCalendar'];
                 $this->log($datas3, LOG_DEBUG);
                 // データを登録する（カレンダー）
-                if ($this->OrderCalender->saveAll($datas3)) {
+                if ($this->OrderCalendar->saveAll($datas3)) {
                     // ログ書き込み
                     $conditions = array('id' => $case_id);
                     $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
@@ -1057,20 +1062,20 @@ class CaseManagementController extends AppController {
                     /**
                     // スケジュールが空の職種レコードを削除
                     $conditions3 = array('class'=>$selected_class, 'order_id'=>$order_id);
-                    $datas4 = $this->OrderCalender->find('all', array('conditions'=>$conditions3));
+                    $datas4 = $this->OrderCalendar->find('all', array('conditions'=>$conditions3));
                     $this->log($datas4, LOG_DEBUG);
                     $val1 = 0;
                     foreach($datas4 as $j=>$data4) {
                         for ($d=1; $d<=31; $d++) {
                             if ($d == 1) {
-                                $val1 = $data4['OrderCalender']['d'.$d];
+                                $val1 = $data4['OrderCalendar']['d'.$d];
                             } else {
-                                $val1 = $val1 + $data4['OrderCalender']['d'.$d];
+                                $val1 = $val1 + $data4['OrderCalendar']['d'.$d];
                             }
                         }
                         if ($val1 == 0) {
-                            $this->log('からのカラム：'.$data4['OrderCalender']['id'], LOG_DEBUG);
-                            $this->OrderCalender->delete($data4['OrderCalender']['id']);
+                            $this->log('からのカラム：'.$data4['OrderCalendar']['id'], LOG_DEBUG);
+                            $this->OrderCalendar->delete($data4['OrderCalendar']['id']);
                         }
                     }
                      * 
@@ -1085,7 +1090,7 @@ class CaseManagementController extends AppController {
                     }
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id, $date2));
                 } else {
-                    $this->log($this->OrderCalender->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->log($this->OrderCalendar->getDataSource()->getLog(), LOG_DEBUG);
                     $this->Session->setFlash('【エラー】登録時にエラーが発生しました。');
                     $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
                 }
@@ -1099,7 +1104,7 @@ class CaseManagementController extends AppController {
                 //$this->log($result, LOG_DEBUG);
                 $shokushu_num = $result['OrderInfoDetail']['shokushu_num'];
                 $param = array('case_id' => $case_id, 'order_id' => $order_id, 'shokushu_num' => $shokushu_num);
-                $this->OrderCalender->deleteAll($param);
+                $this->OrderCalendar->deleteAll($param);
                 // 職種情報削除
                 $this->OrderInfoDetail->delete($id);
                 // ログ書き込み
@@ -1114,8 +1119,24 @@ class CaseManagementController extends AppController {
             } elseif (isset($this->request->data['copy_order'])) {
                 $id_array = array_keys($this->request->data['copy_order']);
                 $id = $id_array[0];
-                // 
-                
+                // OrderInfoコピー
+                $data_ori1 = $this->OrderInfo->find('first', array('conditions'=>array('id'=>$id)));
+                unset($data_ori1['OrderInfo']['id'], $data_ori1['OrderInfo']['created'], $data_ori1['OrderInfo']['modified']);
+                if ($this->OrderInfo->save($data_ori1['OrderInfo'])) {
+                    $id2 = $this->OrderInfo->getLastInsertID();
+                } else {
+                    $this->Session->setFlash('【エラー】コピー処理中にエラーが発生しました。');
+                }
+                // OrderInfoDetailコピー
+                $datas_ori2 = $this->OrderInfoDetail->find('all', array('conditions'=>array('order_id'=>$id)));
+                foreach ($datas_ori2 as $data) {
+                    unset($data['OrderInfoDetail']['id'], $data['OrderInfoDetail']['order_id'], $data['OrderInfoDetail']['created'], $data['OrderInfoDetail']['modified']);
+                    $data['OrderInfoDetail']['order_id'] = $id2;
+                    $this->OrderInfoDetail->create(false); 
+                    $this->OrderInfoDetail->save($data['OrderInfoDetail']);
+                }
+                $this->Session->setFlash('【情報】コピーが完了しました。内容を修正して、登録①および登録②を押してください。');
+                $this->redirect(array('action'=>'reg2', $case_id, $koushin_flag));
             // 削除（オーダーごと）
             } elseif (isset($this->request->data['delete_order'])) {
                 // オーダー名の取得
@@ -1127,14 +1148,79 @@ class CaseManagementController extends AppController {
                 $this->OrderInfo->delete($id);
                 $param = array('order_id' => $id);
                 $this->OrderInfoDetail->deleteAll($param);
-                $this->OrderCalender->deleteAll($param);
+                $this->OrderCalendar->deleteAll($param);
                 // ログ書き込み
                 $conditions = array('id' => $case_id);
                 $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
                 $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
                         '('.$order_id.')'.$result2['OrderInfo']['order_name'], 25, $this->request->clientIp()); // (25)オーダー削除コード:25
-                $this->Session->setFlash('オーダーを削除しました。');
-                $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
+                $this->Session->setFlash('【情報】オーダーを削除しました。');
+                $this->redirect(array('action'=>'reg2', $case_id, $koushin_flag, $order_id));
+            // 推奨スタッフ選択
+            } elseif (isset($this->request->data['select_staff'])) {
+                $datas2 = $this->request->data['OrderInfoDetail'];
+                // データを登録する（オーダー詳細）
+                if ($this->OrderInfoDetail->saveAll($datas2)) {
+                    /**
+                    // ログ書き込み
+                    $conditions = array('id' => $case_id);
+                    $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                    $conditions2 = array('id' => $order_id);
+                    $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
+                    $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                            '('.$order_id.')'.$result2['OrderInfo']['order_name'], 22, $this->request->clientIp()); // (2)オーダー職種登録コード:22
+                    // 登録完了メッセージ
+                    $this->Session->setFlash('３．カレンダーで勤務日を指定してください。');
+                    $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
+                     * 
+                     */
+                } else {
+                    $this->log($this->OrderInfoDetail->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->Session->setFlash('【エラー】エラーが発生しました。');
+                    $this->redirect(array('action'=>'reg2/'.$case_id.'/'.$koushin_flag.'/'.$order_id));
+                }
+                // 年月
+                $year = $this->request->data['year'];
+                $month = $this->request->data['month'];
+                // 年月のセット
+                $datas = $this->request->data['OrderCalendar'];
+                for ($i=0; $i<count($datas) ;$i++) {
+                    $this->request->data['OrderCalendar'][$i]['year'] = $this->request->data['year'];
+                    $this->request->data['OrderCalendar'][$i]['month'] = $this->request->data['month'];
+                }
+                $datas3 = $this->request->data['OrderCalendar'];
+                $this->log($datas3, LOG_DEBUG);
+                // データを登録する（カレンダー）
+                if ($this->OrderCalendar->saveAll($datas3)) {
+                    // ログ書き込み
+                    $conditions = array('id' => $case_id);
+                    $result = $this->CaseManagement->find('first', array('conditions' => $conditions));
+                    $conditions2 = array('id' => $order_id);
+                    $result2 = $this->OrderInfo->find('first', array('conditions' => $conditions2));
+                    $this->setCaseLog($username, $selected_class, $case_id, $result['CaseManagement']['case_name'], 
+                            '('.$order_id.')'.$result2['OrderInfo']['order_name'], 23, $this->request->clientIp()); // (23)オーダーカレンダー登録コード:23
+                    // 推奨スタッフのセッションの削除
+                    /**
+                    for($i=0; $i<$row; $i++) {
+                        $this->Session->delete('staff_id-'.$order_id.'_'.$i);
+                    }
+                     * 
+                     */
+                    // 登録完了メッセージ
+                    //$this->Session->setFlash('【情報】オーダー登録を完了しました。');
+                    $date = $this->request->query('date');
+                    if (empty($date)) {
+                        $date2 = null;
+                    } else {
+                        $date2 = '?date='.$date;
+                    }
+                    $this->redirect(array('action'=>'reg2', $case_id, $koushin_flag, $order_id, $date2));
+                } else {
+                    $this->log($this->OrderCalendar->getDataSource()->getLog(), LOG_DEBUG);
+                    $this->Session->setFlash('【エラー】エラーが発生しました。');
+                    $this->redirect(array('action'=>'reg2', $case_id, $koushin_flag, $order_id));
+                }
+                
             // 閉じる
             } elseif (isset($this->request->data['close'])) {
                 // 推奨スタッフのセッションの削除
@@ -1204,12 +1290,12 @@ class CaseManagementController extends AppController {
             $record = $this->OrderInfo->find('count', $option);
             $this->set('record', $record);
             // カレンダー部分のデータ・セット
-            //$conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-            //$datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions, 'order'=>array('shokushu_num')));
+            //$conditions = array('OrderCalendar.case_id' => $case_id, 'OrderCalendar.order_id' => $order_id, 'OrderCalendar.year' => $year, 'OrderCalendar.month' => $month);
+            //$datas1 = $this->OrderCalendar->find('all', array('conditions'=>$conditions, 'order'=>array('shokushu_num')));
             for ($i=0; $i<20; $i++) {
-                $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 
-                    'OrderCalender.year' => $year, 'OrderCalender.month' => $month, 'OrderCalender.shokushu_num' => $i+1);
-                $result3 = $this->OrderCalender->find('first', array('conditions'=>$conditions));
+                $conditions = array('OrderCalendar.case_id' => $case_id, 'OrderCalendar.order_id' => $order_id, 
+                    'OrderCalendar.year' => $year, 'OrderCalendar.month' => $month, 'OrderCalendar.shokushu_num' => $i+1);
+                $result3 = $this->OrderCalendar->find('first', array('conditions'=>$conditions));
                 if (empty($result3)) {
                     $datas1[$i] = null;
                 } else {
@@ -1263,8 +1349,8 @@ class CaseManagementController extends AppController {
             }
             //$this->log($results2, LOG_DEBUG);
             $this->set('staff_names', $results2);
-            //$this->log($results2, LOG_DEBUG);
-            //$this->Session->delete('staff_id');
+            // 入力した値のセット
+            //$this->request->data = $this->Session->read('request');
         } else {
             $this->Session->setFlash('【エラー】登録時にエラーが発生しました。（？）');
         }
@@ -1426,7 +1512,7 @@ class CaseManagementController extends AppController {
         }
         $this->set('row', $row);
         $option = array();
-        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalendar.*'); 
         $option['order'] = array('OrderInfo.id' => 'asc');
         $option['joins'] = array(
         array(
@@ -1437,9 +1523,9 @@ class CaseManagementController extends AppController {
             ),
         array(
             'type' => 'LEFT',   //LEFT, INNER, OUTER
-            'table' => 'order_calenders',
-            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
-            'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
+            'table' => 'order_calendars',
+            'alias' => 'OrderCalendar',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalendar.order_id AND OrderInfoDetail.shokushu_num = OrderCalendar.shokushu_num'
             ),
         );
 
@@ -1544,7 +1630,7 @@ class CaseManagementController extends AppController {
             $row = $data['OrderInfo']['shokushu_num'];
         }
         $option = array();
-        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalendar.*'); 
         $option['order'] = array('OrderInfo.id' => 'asc');
         $option['joins'] = array(
         array(
@@ -1555,9 +1641,9 @@ class CaseManagementController extends AppController {
             ),
         array(
             'type' => 'LEFT',   //LEFT, INNER, OUTER
-            'table' => 'order_calenders',
-            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
-            'conditions' => 'OrderInfo.id = OrderCalender.order_id AND OrderInfoDetail.shokushu_num = OrderCalender.shokushu_num'
+            'table' => 'order_calendars',
+            'alias' => 'OrderCalendar',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalendar.order_id AND OrderInfoDetail.shokushu_num = OrderCalendar.shokushu_num'
             ),
         );
         // その他
@@ -1668,7 +1754,7 @@ class CaseManagementController extends AppController {
             $row = $data['OrderInfo']['shokushu_num'];
         }
         $option = array();
-        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalender.*'); 
+        $option['fields'] = array('OrderInfo.*', 'OrderInfoDetail.*', 'OrderCalendar.*'); 
         $option['order'] = array('OrderInfo.id' => 'asc');
         $option['joins'] = array(
         array(
@@ -1679,9 +1765,9 @@ class CaseManagementController extends AppController {
             ),
         array(
             'type' => 'RIGHT',   //LEFT, INNER, OUTER
-            'table' => 'order_calenders',
-            'alias' => 'OrderCalender',    //下でPost.user_idと書くために
-            'conditions' => 'OrderInfo.id = OrderCalender.order_id'
+            'table' => 'order_calendars',
+            'alias' => 'OrderCalendar',    //下でPost.user_idと書くために
+            'conditions' => 'OrderInfo.id = OrderCalendar.order_id'
             ),
         );
         // 職種マスタ配列
@@ -1794,8 +1880,8 @@ class CaseManagementController extends AppController {
                 $this->log($datas2, LOG_DEBUG);
             }
             // カレンダー部分のデータ・セット
-            $conditions = array('OrderCalender.case_id' => $case_id, 'OrderCalender.order_id' => $order_id, 'OrderCalender.year' => $year, 'OrderCalender.month' => $month);
-            $datas1 = $this->OrderCalender->find('all', array('conditions'=>$conditions));
+            $conditions = array('OrderCalendar.case_id' => $case_id, 'OrderCalendar.order_id' => $order_id, 'OrderCalendar.year' => $year, 'OrderCalendar.month' => $month);
+            $datas1 = $this->OrderCalendar->find('all', array('conditions'=>$conditions));
             $this->set('datas1', $datas1);
             $this->log($datas1, LOG_DEBUG);
             $record = $this->OrderInfo->find('count', $option);

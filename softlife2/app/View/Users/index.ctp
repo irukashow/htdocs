@@ -4,7 +4,7 @@
     echo $this->Html->script('lightbox');
     echo $this->Html->script('sanrio');
 ?>
-<?php require('calender.ctp'); ?>
+<?php require('calendar.ctp'); ?>
 <?php
     function getInfoStatus($val) {
         if ($val == 1) {
